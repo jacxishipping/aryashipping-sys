@@ -17,7 +17,7 @@ export default async function ServicesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F9FAFB] text-gray-900 font-sans selection:bg-[#D4AF37] selection:text-white">
+    <div className="min-h-screen bg-[#F9FAFB] text-gray-900 font-sans selection:bg-[var(--accent-gold)] selection:text-white">
       <Header isAuthenticated={Boolean(session?.user)} />
       <main>
         <LandingScrollAnimator />

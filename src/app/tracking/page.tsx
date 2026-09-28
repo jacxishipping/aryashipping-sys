@@ -212,7 +212,7 @@ function TrackingPageInner() {
 				{/* Grid texture */}
 				<div className="pointer-events-none absolute inset-0 -z-10 bg-[url('/grid.svg')] bg-[length:40px_40px] opacity-[0.04]" />
 				{/* Radial glow */}
-				<div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(212,175,55,0.07),transparent)]" />
+				<div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(var(--accent-gold-rgb),0.07),transparent)]" />
 
 				<motion.div
 					style={{ y: heroContentY, opacity: heroOpacity }}
@@ -226,9 +226,9 @@ function TrackingPageInner() {
 					>
 						{/* Label */}
 						<motion.div variants={itemVariants} className="inline-flex items-center gap-3 justify-center mb-8">
-							<span className="h-px w-6 bg-[#D4AF37]" />
-							<span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Live tracking</span>
-							<span className="h-px w-6 bg-[#D4AF37]" />
+							<span className="h-px w-6 bg-[var(--accent-gold)]" />
+							<span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Live tracking</span>
+							<span className="h-px w-6 bg-[var(--accent-gold)]" />
 						</motion.div>
 
 						{/* Headline */}
@@ -244,7 +244,7 @@ function TrackingPageInner() {
 									animate={{ scaleX: 1 }}
 									transition={{ duration: 0.9, delay: 0.6, ease: 'circOut' as const }}
 									style={{ originX: 0 }}
-									className="absolute bottom-1 left-0 right-0 h-3 md:h-4 bg-[#D4AF37]/30 -z-10 -rotate-1"
+									className="absolute bottom-1 left-0 right-0 h-3 md:h-4 bg-[var(--accent-gold)]/30 -z-10 -rotate-1"
 								/>
 							</span>
 						</motion.h1>
@@ -259,7 +259,7 @@ function TrackingPageInner() {
 							className="relative rounded-[2rem] border border-black/[0.06] bg-white shadow-[0_20px_60px_-10px_rgba(0,0,0,0.08)] p-6 sm:p-8"
 						>
 							{/* subtle inner glow */}
-							<div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-gradient-to-br from-[#D4AF37]/5 to-transparent" />
+							<div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-gradient-to-br from-[var(--accent-gold)]/5 to-transparent" />
 
 							<form
 								onSubmit={(e) => { e.preventDefault(); handleTrack(); }}
@@ -279,12 +279,12 @@ function TrackingPageInner() {
 										autoComplete="off"
 										aria-required="true"
 										aria-describedby={errorMessage ? 'tracking-error' : undefined}
-										className="w-full pl-12 pr-12 py-4 text-base rounded-xl bg-[#F9FAFB] border border-black/[0.06] text-gray-900 placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/30 focus:border-[#D4AF37]/60 transition-all touch-manipulation"
+										className="w-full pl-12 pr-12 py-4 text-base rounded-xl bg-[#F9FAFB] border border-black/[0.06] text-gray-900 placeholder:text-black/30 focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]/30 focus:border-[var(--accent-gold)]/60 transition-all touch-manipulation"
 									/>
 									<button
 										type="button"
 										onClick={() => setScannerOpen(true)}
-										className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-black/40 hover:text-[#D4AF37] hover:bg-black/5 transition-colors"
+										className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg text-black/40 hover:text-[var(--accent-gold)] hover:bg-black/5 transition-colors"
 										title="Scan Barcode or QR Code"
 									>
 										<Camera className="w-5 h-5" />
@@ -298,7 +298,7 @@ function TrackingPageInner() {
 									className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl bg-gray-900 px-8 py-4 text-sm font-bold text-white sm:w-auto w-full transition-all duration-300 disabled:opacity-60"
 									aria-label={isLoading ? 'Tracking shipment' : 'Track shipment'}
 								>
-									<div className="absolute inset-0 translate-y-full bg-[#D4AF37] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
+									<div className="absolute inset-0 translate-y-full bg-[var(--accent-gold)] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
 									{isLoading ? (
 										<span className="relative z-10 flex items-center gap-2">
 											<span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
@@ -341,7 +341,7 @@ function TrackingPageInner() {
 						['Container tracking', 'Real-time updates', 'Live route visibility', 'USA → Afghanistan', 'Herat • Kabul • Kandahar'].map((t) => (
 							<span key={`${gi}-${t}`} className="flex items-center gap-10">
 								<span className="text-sm font-bold uppercase tracking-[0.2em] text-black/20">{t}</span>
-								<span className="text-[#D4AF37] text-lg font-serif">+</span>
+								<span className="text-[var(--accent-gold)] text-lg font-serif">+</span>
 							</span>
 						))
 					)}
@@ -360,15 +360,15 @@ function TrackingPageInner() {
 						className="relative rounded-[2rem] border border-black/[0.05] bg-white p-12 text-center overflow-hidden"
 					>
 						<div className="pointer-events-none absolute inset-0 bg-[url('/grid.svg')] bg-[length:40px_40px] opacity-[0.03]" />
-						<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(212,175,55,0.05),transparent)]" />
+						<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_0%,rgba(var(--accent-gold-rgb),0.05),transparent)]" />
 						<div className="relative z-10">
 							<div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[1.5rem] border border-black/5 bg-[#F9FAFB]">
-								<Ship className="w-9 h-9 text-[#D4AF37]" />
+								<Ship className="w-9 h-9 text-[var(--accent-gold)]" />
 							</div>
 							<div className="inline-flex items-center gap-3 justify-center mb-4">
-								<span className="h-px w-6 bg-[#D4AF37]" />
-								<span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">How it works</span>
-								<span className="h-px w-6 bg-[#D4AF37]" />
+								<span className="h-px w-6 bg-[var(--accent-gold)]" />
+								<span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">How it works</span>
+								<span className="h-px w-6 bg-[var(--accent-gold)]" />
 							</div>
 							<h3 className="text-2xl font-extrabold tracking-tight mb-3">Need your tracking number?</h3>
 							<p className="text-black/60 font-medium mb-6 max-w-md mx-auto">
@@ -376,7 +376,7 @@ function TrackingPageInner() {
 							</p>
 							<p className="text-sm text-black/40">
 								Need help?{' '}
-								<a href="/#contact-us" className="text-[#D4AF37] hover:underline font-semibold">Contact our team</a>
+								<a href="/#contact-us" className="text-[var(--accent-gold)] hover:underline font-semibold">Contact our team</a>
 							</p>
 						</div>
 					</motion.div>
@@ -394,12 +394,12 @@ function TrackingPageInner() {
 							className="relative rounded-[2rem] border border-black/[0.05] bg-white p-8 sm:p-10 overflow-hidden"
 						>
 							<div className="pointer-events-none absolute inset-0 bg-[url('/grid.svg')] bg-[length:40px_40px] opacity-[0.025]" />
-							<div className="pointer-events-none absolute top-0 right-0 h-64 w-64 rounded-full bg-[#D4AF37]/5 blur-[80px]" />
+							<div className="pointer-events-none absolute top-0 right-0 h-64 w-64 rounded-full bg-[var(--accent-gold)]/5 blur-[80px]" />
 
 							<div className="relative z-10">
 								<div className="inline-flex items-center gap-3 mb-8">
-									<span className="h-px w-6 bg-[#D4AF37]" />
-									<span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Container details</span>
+									<span className="h-px w-6 bg-[var(--accent-gold)]" />
+									<span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Container details</span>
 								</div>
 
 								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
@@ -412,8 +412,8 @@ function TrackingPageInner() {
 									</div>
 									<div>
 										<p className="text-[10px] font-bold uppercase tracking-[0.2em] text-black/40 font-mono mb-2">Status</p>
-										<span className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-4 py-1.5 text-sm font-bold text-[#D4AF37]">
-											<span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
+										<span className="inline-flex items-center gap-2 rounded-full border border-[var(--accent-gold)]/30 bg-[var(--accent-gold)]/10 px-4 py-1.5 text-sm font-bold text-[var(--accent-gold)]">
+											<span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-gold)]" />
 											{trackingDetails.customerTracking?.currentStageLabel || trackingDetails.shipmentStatus || 'In Transit'}
 										</span>
 										{trackingDetails.customerTracking?.summary && (
@@ -451,7 +451,7 @@ function TrackingPageInner() {
 								<button
 									type="button"
 									onClick={() => setShowRouteMap((prev) => !prev)}
-									className="inline-flex items-center gap-2 rounded-2xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-5 py-2.5 text-sm font-bold text-[#D4AF37] hover:bg-[#D4AF37]/20 transition-all shadow-sm"
+									className="inline-flex items-center gap-2 rounded-2xl border border-[var(--accent-gold)]/40 bg-[var(--accent-gold)]/10 px-5 py-2.5 text-sm font-bold text-[var(--accent-gold)] hover:bg-[var(--accent-gold)]/20 transition-all shadow-sm"
 								>
 									<Ship className="w-4 h-4" />
 									<span>{showRouteMap ? 'Hide Route Map' : 'View Interactive Route Map'}</span>
@@ -484,8 +484,8 @@ function TrackingPageInner() {
 							transition={{ duration: 0.5, delay: 0.2 }}
 						>
 							<div className="inline-flex items-center gap-3 mb-8">
-								<span className="h-px w-6 bg-[#D4AF37]" />
-								<span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Milestone updates</span>
+								<span className="h-px w-6 bg-[var(--accent-gold)]" />
+								<span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Milestone updates</span>
 							</div>
 
 							<h2 className="text-3xl font-extrabold tracking-tight mb-6">
@@ -515,23 +515,23 @@ function TrackingPageInner() {
 											transition={{ duration: 0.4, delay: 0.05 * idx }}
 											className={`group relative rounded-[1.5rem] border p-6 sm:p-8 transition-all duration-300 overflow-hidden ${
 												isCurrent
-													? 'border-[#D4AF37]/30 bg-white shadow-[0_8px_30px_rgba(212,175,55,0.08)]'
+													? 'border-[var(--accent-gold)]/30 bg-white shadow-[0_8px_30px_rgba(var(--accent-gold-rgb),0.08)]'
 													: 'border-black/[0.05] bg-white hover:shadow-[0_4px_20px_rgba(0,0,0,0.05)]'
 											}`}
 										>
 											{isCurrent && (
-												<div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent" />
+												<div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--accent-gold)]/5 to-transparent" />
 											)}
 											<div className="relative z-10 flex flex-col gap-3">
 												<div className="flex items-center gap-4">
 													<div className={`flex h-10 w-10 items-center justify-center rounded-xl flex-shrink-0 ${
 														isComplete ? 'bg-green-50 border border-green-500/20'
-														: isCurrent ? 'bg-[#D4AF37]/10 border border-[#D4AF37]/30'
+														: isCurrent ? 'bg-[var(--accent-gold)]/10 border border-[var(--accent-gold)]/30'
 														: 'bg-[#F9FAFB] border border-black/[0.06]'
 													}`}>
 														<Icon className={`w-5 h-5 ${
 															isComplete ? 'text-green-500'
-															: isCurrent ? 'text-[#D4AF37]'
+															: isCurrent ? 'text-[var(--accent-gold)]'
 															: 'text-black/30'
 														}`} />
 													</div>
@@ -539,8 +539,8 @@ function TrackingPageInner() {
 														<h3 className="text-base font-extrabold tracking-tight">{milestone.label}</h3>
 														{isCurrent && (
 															<span className="inline-flex items-center gap-1.5 mt-0.5">
-																<span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
-																<span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37]">Active</span>
+																<span className="h-1.5 w-1.5 rounded-full bg-[var(--accent-gold)] animate-pulse" />
+																<span className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)]">Active</span>
 															</span>
 														)}
 													</div>
@@ -552,7 +552,7 @@ function TrackingPageInner() {
 												</div>
 												<p className="text-sm text-black/60 font-medium pl-14">{milestone.description}</p>
 												{isCurrent && trackingDetails.currentLocation && (
-													<p className="text-sm text-[#D4AF37] font-bold pl-14 inline-flex items-center gap-1.5">
+													<p className="text-sm text-[var(--accent-gold)] font-bold pl-14 inline-flex items-center gap-1.5">
 														<MapPin className="w-4 h-4" />
 														{trackingDetails.currentLocation}
 													</p>
@@ -572,12 +572,12 @@ function TrackingPageInner() {
 							className="relative rounded-[2rem] border border-black/[0.05] bg-gray-900 p-8 sm:p-10 overflow-hidden text-white"
 						>
 							<div className="pointer-events-none absolute inset-0 bg-[url('/grid.svg')] bg-[length:40px_40px] opacity-[0.04]" />
-							<div className="pointer-events-none absolute top-0 right-0 h-64 w-64 rounded-full bg-[#D4AF37]/10 blur-[80px]" />
+							<div className="pointer-events-none absolute top-0 right-0 h-64 w-64 rounded-full bg-[var(--accent-gold)]/10 blur-[80px]" />
 							<div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
 								<div>
 									<div className="inline-flex items-center gap-3 mb-3">
-										<span className="h-px w-6 bg-[#D4AF37]" />
-										<span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Questions?</span>
+										<span className="h-px w-6 bg-[var(--accent-gold)]" />
+										<span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Questions?</span>
 									</div>
 									<h3 className="text-xl font-extrabold tracking-tight">Need help with your shipment?</h3>
 									<p className="text-white/60 text-sm font-medium mt-1">Our team is available to assist you at every step.</p>
@@ -586,7 +586,7 @@ function TrackingPageInner() {
 									href="/#contact-us"
 									className="group relative inline-flex h-12 items-center justify-center gap-3 overflow-hidden rounded-full bg-white px-7 font-bold text-gray-900 transition-all duration-500 hover:shadow-[0_8px_30px_rgba(255,255,255,0.2)] flex-shrink-0"
 								>
-									<div className="absolute inset-0 translate-y-full bg-[#D4AF37] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
+									<div className="absolute inset-0 translate-y-full bg-[var(--accent-gold)] transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
 									<span className="relative z-10 transition-colors duration-500 group-hover:text-gray-900">Contact us</span>
 									<ArrowRight className="relative z-10 w-4 h-4 -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
 								</Link>
