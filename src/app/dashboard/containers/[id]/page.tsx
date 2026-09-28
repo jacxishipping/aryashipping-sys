@@ -1488,6 +1488,7 @@ export default function ContainerDetailPage() {
 									description="This container doesn't have any vehicles assigned yet"
 								/>
 							) : (
+								<>
 								<DataTable
 									data={container.shipments}
 									keyField="id"
@@ -1595,6 +1596,7 @@ export default function ContainerDetailPage() {
 										</Box>
 									</Box>
 								</Box>
+								</>
 							)}
 						</DashboardPanel>
 					)}
@@ -1670,6 +1672,7 @@ export default function ContainerDetailPage() {
 										: 'No shipment-level expenses found for this container'}
 								/>
 							) : (
+								<>
 								<DataTable
 									data={displayedExpenses}
 									keyField="id"
@@ -1769,6 +1772,7 @@ export default function ContainerDetailPage() {
 										</Box>
 									</Box>
 								</Box>
+								</>
 							)}
 						</DashboardPanel>
 					)}
@@ -1916,6 +1920,7 @@ export default function ContainerDetailPage() {
 									description="No invoices have been created for this container yet"
 								/>
 							) : (
+								<>
 								<DataTable
 									data={container.invoices}
 									keyField="id"
@@ -1971,6 +1976,7 @@ export default function ContainerDetailPage() {
 										{formatCurrency(container.totals.invoices)}
 									</Box>
 								</Box>
+								</>
 							)}
 						</DashboardPanel>
 					)}
