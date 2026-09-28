@@ -51,8 +51,8 @@ export default function ServicesPreviewSection() {
            transition={{ duration: 0.8 }}
         >
           <div className="inline-flex items-center gap-3">
-             <div className="h-px w-8 bg-[#D4AF37]" />
-             <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37]">capabilities</span>
+             <div className="h-px w-8 bg-[var(--accent-gold)]" />
+             <span className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)]">capabilities</span>
           </div>
           <h2 className="mt-8 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
             End-to-end logistics.<br />
@@ -100,13 +100,13 @@ function ServiceCard({ service, index, progress, total }: { service: any, index:
     >
        {/* Left side text */}
        <div className={`flex flex-col justify-center ${index % 2 === 1 ? 'lg:order-2 lg:pl-16' : 'lg:pr-16'}`}>
-          <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-[#F9FAFB]/[0.03] border border-black/5 text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.1)]">
+          <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-[2rem] bg-[#F9FAFB]/[0.03] border border-black/5 text-[var(--accent-gold)] shadow-[0_0_30px_rgba(212,175,55,0.1)]">
             {service.icon}
           </div>
           
           <h3 className="text-3xl font-bold tracking-tight mb-6">{service.title}</h3>
           
-          <div className="h-px w-full bg-gradient-to-r from-[#D4AF37]/50 to-transparent mb-6" />
+          <div className="h-px w-full bg-gradient-to-r from-[var(--accent-gold)]/50 to-transparent mb-6" />
           
           <p className="text-lg text-black/60 leading-relaxed font-medium">
             {service.description}
@@ -114,7 +114,7 @@ function ServiceCard({ service, index, progress, total }: { service: any, index:
 
           <Link href="/services" className="mt-10 group inline-flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-black/70 hover:text-gray-900 transition-colors w-fit">
             Explore service
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F9FAFB]/[0.03] border border-black/5 group-hover:bg-[#D4AF37] group-hover:border-[#D4AF37] group-hover:text-black transition-all">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F9FAFB]/[0.03] border border-black/5 group-hover:bg-[var(--accent-gold)] group-hover:border-[var(--accent-gold)] group-hover:text-black transition-all">
               <ExternalLink className="h-3 w-3" />
             </div>
           </Link>

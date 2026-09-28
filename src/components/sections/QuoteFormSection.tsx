@@ -22,8 +22,8 @@ const quoteSchema = z.object({
 
 type QuoteFormData = z.infer<typeof quoteSchema>;
 
-const fieldClassName = 'peer w-full rounded-none border-0 border-b border-black/20 bg-transparent px-0 py-4 text-xl text-black shadow-none outline-none transition-all duration-300 focus:border-[#D4AF37] focus:ring-0 placeholder:text-transparent';
-const labelClassName = 'pointer-events-none absolute left-0 top-4 text-lg text-black/50 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:text-xs peer-focus:font-bold peer-focus:uppercase peer-focus:tracking-widest peer-focus:text-[#D4AF37] peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest peer-[:not(:placeholder-shown)]:text-black/50';
+const fieldClassName = 'peer w-full rounded-none border-0 border-b border-black/20 bg-transparent px-0 py-4 text-xl text-black shadow-none outline-none transition-all duration-300 focus:border-[var(--accent-gold)] focus:ring-0 placeholder:text-transparent';
+const labelClassName = 'pointer-events-none absolute left-0 top-4 text-lg text-black/50 transition-all duration-300 peer-focus:-translate-y-6 peer-focus:text-xs peer-focus:font-bold peer-focus:uppercase peer-focus:tracking-widest peer-focus:text-[var(--accent-gold)] peer-[:not(:placeholder-shown)]:-translate-y-6 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:font-bold peer-[:not(:placeholder-shown)]:uppercase peer-[:not(:placeholder-shown)]:tracking-widest peer-[:not(:placeholder-shown)]:text-black/50';
 
 export default function QuoteFormSection() {
   const [submitted, setSubmitted] = useState(false);
@@ -84,14 +84,14 @@ export default function QuoteFormSection() {
           animate={{ scale: 1, opacity: 1 }}
           className="text-center"
         >
-          <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-[#D4AF37] text-white shadow-2xl">
+          <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full bg-[var(--accent-gold)] text-white shadow-2xl">
             <CheckCircle className="h-10 w-10" />
           </div>
           <h2 className="mb-4 text-5xl font-black tracking-tight text-black">Quote requested.</h2>
           <p className="text-xl text-black/60 max-w-lg mx-auto">
             Our logistics team is analyzing the lane. We will contact you shortly with accurate pricing and routing options.
           </p>
-          <button onClick={() => setSubmitted(false)} className="mt-10 font-bold uppercase tracking-widest text-[#D4AF37] hover:text-black transition-colors">
+          <button onClick={() => setSubmitted(false)} className="mt-10 font-bold uppercase tracking-widest text-[var(--accent-gold)] hover:text-black transition-colors">
             Request another quote
           </button>
         </motion.div>
@@ -110,8 +110,8 @@ export default function QuoteFormSection() {
           <div className="lg:pr-12 md:sticky md:top-32">
             <motion.div style={{ y: headingY }}>
               <div className="inline-flex items-center gap-3 mb-8">
-                <span className="h-px w-8 bg-[#D4AF37]" />
-                <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Initiate shipment</span>
+                <span className="h-px w-8 bg-[var(--accent-gold)]" />
+                <span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Initiate shipment</span>
               </div>
               <h2 className="text-5xl font-extrabold tracking-tighter text-black sm:text-6xl md:text-7xl leading-[0.9]">
                 Precision pricing.<br/>
@@ -127,7 +127,7 @@ export default function QuoteFormSection() {
                   { title: "Clear Customs", sub: "No hidden fees", icon: ShieldCheck }
                 ].map((feature, i) => (
                   <div key={i} className="flex gap-4 items-start">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[1rem] bg-black text-[#D4AF37]">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[1rem] bg-black text-[var(--accent-gold)]">
                        <feature.icon className="h-5 w-5" />
                     </div>
                     <div>
@@ -167,7 +167,7 @@ export default function QuoteFormSection() {
               </div>
 
               <div className="pt-6 pb-2">
-                <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Vehicle Data</h3>
+                <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Vehicle Data</h3>
               </div>
 
               <div className="grid gap-8 sm:grid-cols-3">
@@ -186,7 +186,7 @@ export default function QuoteFormSection() {
               </div>
 
               <div className="pt-6 pb-2">
-                <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Routing Requirements</h3>
+                <h3 className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Routing Requirements</h3>
               </div>
 
               <div className="grid gap-8 sm:grid-cols-2">
@@ -212,7 +212,7 @@ export default function QuoteFormSection() {
                     disabled={isSubmitting}
                     className="group relative inline-flex h-16 items-center gap-3 overflow-hidden rounded-full bg-black px-10 text-base font-bold text-white shadow-2xl transition-all disabled:opacity-50"
                   >
-                    <div className="absolute inset-0 bg-[#D4AF37] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
+                    <div className="absolute inset-0 bg-[var(--accent-gold)] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
                     <span className="relative z-10 group-hover:text-black transition-colors duration-500">
                       {isSubmitting ? 'Processing...' : 'Request firm quote'}
                     </span>

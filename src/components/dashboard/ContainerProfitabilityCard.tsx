@@ -70,17 +70,17 @@ export function ContainerProfitabilityCard({
             fontSize: '0.75rem',
             fontWeight: 700,
             backgroundColor: isHealthyMargin
-              ? 'rgba(34, 197, 94, 0.12)'
+              ? 'rgba(var(--success-rgb), 0.12)'
               : isProfitable
-              ? 'rgba(234, 179, 8, 0.12)'
-              : 'rgba(239, 68, 68, 0.12)',
-            color: isHealthyMargin ? '#16a34a' : isProfitable ? '#b45309' : '#dc2626',
+              ? 'rgba(var(--status-yellow-rgb), 0.12)'
+              : 'rgba(var(--error-rgb), 0.12)',
+            color: isHealthyMargin ? 'var(--success-dark)' : isProfitable ? 'var(--warning-dark)' : 'var(--error-dark)',
             border: `1px solid ${
               isHealthyMargin
-                ? 'rgba(34, 197, 94, 0.3)'
+                ? 'rgba(var(--success-rgb), 0.3)'
                 : isProfitable
-                ? 'rgba(234, 179, 8, 0.3)'
-                : 'rgba(239, 68, 68, 0.3)'
+                ? 'rgba(var(--status-yellow-rgb), 0.3)'
+                : 'rgba(var(--error-rgb), 0.3)'
             }`,
           }}
         >
@@ -123,7 +123,7 @@ export function ContainerProfitabilityCard({
               Total Cargo Revenue
             </Typography>
           </Box>
-          <Typography sx={{ fontSize: '1.25rem', fontWeight: 800, color: '#16a34a' }}>
+          <Typography sx={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--success-dark)' }}>
             {formatCurrency(totalRevenue)}
           </Typography>
           <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)', mt: 0.25 }}>
@@ -157,15 +157,15 @@ export function ContainerProfitabilityCard({
           sx={{
             p: 1.75,
             borderRadius: 2,
-            backgroundColor: isProfitable ? 'rgba(34, 197, 94, 0.04)' : 'rgba(239, 68, 68, 0.04)',
-            border: `1px solid ${isProfitable ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
+            backgroundColor: isProfitable ? 'rgba(var(--success-rgb), 0.04)' : 'rgba(var(--error-rgb), 0.04)',
+            border: `1px solid ${isProfitable ? 'rgba(var(--success-rgb), 0.2)' : 'rgba(var(--error-rgb), 0.2)'}`,
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 0.5 }}>
             {isProfitable ? (
-              <TrendingUp size={15} style={{ color: '#16a34a' }} />
+              <TrendingUp size={15} style={{ color: 'var(--success-dark)' }} />
             ) : (
-              <TrendingDown size={15} style={{ color: '#ef4444' }} />
+              <TrendingDown size={15} style={{ color: 'var(--error)' }} />
             )}
             <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
               Net Operating Margin
@@ -175,12 +175,12 @@ export function ContainerProfitabilityCard({
             sx={{
               fontSize: '1.25rem',
               fontWeight: 800,
-              color: isProfitable ? '#16a34a' : 'var(--error)',
+              color: isProfitable ? 'var(--success-dark)' : 'var(--error)',
             }}
           >
             {formatCurrency(netProfit)}
           </Typography>
-          <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, color: isProfitable ? '#16a34a' : 'var(--error)', mt: 0.25 }}>
+          <Typography sx={{ fontSize: '0.7rem', fontWeight: 700, color: isProfitable ? 'var(--success-dark)' : 'var(--error)', mt: 0.25 }}>
             {marginPercent.toFixed(1)}% gross margin
           </Typography>
         </Box>

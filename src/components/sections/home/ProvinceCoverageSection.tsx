@@ -15,7 +15,7 @@ export default function ProvinceCoverageSection() {
            whileInView={{ opacity: 1, y: 0 }}
            viewport={{ once: true }}
          >
-           <h2 className="text-3xl font-extrabold text-[#D4AF37] tracking-tight uppercase font-mono">
+           <h2 className="text-3xl font-extrabold text-[var(--accent-gold)] tracking-tight uppercase font-mono">
              Serving all major hubs
            </h2>
          </motion.div>
@@ -30,7 +30,7 @@ export default function ProvinceCoverageSection() {
           {[...provinces, ...provinces, ...provinces].map((prov, i) => (
              <div key={i} className="flex items-center gap-16">
                <span className="text-5xl md:text-7xl font-black text-black/10 italic hover:text-black/50 transition-colors uppercase tracking-widest">{prov}</span>
-               <span className="text-3xl text-[#D4AF37] font-serif">+</span>
+               <span className="text-3xl text-[var(--accent-gold)] font-serif">+</span>
              </div>
           ))}
         </motion.div>

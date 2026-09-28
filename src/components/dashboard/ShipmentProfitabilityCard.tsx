@@ -80,17 +80,17 @@ export function ShipmentProfitabilityCard({
               fontSize: '0.75rem',
               fontWeight: 700,
               bgcolor: isHealthyMargin
-                ? 'rgba(34, 197, 94, 0.12)'
+                ? 'rgba(var(--success-rgb), 0.12)'
                 : isProfitable
-                ? 'rgba(234, 179, 8, 0.12)'
-                : 'rgba(239, 68, 68, 0.12)',
-              color: isHealthyMargin ? '#16a34a' : isProfitable ? '#b45309' : '#dc2626',
+                ? 'rgba(var(--status-yellow-rgb), 0.12)'
+                : 'rgba(var(--error-rgb), 0.12)',
+              color: isHealthyMargin ? 'var(--success-dark)' : isProfitable ? 'var(--warning-dark)' : 'var(--error-dark)',
               border: `1px solid ${
                 isHealthyMargin
-                  ? 'rgba(34, 197, 94, 0.3)'
+                  ? 'rgba(var(--success-rgb), 0.3)'
                   : isProfitable
-                  ? 'rgba(234, 179, 8, 0.3)'
-                  : 'rgba(239, 68, 68, 0.3)'
+                  ? 'rgba(var(--status-yellow-rgb), 0.3)'
+                  : 'rgba(var(--error-rgb), 0.3)'
               }`,
             }}
           >
@@ -131,7 +131,7 @@ export function ShipmentProfitabilityCard({
           <Typography sx={{ fontSize: '0.725rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', tracking: 0.5, mb: 0.25 }}>
             Direct Expenses
           </Typography>
-          <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, color: '#dc2626' }}>
+          <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--error-dark)' }}>
             {formatCurrency(totalExpenses)}
           </Typography>
           <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
@@ -144,18 +144,18 @@ export function ShipmentProfitabilityCard({
           sx={{
             p: 1.5,
             borderRadius: 2,
-            bgcolor: isProfitable ? 'rgba(34, 197, 94, 0.05)' : 'rgba(239, 68, 68, 0.05)',
-            border: `1px solid ${isProfitable ? 'rgba(34, 197, 94, 0.25)' : 'rgba(239, 68, 68, 0.25)'}`,
+            bgcolor: isProfitable ? 'rgba(var(--success-rgb), 0.05)' : 'rgba(var(--error-rgb), 0.05)',
+            border: `1px solid ${isProfitable ? 'rgba(var(--success-rgb), 0.25)' : 'rgba(var(--error-rgb), 0.25)'}`,
           }}
         >
-          <Typography sx={{ fontSize: '0.725rem', fontWeight: 600, color: isProfitable ? '#16a34a' : '#dc2626', textTransform: 'uppercase', tracking: 0.5, mb: 0.25 }}>
+          <Typography sx={{ fontSize: '0.725rem', fontWeight: 600, color: isProfitable ? 'var(--success-dark)' : 'var(--error-dark)', textTransform: 'uppercase', tracking: 0.5, mb: 0.25 }}>
             Net Margin
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-            <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, color: isProfitable ? '#16a34a' : '#dc2626' }}>
+            <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, color: isProfitable ? 'var(--success-dark)' : 'var(--error-dark)' }}>
               {isProfitable ? '+' : ''}{formatCurrency(netProfit)}
             </Typography>
-            <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: isProfitable ? '#16a34a' : '#dc2626' }}>
+            <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: isProfitable ? 'var(--success-dark)' : 'var(--error-dark)' }}>
               ({marginPercent.toFixed(1)}%)
             </Typography>
           </Box>
@@ -179,17 +179,17 @@ export function ShipmentProfitabilityCard({
           <Box sx={{ display: 'flex', height: 10, borderRadius: 999, overflow: 'hidden', bgcolor: 'var(--border)', gap: '1px' }}>
             {dispatchShare > 0 && (
               <Tooltip title={`Dispatch / Towing: ${formatCurrency(dispatchCost)} (${dispatchShare.toFixed(1)}%)`}>
-                <Box sx={{ width: `${dispatchShare}%`, bgcolor: '#3b82f6', transition: 'width 0.3s ease' }} />
+                <Box sx={{ width: `${dispatchShare}%`, bgcolor: 'var(--info)', transition: 'width 0.3s ease' }} />
               </Tooltip>
             )}
             {oceanShare > 0 && (
               <Tooltip title={`Ocean Freight Share: ${formatCurrency(oceanFreightCost)} (${oceanShare.toFixed(1)}%)`}>
-                <Box sx={{ width: `${oceanShare}%`, bgcolor: '#8b5cf6', transition: 'width 0.3s ease' }} />
+                <Box sx={{ width: `${oceanShare}%`, bgcolor: 'var(--status-violet)', transition: 'width 0.3s ease' }} />
               </Tooltip>
             )}
             {otherShare > 0 && (
               <Tooltip title={`Port/Storage/Other: ${formatCurrency(terminalStorageCost + otherExpensesCost)} (${otherShare.toFixed(1)}%)`}>
-                <Box sx={{ width: `${otherShare}%`, bgcolor: '#f59e0b', transition: 'width 0.3s ease' }} />
+                <Box sx={{ width: `${otherShare}%`, bgcolor: 'var(--warning)', transition: 'width 0.3s ease' }} />
               </Tooltip>
             )}
             {profitShare > 0 && (
@@ -204,7 +204,7 @@ export function ShipmentProfitabilityCard({
       {/* Cost Breakdown Details */}
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(4, 1fr)' }, gap: 1.5, pt: 1.5, borderTop: '1px solid var(--border)' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#3b82f6', shrink: 0 }} />
+          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'var(--info)', shrink: 0 }} />
           <Box sx={{ minWidth: 0 }}>
             <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }} noWrap>
               Towing / Dispatch
@@ -216,7 +216,7 @@ export function ShipmentProfitabilityCard({
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#8b5cf6', shrink: 0 }} />
+          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'var(--status-violet)', shrink: 0 }} />
           <Box sx={{ minWidth: 0 }}>
             <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }} noWrap>
               Ocean Freight
@@ -228,7 +228,7 @@ export function ShipmentProfitabilityCard({
         </Box>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: '#f59e0b', shrink: 0 }} />
+          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'var(--warning)', shrink: 0 }} />
           <Box sx={{ minWidth: 0 }}>
             <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }} noWrap>
               Storage & Customs

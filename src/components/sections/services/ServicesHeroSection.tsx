@@ -72,8 +72,8 @@ export default function ServicesHeroSection() {
       />
 
       {/* Gold ambient glow */}
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[60vh] w-[60vh] rounded-full bg-[#D4AF37]/10 blur-[140px]" />
-      <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-[40vh] w-[40vh] rounded-full bg-[#D4AF37]/5 blur-[100px]" />
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 -z-10 h-[60vh] w-[60vh] rounded-full bg-[var(--accent-gold)]/10 blur-[140px]" />
+      <div className="pointer-events-none absolute bottom-0 right-0 -z-10 h-[40vh] w-[40vh] rounded-full bg-[var(--accent-gold)]/5 blur-[100px]" />
 
       {/* Noise overlay for premium feel */}
       <div
@@ -97,8 +97,8 @@ export default function ServicesHeroSection() {
         >
           {/* Section label */}
           <motion.div variants={itemVariants} className="inline-flex items-center gap-3 self-start">
-            <span className="h-px w-6 bg-[#D4AF37]" />
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Our services</span>
+            <span className="h-px w-6 bg-[var(--accent-gold)]" />
+            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Our services</span>
           </motion.div>
 
           {/* Headline */}
@@ -127,11 +127,11 @@ export default function ServicesHeroSection() {
             Every capability needed to move your vehicle from{' '}
             <span className="text-gray-900 font-semibold">USA and Canada</span> to{' '}
             <span className="text-gray-900 font-semibold">Afghanistan</span> — through{' '}
-            <span className="text-[#D4AF37] underline decoration-[#D4AF37]/20 underline-offset-4 decoration-2">
+            <span className="text-[var(--accent-gold)] underline decoration-[var(--accent-gold)]/20 underline-offset-4 decoration-2">
               Mersin
             </span>{' '}
             or{' '}
-            <span className="text-[#D4AF37] underline decoration-[#D4AF37]/20 underline-offset-4 decoration-2">UAE</span>{' '}
+            <span className="text-[var(--accent-gold)] underline decoration-[var(--accent-gold)]/20 underline-offset-4 decoration-2">UAE</span>{' '}
             — handled under one roof.
           </motion.p>
 
@@ -142,7 +142,7 @@ export default function ServicesHeroSection() {
                 href="/#quote"
                 className="group relative inline-flex h-16 min-w-[200px] items-center justify-center gap-3 overflow-hidden rounded-full bg-gray-900 px-8 text-base font-bold text-white shadow-xl transition-all duration-500 hover:shadow-2xl"
               >
-                <div className="absolute inset-0 h-full w-full bg-[#D4AF37] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
+                <div className="absolute inset-0 h-full w-full bg-[var(--accent-gold)] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
                 <span className="relative z-10 group-hover:text-black transition-colors duration-500">
                   Get a free quote
                 </span>
@@ -172,8 +172,8 @@ export default function ServicesHeroSection() {
               const Icon = chip.icon;
               return (
                 <div key={chip.label} className="flex items-start gap-4 flex-1 group">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/5 group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/10 transition-all duration-300">
-                    <Icon className="h-4 w-4 text-[#D4AF37]" />
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-black/5 group-hover:border-[var(--accent-gold)] group-hover:bg-[var(--accent-gold)]/10 transition-all duration-300">
+                    <Icon className="h-4 w-4 text-[var(--accent-gold)]" />
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-black/90">{chip.label}</h3>
@@ -227,12 +227,12 @@ export default function ServicesHeroSection() {
             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
           >
             <div className="rounded-3xl border border-black/5 bg-white p-6 shadow-2xl w-72 relative overflow-hidden group">
-              <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/5 group-hover:ring-[#D4AF37]/30 transition-all duration-500" />
+              <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-black/5 group-hover:ring-[var(--accent-gold)]/30 transition-all duration-500" />
               <div className="flex flex-col relative z-10">
                 <div className="flex items-center justify-between mb-3 border-b border-black/5 pb-4">
                   <span className="text-4xl font-black text-gray-900 leading-none tracking-tighter">100%</span>
-                  <div className="h-12 w-12 rounded-full bg-[#D4AF37]/10 flex items-center justify-center">
-                    <ShieldCheck className="h-6 w-6 text-[#D4AF37]" />
+                  <div className="h-12 w-12 rounded-full bg-[var(--accent-gold)]/10 flex items-center justify-center">
+                    <ShieldCheck className="h-6 w-6 text-[var(--accent-gold)]" />
                   </div>
                 </div>
                 <span className="text-[11px] text-black/60 font-bold uppercase tracking-[0.1em]">

@@ -32,12 +32,12 @@ const footerNavigation = {
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#F9FAFB] pt-32 pb-12 overflow-hidden selection:bg-[#D4AF37] selection:text-gray-900" aria-labelledby="footer-heading">
+    <footer className="relative bg-[#F9FAFB] pt-32 pb-12 overflow-hidden selection:bg-[var(--accent-gold)] selection:text-gray-900" aria-labelledby="footer-heading">
       <h2 id="footer-heading" className="sr-only">Footer</h2>
       
       {/* Abstract Background Effects */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[#D4AF37]/5 blur-[120px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-[var(--accent-gold)]/5 blur-[120px]" />
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.02]" />
       </div>
 
@@ -53,7 +53,7 @@ export default function Footer() {
              className="text-[4rem] font-black leading-none tracking-tighter text-gray-900 sm:text-[6rem] md:text-[8rem] lg:text-[10rem]"
            >
              READY TO <br/>
-             <span className="text-[#D4AF37] font-serif font-light italic tracking-normal">SHIP?</span>
+             <span className="text-[var(--accent-gold)] font-serif font-light italic tracking-normal">SHIP?</span>
            </motion.h3>
            
            <motion.div
@@ -68,7 +68,7 @@ export default function Footer() {
                 href="/#quote"
                 className="group relative flex h-32 w-32 items-center justify-center rounded-full bg-gray-900 text-gray-900 shadow-2xl transition-transform hover:scale-110 sm:h-40 sm:w-40"
               >
-                <div className="absolute inset-0 rounded-full border border-[#D4AF37] scale-150 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 ease-out" />
+                <div className="absolute inset-0 rounded-full border border-[var(--accent-gold)] scale-150 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-700 ease-out" />
                 <span className="text-sm font-bold uppercase tracking-widest sm:text-base">Start now</span>
               </Link>
             </Magnetic>
@@ -82,7 +82,7 @@ export default function Footer() {
               Premium vehicle logistics from North America to Afghanistan. Flawless handling through trusted corridors.
             </p>
             <div className="flex gap-x-6">
-               <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37]">© 2026 JACXI SHIPPING</span>
+               <span className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)]">© 2026 JACXI SHIPPING</span>
             </div>
           </div>
           

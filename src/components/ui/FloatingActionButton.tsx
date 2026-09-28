@@ -18,19 +18,19 @@ const quickActions: QuickAction[] = [
     icon: <Ship className="w-5 h-5" />,
     label: 'New Shipment',
     href: '/dashboard/shipments/new',
-    color: '#3B82F6',
+    color: 'var(--info)',
   },
   {
     icon: <Package className="w-5 h-5" />,
     label: 'New Container',
     href: '/dashboard/containers/new',
-    color: '#10B981',
+    color: 'var(--success)',
   },
   {
     icon: <FileText className="w-5 h-5" />,
     label: 'New Invoice',
     href: '/dashboard/invoices/new',
-    color: '#F59E0B',
+    color: 'var(--warning)',
   },
 ];
 
@@ -102,7 +102,7 @@ export function FloatingActionButton() {
             width: 56,
             height: 56,
             '&:hover': {
-              bgcolor: open ? '#EF4444' : '#C99B2F',
+              bgcolor: open ? 'var(--error)' : '#C99B2F',
               transform: 'scale(1.05)',
             },
             transition: 'all 0.2s ease',

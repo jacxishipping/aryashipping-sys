@@ -37,7 +37,7 @@ export default function MobileAppPromoSection() {
             whileInView={{ opacity: 1, scaleX: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "circOut" }}
-            className="mb-8 h-1 w-24 bg-[#D4AF37] origin-left"
+            className="mb-8 h-1 w-24 bg-[var(--accent-gold)] origin-left"
           />
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -45,7 +45,7 @@ export default function MobileAppPromoSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#D4AF37] font-mono">Customer portal</p>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--accent-gold)] font-mono">Customer portal</p>
             <h2 className="mt-6 text-5xl font-black leading-[1.1] tracking-tighter text-black sm:text-6xl md:text-7xl">
               Shipment visibility <br/> from the browser in your pocket.
             </h2>
@@ -64,7 +64,7 @@ export default function MobileAppPromoSection() {
                 transition={{ duration: 0.5, delay: 0.3 + (i * 0.1) }}
                 className="group flex gap-5 rounded-2xl border border-black/5 bg-white p-6 shadow-sm transition-all hover:shadow-xl hover:scale-[1.02] cursor-default"
               >
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-black text-[#D4AF37] shadow-inner group-hover:bg-[#D4AF37] group-hover:text-black transition-colors duration-300">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-black text-[var(--accent-gold)] shadow-inner group-hover:bg-[var(--accent-gold)] group-hover:text-black transition-colors duration-300">
                   {feature.icon}
                 </div>
                 <div>
@@ -87,7 +87,7 @@ export default function MobileAppPromoSection() {
                 href="/auth/signin"
                 className="group relative inline-flex h-16 items-center gap-3 overflow-hidden rounded-full bg-black px-10 text-base font-bold text-white shadow-2xl transition-all"
               >
-                <div className="absolute inset-0 bg-[#D4AF37] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
+                <div className="absolute inset-0 bg-[var(--accent-gold)] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
                 <span className="relative z-10 group-hover:text-black transition-colors duration-500">Access portal</span>
                 <ChevronRight className="relative z-10 h-5 w-5 transition-transform duration-500 group-hover:translate-x-1 group-hover:text-black" />
               </Link>
@@ -159,7 +159,7 @@ export default function MobileAppPromoSection() {
                     {/* Simulated Map Path */}
                     <div className="absolute left-6 right-6 top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-black/5 overflow-hidden">
                       <motion.div
-                        className="h-full rounded-full bg-[#D4AF37]"
+                        className="h-full rounded-full bg-[var(--accent-gold)]"
                         animate={{ width: ['0%', '100%'] }}
                         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                       />
@@ -168,7 +168,7 @@ export default function MobileAppPromoSection() {
                     {/* Map Nodes */}
                     <div className="absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-4 border-white bg-black shadow-md" />
                     <motion.div 
-                      className="absolute top-1/2 h-6 w-6 -translate-y-1/2 rounded-full border-[6px] border-white bg-[#D4AF37] shadow-xl"
+                      className="absolute top-1/2 h-6 w-6 -translate-y-1/2 rounded-full border-[6px] border-white bg-[var(--accent-gold)] shadow-xl"
                       animate={{ left: ['6%', '90%'] }}
                       transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                     />

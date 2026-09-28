@@ -50,8 +50,8 @@ export default function RoutesAnimatedSection() {
             viewport={{ once: true, margin: '-10% 0px' }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center rounded-full border border-black/5 bg-[#F9FAFB]/[0.03] px-3 py-1 font-mono text-xs uppercase tracking-widest text-[#D4AF37] backdrop-blur-md">
-              <span className="mr-2 h-1.5 w-1.5 rounded-full bg-[#D4AF37] animate-pulse" />
+            <div className="inline-flex items-center rounded-full border border-black/5 bg-[#F9FAFB]/[0.03] px-3 py-1 font-mono text-xs uppercase tracking-widest text-[var(--accent-gold)] backdrop-blur-md">
+              <span className="mr-2 h-1.5 w-1.5 rounded-full bg-[var(--accent-gold)] animate-pulse" />
               Global routing
             </div>
             
@@ -60,11 +60,11 @@ export default function RoutesAnimatedSection() {
               <span className="text-black/50 italic font-serif font-light">Afghanistan.</span>
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-black/60">
-              Your vehicle moves from <span className="text-gray-900">North America</span> to <span className="text-gray-900">Afghanistan</span> through carefully optimized corridors: the <span className="text-[#D4AF37]">Mersin Route</span> or the <span className="text-[#D4AF37]">UAE Route</span>. Clear visibility at every nautical mile.
+              Your vehicle moves from <span className="text-gray-900">North America</span> to <span className="text-gray-900">Afghanistan</span> through carefully optimized corridors: the <span className="text-[var(--accent-gold)]">Mersin Route</span> or the <span className="text-[var(--accent-gold)]">UAE Route</span>. Clear visibility at every nautical mile.
             </p>
 
             <div className="mt-12 flex flex-col gap-6 relative">
-              <div className="absolute left-[19px] top-4 bottom-4 w-px bg-gradient-to-b from-[#D4AF37]/50 via-white/10 to-transparent" />
+              <div className="absolute left-[19px] top-4 bottom-4 w-px bg-gradient-to-b from-[var(--accent-gold)]/50 via-white/10 to-transparent" />
               {[
                 { label: 'Origin', value: 'USA & Canada' },
                 { label: 'Hubs', value: 'Turkey or UAE' },
@@ -77,8 +77,8 @@ export default function RoutesAnimatedSection() {
                   key={item.label} 
                   className="flex items-center gap-6"
                 >
-                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F9FAFB] border border-black/10 shadow-[0_0_15px_rgba(212,175,55,0.2)] text-[#D4AF37]">
-                    <div className="h-2 w-2 rounded-full bg-[#D4AF37]" />
+                  <div className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#F9FAFB] border border-black/10 shadow-[0_0_15px_rgba(212,175,55,0.2)] text-[var(--accent-gold)]">
+                    <div className="h-2 w-2 rounded-full bg-[var(--accent-gold)]" />
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-widest text-black/50 font-mono">{item.label}</p>
@@ -103,9 +103,9 @@ export default function RoutesAnimatedSection() {
               <svg viewBox="0 0 950 620" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
                 <defs>
                   <linearGradient id="gold-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.1" />
-                    <stop offset="50%" stopColor="#D4AF37" />
-                    <stop offset="100%" stopColor="#D4AF37" stopOpacity="0.1" />
+                    <stop offset="0%" stopColor="var(--accent-gold)" stopOpacity="0.1" />
+                    <stop offset="50%" stopColor="var(--accent-gold)" />
+                    <stop offset="100%" stopColor="var(--accent-gold)" stopOpacity="0.1" />
                   </linearGradient>
                   <filter id="glow">
                     <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
@@ -135,7 +135,7 @@ export default function RoutesAnimatedSection() {
 
                 {nodes.map((node, i) => (
                   <g key={node.id}>
-                    <circle cx={node.x} cy={node.y} r="6" fill="#D4AF37" className="animate-pulse" />
+                    <circle cx={node.x} cy={node.y} r="6" fill="var(--accent-gold)" className="animate-pulse" />
                     <circle cx={node.x} cy={node.y} r="14" fill="none" stroke="rgba(212,175,55,0.3)" strokeWidth="1" />
                     <text x={node.x} y={node.y - 20} fill="#ffffff" fontSize="14" fontWeight="600" textAnchor="middle" style={{ textShadow: '0px 2px 4px rgba(0,0,0,0.8)' }}>
                       {node.label}
@@ -149,7 +149,7 @@ export default function RoutesAnimatedSection() {
                 className="absolute bottom-6 left-6 rounded-2xl border border-black/5 bg-white/80 p-5 backdrop-blur-xl shadow-2xl"
               >
                 <div className="flex items-center gap-3">
-                  <div className="rounded-full bg-[#D4AF37]/20 p-2 text-[#D4AF37]">
+                  <div className="rounded-full bg-[var(--accent-gold)]/20 p-2 text-[var(--accent-gold)]">
                     <Clock className="h-5 w-5" />
                   </div>
                   <div>
@@ -176,14 +176,14 @@ export default function RoutesAnimatedSection() {
                 className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-black/5 bg-[#F9FAFB]/[0.03] p-6 backdrop-blur-sm transition-all hover:bg-[#F9FAFB]/[0.05]"
               >
                 <div className="mb-8 flex items-start justify-between">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-white/10 to-transparent shadow-inner border border-black/[0.03] group-hover:border-[#D4AF37]/50 transition-colors">
-                    <Icon className="h-5 w-5 text-gray-900 group-hover:text-[#D4AF37] transition-colors" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-white/10 to-transparent shadow-inner border border-black/[0.03] group-hover:border-[var(--accent-gold)]/50 transition-colors">
+                    <Icon className="h-5 w-5 text-gray-900 group-hover:text-[var(--accent-gold)] transition-colors" />
                   </div>
                   <span className="text-4xl font-black text-gray-900/5 group-hover:text-black/10 transition-colors">{step.step}</span>
                 </div>
                 
                 <div>
-                  <p className="mb-2 inline-block rounded-full bg-[#D4AF37]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#D4AF37]">
+                  <p className="mb-2 inline-block rounded-full bg-[var(--accent-gold)]/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--accent-gold)]">
                     {step.location}
                   </p>
                   <h3 className="mb-3 text-xl font-semibold text-gray-900">{step.title}</h3>

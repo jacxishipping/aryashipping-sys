@@ -71,8 +71,8 @@ export default function ProcessSection() {
         
         {/* Abstract Background Effects */}
         <motion.div style={{ opacity: bgOpacity }} className="absolute inset-0 z-0">
-          <div className="absolute top-0 right-1/4 h-[50vh] w-[50vh] rounded-full bg-[#D4AF37]/10 blur-[120px]" />
-          <div className="absolute bottom-0 left-1/4 h-[50vh] w-[50vh] rounded-full bg-[#D4AF37]/5 blur-[100px]" />
+          <div className="absolute top-0 right-1/4 h-[50vh] w-[50vh] rounded-full bg-[var(--accent-gold)]/10 blur-[120px]" />
+          <div className="absolute bottom-0 left-1/4 h-[50vh] w-[50vh] rounded-full bg-[var(--accent-gold)]/5 blur-[100px]" />
           <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]" />
         </motion.div>
 
@@ -81,8 +81,8 @@ export default function ProcessSection() {
           
           <div className="mb-10 lg:mb-16">
             <div className="inline-flex items-center gap-3">
-              <span className="h-px w-6 bg-[#D4AF37]" />
-              <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Execution</span>
+              <span className="h-px w-6 bg-[var(--accent-gold)]" />
+              <span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Execution</span>
             </div>
             <h2 className="mt-6 text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-7xl max-w-4xl tracking-tight leading-[1.05]">
               Five milestones. <br/>
@@ -106,12 +106,12 @@ export default function ProcessSection() {
                     {step.number}
                   </div>
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-[#F9FAFB]/[0.03] border border-black/5 group-hover:border-[#D4AF37]/50 group-hover:text-[#D4AF37] transition-colors shadow-lg">
-                    <Icon className="h-7 w-7 text-gray-900 group-hover:text-[#D4AF37] transition-colors" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-[#F9FAFB]/[0.03] border border-black/5 group-hover:border-[var(--accent-gold)]/50 group-hover:text-[var(--accent-gold)] transition-colors shadow-lg">
+                    <Icon className="h-7 w-7 text-gray-900 group-hover:text-[var(--accent-gold)] transition-colors" />
                   </div>
 
                   <div className="mt-20">
-                    <span className="inline-block rounded-full bg-[#F9FAFB]/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-[#D4AF37] mb-4">
+                    <span className="inline-block rounded-full bg-[#F9FAFB]/[0.03] px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-[var(--accent-gold)] mb-4">
                       {step.location}
                     </span>
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">

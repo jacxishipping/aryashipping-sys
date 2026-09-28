@@ -140,7 +140,7 @@ export default function ShipmentQuickPeek({
       description={
         shipment?.vehicleVIN ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.25 }}>
-            <span className="font-mono text-xs text-gray-500 font-semibold">
+            <span className="font-mono text-xs text-[var(--text-secondary)] font-semibold">
               VIN: {shipment.vehicleVIN}
             </span>
             <CopyButton value={shipment.vehicleVIN} label="VIN" />
@@ -293,21 +293,21 @@ export default function ShipmentQuickPeek({
 
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
               <div>
-                <span className="text-xs text-gray-500 block">Color</span>
+                <span className="text-xs text-[var(--text-secondary)] block">Color</span>
                 <span className="text-sm font-semibold text-gray-900">{shipment.vehicleColor || 'Standard'}</span>
               </div>
               <div>
-                <span className="text-xs text-gray-500 block">Lot Number</span>
+                <span className="text-xs text-[var(--text-secondary)] block">Lot Number</span>
                 <span className="font-mono text-sm font-semibold text-gray-900">{shipment.lotNumber || 'N/A'}</span>
               </div>
               <div>
-                <span className="text-xs text-gray-500 block">Booking Date</span>
+                <span className="text-xs text-[var(--text-secondary)] block">Booking Date</span>
                 <span className="text-sm font-semibold text-gray-900">
                   {shipment.createdAt ? new Date(shipment.createdAt).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
               <div>
-                <span className="text-xs text-gray-500 block">Outstanding Balance</span>
+                <span className="text-xs text-[var(--text-secondary)] block">Outstanding Balance</span>
                 <span className="text-sm font-semibold text-gray-900">{formatCurrency(remainingBalance)}</span>
               </div>
             </Box>

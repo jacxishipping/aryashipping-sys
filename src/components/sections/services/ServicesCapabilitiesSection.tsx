@@ -75,8 +75,8 @@ export default function ServicesCapabilitiesSection() {
           transition={{ duration: 0.8 }}
         >
           <div className="inline-flex items-center gap-3">
-            <div className="h-px w-8 bg-[#D4AF37]" />
-            <span className="text-xs font-mono uppercase tracking-widest text-[#D4AF37]">capabilities</span>
+            <div className="h-px w-8 bg-[var(--accent-gold)]" />
+            <span className="text-xs font-mono uppercase tracking-widest text-[var(--accent-gold)]">capabilities</span>
           </div>
           <h2 className="mt-8 text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl">
             End-to-end logistics.
@@ -133,18 +133,18 @@ function ServiceCard({
       {/* Text side */}
       <div className={`flex flex-col justify-center ${isOdd ? 'lg:order-2 lg:pl-16' : 'lg:pr-16'}`}>
         {/* Badge */}
-        <div className="mb-6 inline-flex self-start rounded-full bg-[#D4AF37]/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-[#D4AF37]">
+        <div className="mb-6 inline-flex self-start rounded-full bg-[var(--accent-gold)]/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-[var(--accent-gold)]">
           {service.badge}
         </div>
 
         {/* Icon */}
-        <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-[2rem] border border-black/5 bg-white text-[#D4AF37] shadow-[0_0_30px_rgba(212,175,55,0.1)]">
+        <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-[2rem] border border-black/5 bg-white text-[var(--accent-gold)] shadow-[0_0_30px_rgba(212,175,55,0.1)]">
           {service.icon}
         </div>
 
         <h3 className="text-3xl font-extrabold tracking-tight mb-6">{service.title}</h3>
 
-        <div className="h-px w-full bg-gradient-to-r from-[#D4AF37]/50 to-transparent mb-6" />
+        <div className="h-px w-full bg-gradient-to-r from-[var(--accent-gold)]/50 to-transparent mb-6" />
 
         <p className="text-lg text-black/60 leading-relaxed font-medium">{service.description}</p>
 
@@ -153,7 +153,7 @@ function ServiceCard({
           className="mt-10 group inline-flex items-center gap-3 text-sm font-bold uppercase tracking-widest text-black/70 hover:text-gray-900 transition-colors w-fit"
         >
           Get a quote
-          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-black/5 group-hover:bg-[#D4AF37] group-hover:border-[#D4AF37] group-hover:text-black transition-all">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full border border-black/5 group-hover:bg-[var(--accent-gold)] group-hover:border-[var(--accent-gold)] group-hover:text-black transition-all">
             <ArrowRight className="h-3 w-3" />
           </div>
         </Link>
@@ -171,8 +171,8 @@ function ServiceCard({
             />
           ) : (
             /* Fallback gradient visual for services without SVGs */
-            <div className="absolute inset-0 bg-gradient-to-br from-[#F9FAFB] via-white to-[#D4AF37]/5 flex items-center justify-center">
-              <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] border border-[#D4AF37]/20 bg-white text-[#D4AF37] shadow-xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#F9FAFB] via-white to-[var(--accent-gold)]/5 flex items-center justify-center">
+              <div className="flex h-24 w-24 items-center justify-center rounded-[2rem] border border-[var(--accent-gold)]/20 bg-white text-[var(--accent-gold)] shadow-xl">
                 {service.icon}
               </div>
             </div>

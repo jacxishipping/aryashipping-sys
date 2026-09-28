@@ -134,12 +134,12 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
         borderColor: isDragging
           ? 'var(--accent-gold)'
           : extractedData
-          ? 'rgba(34, 197, 94, 0.4)'
+          ? 'rgba(var(--success-rgb), 0.4)'
           : 'rgba(var(--border-rgb), 0.8)',
         bgcolor: isDragging
           ? 'rgba(var(--accent-gold-rgb), 0.04)'
           : extractedData
-          ? 'rgba(34, 197, 94, 0.03)'
+          ? 'rgba(var(--success-rgb), 0.03)'
           : 'var(--panel)',
         transition: 'all 0.2s ease',
       }}
@@ -226,8 +226,8 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
       {extractedData && (
         <Box sx={{ mt: 1, pt: 1.5, borderTop: '1px solid rgba(var(--border-rgb), 0.5)' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <CheckCircle2 size={15} style={{ color: '#16a34a' }} />
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: '#16a34a' }}>
+            <CheckCircle2 size={15} style={{ color: 'var(--success-dark)' }} />
+            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--success-dark)' }}>
               Extracted from {fileName}:
             </Typography>
           </Box>
@@ -268,8 +268,8 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
                 sx={{
                   fontSize: '0.75rem',
                   fontWeight: 600,
-                  bgcolor: extractedData.hasKeys ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                  color: extractedData.hasKeys ? '#16a34a' : '#ef4444',
+                  bgcolor: extractedData.hasKeys ? 'rgba(var(--success-rgb), 0.1)' : 'rgba(var(--error-rgb), 0.1)',
+                  color: extractedData.hasKeys ? 'var(--success-dark)' : 'var(--error)',
                 }}
               />
             )}
@@ -284,7 +284,7 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
               <Chip
                 label={`Price: $${extractedData.purchasePrice.toLocaleString()}`}
                 size="small"
-                sx={{ fontSize: '0.75rem', fontWeight: 600, bgcolor: 'rgba(59, 130, 246, 0.1)', color: '#2563eb' }}
+                sx={{ fontSize: '0.75rem', fontWeight: 600, bgcolor: 'rgba(var(--info-rgb), 0.1)', color: 'var(--info-dark)' }}
               />
             )}
           </Box>

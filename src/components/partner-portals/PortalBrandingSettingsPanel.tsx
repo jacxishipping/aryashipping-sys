@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { Box, TextField, Typography } from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, toast } from '@/components/design-system';
 import { getPortalBrandIdentity } from '@/lib/partner-portal-branding';
 import {
   getPortalCustomDomainVerificationHost,
@@ -48,6 +48,7 @@ export default function PortalBrandingSettingsPanel({
   const [verifyingDomain, setVerifyingDomain] = useState(false);
   const [checkingDomain, setCheckingDomain] = useState(false);
   const [disconnectingDomain, setDisconnectingDomain] = useState(false);
+  const [confirmDisconnectOpen, setConfirmDisconnectOpen] = useState(false);
   const [domainCheckError, setDomainCheckError] = useState<string | null>(null);
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [pendingLogoFile, setPendingLogoFile] = useState<File | null>(null);
@@ -173,15 +174,20 @@ export default function PortalBrandingSettingsPanel({
     }
   };
 
-  const handleDisconnectDomain = async () => {
+  const handleDisconnectDomain = () => {
     if (!canEdit || !portal?.customDomain) {
       return;
     }
 
-    if (!confirm(`Remove the custom domain ${portal.customDomain} from this portal?`)) {
+    setConfirmDisconnectOpen(true);
+  };
+
+  const confirmDisconnectDomain = async () => {
+    if (!canEdit || !portal?.customDomain) {
       return;
     }
 
+    setConfirmDisconnectOpen(false);
     try {
       setDisconnectingDomain(true);
       const response = await fetch(`/api/partner-portals/${portalId}`, {
@@ -362,6 +368,7 @@ export default function PortalBrandingSettingsPanel({
   };
 
   return (
+    <>
     <DashboardPanel
       title="Partner Branding"
       description="Let this portal present a partner identity while still running inside your system."
@@ -634,5 +641,16 @@ export default function PortalBrandingSettingsPanel({
         </Box>
       </Box>
     </DashboardPanel>
+
+    <ConfirmDialog
+      open={confirmDisconnectOpen}
+      onClose={() => setConfirmDisconnectOpen(false)}
+      onConfirm={() => void confirmDisconnectDomain()}
+      title="Disconnect Custom Domain"
+      message={`Remove the custom domain ${portal?.customDomain || ''} from this portal?`}
+      confirmText="Disconnect"
+      severity="warning"
+    />
+    </>
   );
 }

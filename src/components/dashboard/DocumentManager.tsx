@@ -30,6 +30,7 @@ import {
 import { toast } from 'sonner';
 import { Modal, FormField, Select } from '@/components/design-system';
 import { FileUpload } from '@/components/ui/FileUpload';
+import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 
 interface Document {
   id: string;
@@ -84,6 +85,7 @@ export function DocumentManager({
   onDocumentsChange,
 }: DocumentManagerProps) {
   const router = useRouter();
+  const confirmAction = useConfirmAction();
   const [documents, setDocuments] = useState<Document[]>(initialDocs);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [category, setCategory] = useState('OTHER');
@@ -234,7 +236,13 @@ export function DocumentManager({
   };
 
   const handleDelete = async (docId: string) => {
-    if (!confirm('Are you sure you want to delete this document?')) return;
+    const confirmed = await confirmAction({
+      title: 'Delete Document',
+      message: 'Are you sure you want to delete this document? This cannot be undone.',
+      confirmText: 'Delete',
+      severity: 'error',
+    });
+    if (!confirmed) return;
 
     try {
       const endpoint = entityType === 'container'

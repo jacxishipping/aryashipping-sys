@@ -832,7 +832,7 @@ function SidebarContent({
 							aria-label="Sign out"
 							sx={{
 								color: 'var(--text-secondary)',
-								'&:hover': { color: 'var(--error, #ef4444)', bgcolor: 'rgba(239, 68, 68, 0.1)' },
+								'&:hover': { color: 'var(--error, #ef4444)', bgcolor: 'rgba(var(--error-rgb), 0.1)' },
 							}}
 						>
 							<Logout sx={{ fontSize: 18 }} />

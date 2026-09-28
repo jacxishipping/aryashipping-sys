@@ -285,7 +285,7 @@ export default function ContainerQuickPeek({
                       justifyContent: 'space-between',
                       gap: 1.5,
                       '&:hover': {
-                        bgcolor: '#FFFFFF',
+                        bgcolor: 'var(--panel, #FFFFFF)',
                         borderColor: 'var(--accent-gold, #D4AF37)',
                       },
                       transition: 'all 150ms ease',
@@ -296,7 +296,7 @@ export default function ContainerQuickPeek({
                         {[shipment.vehicleYear, shipment.vehicleMake, shipment.vehicleModel].filter(Boolean).join(' ') || 'Vehicle'}
                       </Typography>
                       {shipment.vehicleVIN && (
-                        <span className="font-mono text-xs text-gray-500 tracking-tight">
+                        <span className="font-mono text-xs text-[var(--text-secondary)] tracking-tight">
                           VIN: {shipment.vehicleVIN}
                         </span>
                       )}

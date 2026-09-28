@@ -56,9 +56,9 @@ export default function TestimonialsSection() {
            transition={{ duration: 0.6 }}
         >
           <div className="inline-flex items-center gap-3 justify-center mb-6">
-            <span className="h-px w-6 bg-[#D4AF37]" />
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Verified clients</span>
-            <span className="h-px w-6 bg-[#D4AF37]" />
+            <span className="h-px w-6 bg-[var(--accent-gold)]" />
+            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Verified clients</span>
+            <span className="h-px w-6 bg-[var(--accent-gold)]" />
           </div>
           <h2 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl max-w-3xl mx-auto">
             Reputation built on <br/>
@@ -91,7 +91,7 @@ export default function TestimonialsSection() {
 function TestimonialCard({ item }: { item: any }) {
   return (
     <div className="group relative w-[450px] sm:w-[500px] shrink-0 rounded-[2rem] border border-black/5 bg-white p-10 shadow-xl transition-all hover:bg-black hover:text-white cursor-grab active:cursor-grabbing">
-      <div className="absolute top-10 right-10 text-[#D4AF37] opacity-20 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-10 right-10 text-[var(--accent-gold)] opacity-20 group-hover:opacity-100 transition-opacity">
         <Quote className="h-12 w-12" />
       </div>
       
@@ -100,7 +100,7 @@ function TestimonialCard({ item }: { item: any }) {
       </p>
       
       <div className="mt-10 flex items-center gap-5 border-t border-black/10 group-hover:border-white/10 pt-6 transition-colors">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#D4AF37] text-white font-bold text-xl shadow-lg">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--accent-gold)] text-white font-bold text-xl shadow-lg">
           {item.name.charAt(0)}
         </div>
         <div>

@@ -70,17 +70,17 @@ export function ContainerCapacityGauge({
             fontSize: '0.72rem',
             fontWeight: 700,
             backgroundColor: isFull
-              ? 'rgba(34, 197, 94, 0.12)'
+              ? 'rgba(var(--success-rgb), 0.12)'
               : isOptimal
-              ? 'rgba(59, 130, 246, 0.12)'
-              : 'rgba(234, 179, 8, 0.12)',
-            color: isFull ? '#16a34a' : isOptimal ? '#2563eb' : '#b45309',
+              ? 'rgba(var(--info-rgb), 0.12)'
+              : 'rgba(var(--status-yellow-rgb), 0.12)',
+            color: isFull ? 'var(--success-dark)' : isOptimal ? 'var(--info-dark)' : 'var(--warning-dark)',
             border: `1px solid ${
               isFull
-                ? 'rgba(34, 197, 94, 0.3)'
+                ? 'rgba(var(--success-rgb), 0.3)'
                 : isOptimal
-                ? 'rgba(59, 130, 246, 0.3)'
-                : 'rgba(234, 179, 8, 0.3)'
+                ? 'rgba(var(--info-rgb), 0.3)'
+                : 'rgba(var(--status-yellow-rgb), 0.3)'
             }`,
           }}
         >
@@ -123,7 +123,7 @@ export function ContainerCapacityGauge({
               borderRadius: 3,
               backgroundColor: 'rgba(var(--text-primary-rgb), 0.08)',
               '& .MuiLinearProgress-bar': {
-                backgroundColor: carPercent === 100 ? '#16a34a' : 'var(--accent-gold)',
+                backgroundColor: carPercent === 100 ? 'var(--success-dark)' : 'var(--accent-gold)',
                 borderRadius: 3,
               },
             }}
@@ -154,7 +154,7 @@ export function ContainerCapacityGauge({
               borderRadius: 3,
               backgroundColor: 'rgba(var(--text-primary-rgb), 0.08)',
               '& .MuiLinearProgress-bar': {
-                backgroundColor: cbmPercent > 90 ? '#ef4444' : '#2563eb',
+                backgroundColor: cbmPercent > 90 ? 'var(--error)' : 'var(--info-dark)',
                 borderRadius: 3,
               },
             }}
@@ -185,7 +185,7 @@ export function ContainerCapacityGauge({
               borderRadius: 3,
               backgroundColor: 'rgba(var(--text-primary-rgb), 0.08)',
               '& .MuiLinearProgress-bar': {
-                backgroundColor: weightPercent > 90 ? '#ef4444' : '#0d9488',
+                backgroundColor: weightPercent > 90 ? 'var(--error)' : '#0d9488',
                 borderRadius: 3,
               },
             }}

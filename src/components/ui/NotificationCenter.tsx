@@ -172,9 +172,9 @@ export function NotificationCenter() {
   const getOriginStyles = (notification: Notification) => {
     if (notification.origin === 'system') {
       return {
-        color: '#1D4ED8',
-        backgroundColor: 'rgba(29, 78, 216, 0.10)',
-        borderColor: 'rgba(29, 78, 216, 0.18)',
+        color: 'var(--info-dark)',
+        backgroundColor: 'rgba(var(--info-rgb), 0.10)',
+        borderColor: 'rgba(var(--info-rgb), 0.18)',
       };
     }
 

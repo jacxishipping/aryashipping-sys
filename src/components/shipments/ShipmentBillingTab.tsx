@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { AlertCircle, AlertTriangle, Download, FileText, Wallet } from 'lucide-react';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { Button, FormField, toast } from '@/components/design-system';
+import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 import { hasAnyPermission } from '@/lib/rbac';
 import { formatMoney } from '@/lib/format';
 import { statusChipClass, statusTone } from '@/lib/status';
@@ -206,6 +207,7 @@ function extractAuditNote(metadata?: Record<string, unknown> | null) {
 
 export default function ShipmentBillingTab({ shipmentId, refreshKey, purchasePriceRecord }: ShipmentBillingTabProps) {
   const { data: session } = useSession();
+  const confirmAction = useConfirmAction();
   const [data, setData] = useState<ShipmentBillingResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -358,9 +360,12 @@ export default function ShipmentBillingTab({ shipmentId, refreshKey, purchasePri
   };
 
   const handleDiscardDraftInvoice = async (invoice: { id: string; invoiceNumber: string }) => {
-    const confirmed = window.confirm(
-      `Discard draft invoice ${invoice.invoiceNumber}?\n\nThe draft will be deleted and its charges released back to Approved so you can dispute or edit the rows. A new invoice will be generated next time you click Generate.`,
-    );
+    const confirmed = await confirmAction({
+      title: 'Discard Draft Invoice',
+      message: `Discard draft invoice ${invoice.invoiceNumber}? The draft will be deleted and its charges released back to Approved so you can dispute or edit the rows. A new invoice will be generated next time you click Generate.`,
+      confirmText: 'Discard',
+      severity: 'warning',
+    });
     if (!confirmed) return;
 
     try {
@@ -378,9 +383,12 @@ export default function ShipmentBillingTab({ shipmentId, refreshKey, purchasePri
   };
 
   const handleReverseInvoice = async (invoice: { id: string; invoiceNumber: string }) => {
-    const confirmed = window.confirm(
-      `Reverse invoice ${invoice.invoiceNumber}?\n\nThe invoice will be cancelled (kept for the audit trail) and its charges released back to Approved so you can dispute or edit the rows. You can then generate a fresh invoice.`,
-    );
+    const confirmed = await confirmAction({
+      title: 'Reverse Invoice',
+      message: `Reverse invoice ${invoice.invoiceNumber}? The invoice will be cancelled (kept for the audit trail) and its charges released back to Approved so you can dispute or edit the rows. You can then generate a fresh invoice.`,
+      confirmText: 'Reverse',
+      severity: 'warning',
+    });
     if (!confirmed) return;
 
     try {
@@ -406,9 +414,12 @@ export default function ShipmentBillingTab({ shipmentId, refreshKey, purchasePri
 
   const handleDisputeIssuedCharge = async (charge: ShipmentCharge) => {
     if (!charge.invoice) return;
-    const confirmed = window.confirm(
-      `Dispute this charge on issued invoice ${charge.invoice.invoiceNumber}?\n\nThe invoice will be reversed (cancelled) first, which releases ALL of its charges back to Approved so they can be reviewed. You can then fix the rows and generate a fresh invoice.`,
-    );
+    const confirmed = await confirmAction({
+      title: 'Dispute Charge',
+      message: `Dispute this charge on issued invoice ${charge.invoice.invoiceNumber}? The invoice will be reversed (cancelled) first, which releases ALL of its charges back to Approved so they can be reviewed. You can then fix the rows and generate a fresh invoice.`,
+      confirmText: 'Dispute',
+      severity: 'warning',
+    });
     if (!confirmed) return;
 
     try {

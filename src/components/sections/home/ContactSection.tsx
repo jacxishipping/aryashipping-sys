@@ -20,7 +20,7 @@ const contactNumbers = [
   { href: 'tel:+93704117413', label: '+93 704 117 413' },
 ];
 
-const inputClassName = 'w-full rounded-lg border border-black/10 bg-[#F9FAFB] px-4 py-3 text-base text-black outline-none transition placeholder:text-black/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[rgba(var(--accent-gold-rgb),0.16)]';
+const inputClassName = 'w-full rounded-lg border border-black/10 bg-[#F9FAFB] px-4 py-3 text-base text-black outline-none transition placeholder:text-black/60 focus:border-[var(--accent-gold)] focus:ring-4 focus:ring-[rgba(var(--accent-gold-rgb),0.16)]';
 
 export default function ContactSection({ isAuthenticated = false }: ContactSectionProps) {
   const [formState, setFormState] = useState({ name: '', email: '', phone: '', message: '' });
@@ -73,9 +73,9 @@ export default function ContactSection({ isAuthenticated = false }: ContactSecti
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
            <div className="inline-flex items-center gap-3 justify-center mb-6">
-              <span className="h-px w-6 bg-[#D4AF37]" />
-              <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Contact</span>
-              <span className="h-px w-6 bg-[#D4AF37]" />
+              <span className="h-px w-6 bg-[var(--accent-gold)]" />
+              <span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Contact</span>
+              <span className="h-px w-6 bg-[var(--accent-gold)]" />
            </div>
           <h2 className="landing-reveal text-5xl font-black tracking-tight sm:text-6xl text-gray-900 mb-6">
             Talk to a shipping coordinator.
@@ -90,7 +90,7 @@ export default function ContactSection({ isAuthenticated = false }: ContactSecti
             <div className="landing-reveal grid gap-3">
               <div className="rounded-[1.5rem] border border-black/5 bg-white p-5">
                 <div className="flex gap-4">
-                  <MapPin className="mt-1 h-5 w-5 text-[#D4AF37]" />
+                  <MapPin className="mt-1 h-5 w-5 text-[var(--accent-gold)]" />
                   <div>
                     <p className="font-semibold text-gray-900">Address</p>
                     <p className="mt-1 text-sm leading-6 text-black/60">Herat Customs Department, Herat, Afghanistan</p>
@@ -100,12 +100,12 @@ export default function ContactSection({ isAuthenticated = false }: ContactSecti
 
               <div className="rounded-[1.5rem] border border-black/5 bg-white p-5">
                 <div className="flex gap-4">
-                  <Phone className="mt-1 h-5 w-5 text-[#D4AF37]" />
+                  <Phone className="mt-1 h-5 w-5 text-[var(--accent-gold)]" />
                   <div>
                     <p className="font-semibold text-gray-900">Phone</p>
                     <div className="mt-1 space-y-1">
                       {contactNumbers.map((number) => (
-                        <a key={number.href} href={number.href} className="block text-sm font-bold text-black hover:text-[#D4AF37]">
+                        <a key={number.href} href={number.href} className="block text-sm font-bold text-black hover:text-[var(--accent-gold)]">
                           {number.label}
                         </a>
                       ))}
@@ -116,10 +116,10 @@ export default function ContactSection({ isAuthenticated = false }: ContactSecti
 
               <div className="rounded-[1.5rem] border border-black/5 bg-white p-5">
                 <div className="flex gap-4">
-                  <Mail className="mt-1 h-5 w-5 text-[#D4AF37]" />
+                  <Mail className="mt-1 h-5 w-5 text-[var(--accent-gold)]" />
                   <div>
                     <p className="font-semibold text-gray-900">Email</p>
-                    <a href="mailto:info@jacxi.com" className="mt-1 block text-sm font-semibold text-gray-900 hover:text-[#D4AF37]">info@jacxi.com</a>
+                    <a href="mailto:info@jacxi.com" className="mt-1 block text-sm font-semibold text-gray-900 hover:text-[var(--accent-gold)]">info@jacxi.com</a>
                   </div>
                 </div>
               </div>
@@ -132,26 +132,26 @@ export default function ContactSection({ isAuthenticated = false }: ContactSecti
                   href={link.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex h-11 items-center justify-center rounded-lg border border-[black/10] bg-[white] px-4 text-xs font-black text-black transition hover:-translate-y-0.5 hover:border-[#D4AF37] hover:text-[#D4AF37]"
+                  className="inline-flex h-11 items-center justify-center rounded-lg border border-[black/10] bg-[white] px-4 text-xs font-black text-black transition hover:-translate-y-0.5 hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)]"
                 >
                   {link.label}
                 </a>
               ))}
               <Link
                 href={isAuthenticated ? '/dashboard' : '/auth/signin'}
-                className="inline-flex h-11 items-center justify-center rounded-lg bg-[#D4AF37] px-4 text-xs font-black text-white transition hover:-translate-y-0.5 hover:brightness-105"
+                className="inline-flex h-11 items-center justify-center rounded-lg bg-[var(--accent-gold)] px-4 text-xs font-black text-white transition hover:-translate-y-0.5 hover:brightness-105"
               >
                 {isAuthenticated ? 'Open dashboard' : 'Customer portal'}
               </Link>
             </div>
           </div>
 
-          <div className="landing-reveal rounded-[3rem] border border-black/5 bg-[#F9FAFB] p-8 shadow-2xl relative overflow-hidden"><div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent pointer-events-none" />
+          <div className="landing-reveal rounded-[3rem] border border-black/5 bg-[#F9FAFB] p-8 shadow-2xl relative overflow-hidden"><div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-gold)]/5 to-transparent pointer-events-none" />
             <div className="relative mb-8">
               <div className="flex items-center gap-3">
                 
                 <div>
-                  <h3 className="text-sm font-semibold uppercase tracking-widest text-[#D4AF37] mb-2">Send a message</h3>
+                  <h3 className="text-sm font-semibold uppercase tracking-widest text-[var(--accent-gold)] mb-2">Send a message</h3>
                   <p className="mt-1 text-sm text-black/60">We usually respond within one business day.</p>
                 </div>
               </div>
@@ -159,7 +159,7 @@ export default function ContactSection({ isAuthenticated = false }: ContactSecti
 
             <div className="relative">
               {submitted ? (
-                <div className="rounded-lg border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-6 text-black" role="status">
+                <div className="rounded-lg border border-[var(--accent-gold)]/30 bg-[var(--accent-gold)]/10 p-6 text-black" role="status">
                   Your message has been sent. Our team will respond shortly.
                 </div>
               ) : (
@@ -210,7 +210,7 @@ export default function ContactSection({ isAuthenticated = false }: ContactSecti
                       disabled={submitting}
                       className="group relative flex w-full h-16 items-center justify-center overflow-hidden rounded-full bg-gray-900 font-bold disabled:opacity-60"
                     >
-                      <div className="absolute inset-0 bg-[#D4AF37] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
+                      <div className="absolute inset-0 bg-[var(--accent-gold)] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
                       <span className="relative z-10 flex items-center gap-2 text-white transition-colors duration-500 group-hover:text-black">
                         {submitting ? 'Sending...' : 'Send message'}
                         {!submitting ? <ArrowRight className="h-5 w-5" /> : null}

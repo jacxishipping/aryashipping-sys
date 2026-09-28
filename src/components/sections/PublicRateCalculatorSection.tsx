@@ -74,9 +74,9 @@ export default function PublicRateCalculatorSection() {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-3 justify-center mb-6">
-            <span className="h-px w-6 bg-[#D4AF37]" />
-            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37]">Estimator</span>
-            <span className="h-px w-6 bg-[#D4AF37]" />
+            <span className="h-px w-6 bg-[var(--accent-gold)]" />
+            <span className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)]">Estimator</span>
+            <span className="h-px w-6 bg-[var(--accent-gold)]" />
           </div>
           <h2 className="text-5xl font-black tracking-tight sm:text-6xl text-gray-900 mb-6">
             Instant lane pricing.
@@ -92,7 +92,7 @@ export default function PublicRateCalculatorSection() {
             
             {/* Origin Selection */}
             <div>
-              <p className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37] mb-4">01. Origin Zone</p>
+              <p className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)] mb-4">01. Origin Zone</p>
               <div className="grid grid-cols-2 gap-4">
                 {origins.map((o) => (
                   <button
@@ -101,11 +101,11 @@ export default function PublicRateCalculatorSection() {
                     aria-pressed={origin.id === o.id}
                     className={`flex items-start p-4 rounded-[1.5rem] border text-left transition-all ${
                       origin.id === o.id 
-                        ? 'border-[#D4AF37] bg-[#D4AF37]/5 shadow-[0_0_20px_rgba(212,175,55,0.15)] ring-1 ring-[#D4AF37]/50'
+                        ? 'border-[var(--accent-gold)] bg-[var(--accent-gold)]/5 shadow-[0_0_20px_rgba(212,175,55,0.15)] ring-1 ring-[var(--accent-gold)]/50'
                         : 'border-black/5 bg-[#F9FAFB]/[0.03] hover:border-white/30'
                     }`}
                   >
-                    <MapPin className={`h-5 w-5 shrink-0 mt-0.5 mr-3 ${origin.id === o.id ? 'text-[#D4AF37]' : 'text-black/40'}`} />
+                    <MapPin className={`h-5 w-5 shrink-0 mt-0.5 mr-3 ${origin.id === o.id ? 'text-[var(--accent-gold)]' : 'text-black/40'}`} />
                     <span className={`font-semibold ${origin.id === o.id ? 'text-gray-900' : 'text-black/60'}`}>{o.name}</span>
                   </button>
                 ))}
@@ -114,7 +114,7 @@ export default function PublicRateCalculatorSection() {
 
             {/* Destination Selection */}
             <div>
-              <p className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37] mb-4">02. Destination Route</p>
+              <p className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)] mb-4">02. Destination Route</p>
               <div className="grid grid-cols-2 gap-4">
                 {destinations.map((d) => (
                   <button
@@ -123,12 +123,12 @@ export default function PublicRateCalculatorSection() {
                     aria-pressed={dest.id === d.id}
                     className={`flex flex-col items-start p-4 rounded-[1.5rem] border text-left transition-all ${
                       dest.id === d.id 
-                        ? 'border-[#D4AF37] bg-[#D4AF37]/5 shadow-[0_0_20px_rgba(212,175,55,0.15)] ring-1 ring-[#D4AF37]/50'
+                        ? 'border-[var(--accent-gold)] bg-[var(--accent-gold)]/5 shadow-[0_0_20px_rgba(212,175,55,0.15)] ring-1 ring-[var(--accent-gold)]/50'
                         : 'border-black/5 bg-[#F9FAFB]/[0.03] hover:border-white/30'
                     }`}
                   >
                     <span className={`font-semibold ${dest.id === d.id ? 'text-gray-900' : 'text-black/60'}`}>{d.name}</span>
-                    <span className={`text-[11px] font-mono mt-2 px-2 py-1 rounded-full ${dest.id === d.id ? 'bg-[#D4AF37]/20 text-[#D4AF37]' : 'bg-[#F9FAFB]/[0.03] text-black/50'}`}>
+                    <span className={`text-[11px] font-mono mt-2 px-2 py-1 rounded-full ${dest.id === d.id ? 'bg-[var(--accent-gold)]/20 text-[var(--accent-gold)]' : 'bg-[#F9FAFB]/[0.03] text-black/50'}`}>
                       {d.time}
                     </span>
                   </button>
@@ -138,7 +138,7 @@ export default function PublicRateCalculatorSection() {
 
             {/* Vehicle Type Selection */}
             <div>
-               <p className="text-xs font-mono uppercase tracking-[0.2em] text-[#D4AF37] mb-4">03. Vehicle Class</p>
+               <p className="text-xs font-mono uppercase tracking-[0.2em] text-[var(--accent-gold)] mb-4">03. Vehicle Class</p>
                <div className="flex gap-4">
                   {vehicleTypes.map((v) => (
                     <button
@@ -147,7 +147,7 @@ export default function PublicRateCalculatorSection() {
                       aria-pressed={vType.id === v.id}
                       className={`flex-1 flex justify-center py-4 rounded-full border transition-all ${
                         vType.id === v.id
-                           ? 'border-[#D4AF37] bg-[#D4AF37] text-black font-bold shadow-[0_0_20px_rgba(212,175,55,0.3)]'
+                           ? 'border-[var(--accent-gold)] bg-[var(--accent-gold)] text-black font-bold shadow-[0_0_20px_rgba(212,175,55,0.3)]'
                            : 'border-black/5 bg-[#F9FAFB]/[0.03] text-black/60 hover:bg-[#F9FAFB]/5 hover:text-gray-900 font-medium'
                       }`}
                     >
@@ -162,9 +162,9 @@ export default function PublicRateCalculatorSection() {
           <motion.div 
             className="sticky top-32 rounded-[3rem] border border-black/5 bg-[#F9FAFB] p-8 shadow-2xl relative overflow-hidden"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-[#D4AF37]/5 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-gold)]/5 to-transparent pointer-events-none" />
             
-            <p className="text-sm font-semibold uppercase tracking-widest text-[#D4AF37] mb-12">Estimated Subtotal</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-[var(--accent-gold)] mb-12">Estimated Subtotal</p>
             
             <div className="flex items-start text-gray-900 mb-12">
               <span className="text-4xl mt-3 text-black/60 font-light">$</span>
@@ -208,7 +208,7 @@ export default function PublicRateCalculatorSection() {
                   }}
                   className="group relative flex w-full h-16 items-center justify-center overflow-hidden rounded-full bg-gray-900 font-bold"
                 >
-                  <div className="absolute inset-0 bg-[#D4AF37] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
+                  <div className="absolute inset-0 bg-[var(--accent-gold)] translate-y-full transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:translate-y-0" />
                   <span className="relative z-10 text-white transition-colors duration-500 group-hover:text-black">Request exact quote</span>
                 </button>
               </div>

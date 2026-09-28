@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { Bookmark, BookmarkPlus, Pencil, Trash2 } from 'lucide-react';
 import { Button, Modal, toast } from '@/components/design-system';
+import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 import {
   deleteComparisonPreset,
   loadComparisonPresets,
@@ -28,6 +29,7 @@ export default function CompanyPriceComparisonPresets({
   currentConfig,
   onApply,
 }: CompanyPriceComparisonPresetsProps) {
+  const confirmAction = useConfirmAction();
   const [presets, setPresets] = useState<ComparisonPreset[]>([]);
   const [selectedPresetId, setSelectedPresetId] = useState('');
   const [openSaveDialog, setOpenSaveDialog] = useState(false);
@@ -82,10 +84,16 @@ export default function CompanyPriceComparisonPresets({
     toast.success(`Loaded "${preset.name}"`);
   };
 
-  const handleDeletePreset = (presetId: string) => {
+  const handleDeletePreset = async (presetId: string) => {
     const preset = presets.find((item) => item.id === presetId);
     if (!preset) return;
-    if (!confirm(`Delete preset "${preset.name}"?`)) return;
+    const confirmed = await confirmAction({
+      title: 'Delete Preset',
+      message: `Delete preset "${preset.name}"?`,
+      confirmText: 'Delete',
+      severity: 'error',
+    });
+    if (!confirmed) return;
 
     deleteComparisonPreset(presetId);
     if (selectedPresetId === presetId) setSelectedPresetId('');

@@ -263,7 +263,7 @@ export default function InvoiceQuickPeek({
                       <div className="col-span-7 font-medium text-[var(--text-primary,#111827)] truncate">
                         {item.description}
                       </div>
-                      <div className="col-span-2 text-center text-gray-500">
+                      <div className="col-span-2 text-center text-[var(--text-secondary)]">
                         {item.quantity}
                       </div>
                       <div className="col-span-3 text-right font-semibold text-[var(--text-primary,#111827)]">
