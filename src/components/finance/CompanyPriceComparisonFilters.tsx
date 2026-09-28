@@ -6,10 +6,9 @@ import {
   Checkbox,
   Chip,
   FormControlLabel,
-  TextField,
 } from '@mui/material';
 import { Check, Search, X } from 'lucide-react';
-import { Button, Select, Tooltip } from '@/components/design-system';
+import { Button, Select, Tooltip , FormField } from '@/components/design-system';
 import {
   DEFAULT_SHIPPING_RATE_CONFIG,
   US_STATES,
@@ -241,15 +240,12 @@ export default function CompanyPriceComparisonFilters({
                     { value: 'TRANSIT', label: 'Transit' },
                   ]}
                 />
-                <TextField
+                <FormField
                   size="small"
                   label="Search"
                   value={filters.search}
                   onChange={(event) => onFilterChange('search', event.target.value)}
-                  placeholder="State, lane, branch, or city"
-                  InputProps={{
-                    startAdornment: <Search className="w-4 h-4 mr-2 text-[var(--text-secondary)]" />,
-                  }}
+                  placeholder="State, lane, branch, or city" leftIcon={<Search className="w-4 h-4 mr-2 text-[var(--text-secondary)]" />} 
                 />
                 <Select
                   size="small"
@@ -323,13 +319,12 @@ export default function CompanyPriceComparisonFilters({
 
             <FilterSection title="Thresholds">
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '180px 1fr' }, gap: 1.5, alignItems: 'center' }}>
-                <TextField
+                <FormField
                   size="small"
                   type="number"
                   label="Min Spread ($)"
                   value={filters.minSpread}
-                  onChange={(event) => onFilterChange('minSpread', event.target.value)}
-                  inputProps={{ min: 0, step: 50 }}
+                  onChange={(event) => onFilterChange('minSpread', event.target.value)} min={0} step={50} 
                 />
                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
                   <FormControlLabel

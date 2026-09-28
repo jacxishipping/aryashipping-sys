@@ -16,9 +16,8 @@ import {
 import {
   Box,
   Typography,
-  TextField,
 } from '@mui/material';
-import { Button, Modal, StatusBadge, toast } from '@/components/design-system';
+import { Button, Modal, StatusBadge, toast , FormField } from '@/components/design-system';
 import { DataTable } from '@/components/ui/DataTable';
 import { 
   generateCustomsPacketPDF, 
@@ -164,20 +163,20 @@ export function CustomsDocumentPacketModal({
             Destination Customs Broker & Consignee
           </Typography>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <TextField
+            <FormField
               label="Clearing Agent Name"
               size="small"
               value={agentInfo.agentName}
               onChange={(e) => setAgentInfo({ ...agentInfo, agentName: e.target.value })}
             />
-            <TextField
+            <FormField
               label="Agent Email Address"
               size="small"
               type="email"
               value={agentInfo.agentEmail}
               onChange={(e) => setAgentInfo({ ...agentInfo, agentEmail: e.target.value })}
             />
-            <TextField
+            <FormField
               label="Agent Telephone"
               size="small"
               value={agentInfo.agentPhone}

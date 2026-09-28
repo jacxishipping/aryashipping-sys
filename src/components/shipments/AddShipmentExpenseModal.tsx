@@ -2,15 +2,13 @@
 
 import { useState, useEffect, useRef } from 'react';
 import {
-	TextField,
-	Box,
-	InputAdornment,
-	FormControlLabel,
-	Checkbox,
-	CircularProgress,
+  Box,
+  FormControlLabel,
+  Checkbox,
+  CircularProgress,
 } from '@mui/material';
 import { DollarSign, Plus, Trash2, Paperclip, X, TrendingUp, TrendingDown } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast , FormField } from '@/components/design-system';
 
 interface ShipmentOption {
 	id: string;
@@ -438,7 +436,7 @@ export default function AddShipmentExpenseModal({
 									options={expenseTypes}
 								/>
 
-								<TextField size="small" label="Description" value={item.description} onChange={(e) => updateItem(index, 'description', e.target.value)} required />
+								<FormField size="small" label="Description" value={item.description} onChange={(e) => updateItem(index, 'description', e.target.value)} required />
 
 								<FormControlLabel
 									control={<Checkbox checked={item.useSplitAmounts} onChange={(e) => updateItem(index, 'useSplitAmounts', e.target.checked)} size="small" />}
@@ -446,11 +444,11 @@ export default function AddShipmentExpenseModal({
 								/>
 
 								{!item.useSplitAmounts ? (
-									<TextField size="small" label="Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} helperText="Only the customer ledger will be debited" />
+									<FormField size="small" label="Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required min={0} step={0.01} leftIcon="$"  helperText="Only the customer ledger will be debited" />
 								) : (
 									<>
-										<TextField size="small" label="Customer Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} helperText="Amount debited to the customer ledger" />
-										<TextField size="small" label="Carrier Cost (USD)" type="number" value={item.companyAmount} onChange={(e) => updateItem(index, 'companyAmount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} helperText="Amount credited to the company ledger" />
+										<FormField size="small" label="Customer Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required min={0} step={0.01} leftIcon="$"  helperText="Amount debited to the customer ledger" />
+										<FormField size="small" label="Carrier Cost (USD)" type="number" value={item.companyAmount} onChange={(e) => updateItem(index, 'companyAmount', e.target.value)} required min={0} step={0.01} leftIcon="$"  helperText="Amount credited to the company ledger" />
 									</>
 								)}
 
@@ -492,7 +490,7 @@ export default function AddShipmentExpenseModal({
 									Payment mode: Due (invoice first)
 								</Box>
 
-								<TextField size="small" label="Notes" value={item.notes} onChange={(e) => updateItem(index, 'notes', e.target.value)} multiline rows={2} />
+								<FormField size="small" label="Notes" value={item.notes} onChange={(e) => updateItem(index, 'notes', e.target.value)} multiline rows={2} />
 							</Box>
 						))}
 					</>
@@ -538,7 +536,7 @@ export default function AddShipmentExpenseModal({
 							options={expenseTypes}
 						/>
 
-						<TextField
+						<FormField
 							size="small"
 							label="Description"
 							value={formData.description}
@@ -553,40 +551,34 @@ export default function AddShipmentExpenseModal({
 						/>
 
 						{!useSplitAmounts ? (
-							<TextField
+							<FormField
 								size="small"
 								label="Amount (USD)"
 								type="number"
 								value={formData.amount}
 								onChange={(e) => handleChange('amount', e.target.value)}
-								required
-								inputProps={{ min: 0, step: 0.01 }}
-								InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+								required min={0} step={0.01} leftIcon="$" 
 								helperText="Customer ledger debited. Company ledger credited at same amount."
 							/>
 						) : (
 							<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
 								<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
-									<TextField
+									<FormField
 										size="small"
 										label="Customer Charge (USD)"
 										type="number"
 										value={formData.amount}
 										onChange={(e) => handleChange('amount', e.target.value)}
-										required
-										inputProps={{ min: 0, step: 0.01 }}
-										InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+										required min={0} step={0.01} leftIcon="$" 
 										helperText="Debited to customer"
 									/>
-									<TextField
+									<FormField
 										size="small"
 										label="Carrier Cost (USD)"
 										type="number"
 										value={formData.companyAmount}
 										onChange={(e) => handleChange('companyAmount', e.target.value)}
-										required
-										inputProps={{ min: 0, step: 0.01 }}
-										InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+										required min={0} step={0.01} leftIcon="$" 
 										helperText="Credited to company ledger"
 									/>
 								</Box>
@@ -684,7 +676,7 @@ export default function AddShipmentExpenseModal({
 							Payment mode: Due (invoice first)
 						</Box>
 
-						<TextField
+						<FormField
 							size="small"
 							label="Notes"
 							value={formData.notes}
@@ -699,3 +691,4 @@ export default function AddShipmentExpenseModal({
 		</Modal>
 	);
 }
+

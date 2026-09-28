@@ -2,12 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import {
-	TextField,
-	Box,
-	InputAdornment,
+  Box,
 } from '@mui/material';
 import { DollarSign } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast , FormField } from '@/components/design-system';
 
 export interface EditableContainerExpense {
 	id: string;
@@ -168,19 +166,15 @@ export default function AddExpenseModal({
 					/>
 
 					<Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 2 }}>
-						<TextField
+						<FormField
 							size="small"
 							label="Amount"
 							type="number"
 							value={formData.amount}
 							onChange={(e) => handleChange('amount', e.target.value)}
-							required
-							inputProps={{ min: 0, step: 0.01 }}
-							InputProps={{
-								startAdornment: <InputAdornment position="start">$</InputAdornment>,
-							}}
+							required min={0} step={0.01} leftIcon="$" 
 						/>
-						<TextField
+						<FormField
 							size="small"
 							label="Currency"
 							value={formData.currency}
@@ -189,7 +183,7 @@ export default function AddExpenseModal({
 						/>
 					</Box>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Vendor"
 						value={formData.vendor}
@@ -197,7 +191,7 @@ export default function AddExpenseModal({
 						placeholder="e.g., Maersk Line, US Customs"
 					/>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Invoice Number"
 						value={formData.invoiceNumber}
@@ -205,17 +199,16 @@ export default function AddExpenseModal({
 						placeholder="Vendor's invoice reference"
 					/>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Date"
 						type="date"
 						value={formData.date}
 						onChange={(e) => handleChange('date', e.target.value)}
 						required
-						InputLabelProps={{ shrink: true }}
 					/>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Notes"
 						value={formData.notes}
@@ -228,3 +221,4 @@ export default function AddExpenseModal({
 		</Modal>
 	);
 }
+

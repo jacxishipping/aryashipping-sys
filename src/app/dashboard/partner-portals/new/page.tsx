@@ -8,9 +8,17 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Autocomplete, Box, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import {
+  Autocomplete,
+  Box,
+  Step,
+  StepLabel,
+  Stepper,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Breadcrumbs, Button, toast } from '@/components/design-system';
+import { PageHeader, Breadcrumbs, Button, toast , FormField } from '@/components/design-system';
 import { hasPermission } from '@/lib/rbac';
 
 type UserOption = {
@@ -173,7 +181,7 @@ export default function NewPartnerPortalPage() {
     if (activeStep === 0) {
       return (
         <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-          <TextField
+          <FormField
             label="Portal Name *"
             value={form.name}
             onChange={(event) => updateForm('name', event.target.value)}
@@ -181,7 +189,7 @@ export default function NewPartnerPortalPage() {
             required
             fullWidth
           />
-          <TextField
+          <FormField
             label="Portal Code"
             value={form.code}
             onChange={(event) => updateForm('code', event.target.value)}
@@ -189,14 +197,14 @@ export default function NewPartnerPortalPage() {
             helperText="Optional unique short code for internal reference"
             fullWidth
           />
-          <TextField
+          <FormField
             label="Company Label"
             value={form.companyLabel}
             onChange={(event) => updateForm('companyLabel', event.target.value)}
             placeholder="Name shown in the partner workspace"
             fullWidth
           />
-          <TextField
+          <FormField
             label="Notes"
             value={form.notes}
             onChange={(event) => updateForm('notes', event.target.value)}
@@ -211,7 +219,7 @@ export default function NewPartnerPortalPage() {
     if (activeStep === 1) {
       return (
         <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-          <TextField
+          <FormField
             label="Custom Domain"
             value={form.customDomain}
             onChange={(event) => updateForm('customDomain', event.target.value)}
@@ -219,14 +227,14 @@ export default function NewPartnerPortalPage() {
             helperText="Optional hostname without http:// or paths"
             fullWidth
           />
-          <TextField
+          <FormField
             label="Logo URL"
             value={form.logoUrl}
             onChange={(event) => updateForm('logoUrl', event.target.value)}
             placeholder="https://example.com/logo.png"
             fullWidth
           />
-          <TextField
+          <FormField
             label="Accent Color"
             type="color"
             value={form.accentColor}

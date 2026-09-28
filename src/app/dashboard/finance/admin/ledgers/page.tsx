@@ -15,8 +15,11 @@ import {
   FilterList,
   Payment,
 } from '@mui/icons-material';
-import {  Box, Typography, TextField } from '@mui/material';
-import { Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Select } from '@/components/design-system';
+import {
+  Box,
+  Typography,
+} from '@mui/material';
+import { Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Select , FormField } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -333,14 +336,11 @@ export default function AdminLedgersPage() {
           description="Find users quickly"
         >
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr auto' }, gap: 2 }}>
-            <TextField
+            <FormField
               placeholder="Search by name or email..."
               size="small"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)} leftIcon={<Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />} 
               fullWidth
             />
             <Box sx={{ minWidth: 200 }}>

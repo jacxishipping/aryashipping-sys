@@ -8,15 +8,13 @@ import { motion } from 'framer-motion';
 import { Visibility, VisibilityOff, VpnKey, ArrowForward, LoginOutlined } from '@mui/icons-material';
 import {
   Button,
-  TextField,
-  InputAdornment,
   IconButton,
   CircularProgress,
   Box,
   Typography,
   Paper,
 } from '@mui/material';
-import { Alert } from '@/components/design-system';
+import { Alert , FormField } from '@/components/design-system';
 import { getPortalBrandIdentity } from '@/lib/partner-portal-branding';
 
 type PortalLoginBranding = {
@@ -166,7 +164,7 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 									>
 										8-Character Code
 									</Typography>
-									<TextField
+									<FormField
 										id="loginCode"
 										type={showCode ? 'text' : 'password'}
 										fullWidth
@@ -175,16 +173,7 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 										required
 										placeholder="Enter your 8-character code"
 										autoComplete="off"
-										autoFocus
-										InputProps={{
-											startAdornment: (
-												<InputAdornment position="start">
-													<VpnKey sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />
-												</InputAdornment>
-											),
-											endAdornment: (
-												<InputAdornment position="end">
-													<IconButton
+										autoFocus leftIcon={<VpnKey sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} rightIcon={<IconButton
 														onClick={() => setShowCode(!showCode)}
 														edge="end"
 														sx={{
@@ -199,38 +188,8 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 														) : (
 															<Visibility sx={{ fontSize: 20 }} />
 														)}
-													</IconButton>
-												</InputAdornment>
-											),
-										}}
-										sx={{
-											'& .MuiOutlinedInput-root': {
-												bgcolor: 'var(--background)',
-												borderRadius: 2,
-												color: 'var(--text-primary)',
-												'& fieldset': {
-													borderColor: 'rgba(var(--panel-rgb), 0.9)',
-												},
-												'&:hover fieldset': {
-													borderColor: 'var(--panel)',
-												},
-												'&.Mui-focused fieldset': {
-													borderColor: 'var(--accent-gold)',
-													borderWidth: 2,
-												},
-												'& input': {
-													color: 'var(--text-primary)',
-													letterSpacing: '0.28em',
-													fontWeight: 600,
-													textAlign: 'center',
-													'&::placeholder': {
-														letterSpacing: 'normal',
-														color: 'var(--text-secondary)',
-														opacity: 1,
-													},
-												},
-											},
-										}}
+													</IconButton>} 
+									 
 									/>
 								</Box>
 
@@ -385,7 +344,7 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 								<Typography component="label" htmlFor="loginCode" sx={{ display: 'block', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', mb: 1.5 }}>
 									Login Code
 								</Typography>
-								<TextField
+								<FormField
 									id="loginCode"
 									type={showCode ? 'text' : 'password'}
 									fullWidth
@@ -395,64 +354,18 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 									placeholder="Enter 8-character code"
 									autoComplete="off"
 									autoFocus
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<VpnKey sx={{ fontSize: 24, color: brand.accentColor }} />
-											</InputAdornment>
-										),
-										endAdornment: (
-											<InputAdornment position="end">
-												<IconButton
-													onClick={() => setShowCode(!showCode)}
-													edge="end"
-													sx={{ color: brand.accentColor }}
-												>
-													{showCode ? <VisibilityOff sx={{ fontSize: 24 }} /> : <Visibility sx={{ fontSize: 24 }} />}
-												</IconButton>
-											</InputAdornment>
-										),
-										sx: {
-											fontSize: '1.5rem',
-											fontWeight: 600,
-											letterSpacing: '0.22em',
-											textAlign: 'center',
-										},
-									}}
-									sx={{
-										'& .MuiOutlinedInput-root': {
-											bgcolor: 'rgba(255,255,255,0.88)',
-											borderRadius: 3.5,
-											color: 'var(--text-primary)',
-											fontSize: '1.5rem',
-											py: 1,
-											'& fieldset': {
-												borderColor: `rgba(${brand.accentRgb}, 0.2)`,
-												borderWidth: 2,
-											},
-											'&:hover fieldset': {
-												borderColor: brand.accentColor,
-											},
-											'&.Mui-focused fieldset': {
-												borderColor: brand.accentColor,
-												borderWidth: 3,
-											},
-											'& input': {
-												color: 'var(--text-primary)',
-												textAlign: 'center',
-												letterSpacing: '0.3em',
-												fontSize: '1.5rem',
-												fontWeight: 700,
-												'&::placeholder': {
-													color: 'var(--text-secondary)',
-													opacity: 0.7,
-													letterSpacing: 'normal',
-													textAlign: 'center',
-													fontSize: '1rem',
-												},
-											},
-										},
-									}}
+									leftIcon={<VpnKey sx={{ fontSize: 24, color: brand.accentColor }} />}
+									rightIcon={
+										<IconButton
+											onClick={() => setShowCode(!showCode)}
+											edge="end"
+											sx={{ color: brand.accentColor }}
+										>
+											{showCode ? <VisibilityOff sx={{ fontSize: 24 }} /> : <Visibility sx={{ fontSize: 24 }} />}
+										</IconButton>
+									}
+									inputStyle={{ fontSize: '1.5rem', fontWeight: 700, letterSpacing: '0.3em', textAlign: 'center' }}
+									inputClassName="border-2 bg-[rgba(255,255,255,0.88)] py-2 placeholder:text-center placeholder:text-base placeholder:tracking-normal"
 								/>
 								<Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'var(--text-secondary)', fontSize: '0.875rem', textAlign: 'center' }}>
 									{loginCode.length}/8 characters

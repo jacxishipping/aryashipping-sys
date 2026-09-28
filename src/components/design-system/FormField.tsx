@@ -1,116 +1,187 @@
 "use client";
 
-import { TextField, TextFieldProps, Typography, Box, InputAdornment } from '@mui/material';
-import { ReactNode } from 'react';
+import { ChangeEvent, CSSProperties, InputHTMLAttributes, ReactNode, Ref } from 'react';
+import { cn } from '@/lib/utils';
 import { useTheme } from '@/hooks/useTheme';
 
-interface FormFieldProps extends Omit<TextFieldProps, 'variant'> {
-	label: string;
-	helperText?: string;
-	leftIcon?: ReactNode;
-	rightIcon?: ReactNode;
+/**
+ * FormField Component
+ *
+ * Labeled text input / textarea with icons, helper text, and error state.
+ * Tailwind-native. Zero MUI.
+ */
+
+export interface FormFieldProps
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'onChange'> {
+  label?: ReactNode;
+  helperText?: ReactNode;
+  error?: boolean;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  onRightIconClick?: () => void;
+  multiline?: boolean;
+  rows?: number;
+  minRows?: number;
+  maxRows?: number;
+  size?: 'sm' | 'md' | 'small' | 'medium';
+  fullWidth?: boolean;
+  inputClassName?: string;
+  inputStyle?: CSSProperties;
+  helperTextClassName?: string;
+  value?: string | number | null;
+  // Intersection (not union) so both input-only and textarea-only handlers stay assignable.
+  onChange?: (event: ChangeEvent<HTMLInputElement> & ChangeEvent<HTMLTextAreaElement>) => void;
+  // Ref passthrough for react-hook-form register() spreads.
+  ref?: Ref<any>;
 }
 
 export default function FormField({
-	label,
-	helperText,
-	leftIcon,
-	rightIcon,
-	...textFieldProps
+  label,
+  helperText,
+  error = false,
+  leftIcon,
+  rightIcon,
+  onRightIconClick,
+  multiline = false,
+  rows,
+  minRows,
+  maxRows,
+  size = 'md',
+  fullWidth = true,
+  inputClassName,
+  inputStyle,
+  helperTextClassName,
+  className,
+  style,
+  id,
+  required,
+  disabled,
+  value,
+  onChange,
+  ref,
+  ...inputProps
 }: FormFieldProps) {
-	const { density } = useTheme();
-	const isCompact = density === 'compact';
-	const helperTextId = textFieldProps.id ? `${textFieldProps.id}-helper-text` : undefined;
+  const { density } = useTheme();
+  const isCompact = density === 'compact';
+  const normalizedSize = size === 'small' ? 'sm' : size === 'medium' ? 'md' : size;
+  const effectiveSize = isCompact && normalizedSize === 'md' ? 'sm' : normalizedSize;
+  const helperTextId = id ? `${id}-helper-text` : undefined;
+  const describedBy = [helperText ? helperTextId : undefined, inputProps['aria-describedby']]
+    .filter(Boolean)
+    .join(' ');
 
-	return (
-		<Box className="ds-form-field">
-			<Typography
-				component="label"
-				htmlFor={textFieldProps.id}
-				sx={{
-					display: 'block',
-					fontSize: isCompact ? '0.775rem' : '0.875rem',
-					fontWeight: 500,
-					color: 'var(--text-primary)',
-					mb: isCompact ? 0.35 : 1,
-				}}
-			>
-				{label}
-				{textFieldProps.required && (
-					<Typography
-						component="span"
-						sx={{ color: 'var(--error)', ml: 0.5 }}
-					>
-						*
-					</Typography>
-				)}
-			</Typography>
-			<TextField
-				size={textFieldProps.size || (isCompact ? 'small' : 'medium')}
-				{...textFieldProps}
-				aria-describedby={[
-					helperText ? helperTextId : undefined,
-					textFieldProps['aria-describedby']
-				].filter(Boolean).join(' ') || undefined}
-				fullWidth
-				InputProps={{
-					...textFieldProps.InputProps,
-					startAdornment: leftIcon ? (
-						<InputAdornment position="start">
-							{leftIcon}
-						</InputAdornment>
-					) : textFieldProps.InputProps?.startAdornment,
-					endAdornment: rightIcon ? (
-						<InputAdornment position="end">
-							{rightIcon}
-						</InputAdornment>
-					) : textFieldProps.InputProps?.endAdornment,
-				}}
-				sx={{
-					'& .MuiOutlinedInput-root': {
-						bgcolor: 'var(--background)',
-						borderRadius: 2,
-						color: 'var(--text-primary)',
-						'& fieldset': {
-							borderColor: 'rgba(var(--border-rgb), 0.9)',
-						},
-						'&:hover fieldset': {
-							borderColor: 'var(--border)',
-						},
-						'&.Mui-focused fieldset': {
-							borderColor: 'var(--accent-gold)',
-							borderWidth: 2,
-						},
-						'& input, & textarea': {
-							color: 'var(--text-primary)',
-							'&::placeholder': {
-								color: 'var(--text-secondary)',
-								opacity: 1,
-							},
-							'&:-webkit-autofill': {
-								WebkitBoxShadow: '0 0 0 100px var(--background) inset',
-								WebkitTextFillColor: 'var(--text-primary)',
-							},
-						},
-						'& .MuiInputAdornment-root': {
-							color: 'var(--text-secondary)',
-						},
-					},
-					...textFieldProps.sx,
-				}}
-			/>
-			{helperText && (
-				<Typography
-					id={helperTextId}
-					sx={{
-						fontSize: '0.75rem',
-						color: textFieldProps.error ? 'var(--error)' : 'var(--text-secondary)',
-						mt: 0.5,
-					}}
-				>
-					{helperText}
-				</Typography>
-			)}
-		</Box>
-	);
+  const controlClass = cn(
+    'w-full rounded-lg border bg-[var(--background)] text-[var(--text-primary)] outline-none transition-all duration-200',
+    'placeholder:text-[var(--text-secondary)]',
+    'disabled:cursor-not-allowed disabled:opacity-50',
+    effectiveSize === 'sm' ? 'py-1.5 text-xs' : 'py-2.5 text-sm',
+    leftIcon ? 'pl-9' : 'pl-3.5',
+    rightIcon ? 'pr-9' : 'pr-3.5',
+    multiline && 'leading-relaxed',
+    error
+      ? 'border-[var(--error)] focus:border-[var(--error)] focus:ring-2 focus:ring-[rgba(var(--error-rgb),0.2)]'
+      : 'border-[var(--border)] hover:border-[var(--accent-gold)] focus:border-[var(--accent-gold)] focus:ring-2 focus:ring-[rgba(var(--accent-gold-rgb),0.2)]',
+    inputClassName
+  );
+
+  const controlStyle = {
+    ...(multiline
+      ? {
+          minHeight: minRows ? `${minRows * 1.5}em` : undefined,
+          maxHeight: maxRows ? `${maxRows * 1.5}em` : undefined,
+        }
+      : undefined),
+    ...inputStyle,
+  };
+
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement> & ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    onChange?.(event);
+  };
+
+  return (
+    <div className={cn('ds-form-field', fullWidth && 'w-full', className)} style={style}>
+      {label && (
+        <label
+          htmlFor={id}
+          className={cn(
+            'mb-1 block font-medium',
+            effectiveSize === 'sm' ? 'text-xs' : 'text-sm',
+            error ? 'text-[var(--error)]' : 'text-[var(--text-primary)]'
+          )}
+        >
+          {label}
+          {required && <span className="ml-0.5 text-[var(--error)]">*</span>}
+        </label>
+      )}
+
+      <div className="relative">
+        {leftIcon && (
+          <span className="absolute left-3 top-1/2 flex -translate-y-1/2 items-center text-[var(--text-secondary)] [&>svg]:h-4 [&>svg]:w-4">
+            {leftIcon}
+          </span>
+        )}
+        {multiline ? (
+          <textarea
+            ref={ref}
+            id={id}
+            rows={rows ?? minRows ?? 3}
+            required={required}
+            disabled={disabled}
+            value={value ?? ''}
+            onChange={handleChange}
+            aria-describedby={describedBy || undefined}
+            aria-invalid={error || undefined}
+            className={controlClass}
+            style={controlStyle}
+            {...(inputProps as InputHTMLAttributes<HTMLTextAreaElement>)}
+          />
+        ) : (
+          <input
+            ref={ref}
+            id={id}
+            required={required}
+            disabled={disabled}
+            value={value ?? ''}
+            onChange={handleChange}
+            aria-describedby={describedBy || undefined}
+            aria-invalid={error || undefined}
+            className={controlClass}
+            {...inputProps}
+          />
+        )}
+        {rightIcon && (
+          onRightIconClick ? (
+            <button
+              type="button"
+              onClick={onRightIconClick}
+              disabled={disabled}
+              aria-label="Toggle input action"
+              className="absolute right-2.5 top-1/2 flex -translate-y-1/2 items-center rounded p-0.5 text-[var(--text-secondary)] outline-none transition-colors hover:text-[var(--text-primary)] focus-visible:ring-2 focus-visible:ring-[var(--accent-gold)]"
+            >
+              <span className="flex items-center [&>svg]:h-4 [&>svg]:w-4">{rightIcon}</span>
+            </button>
+          ) : (
+            <span className="absolute right-3 top-1/2 flex -translate-y-1/2 items-center text-[var(--text-secondary)] [&>svg]:h-4 [&>svg]:w-4">
+              {rightIcon}
+            </span>
+          )
+        )}
+      </div>
+
+      {helperText && (
+        <p
+          id={helperTextId}
+          className={cn(
+            'mt-1 text-xs',
+            error ? 'text-[var(--error)]' : 'text-[var(--text-secondary)]',
+            helperTextClassName
+          )}
+        >
+          {helperText}
+        </p>
+      )}
+    </div>
+  );
 }

@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Select, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Select, toast , FormField } from '@/components/design-system';
 import { PortalActivityList } from '@/components/partner-portals/PortalActivityList';
 import PortalBrandingSettingsPanel from '@/components/partner-portals/PortalBrandingSettingsPanel';
 import { DataTable, type Column } from '@/components/ui/DataTable';
@@ -720,7 +720,7 @@ export default function PartnerPortalDetailPage() {
 
                 <Box sx={{ mt: 3, display: 'grid', gap: 2 }}>
                   <Typography sx={{ fontWeight: 700 }}>Assign Shipment</Typography>
-                  <TextField label="Search shipments by vehicle or VIN" value={shipmentSearch} onChange={(event) => setShipmentSearch(event.target.value)} />
+                  <FormField label="Search shipments by vehicle or VIN" value={shipmentSearch} onChange={(event) => setShipmentSearch(event.target.value)} />
                   {shipmentResults.length > 0 ? (
                     <Box sx={{ display: 'grid', gap: 1 }}>
                       {shipmentResults.map((shipment) => (
@@ -988,11 +988,11 @@ export default function PartnerPortalDetailPage() {
               }
             >
               <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-                <TextField label="Name" value={inviteForm.name} onChange={(event) => setInviteForm((prev) => ({ ...prev, name: event.target.value }))} />
-                <TextField label="Email" value={inviteForm.email} onChange={(event) => setInviteForm((prev) => ({ ...prev, email: event.target.value }))} />
-                <TextField label="Phone" value={inviteForm.phone} onChange={(event) => setInviteForm((prev) => ({ ...prev, phone: event.target.value }))} />
-                <TextField label="City" value={inviteForm.city} onChange={(event) => setInviteForm((prev) => ({ ...prev, city: event.target.value }))} />
-                <TextField label="Country" value={inviteForm.country} onChange={(event) => setInviteForm((prev) => ({ ...prev, country: event.target.value }))} />
+                <FormField label="Name" value={inviteForm.name} onChange={(event) => setInviteForm((prev) => ({ ...prev, name: event.target.value }))} />
+                <FormField label="Email" value={inviteForm.email} onChange={(event) => setInviteForm((prev) => ({ ...prev, email: event.target.value }))} />
+                <FormField label="Phone" value={inviteForm.phone} onChange={(event) => setInviteForm((prev) => ({ ...prev, phone: event.target.value }))} />
+                <FormField label="City" value={inviteForm.city} onChange={(event) => setInviteForm((prev) => ({ ...prev, city: event.target.value }))} />
+                <FormField label="Country" value={inviteForm.country} onChange={(event) => setInviteForm((prev) => ({ ...prev, country: event.target.value }))} />
                 <Select label="Portal Role" value={inviteForm.membershipRole} onChange={(value) => setInviteForm((prev) => ({ ...prev, membershipRole: String(value) }))} options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]} />
               </Box>
             </Modal>
@@ -1034,7 +1034,7 @@ export default function PartnerPortalDetailPage() {
                 </>
               }
             >
-              <TextField
+              <FormField
                 label={`Type "${portal?.name || ''}" to confirm`}
                 value={deleteConfirmText}
                 onChange={(event) => setDeleteConfirmText(event.target.value)}

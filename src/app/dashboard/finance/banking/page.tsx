@@ -6,12 +6,11 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import {
   Box,
-  TextField,
 } from '@mui/material';
 import { ArrowRightLeft, ExternalLink, Landmark, Link2, ReceiptText, RefreshCcw, Upload } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Button, StatsCard, TableSkeleton, Modal, toast } from '@/components/design-system';
+import { PageHeader, Button, StatsCard, TableSkeleton, Modal, toast , FormField } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 interface BankingSummary {
@@ -592,7 +591,7 @@ export default function BankingFinancePage() {
             <Box sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
               This import will post directly into your ledger. Money in is imported as <strong>DEBIT</strong>. Money out is imported as <strong>CREDIT</strong>.
             </Box>
-            <TextField
+            <FormField
               size="small"
               label="Ledger Category"
               value={importForm.category}
@@ -603,7 +602,7 @@ export default function BankingFinancePage() {
               placeholder="Bank Statement"
               fullWidth
             />
-            <TextField
+            <FormField
               size="small"
               label="Statement Ending Balance"
               value={importForm.statementEndingBalance}

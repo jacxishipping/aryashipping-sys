@@ -92,3 +92,25 @@ export { default as KeyboardShortcutHelp } from './KeyboardShortcutHelp';
 // Operational Productivity Primitives
 export { default as CopyButton } from '@/components/ui/CopyButton';
 export { default as StatusFilterPills } from '@/components/ui/StatusFilterPills';
+
+// Navigation & Overlay (Tailwind-native, zero MUI)
+export { default as Tabs } from './Tabs';
+export type { TabItem, TabsProps } from './Tabs';
+export { default as Menu } from './Menu';
+export type { MenuItemData, MenuProps } from './Menu';
+export { default as Stepper } from './Stepper';
+export type { StepItem, StepperProps } from './Stepper';
+
+// Form Controls (Tailwind-native, zero MUI)
+export { default as Checkbox } from './Checkbox';
+export type { CheckboxProps } from './Checkbox';
+export { default as Switch } from './Switch';
+export type { SwitchProps } from './Switch';
+export { default as Autocomplete } from './Autocomplete';
+export type { AutocompleteOption, AutocompleteProps } from './Autocomplete';
+
+// Primitives (Tailwind-native, zero MUI)
+export { default as Divider } from './Divider';
+export type { DividerProps } from './Divider';
+export { default as Avatar } from './Avatar';
+export type { AvatarProps } from './Avatar';

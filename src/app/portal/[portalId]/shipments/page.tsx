@@ -9,9 +9,14 @@ import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutli
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  MenuItem,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, PageHeader, Select, Skeleton, SkeletonParagraph, SkeletonTable, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, PageHeader, Select, Skeleton, SkeletonParagraph, SkeletonTable, toast , FormField } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalCustomer = {
@@ -428,7 +433,7 @@ export default function PortalShipmentsPage() {
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[1.35fr_0.9fr]">
             <DashboardPanel title="Shipment Workspace" description="Search, review, and link assigned shipments to portal customers.">
               <Box sx={{ display: 'grid', gap: 2 }}>
-                <TextField
+                <FormField
                   label="Search shipments"
                   placeholder="Search by vehicle, VIN, status, or customer"
                   value={query}
@@ -496,13 +501,14 @@ export default function PortalShipmentsPage() {
                     ) : null}
 
                     {bulkAction === 'SET_NOTES' ? (
-                      <TextField
+                      <FormField
                         size="small"
                         label="Notes"
                         placeholder="Note to apply to selected shipments"
                         value={bulkNotes}
                         onChange={(event) => setBulkNotes(event.target.value)}
-                        sx={{ minWidth: 260, maxWidth: 380 }}
+                        fullWidth={false}
+                        className="min-w-[260px] max-w-[380px]"
                       />
                     ) : null}
                   </Box>

@@ -22,10 +22,9 @@ import {
   Box,
   Typography,
   Chip,
-  TextField,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast , FormField } from '@/components/design-system';
 
 export interface ExtractedDocumentData {
   vin?: string;
@@ -424,19 +423,15 @@ export function AiDocumentOcrModal({
 
             {/* Extracted Fields Form */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <TextField
+              <FormField
                 label="VIN (17 Characters)"
                 size="small"
                 fullWidth
                 value={formData.vin}
                 onChange={(e) => setFormData({ ...formData, vin: e.target.value.toUpperCase() })}
-                slotProps={{
-                  input: {
-                    style: { fontFamily: 'monospace', fontWeight: 700 },
-                  },
-                }}
+                inputStyle={{ fontFamily: 'monospace', fontWeight: 700 }}
               />
-              <TextField
+              <FormField
                 label="Vehicle Year"
                 size="small"
                 fullWidth
@@ -444,21 +439,21 @@ export function AiDocumentOcrModal({
                 value={formData.year}
                 onChange={(e) => setFormData({ ...formData, year: e.target.value })}
               />
-              <TextField
+              <FormField
                 label="Vehicle Make"
                 size="small"
                 fullWidth
                 value={formData.make}
                 onChange={(e) => setFormData({ ...formData, make: e.target.value })}
               />
-              <TextField
+              <FormField
                 label="Vehicle Model"
                 size="small"
                 fullWidth
                 value={formData.model}
                 onChange={(e) => setFormData({ ...formData, model: e.target.value })}
               />
-              <TextField
+              <FormField
                 label="Lot / Stock #"
                 size="small"
                 fullWidth
@@ -472,14 +467,14 @@ export function AiDocumentOcrModal({
                 onChange={(value) => setFormData({ ...formData, auctionName: String(value) as any })}
                 options={['Copart', 'IAAI', 'Impact', 'Manheim', 'Other'].map((name) => ({ value: name, label: name }))}
               />
-              <TextField
+              <FormField
                 label="Purchase Price ($ USD)"
                 size="small"
                 fullWidth
                 value={formData.purchasePrice}
                 onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
               />
-              <TextField
+              <FormField
                 label="Title Document Status"
                 size="small"
                 fullWidth

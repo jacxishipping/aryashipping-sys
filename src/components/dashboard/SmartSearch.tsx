@@ -13,7 +13,7 @@ import {
   ExpandMore,
   ExpandLess
 } from '@mui/icons-material';
-import { 
+import {
   TextField,
   InputAdornment,
   Button,
@@ -22,7 +22,7 @@ import {
   Typography,
   Collapse,
   CircularProgress,
-  Fade
+  Fade,
 } from '@mui/material';
 import {
   SHIPMENT_WORKFLOW_STAGE_OPTIONS,

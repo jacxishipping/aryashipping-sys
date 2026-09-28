@@ -5,11 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Box,
-  TextField,
   Typography,
 } from '@mui/material';
 import { AlertTriangle, Bot, Clock, Filter, RefreshCcw, Search as SearchIcon, ShieldCheck, XCircle } from 'lucide-react';
-import { PageHeader, Button, EmptyState, LoadingState, Select, StatsCard, StatusBadge, Modal, toast } from '@/components/design-system';
+import { PageHeader, Button, EmptyState, LoadingState, Select, StatsCard, StatusBadge, Modal, toast , FormField } from '@/components/design-system';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { hasPermission } from '@/lib/rbac';
@@ -325,15 +324,12 @@ export default function AiLogsPage() {
               { value: 'DOCUMENT', label: 'Document' },
             ]}
           />
-          <TextField
+          <FormField
             size="small"
             label="Entity ID"
             value={entityId}
             onChange={(event) => setEntityId(event.target.value)}
-            placeholder="Filter by exact entity id"
-            InputProps={{
-              startAdornment: <SearchIcon className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />,
-            }}
+            placeholder="Filter by exact entity id" leftIcon={<SearchIcon className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />} 
           />
         </Box>
 

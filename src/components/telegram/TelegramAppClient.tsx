@@ -9,12 +9,10 @@ import {
   CircularProgress,
   Container,
   Paper,
-  TextField,
   Typography,
   IconButton,
-  InputAdornment,
 } from '@mui/material';
-import { Alert } from '@/components/design-system';
+import { Alert , FormField } from '@/components/design-system';
 import {
   VpnKey,
   HelpOutline,
@@ -278,47 +276,21 @@ export function TelegramAppClient() {
                 )}
 
                 <Box sx={{ mb: 2 }}>
-                  <TextField
+                  <FormField
                     fullWidth
                     value={accessCode}
                     onChange={(e) => setAccessCode(e.target.value.toUpperCase().slice(0, 8))}
                     placeholder="e.g. 83492019 or JACX1234"
                     disabled={isSubmittingCode || !!successMessage}
                     autoComplete="off"
-                    autoFocus
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <VpnKey sx={{ color: '#D4AF37', fontSize: 20 }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                    inputProps={{
-                      style: {
+                    autoFocus leftIcon={<VpnKey sx={{ color: '#D4AF37', fontSize: 20 }} />}  style={{
                         textAlign: 'center',
                         letterSpacing: '3px',
                         fontWeight: 700,
                         fontSize: '1.1rem',
                         textTransform: 'uppercase',
-                      },
-                    }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        bgcolor: 'rgba(15, 23, 42, 0.8)',
-                        borderRadius: 3,
-                        color: '#ffffff',
-                        '& fieldset': {
-                          borderColor: 'rgba(212, 175, 55, 0.3)',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(212, 175, 55, 0.6)',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#D4AF37',
-                          borderWidth: 2,
-                        },
-                      },
-                    }}
+                      }} 
+                    
                   />
                 </Box>
 

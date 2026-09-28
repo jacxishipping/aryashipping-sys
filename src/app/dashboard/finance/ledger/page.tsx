@@ -26,7 +26,6 @@ import {
 import {
   Box,
   IconButton,
-  TextField,
   Typography,
 } from '@mui/material';
 import {
@@ -40,7 +39,7 @@ import {
   Modal,
   ConfirmDialog,
   Select,
-} from '@/components/design-system';
+ FormField } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -680,14 +679,11 @@ export default function LedgerPage() {
         >
           {showFilters && (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField
+              <FormField
                 placeholder="Search transactions..."
                 size="small"
                 value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                InputProps={{
-                  startAdornment: <Search size={18} style={{ marginRight: 8, color: 'var(--text-secondary)' }} />,
-                }}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })} leftIcon={<Search size={18} style={{ marginRight: 8, color: 'var(--text-secondary)' }} />} 
                 fullWidth
               />
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(4, 1fr)' }, gap: 2 }}>
@@ -723,24 +719,22 @@ export default function LedgerPage() {
                     ...(Object.entries(transactionInfoTypeLabels) as Array<[TransactionInfoType, string]>).map(([value, label]) => ({ value, label })),
                   ]}
                 />
-                <TextField
+                <FormField
                   label="Start Date"
                   type="date"
                   size="small"
                   value={filters.startDate}
                   onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                  InputLabelProps={{ shrink: true }}
                   fullWidth
                 />
               </Box>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(4, 1fr)' }, gap: 2 }}>
-                <TextField
+                <FormField
                   label="End Date"
                   type="date"
                   size="small"
                   value={filters.endDate}
                   onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                  InputLabelProps={{ shrink: true }}
                   fullWidth
                 />
               </Box>
@@ -848,7 +842,7 @@ export default function LedgerPage() {
                 options={Object.entries(transactionInfoTypeLabels).map(([value, label]) => ({ value, label }))}
               />
 
-              <TextField
+              <FormField
                 label="Description *"
                 size="small"
                 value={formData.description}
@@ -858,19 +852,18 @@ export default function LedgerPage() {
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Amount * (USD)"
                 size="small"
                 type="number"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                placeholder="0.00"
-                inputProps={{ step: '0.01', min: '0.01' }}
+                placeholder="0.00" step={'0.01'} min={'0.01'} 
                 required
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Notes (Optional)"
                 size="small"
                 value={formData.notes}
@@ -908,7 +901,7 @@ export default function LedgerPage() {
                 message="Note: Type and amount cannot be edited to maintain ledger integrity. Only description and notes can be updated."
               />
 
-              <TextField
+              <FormField
                 label="Type (Read-only)"
                 size="small"
                 value={editEntry?.type || ''}
@@ -916,7 +909,7 @@ export default function LedgerPage() {
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Amount (Read-only)"
                 size="small"
                 value={editEntry ? formatCurrency(editEntry.amount) : ''}
@@ -924,7 +917,7 @@ export default function LedgerPage() {
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Description *"
                 size="small"
                 value={editForm.description}
@@ -933,7 +926,7 @@ export default function LedgerPage() {
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Notes"
                 size="small"
                 value={editForm.notes}

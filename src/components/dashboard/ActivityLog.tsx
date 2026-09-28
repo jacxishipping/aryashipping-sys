@@ -2,8 +2,16 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { Box, Chip, List, ListItem, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
-import { StatusBadge, StatusFilterPills } from '@/components/design-system';
+import {
+  Box,
+  Chip,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+} from '@mui/material';
+import { StatusBadge, StatusFilterPills, FormField } from '@/components/design-system';
 import { 
   ArrowRight,
   BadgeDollarSign,
@@ -434,21 +442,15 @@ export function ActivityLog({ logs }: ActivityLogProps) {
         </Box>
       )}
 
-      <TextField
+      <FormField
         fullWidth
         size="small"
         placeholder="Search actor, status, invoice fields, or container reference"
         value={searchTerm}
         onChange={(event) => setSearchTerm(event.target.value)}
-        sx={{
-          mb: 2,
-          '& .MuiOutlinedInput-root': {
-            bgcolor: 'var(--panel)',
-          },
-        }}
-        InputProps={{
-          startAdornment: <Search className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />,
-        }}
+        className="mb-4"
+        inputClassName="bg-[var(--panel)]"
+        leftIcon={<Search className="h-4 w-4 text-[var(--text-secondary)]" />}
       />
 
       <Box sx={{ mb: 2 }}>

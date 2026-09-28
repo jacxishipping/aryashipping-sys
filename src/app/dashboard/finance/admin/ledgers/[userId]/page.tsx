@@ -26,10 +26,9 @@ import {
 import {
   Box,
   Typography,
-  TextField,
   IconButton,
 } from '@mui/material';
-import { Alert, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Modal, ConfirmDialog, Select } from '@/components/design-system';
+import { Alert, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Modal, ConfirmDialog, Select , FormField } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -564,14 +563,11 @@ export default function UserLedgerManagementPage() {
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              <TextField
+              <FormField
                 placeholder="Search transactions..."
                 size="small"
                 value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                InputProps={{
-                  startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-                }}
+                onChange={(e) => setFilters({ ...filters, search: e.target.value })} leftIcon={<Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />} 
                 fullWidth
               />
               <Button
@@ -598,22 +594,20 @@ export default function UserLedgerManagementPage() {
                     { value: 'CREDIT', label: 'Credit Only' },
                   ]}
                 />
-                <TextField
+                <FormField
                   label="Start Date"
                   type="date"
                   size="small"
                   value={filters.startDate}
                   onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                  InputLabelProps={{ shrink: true }}
                   fullWidth
                 />
-                <TextField
+                <FormField
                   label="End Date"
                   type="date"
                   size="small"
                   value={filters.endDate}
                   onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                  InputLabelProps={{ shrink: true }}
                   fullWidth
                 />
               </Box>
@@ -768,7 +762,7 @@ export default function UserLedgerManagementPage() {
                 options={Object.entries(transactionInfoTypeLabels).map(([value, label]) => ({ value, label }))}
               />
 
-              <TextField
+              <FormField
                 label="Description *"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -777,13 +771,14 @@ export default function UserLedgerManagementPage() {
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Amount * (USD)"
                 type="number"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 placeholder="0.00"
-                inputProps={{ step: '0.01', min: '0.01' }}
+                step="0.01"
+                min="0.01"
                 helperText={
                   formData.amount
                     ? (() => {
@@ -797,12 +792,12 @@ export default function UserLedgerManagementPage() {
                       })()
                     : ''
                 }
-                FormHelperTextProps={{ sx: { color: 'var(--success)' } }}
+                helperTextClassName="text-[var(--success)]"
                 required
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Notes (Optional)"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
@@ -839,21 +834,21 @@ export default function UserLedgerManagementPage() {
                 message="Note: Type and amount cannot be edited to maintain ledger integrity. Only description and notes can be updated."
               />
 
-              <TextField
+              <FormField
                 label="Type (Read-only)"
                 value={formData.type}
                 disabled
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Amount (Read-only)"
                 value={formatCurrency(parseFloat(formData.amount))}
                 disabled
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Description *"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -861,7 +856,7 @@ export default function UserLedgerManagementPage() {
                 fullWidth
               />
 
-              <TextField
+              <FormField
                 label="Notes"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}

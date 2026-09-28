@@ -2,9 +2,12 @@
 
 import { useRef } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Box, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Typography,
+} from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, toast , FormField } from '@/components/design-system';
 import { getPortalBrandIdentity } from '@/lib/partner-portal-branding';
 import {
   getPortalCustomDomainVerificationHost,
@@ -376,14 +379,14 @@ export default function PortalBrandingSettingsPanel({
     >
       <Box sx={{ display: 'grid', gap: 2.5, gridTemplateColumns: compact ? '1fr' : { xs: '1fr', xl: 'minmax(0, 1.15fr) minmax(300px, 0.85fr)' } }}>
         <Box sx={{ display: 'grid', gap: 2 }}>
-          <TextField
+          <FormField
             label="Company Label"
             placeholder="Partner company name shown in the portal"
             value={form.companyLabel}
             onChange={(event) => setForm((prev) => ({ ...prev, companyLabel: event.target.value }))}
             disabled={!canEdit || saving}
           />
-          <TextField
+          <FormField
             label="Accent Color"
             placeholder="#0f766e"
             helperText="Use a 6-digit hex color. Example: #0f766e"
@@ -433,7 +436,7 @@ export default function PortalBrandingSettingsPanel({
               ) : null}
             </Box>
           </Box>
-          <TextField
+          <FormField
             label="Logo URL (Optional)"
             placeholder="https://..."
             helperText="Optional fallback if you want to link an existing public image instead of uploading a file."
@@ -441,7 +444,7 @@ export default function PortalBrandingSettingsPanel({
             onChange={(event) => setForm((prev) => ({ ...prev, logoUrl: event.target.value }))}
             disabled={!canEdit || saving || uploadingLogo}
           />
-          <TextField
+          <FormField
             label="Custom Domain"
             placeholder="portal.partner.com"
             value={form.customDomain}
@@ -480,10 +483,9 @@ export default function PortalBrandingSettingsPanel({
                 ? `After DNS points ${form.customDomain} to ${appHost || 'this app'}, visitors land on the branded portal site at /. They can sign in there and continue into the workspace.`
                 : `Without a custom domain, share /portal-site/${portalId} as the branded entry page. Signed-in members still work inside /portal/${portalId}.`}
             </Typography>
-            <TextField
+            <FormField
               label="Workspace Route"
-              value={workspacePreview}
-              InputProps={{ readOnly: true }}
+              value={workspacePreview} readOnly={true} 
               helperText="Use this route when you want to open the actual workspace after sign-in."
             />
           </Box>
@@ -511,8 +513,8 @@ export default function PortalBrandingSettingsPanel({
                     <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                       For a subdomain such as {portal?.customDomain}, create a CNAME that points the hostname to {appHost || 'your main app host'}.
                     </Typography>
-                    <TextField label="Recommended Record Type" value="CNAME" InputProps={{ readOnly: true }} />
-                    <TextField label="CNAME Target" value={appHost || ''} InputProps={{ readOnly: true }} helperText="Some DNS providers want only the label (for example, portal). Others accept the full hostname." />
+                    <FormField label="Recommended Record Type" value="CNAME" readOnly={true}  />
+                    <FormField label="CNAME Target" value={appHost || ''} readOnly={true}  helperText="Some DNS providers want only the label (for example, portal). Others accept the full hostname." />
                     <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                       If you want to use the root domain instead of a subdomain, use ALIAS, ANAME, or CNAME flattening to {appHost || 'your main app host'} when your DNS provider supports it. If your provider only supports A records at the root, use the hosting platform's documented A-record target for this app.
                     </Typography>
@@ -521,8 +523,8 @@ export default function PortalBrandingSettingsPanel({
                   <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                     Add this TXT record to prove that you control the domain before it starts routing traffic to the portal.
                   </Typography>
-                  <TextField label="TXT Host" value={verificationHost || ''} InputProps={{ readOnly: true }} />
-                  <TextField label="TXT Value" value={verificationValue || ''} InputProps={{ readOnly: true }} />
+                  <FormField label="TXT Host" value={verificationHost || ''} readOnly={true}  />
+                  <FormField label="TXT Value" value={verificationValue || ''} readOnly={true}  />
                   <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                     Keep the DNS target pointed at {appHost || 'the main app host'} separately. Verification only proves control of the hostname.
                   </Typography>

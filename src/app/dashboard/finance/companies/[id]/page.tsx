@@ -15,7 +15,7 @@ import {
 import { AlertTriangle, ArrowLeft, Building2, CheckCircle2, DollarSign, Eye, GitCompareArrows, Landmark, Pencil, Plus, ReceiptText, Trash2, Truck, Upload } from 'lucide-react';
 import PermissionRoute from "@/components/auth/PermissionRoute";
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, Select, StatsCard, toast, TableSkeleton, PageHeader, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
+import { Breadcrumbs, Button, Select, StatsCard, toast, TableSkeleton, PageHeader, Modal, ConfirmDialog, Tooltip , FormField } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { normalizeShippingRateConfig, type AuctionRateEntry, type ShippingRateCalculatorConfig } from '@/lib/shipping-rate-calculator';
 
@@ -1205,7 +1205,7 @@ export default function CompanyLedgerDetailPage() {
         >
 
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) 180px 180px' }, gap: 1.5, mb: 2 }}>
-            <TextField
+            <FormField
               size="small"
               placeholder="Search description / category / notes"
               value={filters.search}
@@ -1393,7 +1393,7 @@ export default function CompanyLedgerDetailPage() {
             )}
 
             <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr 180px 180px' }, gap: 1.5 }}>
-              <TextField
+              <FormField
                 size="small"
                 label="List Name"
                 value={priceListForm.name}
@@ -1403,7 +1403,7 @@ export default function CompanyLedgerDetailPage() {
                 }}
                 placeholder={`${company.name} price list`}
               />
-              <TextField
+              <FormField
                 size="small"
                 label="Destination"
                 value={priceListForm.destinationLabel}
@@ -1413,11 +1413,10 @@ export default function CompanyLedgerDetailPage() {
                 }}
                 placeholder={company.priceListConfig?.destinationLabel || 'Islam Qala, Afghanistan'}
               />
-              <TextField
+              <FormField
                 size="small"
                 type="date"
                 label="Effective From"
-                InputLabelProps={{ shrink: true }}
                 value={priceListForm.effectiveFrom}
                 onChange={(event) => {
                   setPriceListForm((prev) => ({ ...prev, effectiveFrom: event.target.value }));
@@ -1523,19 +1522,19 @@ export default function CompanyLedgerDetailPage() {
                         {priceListPreview.rows.length > 0 ? priceListPreview.rows.map((row, index) => (
                           <tr key={`${row.stateCode}-${row.branch}-${row.city}-${index}`} style={{ borderBottom: '1px solid var(--border)' }}>
                             <td style={{ padding: '8px 10px' }}>
-                              <TextField size="small" value={row.stateCode} onChange={(event) => handleUpdatePreviewRow(index, 'stateCode', event.target.value.toUpperCase())} inputProps={{ maxLength: 2 }} />
+                              <FormField size="small" value={row.stateCode} onChange={(event) => handleUpdatePreviewRow(index, 'stateCode', event.target.value.toUpperCase())} maxLength={2}  />
                             </td>
                             <td style={{ padding: '8px 10px' }}>
-                              <TextField size="small" value={row.branch} onChange={(event) => handleUpdatePreviewRow(index, 'branch', event.target.value)} />
+                              <FormField size="small" value={row.branch} onChange={(event) => handleUpdatePreviewRow(index, 'branch', event.target.value)} />
                             </td>
                             <td style={{ padding: '8px 10px' }}>
-                              <TextField size="small" value={row.city} onChange={(event) => handleUpdatePreviewRow(index, 'city', event.target.value)} />
+                              <FormField size="small" value={row.city} onChange={(event) => handleUpdatePreviewRow(index, 'city', event.target.value)} />
                             </td>
                             <td style={{ padding: '8px 10px' }}>
-                              <TextField size="small" value={row.loadingPoint || ''} onChange={(event) => handleUpdatePreviewRow(index, 'loadingPoint', event.target.value)} />
+                              <FormField size="small" value={row.loadingPoint || ''} onChange={(event) => handleUpdatePreviewRow(index, 'loadingPoint', event.target.value)} />
                             </td>
                             <td style={{ padding: '8px 10px' }}>
-                              <TextField size="small" type="number" value={row.total} onChange={(event) => handleUpdatePreviewRow(index, 'total', event.target.value)} inputProps={{ min: 1 }} />
+                              <FormField size="small" type="number" value={row.total} onChange={(event) => handleUpdatePreviewRow(index, 'total', event.target.value)} min={1}  />
                             </td>
                             <td style={{ padding: '8px 10px' }}>
                               <Box sx={{
@@ -1579,7 +1578,7 @@ export default function CompanyLedgerDetailPage() {
             <Box id="price-list-rate-lookup" sx={{ scrollMarginTop: 96, display: 'grid', gap: 1.5 }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1.5, flexWrap: 'wrap', alignItems: 'center' }}>
                 <Box sx={{ fontWeight: 700 }}>Rate Lookup</Box>
-                <TextField size="small" placeholder="Search state, branch, city" value={priceListSearch} onChange={(event) => setPriceListSearch(event.target.value)} />
+                <FormField size="small" placeholder="Search state, branch, city" value={priceListSearch} onChange={(event) => setPriceListSearch(event.target.value)} />
               </Box>
               <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, overflow: 'hidden' }}>
                 <Box sx={{ maxHeight: 360, overflow: 'auto' }}>
@@ -1903,17 +1902,17 @@ export default function CompanyLedgerDetailPage() {
             </>
           }
         >
-            <TextField label="Description" value={formData.description} onChange={(event) => setFormData((prev) => ({ ...prev, description: event.target.value }))} required />
+            <FormField label="Description" value={formData.description} onChange={(event) => setFormData((prev) => ({ ...prev, description: event.target.value }))} required />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <Select label="Type" value={formData.type} onChange={(value) => setFormData((prev) => ({ ...prev, type: String(value) }))} options={[{ value: 'DEBIT', label: 'DEBIT (Payment to Company)' }, { value: 'CREDIT', label: 'CREDIT (Company Charge/Expense)' }]} />
-              <TextField label="Amount" type="number" inputProps={{ min: 0.01, step: 0.01 }} value={formData.amount} onChange={(event) => setFormData((prev) => ({ ...prev, amount: event.target.value }))} />
+              <FormField label="Amount" type="number" min={0.01} step={0.01}  value={formData.amount} onChange={(event) => setFormData((prev) => ({ ...prev, amount: event.target.value }))} />
             </Box>
-            <TextField label="Transaction Date" type="date" InputLabelProps={{ shrink: true }} value={formData.transactionDate} onChange={(event) => setFormData((prev) => ({ ...prev, transactionDate: event.target.value }))} />
+            <FormField label="Transaction Date" type="date" value={formData.transactionDate} onChange={(event) => setFormData((prev) => ({ ...prev, transactionDate: event.target.value }))} />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-              <TextField label="Category" value={formData.category} onChange={(event) => setFormData((prev) => ({ ...prev, category: event.target.value }))} />
-              <TextField label="Reference" value={formData.reference} onChange={(event) => setFormData((prev) => ({ ...prev, reference: event.target.value }))} />
+              <FormField label="Category" value={formData.category} onChange={(event) => setFormData((prev) => ({ ...prev, category: event.target.value }))} />
+              <FormField label="Reference" value={formData.reference} onChange={(event) => setFormData((prev) => ({ ...prev, reference: event.target.value }))} />
             </Box>
-            <TextField label="Notes" rows={3} multiline value={formData.notes} onChange={(event) => setFormData((prev) => ({ ...prev, notes: event.target.value }))} />
+            <FormField label="Notes" rows={3} multiline value={formData.notes} onChange={(event) => setFormData((prev) => ({ ...prev, notes: event.target.value }))} />
         </Modal>
 
         <Modal
@@ -1934,7 +1933,7 @@ export default function CompanyLedgerDetailPage() {
             <Box sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
               Money in is imported as <strong>DEBIT</strong>. Money out is imported as <strong>CREDIT</strong>. Previously imported rows are skipped automatically.
             </Box>
-            <TextField
+            <FormField
               label="Ledger Category"
               value={importForm.category}
               onChange={(event) => {
@@ -1944,7 +1943,7 @@ export default function CompanyLedgerDetailPage() {
               placeholder="Bank Statement"
               fullWidth
             />
-            <TextField
+            <FormField
               label="Statement Ending Balance"
               value={importForm.statementEndingBalance}
               onChange={(event) => {
@@ -2159,17 +2158,17 @@ export default function CompanyLedgerDetailPage() {
             </>
           }
         >
-            <TextField label="Description" value={editForm.description} onChange={(event) => setEditForm((prev) => ({ ...prev, description: event.target.value }))} required />
+            <FormField label="Description" value={editForm.description} onChange={(event) => setEditForm((prev) => ({ ...prev, description: event.target.value }))} required />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <Select label="Type" value={editForm.type} onChange={(value) => setEditForm((prev) => ({ ...prev, type: String(value) }))} options={[{ value: 'DEBIT', label: 'DEBIT' }, { value: 'CREDIT', label: 'CREDIT' }]} />
-              <TextField label="Amount" type="number" inputProps={{ min: 0.01, step: 0.01 }} value={editForm.amount} onChange={(event) => setEditForm((prev) => ({ ...prev, amount: event.target.value }))} />
+              <FormField label="Amount" type="number" min={0.01} step={0.01}  value={editForm.amount} onChange={(event) => setEditForm((prev) => ({ ...prev, amount: event.target.value }))} />
             </Box>
-            <TextField label="Transaction Date" type="date" InputLabelProps={{ shrink: true }} value={editForm.transactionDate} onChange={(event) => setEditForm((prev) => ({ ...prev, transactionDate: event.target.value }))} />
+            <FormField label="Transaction Date" type="date" value={editForm.transactionDate} onChange={(event) => setEditForm((prev) => ({ ...prev, transactionDate: event.target.value }))} />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-              <TextField label="Category" value={editForm.category} onChange={(event) => setEditForm((prev) => ({ ...prev, category: event.target.value }))} />
-              <TextField label="Reference" value={editForm.reference} onChange={(event) => setEditForm((prev) => ({ ...prev, reference: event.target.value }))} />
+              <FormField label="Category" value={editForm.category} onChange={(event) => setEditForm((prev) => ({ ...prev, category: event.target.value }))} />
+              <FormField label="Reference" value={editForm.reference} onChange={(event) => setEditForm((prev) => ({ ...prev, reference: event.target.value }))} />
             </Box>
-            <TextField label="Notes" rows={3} multiline value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} />
+            <FormField label="Notes" rows={3} multiline value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} />
         </Modal>
 
         <ConfirmDialog

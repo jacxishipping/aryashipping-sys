@@ -5,16 +5,14 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { 
-  Box, 
-  TextField, 
-  Checkbox, 
-  Divider, 
-  InputAdornment,
+import {
+  Box,
+  Checkbox,
+  Divider,
   Stepper,
   Step,
   StepLabel,
-  Paper
+  Paper,
 } from '@mui/material';
 import { 
   ArrowLeft, 
@@ -30,7 +28,7 @@ import {
 import { Search } from '@mui/icons-material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { DataTable } from '@/components/ui/DataTable';
-import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select, StatusBadge } from '@/components/design-system';
+import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select, StatusBadge , FormField } from '@/components/design-system';
 import AdminRoute from '@/components/auth/AdminRoute';
 
 interface User {
@@ -374,17 +372,14 @@ export default function RecordPaymentPage() {
             >
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {/* Search field */}
-                <TextField
+                <FormField
                   placeholder="Search by name or email..."
                   size="small"
                   value={customerSearch}
                   onChange={(e) => {
                     setCustomerSearch(e.target.value);
                     if (selectedUserId) setSelectedUserId('');
-                  }}
-                  InputProps={{
-                    startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-                  }}
+                  }} leftIcon={<Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />} 
                   fullWidth
                   autoComplete="off"
                 />
@@ -563,14 +558,11 @@ export default function RecordPaymentPage() {
                           }
                         />
 
-                        <TextField
+                        <FormField
                           placeholder="Enter VIN or Lot Number..."
                           size="small"
                           value={shipmentSearch}
-                          onChange={(e) => setShipmentSearch(e.target.value)}
-                          InputProps={{
-                            startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-                          }}
+                          onChange={(e) => setShipmentSearch(e.target.value)} leftIcon={<Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />} 
                           fullWidth
                           autoComplete="off"
                         />
@@ -764,7 +756,7 @@ export default function RecordPaymentPage() {
                 </Box>
 
                 {/* Amount Input */}
-                <TextField
+                <FormField
                   fullWidth
                   label="Payment Amount (USD) *"
                   type="number"
@@ -772,15 +764,7 @@ export default function RecordPaymentPage() {
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
                   required
-                  size="medium"
-                  inputProps={{ step: '0.01', min: '0.01' }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <DollarSign className="w-5 h-5 text-[var(--text-secondary)]" />
-                      </InputAdornment>
-                    ),
-                  }}
+                  size="medium" step={'0.01'} min={'0.01'} leftIcon={<DollarSign className="w-5 h-5 text-[var(--text-secondary)]" />} 
                   helperText={`Enter the amount to apply against the shipment's ${paymentCategoryLabels[paymentCategory].toLowerCase()} balance`}
                 />
 
@@ -808,7 +792,7 @@ export default function RecordPaymentPage() {
                 />
 
                 {/* Notes */}
-                <TextField
+                <FormField
                   fullWidth
                   label="Notes (Optional)"
                   multiline

@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Box, 
-  Typography, 
+import {
+  Box,
+  Typography,
   Button,
   Checkbox,
   FormControlLabel,
@@ -16,7 +16,6 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Divider,
-  TextField,
 } from '@mui/material';
 import { 
   FileText, 
@@ -610,7 +609,7 @@ export function DocumentManager({
               </Paper>
             )}
 
-            <TextField
+            <FormField
               size="small"
               label="Document Name"
               value={review.name}
@@ -638,7 +637,7 @@ export function DocumentManager({
               />
             </FormField>
 
-            <TextField
+            <FormField
               size="small"
               label="Description"
               value={review.description}
@@ -649,7 +648,7 @@ export function DocumentManager({
 
             {entityType === 'shipment' && (
               <>
-                <TextField
+                <FormField
                   size="small"
                   label="Tags"
                   value={reviewTags}

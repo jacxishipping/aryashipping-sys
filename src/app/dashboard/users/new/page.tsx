@@ -16,17 +16,15 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Link from 'next/link';
 
 import {
-	Box,
-	Typography,
-	TextField,
-	InputAdornment,
-	IconButton,
-	Button as MuiButton,
-	Stepper,
-	Step,
-	StepLabel,
+  Box,
+  Typography,
+  IconButton,
+  Button as MuiButton,
+  Stepper,
+  Step,
+  StepLabel,
 } from '@mui/material';
-import { Breadcrumbs, PageHeader, Button, Select, toast, FormPageSkeleton } from '@/components/design-system';
+import { Breadcrumbs, PageHeader, Button, Select, toast, FormPageSkeleton , FormField } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { hasPermission } from '@/lib/rbac';
 
@@ -216,21 +214,19 @@ export default function CreateUserPage() {
 								{/* Name */}
 								<Box sx={{ gridColumn: '1 / -1' }}>
 									<Typography component="label" htmlFor="name" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Full Name</Typography>
-									<TextField
+									<FormField
 										id="name" name="name" type="text" fullWidth value={formData.name} onChange={handleChange} required
-										placeholder="Enter full name"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><PersonIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Enter full name" leftIcon={<PersonIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} 
+									 
 									/>
 								</Box>
 								{/* Email */}
 								<Box sx={{ gridColumn: '1 / -1' }}>
 									<Typography component="label" htmlFor="email" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Email</Typography>
-									<TextField
+									<FormField
 										id="email" name="email" type="email" fullWidth value={formData.email} onChange={handleChange} required
-										placeholder="Enter email address"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><EmailIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Enter email address" leftIcon={<EmailIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} 
+									 
 									/>
 								</Box>
 								{/* Role */}
@@ -238,14 +234,13 @@ export default function CreateUserPage() {
 									{accountType === 'customer' ? (
 										<>
 											<Typography component="label" htmlFor="role" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Role</Typography>
-											<TextField
+											<FormField
 												id="role"
 												name="role"
 												fullWidth
 												value="Customer"
-												disabled
-												InputProps={{ startAdornment: (<InputAdornment position="start"><BadgeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-												sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+												disabled leftIcon={<BadgeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} 
+											 
 											/>
 										</>
 									) : (
@@ -274,41 +269,37 @@ export default function CreateUserPage() {
 								{/* Phone */}
 								<Box sx={{ gridColumn: '1 / -1' }}>
 									<Typography component="label" htmlFor="phone" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Phone</Typography>
-									<TextField
+									<FormField
 										id="phone" name="phone" type="tel" fullWidth value={formData.phone} onChange={handleChange}
-										placeholder="Enter phone number"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><PhoneIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Enter phone number" leftIcon={<PhoneIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} 
+									 
 									/>
 								</Box>
 								{/* Address */}
 								<Box sx={{ gridColumn: '1 / -1' }}>
 									<Typography component="label" htmlFor="address" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Address</Typography>
-									<TextField
+									<FormField
 										id="address" name="address" type="text" fullWidth value={formData.address} onChange={handleChange}
-										placeholder="Enter address"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><HomeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Enter address" leftIcon={<HomeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} 
+									 
 									/>
 								</Box>
 								{/* City */}
 								<Box>
 									<Typography component="label" htmlFor="city" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>City</Typography>
-									<TextField
+									<FormField
 										id="city" name="city" type="text" fullWidth value={formData.city} onChange={handleChange}
-										placeholder="Enter city"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><LocationCityIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Enter city" leftIcon={<LocationCityIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} 
+									 
 									/>
 								</Box>
 								{/* Country */}
 								<Box>
 									<Typography component="label" htmlFor="country" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Country</Typography>
-									<TextField
+									<FormField
 										id="country" name="country" type="text" fullWidth value={formData.country} onChange={handleChange}
-										placeholder="Enter country"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><PublicIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Enter country" leftIcon={<PublicIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} 
+									 
 									/>
 								</Box>
 							</Box>
@@ -319,27 +310,19 @@ export default function CreateUserPage() {
 								{/* Password */}
 								<Box sx={{ gridColumn: '1 / -1' }}>
 									<Typography component="label" htmlFor="password" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Password</Typography>
-									<TextField
+									<FormField
 										id="password" name="password" type={showPassword ? 'text' : 'password'} fullWidth value={formData.password} onChange={handleChange} required
-										placeholder="Enter password (min. 6 characters)"
-										InputProps={{
-											startAdornment: (<InputAdornment position="start"><LockIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>),
-											endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: 'var(--accent-gold)' }}>{showPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}</IconButton></InputAdornment>)
-										}}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Enter password (min. 6 characters)" leftIcon={<LockIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} rightIcon={<IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: 'var(--accent-gold)' }}>{showPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}</IconButton>} 
+									 
 									/>
 								</Box>
 								{/* Confirm Password */}
 								<Box sx={{ gridColumn: '1 / -1' }}>
 									<Typography component="label" htmlFor="confirmPassword" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Confirm Password</Typography>
-									<TextField
+									<FormField
 										id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} fullWidth value={formData.confirmPassword} onChange={handleChange} required
-										placeholder="Confirm password"
-										InputProps={{
-											startAdornment: (<InputAdornment position="start"><LockIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>),
-											endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: 'var(--accent-gold)' }}>{showConfirmPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}</IconButton></InputAdornment>)
-										}}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+										placeholder="Confirm password" leftIcon={<LockIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />} rightIcon={<IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: 'var(--accent-gold)' }}>{showConfirmPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}</IconButton>} 
+									 
 									/>
 								</Box>
 							</Box>

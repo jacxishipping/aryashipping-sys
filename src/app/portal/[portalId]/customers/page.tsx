@@ -6,9 +6,12 @@ import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import FmdGoodOutlinedIcon from '@mui/icons-material/FmdGoodOutlined';
-import { Box, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Typography,
+} from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Skeleton, SkeletonTable, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Skeleton, SkeletonTable, toast , FormField } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalCustomer = {
@@ -340,14 +343,14 @@ export default function PortalCustomersPage() {
             >
               {viewer.canManageCustomers ? (
                 <Box sx={{ display: 'grid', gap: 1.5 }}>
-                  <TextField label="Customer Name" value={form.name} onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))} />
-                  <TextField label="Email" value={form.email} onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))} />
-                  <TextField label="Phone" value={form.phone} onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))} />
+                  <FormField label="Customer Name" value={form.name} onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))} />
+                  <FormField label="Email" value={form.email} onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))} />
+                  <FormField label="Phone" value={form.phone} onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))} />
                   <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-                    <TextField label="City" value={form.city} onChange={(event) => setForm((prev) => ({ ...prev, city: event.target.value }))} />
-                    <TextField label="Country" value={form.country} onChange={(event) => setForm((prev) => ({ ...prev, country: event.target.value }))} />
+                    <FormField label="City" value={form.city} onChange={(event) => setForm((prev) => ({ ...prev, city: event.target.value }))} />
+                    <FormField label="Country" value={form.country} onChange={(event) => setForm((prev) => ({ ...prev, country: event.target.value }))} />
                   </Box>
-                  <TextField label="Notes" multiline minRows={3} value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} />
+                  <FormField label="Notes" multiline minRows={3} value={form.notes} onChange={(event) => setForm((prev) => ({ ...prev, notes: event.target.value }))} />
 
                   <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, pt: 1 }}>
                     {editingCustomerId ? (
@@ -400,7 +403,7 @@ export default function PortalCustomersPage() {
                   </Box>
                 </DashboardGrid>
 
-                <TextField
+                <FormField
                   label="Search customers"
                   placeholder="Search by name, email, phone, city, or country"
                   value={query}
@@ -443,7 +446,7 @@ export default function PortalCustomersPage() {
           </>
         }
       >
-        <TextField
+        <FormField
           autoFocus
           fullWidth
           label="Email address"

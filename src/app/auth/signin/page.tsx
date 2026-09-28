@@ -7,49 +7,15 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Visibility, VisibilityOff, Email, Lock, ArrowForward, VpnKey } from '@mui/icons-material';
 import SiteLogo from '@/components/brand/SiteLogo';
-import { Alert, Button as DSButton } from '@/components/design-system';
-import { Button, 
-	TextField, 
-	InputAdornment, 
-	IconButton, 
-	CircularProgress, 
-	Box, 
-	Typography,
-	Paper
+import { Alert, Button as DSButton , FormField } from '@/components/design-system';
+import {
+  Button,
+  IconButton,
+  CircularProgress,
+  Box,
+  Typography,
+  Paper,
 } from '@mui/material';
-
-const textFieldStyles = {
-	'& .MuiOutlinedInput-root': {
-		bgcolor: 'var(--background)',
-		borderRadius: 3,
-		color: 'var(--text-primary)',
-		'& fieldset': {
-			borderColor: 'rgba(var(--panel-rgb), 0.9)',
-			transition: 'all 200ms ease',
-		},
-		'&:hover fieldset': {
-			borderColor: 'rgba(var(--accent-gold-rgb), 0.22)',
-		},
-		'&.Mui-focused': {
-			boxShadow: '0 0 0 3px rgba(var(--accent-gold-rgb), 0.12)',
-		},
-		'&.Mui-focused fieldset': {
-			borderColor: 'var(--accent-gold)',
-			borderWidth: 2,
-		},
-		'& input': {
-			color: 'var(--text-primary)',
-			'&::placeholder': {
-				color: 'var(--text-secondary)',
-				opacity: 1,
-			},
-			'&:-webkit-autofill': {
-				WebkitBoxShadow: '0 0 0 100px var(--background) inset',
-				WebkitTextFillColor: 'var(--text-primary)',
-			},
-		},
-	},
-} as const;
 
 export default function SignInPage() {
 	const { t } = useTranslation();
@@ -279,7 +245,7 @@ export default function SignInPage() {
 										</Typography>
 									)}
 								</Box>
-								<TextField
+								<FormField
 									id="email"
 									type="text"
 									fullWidth
@@ -287,28 +253,12 @@ export default function SignInPage() {
 									onChange={(e) => setEmail(e.target.value)}
 									required
 									placeholder="Enter email or 8-character code (e.g. C24FBSUX)"
-									autoComplete="username"
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												{isAccessCode ? (
+									autoComplete="username" leftIcon={isAccessCode ? (
 													<VpnKey sx={{ fontSize: 20, color: 'var(--accent-gold)' }} />
 												) : (
 													<Email sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />
-												)}
-											</InputAdornment>
-										),
-									}}
-									sx={{
-										...textFieldStyles,
-										...(isAccessCode && {
-											'& .MuiOutlinedInput-root input': {
-												letterSpacing: '0.18em',
-												fontWeight: 700,
-												color: 'var(--text-primary)',
-											},
-										}),
-									}}
+												)} 
+								 
 								/>
 							</Box>
 
@@ -328,7 +278,7 @@ export default function SignInPage() {
 									>
 										{t('auth.password')}
 									</Typography>
-									<TextField
+									<FormField
 										id="password"
 										type={showPassword ? 'text' : 'password'}
 										fullWidth
@@ -336,34 +286,25 @@ export default function SignInPage() {
 										onChange={(e) => setPassword(e.target.value)}
 										placeholder="Enter your password"
 										autoComplete="current-password"
-										InputProps={{
-											startAdornment: (
-												<InputAdornment position="start">
-													<Lock sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />
-												</InputAdornment>
-											),
-											endAdornment: (
-												<InputAdornment position="end">
-													<IconButton
-														onClick={() => setShowPassword(!showPassword)}
-														edge="end"
-														sx={{
-															color: 'var(--accent-gold)',
-															'&:hover': {
-																color: 'var(--accent-gold)',
-															},
-														}}
-													>
-														{showPassword ? (
-															<VisibilityOff sx={{ fontSize: 20 }} />
-														) : (
-															<Visibility sx={{ fontSize: 20 }} />
-														)}
-													</IconButton>
-												</InputAdornment>
-											),
-										}}
-										sx={textFieldStyles}
+										leftIcon={<Lock sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />}
+										rightIcon={
+											<IconButton
+												onClick={() => setShowPassword(!showPassword)}
+												edge="end"
+												sx={{
+													color: 'var(--accent-gold)',
+													'&:hover': {
+														color: 'var(--accent-gold)',
+													},
+												}}
+											>
+												{showPassword ? (
+													<VisibilityOff sx={{ fontSize: 20 }} />
+												) : (
+													<Visibility sx={{ fontSize: 20 }} />
+												)}
+											</IconButton>
+										}
 									/>
 								</Box>
 							)}

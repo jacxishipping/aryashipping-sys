@@ -1,8 +1,12 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Box, Chip, TextField, Typography } from '@mui/material';
-import { StatusBadge } from '@/components/design-system';
+import {
+  Box,
+  Chip,
+  Typography,
+} from '@mui/material';
+import { StatusBadge , FormField } from '@/components/design-system';
 import { ArrowRight, BadgeDollarSign, MapPin, Search, ShipWheel, Truck, Warehouse } from 'lucide-react';
 import type { UnifiedShipmentTimelineItem } from '@/lib/shipment-timeline';
 
@@ -84,15 +88,12 @@ export default function UnifiedShipmentTimeline({ items, onOpenCompanyLedgerEntr
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
-        <TextField
+        <FormField
           fullWidth
           size="small"
           placeholder="Search timeline by stage, note, location, or ledger description"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          InputProps={{
-            startAdornment: <Search className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />,
-          }}
+          onChange={(event) => setQuery(event.target.value)} leftIcon={<Search className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />} 
         />
         <div className="flex flex-wrap gap-2">
           {(Object.keys(filterLabels) as TimelineFilter[]).map((value) => (

@@ -2,13 +2,12 @@
 import { formatMoney as formatCurrency } from '@/lib/format';
 
 import { useEffect, useState } from 'react';
-import { 
-    Box, 
-    Typography,
-    Paper,
-    TextField
+import {
+  Box,
+  Typography,
+  Paper,
 } from '@mui/material';
-import { Button, Select } from '@/components/design-system';
+import { Button, Select , FormField } from '@/components/design-system';
 import { Calculator, MapPin, Truck, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -324,7 +323,7 @@ export default function ShipmentCalculator() {
 
                     {!companyId && (
                         <>
-                            <TextField
+                            <FormField
                                 label="Pickup City"
                                 size="small"
                                 value={pickupCity}
@@ -334,9 +333,9 @@ export default function ShipmentCalculator() {
                                     setCalculationTrace(null);
                                 }}
                                 placeholder="Los Angeles"
-                                sx={{ bgcolor: 'var(--background)' }}
+                                
                             />
-                            <TextField
+                            <FormField
                                 label="Auction Branch"
                                 size="small"
                                 value={pickupBranch}
@@ -346,7 +345,7 @@ export default function ShipmentCalculator() {
                                     setCalculationTrace(null);
                                 }}
                                 placeholder="Los Angeles"
-                                sx={{ bgcolor: 'var(--background)' }}
+                                
                             />
                         </>
                     )}

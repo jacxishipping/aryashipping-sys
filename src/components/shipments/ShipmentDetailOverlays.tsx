@@ -1,8 +1,10 @@
 'use client';
 
 import { Eye, EyeOff } from 'lucide-react';
-import { Box, TextField } from '@mui/material';
-import { Button, Modal, Select } from '@/components/design-system';
+import {
+  Box,
+} from '@mui/material';
+import { Button, Modal, Select , FormField } from '@/components/design-system';
 import AddShipmentExpenseModal from '@/components/shipments/AddShipmentExpenseModal';
 import PhotoLightbox from '@/components/shipments/PhotoLightbox';
 import type {
@@ -178,25 +180,20 @@ export default function ShipmentDetailOverlays({
             {!loadingTransits && availableTransits.length === 0 && (
               <p className="mt-3 text-sm text-[var(--text-secondary)]">No open transits are available. Create one from the Transits page first.</p>
             )}
-            <TextField
+            <FormField
               fullWidth
               label="Release Token"
               type={showReleaseToken ? 'text' : 'password'}
               value={releaseTokenToAssign}
               onChange={(event) => onReleaseTokenChange(event.target.value)}
               helperText="Auto-filled from this shipment — the token is verified before assigning"
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <button
+              size="small" rightIcon={<button
                     type="button"
                     onClick={onToggleReleaseToken}
                     style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--text-secondary)' }}
                   >
                     {showReleaseToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                ),
-              }}
+                  </button>} 
             />
           </Box>
         </Modal>

@@ -7,11 +7,9 @@ import { useSession } from 'next-auth/react';
 import { hasPermission } from '@/lib/rbac';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 import Link from 'next/link';
-import { 
-	Box, 
-	Chip,
-	TextField,
-	InputAdornment,
+import {
+  Box,
+  Chip,
 } from '@mui/material';
 import {
 	FileText,
@@ -39,7 +37,7 @@ import {
 	CopyButton,
 	StatusFilterPills,
 	Select,
-} from '@/components/design-system';
+ FormField } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { exportToCSVWithHeaders } from '@/lib/export';
 import { SavedFilterPresets } from '@/components/dashboard/SavedFilterPresets';
@@ -636,19 +634,12 @@ const confirmAction = useConfirmAction();
 
 				{/* Filters */}
 				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mb: 3 }}>
-					<TextField
+					<FormField
 						placeholder="Search by invoice #, customer, VIN, vehicle, or container..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
 						size="small"
-						fullWidth
-						InputProps={{
-							startAdornment: (
-								<InputAdornment position="start">
-									<Search className="w-4 h-4" />
-								</InputAdornment>
-							),
-						}}
+						fullWidth leftIcon={<Search className="w-4 h-4" />} 
 					/>
 					<SavedFilterPresets
 						storageKey="invoices"

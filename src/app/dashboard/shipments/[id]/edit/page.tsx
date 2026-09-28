@@ -18,7 +18,13 @@ import {
   Save,
   AlertCircle
 } from 'lucide-react';
-import { Box, Typography, LinearProgress, Autocomplete, TextField } from '@mui/material';
+import {
+  Box,
+  Typography,
+  LinearProgress,
+  Autocomplete,
+  TextField,
+} from '@mui/material';
 
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { PageHeader, Button, FormField, Breadcrumbs, Select, toast, EmptyState, FormPageSkeleton } from '@/components/design-system';
@@ -626,7 +632,7 @@ export default function EditShipmentPage() {
                     id="purchasePrice"
                     label="Purchase Price (USD) *"
                     type="number"
-                    inputProps={{ step: '0.01' }}
+                    step="0.01"
                     error={!!errors.purchasePrice}
                     helperText={errors.purchasePrice?.message}
                     {...register('purchasePrice')}

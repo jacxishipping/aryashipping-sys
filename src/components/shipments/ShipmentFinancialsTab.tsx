@@ -19,9 +19,12 @@ import { CheckCircle2,
   Truck,
   X,
 } from 'lucide-react';
-import { Box, CircularProgress, TextField } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+} from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Alert, Button, Modal, toast } from '@/components/design-system';
+import { Alert, Button, Modal, toast , FormField } from '@/components/design-system';
 import { cn } from '@/lib/utils';
 import { formatMoney as formatSnapshotMoney } from '@/lib/format';
 import { ShipmentProfitabilityCard } from '@/components/dashboard/ShipmentProfitabilityCard';
@@ -977,26 +980,26 @@ export default function ShipmentFinancialsTab({
           )}
 
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            <TextField
+            <FormField
               label="Amount (Read-only)"
               value={editingExpense ? `$${editingExpense.amount.toFixed(2)}` : ''}
               disabled
             />
-            <TextField
+            <FormField
               label="Date (Read-only)"
               value={editingExpense ? new Date(editingExpense.transactionDate).toLocaleDateString() : ''}
               disabled
             />
           </Box>
 
-          <TextField
+          <FormField
             label="Description *"
             value={editDescription}
             onChange={(event) => setEditDescription(event.target.value)}
             required
           />
 
-          <TextField
+          <FormField
             label="Notes"
             rows={2}
             multiline

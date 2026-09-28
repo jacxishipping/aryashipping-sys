@@ -33,7 +33,13 @@ import {
   Radio,
   Smartphone,
 } from 'lucide-react';
-import { Box, Switch, Tab, Tabs, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Switch,
+  Tab,
+  Tabs,
+  Typography,
+} from '@mui/material';
 import { useTheme, type ThemeMode, type DensityMode } from '@/hooks/useTheme';
 
 import { 
@@ -1588,21 +1594,21 @@ export default function SettingsPage() {
               </Box>
 
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 2 }}>
-                <TextField
+                <FormField
                   size="small"
                   label="Provider"
                   value={aiProviderSettings.provider}
                   onChange={(event) => handleAiProviderFieldChange('provider', event.target.value)}
                   disabled={savingAiProviderSettings}
                 />
-                <TextField
+                <FormField
                   size="small"
                   label="Model"
                   value={aiProviderSettings.model}
                   onChange={(event) => handleAiProviderFieldChange('model', event.target.value)}
                   disabled={savingAiProviderSettings}
                 />
-                <TextField
+                <FormField
                   size="small"
                   label="API Key"
                   type="password"
@@ -1618,38 +1624,36 @@ export default function SettingsPage() {
                   }
                   disabled={savingAiProviderSettings}
                 />
-                <TextField
+                <FormField
                   size="small"
                   label="Max Tokens"
                   type="number"
                   value={aiProviderSettings.maxTokens}
-                  onChange={(event) => handleAiProviderFieldChange('maxTokens', Number(event.target.value))}
-                  inputProps={{ min: 1, max: 4000 }}
+                  onChange={(event) => handleAiProviderFieldChange('maxTokens', Number(event.target.value))} min={1} max={4000} 
                   disabled={savingAiProviderSettings}
                 />
-                <TextField
+                <FormField
                   size="small"
                   label="Chat Completions URL"
                   value={aiProviderSettings.chatCompletionsUrl}
                   onChange={(event) => handleAiProviderFieldChange('chatCompletionsUrl', event.target.value)}
                   disabled={savingAiProviderSettings}
-                  sx={{ gridColumn: { xs: '1', md: '1 / -1' } }}
+                  className="md:col-span-full"
                 />
-                <TextField
+                <FormField
                   size="small"
                   label="Models URL"
                   value={aiProviderSettings.modelsUrl}
                   onChange={(event) => handleAiProviderFieldChange('modelsUrl', event.target.value)}
                   disabled={savingAiProviderSettings}
-                  sx={{ gridColumn: { xs: '1', md: '1 / -1' } }}
+                  className="md:col-span-full"
                 />
-                <TextField
+                <FormField
                   size="small"
                   label="Temperature"
                   type="number"
                   value={aiProviderSettings.temperature}
-                  onChange={(event) => handleAiProviderFieldChange('temperature', Number(event.target.value))}
-                  inputProps={{ min: 0, max: 2, step: 0.1 }}
+                  onChange={(event) => handleAiProviderFieldChange('temperature', Number(event.target.value))} min={0} max={2} step={0.1} 
                   disabled={savingAiProviderSettings}
                 />
               </Box>
@@ -1847,8 +1851,8 @@ export default function SettingsPage() {
               </Box>
 
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 2 }}>
-                <TextField size="small" label="Email Provider" value={communicationSettings.emailProvider} onChange={(event) => handleCommunicationFieldChange('emailProvider', event.target.value)} disabled={savingCommunicationSettings} />
-                <TextField
+                <FormField size="small" label="Email Provider" value={communicationSettings.emailProvider} onChange={(event) => handleCommunicationFieldChange('emailProvider', event.target.value)} disabled={savingCommunicationSettings} />
+                <FormField
                   size="small"
                   label="Resend API Key"
                   type="password"
@@ -1858,15 +1862,15 @@ export default function SettingsPage() {
                   helperText={communicationSettings.emailApiKeyConfigured ? 'Leave blank to keep the saved encrypted key.' : 'Saved encrypted using the app secret.'}
                   disabled={savingCommunicationSettings}
                 />
-                <TextField size="small" label="From Email" value={communicationSettings.emailFromAddress} onChange={(event) => handleCommunicationFieldChange('emailFromAddress', event.target.value)} disabled={savingCommunicationSettings} />
-                <TextField size="small" label="Reply-To Email" value={communicationSettings.emailReplyToAddress} onChange={(event) => handleCommunicationFieldChange('emailReplyToAddress', event.target.value)} disabled={savingCommunicationSettings} />
-                <TextField
+                <FormField size="small" label="From Email" value={communicationSettings.emailFromAddress} onChange={(event) => handleCommunicationFieldChange('emailFromAddress', event.target.value)} disabled={savingCommunicationSettings} />
+                <FormField size="small" label="Reply-To Email" value={communicationSettings.emailReplyToAddress} onChange={(event) => handleCommunicationFieldChange('emailReplyToAddress', event.target.value)} disabled={savingCommunicationSettings} />
+                <FormField
                   size="small"
                   label="Test Email Recipient"
                   value={communicationTestTarget.email}
                   onChange={(event) => setCommunicationTestTarget((prev) => ({ ...prev, email: event.target.value }))}
                   placeholder="admin@example.com"
-                  sx={{ gridColumn: { xs: '1', md: '1 / -1' } }}
+                  className="md:col-span-full"
                 />
               </Box>
             </Box>
@@ -1889,9 +1893,9 @@ export default function SettingsPage() {
               </Box>
 
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' }, gap: 2 }}>
-                <TextField size="small" label="SMS Provider" value={communicationSettings.smsProvider} onChange={(event) => handleCommunicationFieldChange('smsProvider', event.target.value)} disabled={savingCommunicationSettings} />
-                <TextField size="small" label="Twilio Account SID" value={communicationSettings.smsAccountSid} onChange={(event) => handleCommunicationFieldChange('smsAccountSid', event.target.value)} disabled={savingCommunicationSettings} />
-                <TextField
+                <FormField size="small" label="SMS Provider" value={communicationSettings.smsProvider} onChange={(event) => handleCommunicationFieldChange('smsProvider', event.target.value)} disabled={savingCommunicationSettings} />
+                <FormField size="small" label="Twilio Account SID" value={communicationSettings.smsAccountSid} onChange={(event) => handleCommunicationFieldChange('smsAccountSid', event.target.value)} disabled={savingCommunicationSettings} />
+                <FormField
                   size="small"
                   label="Twilio Auth Token"
                   type="password"
@@ -1901,9 +1905,9 @@ export default function SettingsPage() {
                   helperText={communicationSettings.smsAuthTokenConfigured ? 'Leave blank to keep the saved encrypted token.' : 'Saved encrypted using the app secret.'}
                   disabled={savingCommunicationSettings}
                 />
-                <TextField size="small" label="From Number" value={communicationSettings.smsFromNumber} onChange={(event) => handleCommunicationFieldChange('smsFromNumber', event.target.value)} disabled={savingCommunicationSettings} />
-                <TextField size="small" label="Messaging Service SID" value={communicationSettings.smsMessagingServiceSid} onChange={(event) => handleCommunicationFieldChange('smsMessagingServiceSid', event.target.value)} disabled={savingCommunicationSettings} />
-                <TextField size="small" label="Test Phone Number" value={communicationTestTarget.sms} onChange={(event) => setCommunicationTestTarget((prev) => ({ ...prev, sms: event.target.value }))} placeholder="+15555555555" />
+                <FormField size="small" label="From Number" value={communicationSettings.smsFromNumber} onChange={(event) => handleCommunicationFieldChange('smsFromNumber', event.target.value)} disabled={savingCommunicationSettings} />
+                <FormField size="small" label="Messaging Service SID" value={communicationSettings.smsMessagingServiceSid} onChange={(event) => handleCommunicationFieldChange('smsMessagingServiceSid', event.target.value)} disabled={savingCommunicationSettings} />
+                <FormField size="small" label="Test Phone Number" value={communicationTestTarget.sms} onChange={(event) => setCommunicationTestTarget((prev) => ({ ...prev, sms: event.target.value }))} placeholder="+15555555555" />
               </Box>
             </Box>
 
@@ -1995,21 +1999,21 @@ export default function SettingsPage() {
                   Telegram & Webhook Integrations
                 </Typography>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <TextField
+                  <FormField
                     label="Telegram Bot Token"
                     size="small"
                     value={milestoneConfig.telegramBotToken || ''}
                     onChange={(e) => setMilestoneConfig(prev => ({ ...prev, telegramBotToken: e.target.value }))}
                     placeholder="bot123456:ABC-DEF..."
                   />
-                  <TextField
+                  <FormField
                     label="Telegram Chat / Channel ID"
                     size="small"
                     value={milestoneConfig.telegramChatId || ''}
                     onChange={(e) => setMilestoneConfig(prev => ({ ...prev, telegramChatId: e.target.value }))}
                     placeholder="-100123456789"
                   />
-                  <TextField
+                  <FormField
                     label="Custom Webhook URL"
                     size="small"
                     value={milestoneConfig.webhookUrl || ''}
@@ -2055,7 +2059,7 @@ export default function SettingsPage() {
                             Send Test
                           </Button>
                         </Box>
-                        <TextField
+                        <FormField
                           fullWidth
                           multiline
                           rows={2}
@@ -2146,12 +2150,12 @@ export default function SettingsPage() {
                   Twilio Voice
                 </Typography>
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                  <TextField size="small" label="Account SID" value={callAgentSettings.twilioAccountSid} onChange={(event) => handleCallAgentFieldChange('twilioAccountSid', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="Auth Token" type="password" value={callAgentSettings.twilioAuthToken} onChange={(event) => handleCallAgentFieldChange('twilioAuthToken', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="API Key" value={callAgentSettings.twilioApiKey} onChange={(event) => handleCallAgentFieldChange('twilioApiKey', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="API Secret" type="password" value={callAgentSettings.twilioApiSecret} onChange={(event) => handleCallAgentFieldChange('twilioApiSecret', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="Phone Number" value={callAgentSettings.twilioPhoneNumber} onChange={(event) => handleCallAgentFieldChange('twilioPhoneNumber', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="Phone Number SID" value={callAgentSettings.twilioPhoneNumberSid} onChange={(event) => handleCallAgentFieldChange('twilioPhoneNumberSid', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Account SID" value={callAgentSettings.twilioAccountSid} onChange={(event) => handleCallAgentFieldChange('twilioAccountSid', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Auth Token" type="password" value={callAgentSettings.twilioAuthToken} onChange={(event) => handleCallAgentFieldChange('twilioAuthToken', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="API Key" value={callAgentSettings.twilioApiKey} onChange={(event) => handleCallAgentFieldChange('twilioApiKey', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="API Secret" type="password" value={callAgentSettings.twilioApiSecret} onChange={(event) => handleCallAgentFieldChange('twilioApiSecret', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Phone Number" value={callAgentSettings.twilioPhoneNumber} onChange={(event) => handleCallAgentFieldChange('twilioPhoneNumber', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Phone Number SID" value={callAgentSettings.twilioPhoneNumberSid} onChange={(event) => handleCallAgentFieldChange('twilioPhoneNumberSid', event.target.value)} disabled={savingCallAgentSettings} />
                 </Box>
                 <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)', mt: 2, lineHeight: 1.6 }}>
                   Use either Account SID + Auth Token or Account SID + API Key + API Secret. The phone number fields help the app inspect the live Twilio webhook target.
@@ -2164,10 +2168,10 @@ export default function SettingsPage() {
                   Gemini Live
                 </Typography>
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                  <TextField size="small" label="Gemini API Key" type="password" value={callAgentSettings.geminiApiKey} onChange={(event) => handleCallAgentFieldChange('geminiApiKey', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="Gemini Live API Key" type="password" value={callAgentSettings.geminiLiveApiKey} onChange={(event) => handleCallAgentFieldChange('geminiLiveApiKey', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="Fallback Voice Model" value={callAgentSettings.geminiVoiceModel} onChange={(event) => handleCallAgentFieldChange('geminiVoiceModel', event.target.value)} disabled={savingCallAgentSettings} />
-                  <TextField size="small" label="Live Audio Model" value={callAgentSettings.geminiLiveModel} onChange={(event) => handleCallAgentFieldChange('geminiLiveModel', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Gemini API Key" type="password" value={callAgentSettings.geminiApiKey} onChange={(event) => handleCallAgentFieldChange('geminiApiKey', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Gemini Live API Key" type="password" value={callAgentSettings.geminiLiveApiKey} onChange={(event) => handleCallAgentFieldChange('geminiLiveApiKey', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Fallback Voice Model" value={callAgentSettings.geminiVoiceModel} onChange={(event) => handleCallAgentFieldChange('geminiVoiceModel', event.target.value)} disabled={savingCallAgentSettings} />
+                  <FormField size="small" label="Live Audio Model" value={callAgentSettings.geminiLiveModel} onChange={(event) => handleCallAgentFieldChange('geminiLiveModel', event.target.value)} disabled={savingCallAgentSettings} />
                 </Box>
                 <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)', mt: 2, lineHeight: 1.6 }}>
                   The live key and model power the caller audio bridge. The fallback key/model handle the IVR assistant when live audio is unavailable.

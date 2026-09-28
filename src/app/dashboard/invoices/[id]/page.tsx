@@ -5,20 +5,18 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { hasPermission } from '@/lib/rbac';
-import { 
-	Box, 
-	Table, 
-	TableBody, 
-	TableCell, 
-	TableContainer, 
-	TableHead, 
-	TableRow,
-	Divider,
-	TextField,
-	Tabs,
-	Tab,
-	InputAdornment,
-	Typography,
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Divider,
+  Tabs,
+  Tab,
+  Typography,
 } from '@mui/material';
 import {
 	ArrowLeft,
@@ -50,7 +48,7 @@ import {
 	StatusBadge,
 	Modal,
 	Select,
-} from '@/components/design-system';
+ FormField } from '@/components/design-system';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 
 interface LineItem {
@@ -843,16 +841,15 @@ export default function InvoiceDetailPage() {
 									</Typography>
 								</Box>
 								<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr 1fr' }, gap: 2 }}>
-									<TextField
+									<FormField
 										label="Due Date"
 										type="date"
 										size="small"
 										value={editForm.dueDate}
 										onChange={(event) => setEditForm((current) => ({ ...current, dueDate: event.target.value }))}
-										InputLabelProps={{ shrink: true }}
 										fullWidth
 									/>
-									<TextField
+									<FormField
 										label="Payment Method"
 										placeholder="e.g. Bank Wire, Card, Cash"
 										size="small"
@@ -860,7 +857,7 @@ export default function InvoiceDetailPage() {
 										onChange={(event) => setEditForm((current) => ({ ...current, paymentMethod: event.target.value }))}
 										fullWidth
 									/>
-									<TextField
+									<FormField
 										label="Payment Reference"
 										placeholder="e.g. Wire ID / Cheque #"
 										size="small"
@@ -882,29 +879,21 @@ export default function InvoiceDetailPage() {
 									</Typography>
 								</Box>
 								<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-									<TextField
+									<FormField
 										label="Overall Discount"
 										type="number"
 										size="small"
 										value={editForm.discount}
-										onChange={(event) => setEditForm((current) => ({ ...current, discount: event.target.value }))}
-										inputProps={{ min: 0, step: '0.01' }}
-										InputProps={{
-											startAdornment: <InputAdornment position="start">$</InputAdornment>,
-										}}
+										onChange={(event) => setEditForm((current) => ({ ...current, discount: event.target.value }))} min={0} step={'0.01'} leftIcon="$" 
 										helperText="Deducted directly from line items subtotal"
 										fullWidth
 									/>
-									<TextField
+									<FormField
 										label="Tax Amount"
 										type="number"
 										size="small"
 										value={editForm.tax}
-										onChange={(event) => setEditForm((current) => ({ ...current, tax: event.target.value }))}
-										inputProps={{ min: 0, step: '0.01' }}
-										InputProps={{
-											startAdornment: <InputAdornment position="start">$</InputAdornment>,
-										}}
+										onChange={(event) => setEditForm((current) => ({ ...current, tax: event.target.value }))} min={0} step={'0.01'} leftIcon="$" 
 										helperText="Sales tax or VAT applied to total"
 										fullWidth
 									/>
@@ -922,7 +911,7 @@ export default function InvoiceDetailPage() {
 									</Typography>
 								</Box>
 								<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-									<TextField
+									<FormField
 										label="Customer Notes"
 										placeholder="Public notes visible on printed PDF and customer portal"
 										value={editForm.notes}
@@ -932,7 +921,7 @@ export default function InvoiceDetailPage() {
 										fullWidth
 										helperText="Visible to customer"
 									/>
-									<TextField
+									<FormField
 										label="Internal Notes"
 										placeholder="Private administrative notes (accounting, exceptions, audit log)"
 										value={editForm.internalNotes}
@@ -1074,7 +1063,7 @@ export default function InvoiceDetailPage() {
 
 												{/* Row 1: Description & Type */}
 												<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1.2fr' }, gap: 1.5 }}>
-													<TextField
+													<FormField
 														label="Description"
 														size="small"
 														value={lineItemEdits[item.id]?.description ?? item.description}
@@ -1117,7 +1106,7 @@ export default function InvoiceDetailPage() {
 
 												{/* Row 2: Quantity, Amount, Company Cost */}
 												<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: isAdmin ? '1fr 1.5fr 1.5fr' : '1fr 2fr' }, gap: 1.5 }}>
-													<TextField
+													<FormField
 														label="Quantity"
 														size="small"
 														type="number"
@@ -1131,10 +1120,9 @@ export default function InvoiceDetailPage() {
 																amount: current[item.id]?.amount ?? String(item.amount ?? 0),
 																companyAmount: current[item.id]?.companyAmount ?? String((item as any).linkedCompanyLedgerEntry?.amount ?? 0),
 															},
-														}))}
-														inputProps={{ min: 0, step: '1' }}
+														}))} min={0} step={'1'} 
 													/>
-													<TextField
+													<FormField
 														label="Unit Price"
 														size="small"
 														type="number"
@@ -1148,15 +1136,11 @@ export default function InvoiceDetailPage() {
 																amount: event.target.value,
 																companyAmount: current[item.id]?.companyAmount ?? String((item as any).linkedCompanyLedgerEntry?.amount ?? 0),
 															},
-														}))}
-														inputProps={{ min: 0, step: '0.01' }}
-														InputProps={{
-															startAdornment: <InputAdornment position="start">$</InputAdornment>,
-														}}
+														}))} min={0} step={'0.01'} leftIcon="$" 
 														fullWidth
 													/>
 													{isAdmin && (
-														<TextField
+														<FormField
 															label="Company Cost"
 															size="small"
 															type="number"
@@ -1170,11 +1154,7 @@ export default function InvoiceDetailPage() {
 																	amount: current[item.id]?.amount ?? String(item.amount ?? 0),
 																	companyAmount: event.target.value,
 																},
-															}))}
-															inputProps={{ min: 0, step: '0.01' }}
-															InputProps={{
-																startAdornment: <InputAdornment position="start">$</InputAdornment>,
-															}}
+															}))} min={0} step={'0.01'} leftIcon="$" 
 															helperText="Internal ledger cost"
 															fullWidth
 														/>
@@ -1221,7 +1201,7 @@ export default function InvoiceDetailPage() {
 								</Box>
 
 								<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '2fr 1.2fr' }, gap: 1.5 }}>
-									<TextField
+									<FormField
 										label="Description"
 										placeholder="e.g. Additional warehouse storage fee"
 										size="small"
@@ -1246,37 +1226,28 @@ export default function InvoiceDetailPage() {
 								</Box>
 
 								<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: isAdmin ? '1fr 1.5fr 1.5fr' : '1fr 2fr' }, gap: 1.5 }}>
-									<TextField
+									<FormField
 										label="Quantity"
 										size="small"
 										type="number"
 										value={manualLineItem.quantity}
-										onChange={(event) => setManualLineItem((current) => ({ ...current, quantity: event.target.value }))}
-										inputProps={{ min: 1, step: '1' }}
+										onChange={(event) => setManualLineItem((current) => ({ ...current, quantity: event.target.value }))} min={1} step={'1'} 
 									/>
-									<TextField
+									<FormField
 										label="Amount"
 										size="small"
 										type="number"
 										value={manualLineItem.amount}
-										onChange={(event) => setManualLineItem((current) => ({ ...current, amount: event.target.value }))}
-										inputProps={{ min: 0, step: '0.01' }}
-										InputProps={{
-											startAdornment: <InputAdornment position="start">$</InputAdornment>,
-										}}
+										onChange={(event) => setManualLineItem((current) => ({ ...current, amount: event.target.value }))} min={0} step={'0.01'} leftIcon="$" 
 										fullWidth
 									/>
 									{isAdmin && (
-										<TextField
+										<FormField
 											label="Company Amount"
 											size="small"
 											type="number"
 											value={manualLineItem.companyAmount}
-											onChange={(event) => setManualLineItem((current) => ({ ...current, companyAmount: event.target.value }))}
-											inputProps={{ min: 0, step: '0.01' }}
-											InputProps={{
-												startAdornment: <InputAdornment position="start">$</InputAdornment>,
-											}}
+											onChange={(event) => setManualLineItem((current) => ({ ...current, companyAmount: event.target.value }))} min={0} step={'0.01'} leftIcon="$" 
 											helperText="Internal ledger cost"
 											fullWidth
 										/>
@@ -1853,7 +1824,7 @@ export default function InvoiceDetailPage() {
 							</>
 						}
 					>
-						<TextField
+						<FormField
 							autoFocus
 							fullWidth
 							multiline

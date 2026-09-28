@@ -11,7 +11,6 @@ import {
   IconButton,
   Tab,
   Tabs,
-  TextField,
 } from '@mui/material';
 import {
   ArrowLeft,
@@ -27,7 +26,7 @@ import {
 } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, Select, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
+import { Breadcrumbs, Button, Select, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, Modal, ConfirmDialog, Tooltip , FormField } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import AddShipmentExpenseModal from '@/components/shipments/AddShipmentExpenseModal';
 import AddTransitExpenseModal from '@/components/transits/AddTransitExpenseModal';
@@ -956,11 +955,11 @@ export default function TransitDetailPage() {
               options={STATUS_OPTIONS.map(s => ({ value: s, label: statusLabels[s] || s }))}
             />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-              <TextField label="Dispatch Date" type="date" InputLabelProps={{ shrink: true }} value={editForm.dispatchDate} onChange={(e) => setEditForm(prev => ({ ...prev, dispatchDate: e.target.value }))} />
-              <TextField label="Est. Delivery" type="date" InputLabelProps={{ shrink: true }} value={editForm.estimatedDelivery} onChange={(e) => setEditForm(prev => ({ ...prev, estimatedDelivery: e.target.value }))} />
+              <FormField label="Dispatch Date" type="date" value={editForm.dispatchDate} onChange={(e) => setEditForm(prev => ({ ...prev, dispatchDate: e.target.value }))} />
+              <FormField label="Est. Delivery" type="date" value={editForm.estimatedDelivery} onChange={(e) => setEditForm(prev => ({ ...prev, estimatedDelivery: e.target.value }))} />
             </Box>
-            <TextField label="Agreed Cost (USD)" type="number" inputProps={{ min: 0, step: 0.01 }} value={editForm.cost} onChange={(e) => setEditForm(prev => ({ ...prev, cost: e.target.value }))} />
-            <TextField label="Notes" multiline rows={3} value={editForm.notes} onChange={(e) => setEditForm(prev => ({ ...prev, notes: e.target.value }))} />
+            <FormField label="Agreed Cost (USD)" type="number" min={0} step={0.01}  value={editForm.cost} onChange={(e) => setEditForm(prev => ({ ...prev, cost: e.target.value }))} />
+            <FormField label="Notes" multiline rows={3} value={editForm.notes} onChange={(e) => setEditForm(prev => ({ ...prev, notes: e.target.value }))} />
           </Box>
         </Modal>
 
@@ -989,13 +988,13 @@ export default function TransitDetailPage() {
               ]}
             />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-              <TextField label="From" value={eventForm.origin} onChange={(e) => setEventForm(prev => ({ ...prev, origin: e.target.value }))} required placeholder="e.g. Herat" />
-              <TextField label="To" value={eventForm.destination} onChange={(e) => setEventForm(prev => ({ ...prev, destination: e.target.value }))} required placeholder="e.g. Kabul" />
+              <FormField label="From" value={eventForm.origin} onChange={(e) => setEventForm(prev => ({ ...prev, origin: e.target.value }))} required placeholder="e.g. Herat" />
+              <FormField label="To" value={eventForm.destination} onChange={(e) => setEventForm(prev => ({ ...prev, destination: e.target.value }))} required placeholder="e.g. Kabul" />
             </Box>
-            <TextField label="Status / Event" value={eventForm.status} onChange={(e) => setEventForm(prev => ({ ...prev, status: e.target.value }))} required placeholder="e.g. Loaded, Border Crossed, Arrived Kabul" />
-            <TextField label="Location" value={eventForm.location} onChange={(e) => setEventForm(prev => ({ ...prev, location: e.target.value }))} placeholder="e.g. Islam Qala Border" />
-            <TextField label="Description" multiline rows={2} value={eventForm.description} onChange={(e) => setEventForm(prev => ({ ...prev, description: e.target.value }))} />
-            <TextField label="Event Date" type="datetime-local" InputLabelProps={{ shrink: true }} value={eventForm.eventDate} onChange={(e) => setEventForm(prev => ({ ...prev, eventDate: e.target.value }))} />
+            <FormField label="Status / Event" value={eventForm.status} onChange={(e) => setEventForm(prev => ({ ...prev, status: e.target.value }))} required placeholder="e.g. Loaded, Border Crossed, Arrived Kabul" />
+            <FormField label="Location" value={eventForm.location} onChange={(e) => setEventForm(prev => ({ ...prev, location: e.target.value }))} placeholder="e.g. Islam Qala Border" />
+            <FormField label="Description" multiline rows={2} value={eventForm.description} onChange={(e) => setEventForm(prev => ({ ...prev, description: e.target.value }))} />
+            <FormField label="Event Date" type="datetime-local" value={eventForm.eventDate} onChange={(e) => setEventForm(prev => ({ ...prev, eventDate: e.target.value }))} />
           </Box>
         </Modal>
 
@@ -1047,17 +1046,15 @@ export default function TransitDetailPage() {
           }
         >
           <Box sx={{ pt: 1.5 }}>
-            <TextField
+            <FormField
               fullWidth
               size="small"
               label="Search shipments"
               value={shipmentSearch}
               onChange={(e) => setShipmentSearch(e.target.value)}
               helperText={loadingAvailableShipments ? 'Loading released shipments...' : 'Search by vehicle, VIN, or customer - released shipments only'}
-              sx={{ mb: 1.5 }}
-              InputProps={{
-                endAdornment: loadingAvailableShipments ? <CircularProgress color="inherit" size={16} /> : undefined,
-              }}
+              className="mb-3"
+              rightIcon={loadingAvailableShipments ? <CircularProgress color="inherit" size={16} /> : undefined}
             />
             {loadingAvailableShipments ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
@@ -1128,14 +1125,13 @@ export default function TransitDetailPage() {
           }
         >
           <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
-            <TextField
+            <FormField
               label="Delivered Date"
               type="datetime-local"
-              InputLabelProps={{ shrink: true }}
               value={deliveryForm.deliveredDate}
               onChange={(e) => setDeliveryForm((prev) => ({ ...prev, deliveredDate: e.target.value }))}
             />
-            <TextField
+            <FormField
               label="Receiver Name"
               value={deliveryForm.receiverName}
               onChange={(e) => setDeliveryForm((prev) => ({ ...prev, receiverName: e.target.value }))}
@@ -1175,7 +1171,7 @@ export default function TransitDetailPage() {
                 </Button>
               </Box>
             </Box>
-            <TextField
+            <FormField
               label="Delivery Notes"
               multiline
               rows={3}

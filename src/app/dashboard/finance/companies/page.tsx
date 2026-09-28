@@ -16,7 +16,7 @@ import {
 import { Building2, GitCompareArrows, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, StatsCard, toast, PageHeader, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
+import { Breadcrumbs, Button, StatsCard, toast, PageHeader, Modal, ConfirmDialog, Tooltip , FormField } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 
 interface Company {
@@ -398,15 +398,12 @@ export default function CompanyFinancePage() {
           </DashboardGrid>
 
           <Box sx={{ mb: 2, display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 220px' }, gap: 1.5 }}>
-            <TextField
+            <FormField
               fullWidth
               size="small"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search company by name, code, email"
-              InputProps={{
-                startAdornment: <Search className="w-4 h-4 mr-2 text-[var(--text-secondary)]" />,
-              }}
+              placeholder="Search company by name, code, email" leftIcon={<Search className="w-4 h-4 mr-2 text-[var(--text-secondary)]" />} 
             />
             <TextField
               select
@@ -467,8 +464,8 @@ export default function CompanyFinancePage() {
             </>
           }
         >
-            <TextField label="Company Name" value={formData.name} onChange={(event) => setFormData((prev) => ({ ...prev, name: event.target.value }))} required />
-            <TextField label="Code" value={formData.code} onChange={(event) => setFormData((prev) => ({ ...prev, code: event.target.value }))} />
+            <FormField label="Company Name" value={formData.name} onChange={(event) => setFormData((prev) => ({ ...prev, name: event.target.value }))} required />
+            <FormField label="Code" value={formData.code} onChange={(event) => setFormData((prev) => ({ ...prev, code: event.target.value }))} />
             <Box>
               <FormLabel component="legend" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Company Type (select all that apply)</FormLabel>
               <FormGroup row>
@@ -501,11 +498,11 @@ export default function CompanyFinancePage() {
                 />
               </FormGroup>
             </Box>
-            <TextField label="Email" value={formData.email} onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))} />
-            <TextField label="Phone" value={formData.phone} onChange={(event) => setFormData((prev) => ({ ...prev, phone: event.target.value }))} />
-            <TextField label="Address" value={formData.address} onChange={(event) => setFormData((prev) => ({ ...prev, address: event.target.value }))} />
-            <TextField label="Country" value={formData.country} onChange={(event) => setFormData((prev) => ({ ...prev, country: event.target.value }))} />
-            <TextField label="Notes" multiline rows={3} value={formData.notes} onChange={(event) => setFormData((prev) => ({ ...prev, notes: event.target.value }))} />
+            <FormField label="Email" value={formData.email} onChange={(event) => setFormData((prev) => ({ ...prev, email: event.target.value }))} />
+            <FormField label="Phone" value={formData.phone} onChange={(event) => setFormData((prev) => ({ ...prev, phone: event.target.value }))} />
+            <FormField label="Address" value={formData.address} onChange={(event) => setFormData((prev) => ({ ...prev, address: event.target.value }))} />
+            <FormField label="Country" value={formData.country} onChange={(event) => setFormData((prev) => ({ ...prev, country: event.target.value }))} />
+            <FormField label="Notes" multiline rows={3} value={formData.notes} onChange={(event) => setFormData((prev) => ({ ...prev, notes: event.target.value }))} />
         </Modal>
 
         <Modal
@@ -521,8 +518,8 @@ export default function CompanyFinancePage() {
             </>
           }
         >
-            <TextField label="Company Name" value={editForm.name} onChange={(event) => setEditForm((prev) => ({ ...prev, name: event.target.value }))} required />
-            <TextField label="Code" value={editForm.code} onChange={(event) => setEditForm((prev) => ({ ...prev, code: event.target.value }))} />
+            <FormField label="Company Name" value={editForm.name} onChange={(event) => setEditForm((prev) => ({ ...prev, name: event.target.value }))} required />
+            <FormField label="Code" value={editForm.code} onChange={(event) => setEditForm((prev) => ({ ...prev, code: event.target.value }))} />
             <Box>
               <FormLabel component="legend" sx={{ fontSize: '0.85rem', mb: 0.5 }}>Company Type (select all that apply)</FormLabel>
               <FormGroup row>
@@ -555,11 +552,11 @@ export default function CompanyFinancePage() {
                 />
               </FormGroup>
             </Box>
-            <TextField label="Email" value={editForm.email} onChange={(event) => setEditForm((prev) => ({ ...prev, email: event.target.value }))} />
-            <TextField label="Phone" value={editForm.phone} onChange={(event) => setEditForm((prev) => ({ ...prev, phone: event.target.value }))} />
-            <TextField label="Address" value={editForm.address} onChange={(event) => setEditForm((prev) => ({ ...prev, address: event.target.value }))} />
-            <TextField label="Country" value={editForm.country} onChange={(event) => setEditForm((prev) => ({ ...prev, country: event.target.value }))} />
-            <TextField label="Notes" multiline rows={3} value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} />
+            <FormField label="Email" value={editForm.email} onChange={(event) => setEditForm((prev) => ({ ...prev, email: event.target.value }))} />
+            <FormField label="Phone" value={editForm.phone} onChange={(event) => setEditForm((prev) => ({ ...prev, phone: event.target.value }))} />
+            <FormField label="Address" value={editForm.address} onChange={(event) => setEditForm((prev) => ({ ...prev, address: event.target.value }))} />
+            <FormField label="Country" value={editForm.country} onChange={(event) => setEditForm((prev) => ({ ...prev, country: event.target.value }))} />
+            <FormField label="Notes" multiline rows={3} value={editForm.notes} onChange={(event) => setEditForm((prev) => ({ ...prev, notes: event.target.value }))} />
         </Modal>
 
         <ConfirmDialog

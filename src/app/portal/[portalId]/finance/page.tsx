@@ -10,9 +10,12 @@ import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import { Box, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Typography,
+} from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, toast } from '@/components/design-system';
+import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, toast , FormField } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalInfo = {
@@ -438,7 +441,7 @@ export default function PortalFinancePage() {
             <DashboardPanel title="Invoice Register" description="Read-only invoice visibility for portal-linked customer work.">
               <Box sx={{ display: 'grid', gap: 2 }}>
                 <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1.2fr) repeat(2, minmax(180px, 0.4fr))' } }}>
-                  <TextField
+                  <FormField
                     label="Search invoices"
                     placeholder="Invoice, shipment, customer, payment reference"
                     value={query}

@@ -358,7 +358,7 @@ export default function NewContainerPage() {
                     value={formData.maxCapacity}
                     onChange={handleNumberChange}
                     placeholder="e.g., 4"
-                    inputProps={{ min: 1, max: 20 }}
+                    min={1} max={20}
                   />
                 </div>
               </div>
@@ -496,7 +496,6 @@ export default function NewContainerPage() {
                   name="loadingDate"
                   value={formData.loadingDate}
                   onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
                 />
 
                 <FormField
@@ -506,7 +505,6 @@ export default function NewContainerPage() {
                   name="departureDate"
                   value={formData.departureDate}
                   onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
                 />
 
                 <FormField
@@ -516,7 +514,6 @@ export default function NewContainerPage() {
                   name="estimatedArrival"
                   value={formData.estimatedArrival}
                   onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
                 />
               </div>
             </DashboardPanel>

@@ -2,13 +2,11 @@
 
 import { useState } from 'react';
 import {
-	TextField,
-	Box,
-	InputAdornment,
-	Typography,
+  Box,
+  Typography,
 } from '@mui/material';
 import { DollarSign } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast , FormField } from '@/components/design-system';
 
 interface Shipment {
 	id: string;
@@ -201,50 +199,30 @@ export default function AddDamageModal({
 					)}
 
 					{/* Amount */}
-					<TextField
+					<FormField
 						size="small"
 						label={formData.damageType === 'COMPANY_PAYS' ? 'Customer Credit Amount (USD)' : 'Amount (USD)'}
 						type="number"
 						value={formData.amount}
 						onChange={(e) => handleChange('amount', e.target.value)}
-						required
-						inputProps={{ min: 0, step: 0.01 }}
-						InputProps={{
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
-						}}
-						sx={{
-							'& .MuiOutlinedInput-root': {
-								color: 'var(--text-primary)',
-								'& fieldset': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-							},
-							'& .MuiInputLabel-root': { color: 'var(--text-secondary)' },
-						}}
+						required min={0} step={0.01} leftIcon="$" 
+					 
 					/>
 
 					{formData.damageType === 'COMPANY_PAYS' && (
-						<TextField
+						<FormField
 							size="small"
 							label="Company Charge Amount (USD)"
 							type="number"
 							value={formData.companyAmount}
-							onChange={(e) => handleChange('companyAmount', e.target.value)}
-							inputProps={{ min: 0, step: 0.01 }}
-							helperText="Optional. Leave empty to use the same value as customer credit amount."
-							InputProps={{
-								startAdornment: <InputAdornment position="start">$</InputAdornment>,
-							}}
-							sx={{
-								'& .MuiOutlinedInput-root': {
-									color: 'var(--text-primary)',
-									'& fieldset': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-								},
-								'& .MuiInputLabel-root': { color: 'var(--text-secondary)' },
-							}}
+							onChange={(e) => handleChange('companyAmount', e.target.value)} min={0} step={0.01} 
+							helperText="Optional. Leave empty to use the same value as customer credit amount." leftIcon="$" 
+						 
 						/>
 					)}
 
 					{/* Description */}
-					<TextField
+					<FormField
 						size="small"
 						label="Description"
 						value={formData.description}
@@ -253,13 +231,7 @@ export default function AddDamageModal({
 						multiline
 						rows={3}
 						placeholder="Describe the damage..."
-						sx={{
-							'& .MuiOutlinedInput-root': {
-								color: 'var(--text-primary)',
-								'& fieldset': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-							},
-							'& .MuiInputLabel-root': { color: 'var(--text-secondary)' },
-						}}
+					 
 					/>
 			</Box>
 		</Modal>

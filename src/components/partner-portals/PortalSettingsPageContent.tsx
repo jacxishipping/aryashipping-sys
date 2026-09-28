@@ -11,10 +11,15 @@ import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsAc
 import AltRouteOutlinedIcon from '@mui/icons-material/AltRouteOutlined';
 import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import { Box, FormControlLabel, Switch, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  FormControlLabel,
+  Switch,
+  Typography,
+} from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
-import { Button, EmptyState, PageHeader, toast } from '@/components/design-system';
+import { Button, EmptyState, PageHeader, toast , FormField } from '@/components/design-system';
 import PortalBrandingSettingsPanel from '@/components/partner-portals/PortalBrandingSettingsPanel';
 
 type PortalInfo = {
@@ -214,7 +219,7 @@ export default function PortalSettingsPageContent() {
                   <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
                     Pre-fill notes when a shipment is newly assigned into this portal and no specific note is provided.
                   </Typography>
-                  <TextField
+                  <FormField
                     multiline
                     minRows={3}
                     value={defaultShipmentNotesDraft}

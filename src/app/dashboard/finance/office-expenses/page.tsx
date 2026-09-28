@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { formatMoney } from '@/lib/format';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Button, StatsCard, TableSkeleton, Modal, Select, Tooltip, toast } from '@/components/design-system';
+import { PageHeader, Button, StatsCard, TableSkeleton, Modal, Select, Tooltip, toast , FormField } from '@/components/design-system';
 import {
   Building2,
   DollarSign,
@@ -54,8 +54,6 @@ import {
   Typography,
   Chip,
   IconButton,
-  TextField,
-  InputAdornment,
   Paper,
   Tabs,
   Tab,
@@ -546,7 +544,7 @@ export default function OfficeExpensesPage() {
             >
               {/* Search Bar */}
               <Box sx={{ flex: '1 1 260px', minWidth: 220 }}>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   placeholder="Search title, vendor, check #, notes..."
@@ -554,20 +552,8 @@ export default function OfficeExpensesPage() {
                   onChange={(e) => {
                     setSearchQuery(e.target.value);
                     setPage(1);
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Search className="w-4 h-4 text-[var(--text-secondary)]" />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      bgcolor: 'var(--background)',
-                      borderRadius: 2,
-                    },
-                  }}
+                  }} leftIcon={<Search className="w-4 h-4 text-[var(--text-secondary)]" />} 
+                  
                 />
               </Box>
 
@@ -1021,14 +1007,14 @@ export default function OfficeExpensesPage() {
               <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                 Expense Title *
               </label>
-              <TextField
+              <FormField
                 fullWidth
                 size="small"
                 required
                 placeholder="e.g. Office Rent (September), High-Speed Internet Bill"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2 } }}
+                
               />
             </div>
 
@@ -1055,19 +1041,15 @@ export default function OfficeExpensesPage() {
                 <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                   Amount (USD) *
                 </label>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   type="number"
                   required
-                  placeholder="0.00"
-                  inputProps={{ step: '0.01', min: '0.01' }}
+                  placeholder="0.00" step={'0.01'} min={'0.01'} 
                   value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                  }}
-                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2 } }}
+                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })} leftIcon="$" 
+                  
                 />
               </div>
             </div>
@@ -1078,14 +1060,14 @@ export default function OfficeExpensesPage() {
                 <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                   Expense Date *
                 </label>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   type="date"
                   required
                   value={formData.expenseDate}
                   onChange={(e) => setFormData({ ...formData, expenseDate: e.target.value })}
-                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2 } }}
+                  
                 />
               </div>
 
@@ -1106,13 +1088,13 @@ export default function OfficeExpensesPage() {
                 <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                   Vendor / Payee
                 </label>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   placeholder="e.g. Landlord Name, Verizon, Staples"
                   value={formData.vendor}
                   onChange={(e) => setFormData({ ...formData, vendor: e.target.value })}
-                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2 } }}
+                  
                 />
               </div>
 
@@ -1120,13 +1102,13 @@ export default function OfficeExpensesPage() {
                 <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                   Reference # (Invoice / Check)
                 </label>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   placeholder="e.g. INV-9042, Check #1042"
                   value={formData.referenceNumber}
                   onChange={(e) => setFormData({ ...formData, referenceNumber: e.target.value })}
-                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2 } }}
+                  
                 />
               </div>
             </div>
@@ -1136,20 +1118,13 @@ export default function OfficeExpensesPage() {
               <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                 Receipt / Document Link
               </label>
-              <TextField
+              <FormField
                 fullWidth
                 size="small"
                 placeholder="https://... (Receipt image or PDF link)"
                 value={formData.receiptUrl}
-                onChange={(e) => setFormData({ ...formData, receiptUrl: e.target.value })}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <Receipt className="w-4 h-4 text-[var(--text-secondary)]" />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2 } }}
+                onChange={(e) => setFormData({ ...formData, receiptUrl: e.target.value })} leftIcon={<Receipt className="w-4 h-4 text-[var(--text-secondary)]" />} 
+                
               />
             </div>
 
@@ -1159,13 +1134,13 @@ export default function OfficeExpensesPage() {
                 <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
                   Internal Notes
                 </label>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   placeholder="Additional context or notes..."
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2 } }}
+                  
                 />
               </div>
 

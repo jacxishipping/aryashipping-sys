@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
-  TextField,
 } from '@mui/material';
 import { Bookmark, BookmarkPlus, Pencil, Trash2 } from 'lucide-react';
-import { Button, Modal, Select, Tooltip, toast } from '@/components/design-system';
+import { Button, Modal, Select, Tooltip, toast , FormField } from '@/components/design-system';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 import {
   deleteComparisonPreset,
@@ -206,7 +205,7 @@ export default function CompanyPriceComparisonPresets({
           </>
         }
       >
-        <TextField
+        <FormField
           autoFocus
           fullWidth
           size="small"

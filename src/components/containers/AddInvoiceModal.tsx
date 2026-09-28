@@ -2,13 +2,11 @@
 
 import { useRef, useState } from 'react';
 import {
-	TextField,
-	Box,
-	InputAdornment,
-	Typography,
+  Box,
+  Typography,
 } from '@mui/material';
 import { AlertTriangle, FileText, Upload } from 'lucide-react';
-import { Button, Modal, Select, StatusBadge, toast } from '@/components/design-system';
+import { Button, Modal, Select, StatusBadge, toast , FormField } from '@/components/design-system';
 
 interface AddInvoiceModalProps {
 	open: boolean;
@@ -308,7 +306,7 @@ export default function AddInvoiceModal({
 						)}
 					</Box>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Invoice Number"
 						value={formData.invoiceNumber}
@@ -319,19 +317,15 @@ export default function AddInvoiceModal({
 					/>
 
 					<Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 2 }}>
-						<TextField
+						<FormField
 							size="small"
 							label="Amount"
 							type="number"
 							value={formData.amount}
 							onChange={(e) => handleChange('amount', e.target.value)}
-							required
-							inputProps={{ min: 0, step: 0.01 }}
-							InputProps={{
-								startAdornment: <InputAdornment position="start">$</InputAdornment>,
-							}}
+							required min={0} step={0.01} leftIcon="$" 
 						/>
-						<TextField
+						<FormField
 							size="small"
 							label="Currency"
 							value={formData.currency}
@@ -349,7 +343,7 @@ export default function AddInvoiceModal({
 						options={invoiceStatuses}
 					/>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Customer/Vendor"
 						value={formData.vendor}
@@ -358,27 +352,25 @@ export default function AddInvoiceModal({
 					/>
 
 					<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-						<TextField
+						<FormField
 							size="small"
 							label="Invoice Date"
 							type="date"
 							value={formData.date}
 							onChange={(e) => handleChange('date', e.target.value)}
 							required
-							InputLabelProps={{ shrink: true }}
 						/>
-						<TextField
+						<FormField
 							size="small"
 							label="Due Date"
 							type="date"
 							value={formData.dueDate}
 							onChange={(e) => handleChange('dueDate', e.target.value)}
-							InputLabelProps={{ shrink: true }}
 							helperText="Optional"
 						/>
 					</Box>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Notes"
 						value={formData.notes}
@@ -391,3 +383,4 @@ export default function AddInvoiceModal({
 		</Modal>
 	);
 }
+

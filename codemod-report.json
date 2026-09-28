@@ -1,0 +1,209 @@
+[
+ {
+  "file": "src\\app\\auth\\signin\\page.tsx",
+  "converted": 1,
+  "skipped": 1,
+  "flags": [
+   "sx-dropped",
+   "sx-prop"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\dispatches\\[id]\\page.tsx",
+  "converted": 0,
+  "skipped": 3,
+  "flags": [
+   "spread:params"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\finance\\admin\\ledgers\\page.tsx",
+  "converted": 1,
+  "skipped": 0,
+  "flags": []
+ },
+ {
+  "file": "src\\app\\dashboard\\finance\\admin\\ledgers\\[userId]\\page.tsx",
+  "converted": 1,
+  "skipped": 1,
+  "flags": [
+   "exotic-props"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\finance\\companies\\page.tsx",
+  "converted": 0,
+  "skipped": 1,
+  "flags": [
+   "has-children"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\finance\\companies\\[id]\\page.tsx",
+  "converted": 0,
+  "skipped": 2,
+  "flags": [
+   "has-children"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\finance\\office-expenses\\page.tsx",
+  "converted": 8,
+  "skipped": 0,
+  "flags": [
+   "sx-dropped"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\finance\\record-payment\\page.tsx",
+  "converted": 2,
+  "skipped": 0,
+  "flags": []
+ },
+ {
+  "file": "src\\app\\dashboard\\partner-portals\\new\\page.tsx",
+  "converted": 0,
+  "skipped": 1,
+  "flags": [
+   "spread:params"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\partner-portals\\[portalId]\\page.tsx",
+  "converted": 0,
+  "skipped": 2,
+  "flags": [
+   "has-children",
+   "spread:params"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\settings\\page.tsx",
+  "converted": 0,
+  "skipped": 3,
+  "flags": [
+   "sx-prop"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\shipments\\new\\page.tsx",
+  "converted": 0,
+  "skipped": 2,
+  "flags": [
+   "sx-dropped",
+   "spread:params"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\shipments\\[id]\\edit\\page.tsx",
+  "converted": 0,
+  "skipped": 2,
+  "flags": [
+   "sx-dropped",
+   "spread:params"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\transits\\[id]\\page.tsx",
+  "converted": 0,
+  "skipped": 1,
+  "flags": [
+   "sx-prop"
+  ]
+ },
+ {
+  "file": "src\\app\\dashboard\\users\\new\\page.tsx",
+  "converted": 9,
+  "skipped": 0,
+  "flags": [
+   "sx-dropped"
+  ]
+ },
+ {
+  "file": "src\\app\\portal\\[portalId]\\finance\\[customerId]\\page.tsx",
+  "converted": 0,
+  "skipped": 2,
+  "flags": [
+   "sx-prop"
+  ]
+ },
+ {
+  "file": "src\\app\\portal\\[portalId]\\members\\page.tsx",
+  "converted": 0,
+  "skipped": 1,
+  "flags": [
+   "has-children"
+  ]
+ },
+ {
+  "file": "src\\app\\portal\\[portalId]\\shipments\\page.tsx",
+  "converted": 0,
+  "skipped": 2,
+  "flags": [
+   "has-children",
+   "sx-prop"
+  ]
+ },
+ {
+  "file": "src\\components\\auth\\SimpleLoginPageClient.tsx",
+  "converted": 1,
+  "skipped": 1,
+  "flags": [
+   "sx-dropped",
+   "InputProps-key:sx"
+  ]
+ },
+ {
+  "file": "src\\components\\containers\\AddDamageModal.tsx",
+  "converted": 3,
+  "skipped": 0,
+  "flags": [
+   "sx-dropped"
+  ]
+ },
+ {
+  "file": "src\\components\\dashboard\\ActivityLog.tsx",
+  "converted": 0,
+  "skipped": 1,
+  "flags": [
+   "sx-prop"
+  ]
+ },
+ {
+  "file": "src\\components\\dashboard\\ShipmentCalculator.tsx",
+  "converted": 2,
+  "skipped": 0,
+  "flags": [
+   "sx-dropped"
+  ]
+ },
+ {
+  "file": "src\\components\\dashboard\\SmartSearch.tsx",
+  "converted": 0,
+  "skipped": 5,
+  "flags": [
+   "InputProps-key:sx",
+   "InputProps-key:inputProps"
+  ]
+ },
+ {
+  "file": "src\\components\\partner-portals\\PortalBrandingSettingsPanel.tsx",
+  "converted": 1,
+  "skipped": 0,
+  "flags": []
+ },
+ {
+  "file": "src\\components\\telegram\\TelegramAppClient.tsx",
+  "converted": 1,
+  "skipped": 0,
+  "flags": [
+   "sx-dropped"
+  ]
+ },
+ {
+  "file": "src\\components\\users\\ResetPasswordModal.tsx",
+  "converted": 1,
+  "skipped": 0,
+  "flags": []
+ }
+]

@@ -3,12 +3,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
-  InputAdornment,
-  TextField,
   Typography,
 } from '@mui/material';
 import { DollarSign, Paperclip, Upload } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast , FormField } from '@/components/design-system';
 import {
   DEFAULT_DISPATCH_EXPENSE_CATEGORY,
   DISPATCH_EXPENSE_CATEGORY_OPTIONS,
@@ -234,7 +232,7 @@ export default function DispatchExpenseModal({
             />
           </Box>
 
-          <TextField
+          <FormField
             size="small"
             label="Description"
             value={formData.description}
@@ -244,22 +242,20 @@ export default function DispatchExpenseModal({
           />
 
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr' }, gap: 2 }}>
-            <TextField
+            <FormField
               size="small"
               label="Amount"
               type="number"
               value={formData.amount}
               onChange={(e) => handleChange('amount', e.target.value)}
-              required
-              inputProps={{ min: 0, step: 0.01 }}
-              InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+              required min={0} step={0.01} leftIcon="$" 
             />
-            <TextField size="small" label="Currency" value={formData.currency} disabled />
+            <FormField size="small" label="Currency" value={formData.currency} disabled />
           </Box>
 
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-            <TextField size="small" label="Vendor" value={formData.vendor} onChange={(e) => handleChange('vendor', e.target.value)} />
-            <TextField
+            <FormField size="small" label="Vendor" value={formData.vendor} onChange={(e) => handleChange('vendor', e.target.value)} />
+            <FormField
               size="small"
               label="Invoice Number"
               value={formData.invoiceNumber}
@@ -268,14 +264,13 @@ export default function DispatchExpenseModal({
             />
           </Box>
 
-          <TextField
+          <FormField
             size="small"
             label="Date"
             type="date"
             value={formData.date}
             onChange={(e) => handleChange('date', e.target.value)}
             required
-            InputLabelProps={{ shrink: true }}
           />
 
           <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.5, display: 'grid', gap: 1.5 }}>
@@ -334,7 +329,7 @@ export default function DispatchExpenseModal({
             ) : null}
           </Box>
 
-          <TextField
+          <FormField
             size="small"
             label="Notes"
             value={formData.notes}

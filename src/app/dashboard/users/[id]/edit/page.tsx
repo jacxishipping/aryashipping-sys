@@ -22,7 +22,12 @@ import { ArrowLeft,
   Shield,
   Check,
 } from 'lucide-react';
-import { Box, Typography, Divider, TextField, InputAdornment, IconButton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Divider,
+  IconButton,
+} from '@mui/material';
 import { DashboardSurface, 
   DashboardPanel 
 } from '@/components/dashboard/DashboardSurface';
@@ -419,27 +424,20 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
                 <Typography variant="caption" sx={{ color: 'var(--text-secondary)', mb: 0.5, display: 'block' }}>
                   New Password
                 </Typography>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Enter new password"
                   error={!!errors.password}
                   helperText={errors.password?.message}
-                  {...register('password')}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
+                  {...register('password')} rightIcon={<IconButton
                           size="small"
                           onClick={() => setShowPassword((prev) => !prev)}
                           title={showPassword ? 'Hide password' : 'Show password'}
                         >
                           {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                        </IconButton>} 
                 />
               </Box>
 
@@ -447,27 +445,20 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
                 <Typography variant="caption" sx={{ color: 'var(--text-secondary)', mb: 0.5, display: 'block' }}>
                   Confirm New Password
                 </Typography>
-                <TextField
+                <FormField
                   fullWidth
                   size="small"
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Confirm new password"
                   error={!!errors.confirmPassword}
                   helperText={errors.confirmPassword?.message}
-                  {...register('confirmPassword')}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
+                  {...register('confirmPassword')} rightIcon={<IconButton
                           size="small"
                           onClick={() => setShowConfirmPassword((prev) => !prev)}
                           title={showConfirmPassword ? 'Hide password' : 'Show password'}
                         >
                           {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
+                        </IconButton>} 
                 />
               </Box>
             </Box>

@@ -1,14 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Box,
+import {
+  Box,
   Typography,
-  TextField,
-  InputAdornment,
   IconButton,
-  } from '@mui/material';
+} from '@mui/material';
 import { Key, Eye, EyeOff, Copy, Sparkles, Check } from 'lucide-react';
-import { Alert, Button, Modal, toast } from '@/components/design-system';
+import { Alert, Button, Modal, toast , FormField } from '@/components/design-system';
 
 interface ResetPasswordModalProps {
   open: boolean;
@@ -167,7 +166,7 @@ export default function ResetPasswordModal({
             </Button>
           </Box>
 
-          <TextField
+          <FormField
             fullWidth
             size="small"
             type={showPassword ? 'text' : 'password'}
@@ -175,11 +174,7 @@ export default function ResetPasswordModal({
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter new password (min. 6 chars)"
             disabled={submitting}
-            required
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  {password && (
+            required rightIcon={<>{password && (
                     <IconButton
                       size="small"
                       onClick={handleCopy}
@@ -195,10 +190,7 @@ export default function ResetPasswordModal({
                     title={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
+                  </IconButton></>} 
           />
         </Box>
 

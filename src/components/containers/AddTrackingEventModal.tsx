@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 import {
-	TextField,
-	Box,
-	Checkbox,
-	FormControlLabel,
+  Box,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material';
 import { MapPin } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast , FormField } from '@/components/design-system';
 
 interface AddTrackingEventModalProps {
 	open: boolean;
@@ -169,7 +168,7 @@ export default function AddTrackingEventModal({
 						options={trackingStatuses}
 					/>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Location"
 						value={formData.location}
@@ -178,7 +177,7 @@ export default function AddTrackingEventModal({
 						helperText="City, port, or facility name"
 					/>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Vessel Name"
 						value={formData.vesselName}
@@ -187,14 +186,13 @@ export default function AddTrackingEventModal({
 						helperText="Ship or carrier name (optional)"
 					/>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Event Date & Time"
 						type="datetime-local"
 						value={formData.eventDate}
 						onChange={(e) => handleChange('eventDate', e.target.value)}
 						required
-						InputLabelProps={{ shrink: true }}
 					/>
 
 					<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
@@ -219,7 +217,7 @@ export default function AddTrackingEventModal({
 						/>
 					</Box>
 
-					<TextField
+					<FormField
 						size="small"
 						label="Description"
 						value={formData.description}
@@ -241,23 +239,21 @@ export default function AddTrackingEventModal({
 							GPS Coordinates (Optional)
 						</Box>
 						<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-							<TextField
+							<FormField
 								size="small"
 								label="Latitude"
 								type="number"
 								value={formData.latitude}
 								onChange={(e) => handleChange('latitude', e.target.value)}
-								placeholder="e.g., 33.7701"
-								inputProps={{ step: 'any' }}
+								placeholder="e.g., 33.7701" step={'any'} 
 							/>
-							<TextField
+							<FormField
 								size="small"
 								label="Longitude"
 								type="number"
 								value={formData.longitude}
 								onChange={(e) => handleChange('longitude', e.target.value)}
-								placeholder="e.g., -118.1937"
-								inputProps={{ step: 'any' }}
+								placeholder="e.g., -118.1937" step={'any'} 
 							/>
 						</Box>
 					</Box>
