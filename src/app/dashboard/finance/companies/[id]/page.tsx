@@ -11,12 +11,11 @@ import {
   Tab,
   Tabs,
   TextField,
-  Tooltip,
 } from '@mui/material';
 import { AlertTriangle, ArrowLeft, Building2, CheckCircle2, DollarSign, Eye, GitCompareArrows, Landmark, Pencil, Plus, ReceiptText, Trash2, Truck, Upload } from 'lucide-react';
 import PermissionRoute from "@/components/auth/PermissionRoute";
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, StatsCard, toast, TableSkeleton, PageHeader, Modal, ConfirmDialog } from '@/components/design-system';
+import { Breadcrumbs, Button, StatsCard, toast, TableSkeleton, PageHeader, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { normalizeShippingRateConfig, type AuctionRateEntry, type ShippingRateCalculatorConfig } from '@/lib/shipping-rate-calculator';
 

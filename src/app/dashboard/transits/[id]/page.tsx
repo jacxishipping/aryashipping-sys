@@ -13,7 +13,6 @@ import {
   Tab,
   Tabs,
   TextField,
-  Tooltip,
 } from '@mui/material';
 import {
   ArrowLeft,
@@ -29,7 +28,7 @@ import {
 } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, Modal, ConfirmDialog } from '@/components/design-system';
+import { Breadcrumbs, Button, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import AddShipmentExpenseModal from '@/components/shipments/AddShipmentExpenseModal';
 import AddTransitExpenseModal from '@/components/transits/AddTransitExpenseModal';

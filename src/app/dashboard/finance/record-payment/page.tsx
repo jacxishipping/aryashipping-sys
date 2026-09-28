@@ -14,12 +14,6 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper
 } from '@mui/material';
 import { 
@@ -35,6 +29,7 @@ import {
 } from 'lucide-react';
 import { Search } from '@mui/icons-material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
+import { DataTable } from '@/components/ui/DataTable';
 import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select, StatusBadge } from '@/components/design-system';
 import AdminRoute from '@/components/auth/AdminRoute';
 
@@ -905,37 +900,36 @@ export default function RecordPaymentPage() {
                     Payment Allocation
                   </Box>
                   
-                  <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid var(--border)' }}>
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow sx={{ bgcolor: 'var(--surface)' }}>
-                          <TableCell sx={{ fontWeight: 600 }}>Tracking #</TableCell>
-                          <TableCell sx={{ fontWeight: 600 }}>Vehicle</TableCell>
-                          <TableCell align="right" sx={{ fontWeight: 600 }}>Outstanding Due</TableCell>
-                          <TableCell align="right" sx={{ fontWeight: 600 }}>Amount Applied</TableCell>
-                          <TableCell align="right" sx={{ fontWeight: 600 }}>Status</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {paymentAllocations.map((allocation) => (
-                          <TableRow key={allocation.shipmentId}>
-                            <TableCell>{allocation.trackingNumber}</TableCell>
-                            <TableCell>{allocation.vehicleInfo}</TableCell>
-                            <TableCell align="right">{formatCurrency(allocation.amountDue)}</TableCell>
-                            <TableCell align="right" sx={{ fontWeight: 600, color: 'var(--accent-gold)' }}>
-                              {formatCurrency(allocation.amountToPay)}
-                            </TableCell>
-                            <TableCell align="right">
-                              <StatusBadge
-                                status={allocation.amountToPay >= allocation.amountDue ? 'PAID' : 'PARTIAL'}
-                                size="sm"
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <DataTable
+                    data={paymentAllocations}
+                    keyField="shipmentId"
+                    columns={[
+                      { key: 'trackingNumber', header: 'Tracking #' },
+                      { key: 'vehicleInfo', header: 'Vehicle' },
+                      { key: 'amountDue', header: 'Outstanding Due', align: 'right', render: (value) => formatCurrency(value) },
+                      {
+                        key: 'amountToPay',
+                        header: 'Amount Applied',
+                        align: 'right',
+                        render: (value) => (
+                          <Box component="span" sx={{ fontWeight: 600, color: 'var(--accent-gold)' }}>
+                            {formatCurrency(value)}
+                          </Box>
+                        ),
+                      },
+                      {
+                        key: 'status',
+                        header: 'Status',
+                        align: 'right',
+                        render: (_value, row) => (
+                          <StatusBadge
+                            status={row.amountToPay >= row.amountDue ? 'PAID' : 'PARTIAL'}
+                            size="sm"
+                          />
+                        ),
+                      },
+                    ]}
+                  />
 
                   {/* Summary Row */}
                   <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)', borderRadius: 1 }}>

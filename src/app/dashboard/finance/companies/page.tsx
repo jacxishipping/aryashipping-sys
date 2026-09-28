@@ -12,12 +12,11 @@ import {
   IconButton,
   MenuItem,
   TextField,
-  Tooltip,
 } from '@mui/material';
 import { Building2, GitCompareArrows, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, StatsCard, toast, PageHeader, Modal, ConfirmDialog } from '@/components/design-system';
+import { Breadcrumbs, Button, StatsCard, toast, PageHeader, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 
 interface Company {

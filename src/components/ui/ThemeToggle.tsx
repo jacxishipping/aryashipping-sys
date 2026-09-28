@@ -1,7 +1,8 @@
 'use client';
 
 import { Moon, Sun } from 'lucide-react';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton } from '@mui/material';
+import Tooltip from '@/components/design-system/Tooltip';
 import { useTheme } from '@/hooks/useTheme';
 
 export function ThemeToggle() {

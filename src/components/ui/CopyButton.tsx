@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Check, Copy } from 'lucide-react';
-import { Tooltip } from '@mui/material';
+import Tooltip from '@/components/design-system/Tooltip';
 
 interface CopyButtonProps {
   value: string;

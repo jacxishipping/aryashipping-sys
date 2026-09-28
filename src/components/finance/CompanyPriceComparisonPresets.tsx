@@ -6,10 +6,9 @@ import {
   IconButton,
   MenuItem,
   TextField,
-  Tooltip,
 } from '@mui/material';
 import { Bookmark, BookmarkPlus, Pencil, Trash2 } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Tooltip, toast } from '@/components/design-system';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 import {
   deleteComparisonPreset,

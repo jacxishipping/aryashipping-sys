@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, Tooltip } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { Tooltip } from '@/components/design-system';
 import { DollarSign, TrendingUp, TrendingDown, ShieldCheck, AlertTriangle, Truck, Ship, Receipt, Coins } from 'lucide-react';
 import { formatMoney as formatCurrency } from '@/lib/format';
 

@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { formatMoney } from '@/lib/format';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Button, StatsCard, TableSkeleton, Modal, Select, toast } from '@/components/design-system';
+import { PageHeader, Button, StatsCard, TableSkeleton, Modal, Select, Tooltip, toast } from '@/components/design-system';
 import {
   Building2,
   DollarSign,
@@ -54,7 +54,6 @@ import {
   Typography,
   Chip,
   IconButton,
-  Tooltip,
   TextField,
   InputAdornment,
   Paper,

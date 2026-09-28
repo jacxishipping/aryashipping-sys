@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Upload, Sparkles, FileText, CheckCircle2, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
-import { Box, Typography, Chip, Tooltip } from '@mui/material';
+import { Box, Typography, Chip } from '@mui/material';
 import { Button, toast } from '@/components/design-system';
 
 export interface ExtractedShipmentData {

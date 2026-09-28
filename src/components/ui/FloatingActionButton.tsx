@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Ship, Package, FileText, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Fab, Tooltip, Zoom, Box } from '@mui/material';
+import { Fab, Zoom, Box } from '@mui/material';
+import Tooltip from '@/components/design-system/Tooltip';
 
 interface QuickAction {
   icon: React.ReactNode;

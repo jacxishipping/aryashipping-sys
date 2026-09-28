@@ -17,14 +17,9 @@ import {
   Box,
   Typography,
   TextField,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow
 } from '@mui/material';
 import { Button, Modal, StatusBadge, toast } from '@/components/design-system';
+import { DataTable } from '@/components/ui/DataTable';
 import { 
   generateCustomsPacketPDF, 
   downloadCustomsPacketPDF, 
@@ -202,44 +197,60 @@ export function CustomsDocumentPacketModal({
             </span>
           </Box>
 
-          <TableContainer sx={{ maxHeight: 220 }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow sx={{ bgcolor: 'var(--background)' }}>
-                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>Vehicle</TableCell>
-                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>VIN (17 Digits)</TableCell>
-                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>Lot / Source</TableCell>
-                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }}>Title Status</TableCell>
-                  <TableCell sx={{ fontWeight: 700, fontSize: '0.75rem' }} align="right">Declared Value</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {container.shipments.map((s, idx) => (
-                  <TableRow key={s.id || idx} hover>
-                    <TableCell sx={{ fontSize: '0.75rem', fontWeight: 600 }}>
-                      {[s.vehicleYear, s.vehicleMake, s.vehicleModel].filter(Boolean).join(' ') || 'Motor Vehicle'}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent-gold)' }}>
-                      {s.vehicleVIN || 'N/A'}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: '0.75rem' }}>
-                      {s.lotNumber ? `${s.lotNumber} (${s.auctionName || 'Auction'})` : 'N/A'}
-                    </TableCell>
-                    <TableCell sx={{ fontSize: '0.75rem' }}>
-                      <StatusBadge
-                        status={s.hasTitle ? 'SUCCESS' : 'WARNING'}
-                        label={s.titleStatus || (s.hasTitle ? 'Title Present' : 'Pending')}
-                        size="sm"
-                      />
-                    </TableCell>
-                    <TableCell align="right" sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--success-dark)' }}>
-                      {s.purchasePrice ? `$${s.purchasePrice.toLocaleString()}` : '$0.00'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <DataTable
+            data={container.shipments}
+            keyField="id"
+            columns={[
+              {
+                key: 'vehicle',
+                header: 'Vehicle',
+                render: (_value, row) => (
+                  <Box component="span" sx={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                    {[row.vehicleYear, row.vehicleMake, row.vehicleModel].filter(Boolean).join(' ') || 'Motor Vehicle'}
+                  </Box>
+                ),
+              },
+              {
+                key: 'vehicleVIN',
+                header: 'VIN (17 Digits)',
+                render: (value) => (
+                  <Box component="span" sx={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent-gold)' }}>
+                    {value || 'N/A'}
+                  </Box>
+                ),
+              },
+              {
+                key: 'lotNumber',
+                header: 'Lot / Source',
+                render: (_value, row) => (
+                  <Box component="span" sx={{ fontSize: '0.75rem' }}>
+                    {row.lotNumber ? `${row.lotNumber} (${row.auctionName || 'Auction'})` : 'N/A'}
+                  </Box>
+                ),
+              },
+              {
+                key: 'titleStatus',
+                header: 'Title Status',
+                render: (_value, row) => (
+                  <StatusBadge
+                    status={row.hasTitle ? 'SUCCESS' : 'WARNING'}
+                    label={row.titleStatus || (row.hasTitle ? 'Title Present' : 'Pending')}
+                    size="sm"
+                  />
+                ),
+              },
+              {
+                key: 'purchasePrice',
+                header: 'Declared Value',
+                align: 'right',
+                render: (value) => (
+                  <Box component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--success-dark)' }}>
+                    {value ? `$${value.toLocaleString()}` : '$0.00'}
+                  </Box>
+                ),
+              },
+            ]}
+          />
         </Box>
     </Modal>
   );

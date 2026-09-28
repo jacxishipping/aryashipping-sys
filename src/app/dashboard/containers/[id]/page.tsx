@@ -69,6 +69,7 @@ import {
 	ConfirmDialog,
 	type MilestoneStep
 } from '@/components/design-system';
+import { DataTable } from '@/components/ui/DataTable';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import AddExpenseModal from '@/components/containers/AddExpenseModal';
 import AddDamageModal from '@/components/containers/AddDamageModal';
@@ -1489,113 +1490,113 @@ export default function ContainerDetailPage() {
 									description="This container doesn't have any vehicles assigned yet"
 								/>
 							) : (
-								<TableContainer>
-									<Table size="small">
-										<TableHead>
-											<TableRow>
-												<TableCell sx={{ fontWeight: 600 }}>Vehicle</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>VIN</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Payment</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Price</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Insurance</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{container.shipments.map((shipment) => (
-												<TableRow 
-													key={shipment.id}
-													hover
-													sx={{ cursor: 'pointer' }}
-													onClick={() => router.push(`/dashboard/shipments/${shipment.id}`)}
-												>
-													<TableCell>
-														{shipment.vehicleMake} {shipment.vehicleModel}
-													</TableCell>
-													<TableCell sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
-														{shipment.vehicleVIN || 'N/A'}
-													</TableCell>
-													<TableCell>
-														<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-															{(shipment as any).paymentMode && (
-																<StatusBadge
-																	status={(shipment as any).paymentMode === 'CASH' ? 'SUCCESS' : 'WARNING'}
-																	label={(shipment as any).paymentMode}
-																	size="sm"
-																/>
-															)}
-															<StatusBadge
-																status={(shipment as any).paymentStatus === 'COMPLETED' ? 'SUCCESS' : 'PENDING'}
-																label={(shipment as any).paymentStatus || 'PENDING'}
-																size="sm"
-															/>
-														</Box>
-													</TableCell>
-													<TableCell align="right" sx={{ fontWeight: 600, color: 'var(--text-primary)' }}>
-														{(shipment as any).price ? formatCurrency((shipment as any).price) : 'N/A'}
-													</TableCell>
-													<TableCell align="right" sx={{ fontWeight: 600, color: 'var(--accent-gold)' }}>
-														{(shipment as any).insuranceValue ? formatCurrency((shipment as any).insuranceValue) : 'N/A'}
-													</TableCell>
-													<TableCell>
-														<StatusBadge 
-															status={shipment.status} 
+								<DataTable
+									data={container.shipments}
+									keyField="id"
+									onRowClick={(row) => router.push(`/dashboard/shipments/${row.id}`)}
+									columns={[
+										{
+											key: 'vehicle',
+											header: 'Vehicle',
+											render: (_value, row) => `${row.vehicleMake || ''} ${row.vehicleModel || ''}`.trim() || 'Vehicle',
+										},
+										{
+											key: 'vehicleVIN',
+											header: 'VIN',
+											render: (value) => (
+												<Box component="span" sx={{ fontFamily: 'monospace', fontSize: '0.75rem' }}>
+													{value || 'N/A'}
+												</Box>
+											),
+										},
+										{
+											key: 'payment',
+											header: 'Payment',
+											render: (_value, row) => (
+												<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+													{(row as any).paymentMode && (
+														<StatusBadge
+															status={(row as any).paymentMode === 'CASH' ? 'SUCCESS' : 'WARNING'}
+															label={(row as any).paymentMode}
 															size="sm"
 														/>
-													</TableCell>
-													<TableCell align="right">
-														<Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
-															{canManageExpenses && (
-																<Button
-																	variant="outline"
-																	size="sm"
-																	icon={<DollarSign className="w-3 h-3" />}
-																	onClick={(e) => {
-																		e.stopPropagation();
-																		setSelectedShipmentForExpense(shipment.id);
-																		setShipmentExpenseModalOpen(true);
-																	}}
-																	disabled={isContainerWorkflowLocked}
-																	sx={{
-																		color: 'var(--accent-gold)',
-																		borderColor: 'var(--accent-gold)',
-																	}}
-																>
-																	Expense
-																</Button>
-															)}
-															<Button
-																variant="outline"
-																size="sm"
-																icon={<Eye className="w-3 h-3" />}
-																onClick={(e) => {
-																	e.stopPropagation();
-																	router.push(`/dashboard/shipments/${shipment.id}`);
-																}}
-															>
-																View
-															</Button>
-														</Box>
-													</TableCell>
-												</TableRow>
-											))}
-											{/* Totals Row */}
-											<TableRow sx={{ bgcolor: 'var(--surface)' }}>
-												<TableCell colSpan={3} sx={{ fontWeight: 700, borderTop: '2px solid var(--border)' }}>
-													Total Revenue from Shipments
-												</TableCell>
-												<TableCell align="right" sx={{ fontWeight: 700, borderTop: '2px solid var(--border)', color: 'var(--success)' }}>
-													{formatCurrency(container.shipments.reduce((sum, s) => sum + ((s as any).price || 0), 0))}
-												</TableCell>
-												<TableCell align="right" sx={{ fontWeight: 700, borderTop: '2px solid var(--border)', color: 'var(--accent-gold)' }}>
-													{formatCurrency(container.shipments.reduce((sum, s) => sum + ((s as any).insuranceValue || 0), 0))}
-												</TableCell>
-												<TableCell colSpan={2} sx={{ borderTop: '2px solid var(--border)' }}></TableCell>
-											</TableRow>
-										</TableBody>
-									</Table>
-								</TableContainer>
+													)}
+													<StatusBadge
+														status={(row as any).paymentStatus === 'COMPLETED' ? 'SUCCESS' : 'PENDING'}
+														label={(row as any).paymentStatus || 'PENDING'}
+														size="sm"
+													/>
+												</Box>
+											),
+										},
+										{
+											key: 'price',
+											header: 'Price',
+											align: 'right',
+											render: (value) => (
+												<Box component="span" sx={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+													{value ? formatCurrency(value) : 'N/A'}
+												</Box>
+											),
+										},
+										{
+											key: 'insuranceValue',
+											header: 'Insurance',
+											align: 'right',
+											render: (value) => (
+												<Box component="span" sx={{ fontWeight: 600, color: 'var(--accent-gold)' }}>
+													{value ? formatCurrency(value) : 'N/A'}
+												</Box>
+											),
+										},
+										{
+											key: 'status',
+											header: 'Status',
+											render: (value) => <StatusBadge status={value} size="sm" />,
+										},
+									]}
+									renderRowActions={(row) => (
+										<Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
+											{canManageExpenses && (
+												<Button
+													variant="outline"
+													size="sm"
+													icon={<DollarSign className="w-3 h-3" />}
+													onClick={() => {
+														setSelectedShipmentForExpense(row.id);
+														setShipmentExpenseModalOpen(true);
+													}}
+													disabled={isContainerWorkflowLocked}
+													sx={{
+														color: 'var(--accent-gold)',
+														borderColor: 'var(--accent-gold)',
+													}}
+												>
+													Expense
+												</Button>
+											)}
+											<Button
+												variant="outline"
+												size="sm"
+												icon={<Eye className="w-3 h-3" />}
+												onClick={() => router.push(`/dashboard/shipments/${row.id}`)}
+											>
+												View
+											</Button>
+										</Box>
+									)}
+								/>
+								<Box sx={{ mt: 2, p: 2, bgcolor: 'var(--surface)', borderRadius: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
+									<Box sx={{ fontSize: '0.9rem', fontWeight: 700 }}>Total Revenue from Shipments</Box>
+									<Box sx={{ display: 'flex', gap: 3 }}>
+										<Box sx={{ fontWeight: 700, color: 'var(--success)' }}>
+											{formatCurrency(container.shipments.reduce((sum, s) => sum + ((s as any).price || 0), 0))}
+										</Box>
+										<Box sx={{ fontWeight: 700, color: 'var(--accent-gold)' }}>
+											{formatCurrency(container.shipments.reduce((sum, s) => sum + ((s as any).insuranceValue || 0), 0))}
+										</Box>
+									</Box>
+								</Box>
 							)}
 						</DashboardPanel>
 					)}
@@ -1671,109 +1672,105 @@ export default function ContainerDetailPage() {
 										: 'No shipment-level expenses found for this container'}
 								/>
 							) : (
-								<TableContainer>
-									<Table size="small">
-										<TableHead>
-											<TableRow>
-												<TableCell sx={{ fontWeight: 600 }}>Type</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Vendor</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Date</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Amount</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{displayedExpenses.map((expense) => (
-												<TableRow key={expense.id} hover>
-													<TableCell>{expense.type}</TableCell>
-													<TableCell>{expense.vendor || 'N/A'}</TableCell>
-													<TableCell>{formatDate(expense.date)}</TableCell>
-													<TableCell align="right" sx={{ fontWeight: 600, color: 'var(--error)' }}>
-														{formatCurrency(expense.amount, expense.currency)}
-													</TableCell>
-													<TableCell align="right">
-														{isShipmentExpense(expense) ? (
-															<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-																<Button
-																	variant="outline"
-																	size="sm"
-																	onClick={() => {
-																		if (expense.shipmentId) {
-																			router.push(`/dashboard/shipments/${expense.shipmentId}`);
-																		}
-																	}}
-																>
-																	View
-																</Button>
-																{canManageExpenses && (
-																	<Button
-																		variant="outline"
-																		size="sm"
-																		icon={<Trash2 className="w-3 h-3" />}
-																		onClick={() => handleDeleteExpense(expense.id)}
-																		disabled={deletingExpenseId === expense.id || isContainerWorkflowLocked}
-																		sx={{
-																			color: 'var(--error)',
-																			borderColor: 'var(--error)',
-																			'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
-																		}}
-																	>
-																		{deletingExpenseId === expense.id ? 'Deleting...' : 'Delete'}
-																	</Button>
-																)}
-															</Box>
-														) : (
-															canManageExpenses ? (
-																<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-																	<Button
-																		variant="outline"
-																		size="sm"
-																		icon={<Pencil className="w-3 h-3" />}
-																		onClick={() => {
-																			setSelectedExpense(expense);
-																			setExpenseModalOpen(true);
-																		}}
-																		disabled={deletingExpenseId === expense.id || isContainerWorkflowLocked}
-																	>
-																		Edit
-																	</Button>
-																	<Button
-																		variant="outline"
-																		size="sm"
-																		icon={<Trash2 className="w-3 h-3" />}
-																		onClick={() => handleDeleteExpense(expense.id)}
-																		disabled={deletingExpenseId === expense.id || isContainerWorkflowLocked}
-																		sx={{ 
-																			color: 'var(--error)',
-																			borderColor: 'var(--error)',
-																			'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
-																		}}
-																	>
-																		{deletingExpenseId === expense.id ? 'Deleting...' : 'Delete'}
-																	</Button>
-																</Box>
-															) : null
-														)}
-													</TableCell>
-												</TableRow>
-											))}
-											<TableRow>
-												<TableCell colSpan={4} sx={{ fontWeight: 700 }}>
-													{expenseView === 'CONTAINER' ? 'Total Container Expenses' : 'Total Shipment Expenses'}
-												</TableCell>
-												<TableCell align="right" sx={{ fontWeight: 700, color: 'var(--error)' }}>
-													{formatCurrency(displayedExpenseTotal)}
-												</TableCell>
-											</TableRow>
-											<TableRow>
-												<TableCell colSpan={4} sx={{ fontWeight: 700 }}>Grand Total (All Expenses)</TableCell>
-												<TableCell align="right" sx={{ fontWeight: 700, color: 'var(--error)' }}>
-													{formatCurrency(container.totals.expenses)}
-												</TableCell>
-											</TableRow>
-										</TableBody>
-									</Table>
-								</TableContainer>
+								<DataTable
+									data={displayedExpenses}
+									keyField="id"
+									columns={[
+										{ key: 'type', header: 'Type' },
+										{ key: 'vendor', header: 'Vendor', render: (value) => value || 'N/A' },
+										{ key: 'date', header: 'Date', render: (value) => formatDate(value) },
+										{
+											key: 'amount',
+											header: 'Amount',
+											align: 'right',
+											render: (value, row) => (
+												<Box component="span" sx={{ fontWeight: 600, color: 'var(--error)' }}>
+													{formatCurrency(value, row.currency)}
+												</Box>
+											),
+										},
+									]}
+									renderRowActions={(expense) => (
+										isShipmentExpense(expense) ? (
+											<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+												<Button
+													variant="outline"
+													size="sm"
+													onClick={() => {
+														if (expense.shipmentId) {
+															router.push(`/dashboard/shipments/${expense.shipmentId}`);
+														}
+													}}
+												>
+													View
+												</Button>
+												{canManageExpenses && (
+													<Button
+														variant="outline"
+														size="sm"
+														icon={<Trash2 className="w-3 h-3" />}
+														onClick={() => handleDeleteExpense(expense.id)}
+														disabled={deletingExpenseId === expense.id || isContainerWorkflowLocked}
+														sx={{
+															color: 'var(--error)',
+															borderColor: 'var(--error)',
+															'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
+														}}
+													>
+														{deletingExpenseId === expense.id ? 'Deleting...' : 'Delete'}
+													</Button>
+												)}
+											</Box>
+										) : (
+											canManageExpenses ? (
+												<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
+													<Button
+														variant="outline"
+														size="sm"
+														icon={<Pencil className="w-3 h-3" />}
+														onClick={() => {
+															setSelectedExpense(expense);
+															setExpenseModalOpen(true);
+														}}
+														disabled={deletingExpenseId === expense.id || isContainerWorkflowLocked}
+													>
+														Edit
+													</Button>
+													<Button
+														variant="outline"
+														size="sm"
+														icon={<Trash2 className="w-3 h-3" />}
+														onClick={() => handleDeleteExpense(expense.id)}
+														disabled={deletingExpenseId === expense.id || isContainerWorkflowLocked}
+														sx={{
+															color: 'var(--error)',
+															borderColor: 'var(--error)',
+															'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
+														}}
+													>
+														{deletingExpenseId === expense.id ? 'Deleting...' : 'Delete'}
+													</Button>
+												</Box>
+											) : null
+										)
+									)}
+								/>
+								<Box sx={{ mt: 2, p: 2, bgcolor: 'var(--surface)', borderRadius: 1, display: 'flex', flexDirection: 'column', gap: 1 }}>
+									<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+										<Box sx={{ fontSize: '0.9rem', fontWeight: 700 }}>
+											{expenseView === 'CONTAINER' ? 'Total Container Expenses' : 'Total Shipment Expenses'}
+										</Box>
+										<Box sx={{ fontWeight: 700, color: 'var(--error)' }}>
+											{formatCurrency(displayedExpenseTotal)}
+										</Box>
+									</Box>
+									<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+										<Box sx={{ fontSize: '0.9rem', fontWeight: 700 }}>Grand Total (All Expenses)</Box>
+										<Box sx={{ fontWeight: 700, color: 'var(--error)' }}>
+											{formatCurrency(container.totals.expenses)}
+										</Box>
+									</Box>
+								</Box>
 							)}
 						</DashboardPanel>
 					)}
@@ -1818,68 +1815,79 @@ export default function ContainerDetailPage() {
 									description="No damage records have been added to this container yet"
 								/>
 							) : (
-								<TableContainer>
-									<Table size="small">
-										<TableHead>
-											<TableRow>
-												<TableCell sx={{ fontWeight: 600 }}>Shipment</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Damage Type</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Description</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Amount</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Date</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{container.damages.map((damage) => (
-												<TableRow key={damage.id} hover>
-													<TableCell>
-														<Box sx={{ fontSize: '0.8rem' }}>
-															{damage.shipment
-																? [damage.shipment.vehicleMake, damage.shipment.vehicleModel].filter(Boolean).join(' ') || 'Vehicle'
-																: damage.shipmentId}
-															{damage.shipment?.vehicleVIN && (
-																<Box component="span" sx={{ color: 'var(--text-secondary)', ml: 0.5 }}>
-																	({damage.shipment.vehicleVIN})
-																</Box>
-															)}
+								<DataTable
+									data={container.damages}
+									keyField="id"
+									columns={[
+										{
+											key: 'shipment',
+											header: 'Shipment',
+											render: (_value, row) => (
+												<Box sx={{ fontSize: '0.8rem' }}>
+													{row.shipment
+														? [row.shipment.vehicleMake, row.shipment.vehicleModel].filter(Boolean).join(' ') || 'Vehicle'
+														: row.shipmentId}
+													{row.shipment?.vehicleVIN && (
+														<Box component="span" sx={{ color: 'var(--text-secondary)', ml: 0.5 }}>
+															({row.shipment.vehicleVIN})
 														</Box>
-													</TableCell>
-													<TableCell>
-														<StatusBadge
-															status={damage.damageType === 'WE_PAY' ? 'WARNING' : 'ERROR'}
-															label={damage.damageType === 'WE_PAY' ? 'We Pay' : 'Company Pays'}
-															size="sm"
-														/>
-													</TableCell>
-													<TableCell sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-														{damage.description}
-													</TableCell>
-													<TableCell align="right" sx={{ fontWeight: 600, color: 'var(--error)' }}>
-														{formatCurrency(damage.amount)}
-													</TableCell>
-													<TableCell>{formatDate(damage.createdAt)}</TableCell>
-													<TableCell align="right">
-														<Button
-															variant="outline"
-															size="sm"
-															icon={<Trash2 className="w-3 h-3" />}
-															onClick={() => handleDeleteDamage(damage.id)}
-															disabled={deletingDamageId === damage.id}
-															sx={{
-																color: 'var(--error)',
-																borderColor: 'var(--error)',
-																'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
-															}}
-														>
-															{deletingDamageId === damage.id ? 'Deleting...' : 'Delete'}
-														</Button>
-													</TableCell>
-												</TableRow>
-											))}
-										</TableBody>
-									</Table>
-								</TableContainer>
+													)}
+												</Box>
+											),
+										},
+										{
+											key: 'damageType',
+											header: 'Damage Type',
+											render: (_value, row) => (
+												<StatusBadge
+													status={row.damageType === 'WE_PAY' ? 'WARNING' : 'ERROR'}
+													label={row.damageType === 'WE_PAY' ? 'We Pay' : 'Company Pays'}
+													size="sm"
+												/>
+											),
+										},
+										{
+											key: 'description',
+											header: 'Description',
+											render: (value) => (
+												<Box component="span" sx={{ display: 'block', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+													{value}
+												</Box>
+											),
+										},
+										{
+											key: 'amount',
+											header: 'Amount',
+											align: 'right',
+											render: (value) => (
+												<Box component="span" sx={{ fontWeight: 600, color: 'var(--error)' }}>
+													{formatCurrency(value)}
+												</Box>
+											),
+										},
+										{
+											key: 'createdAt',
+											header: 'Date',
+											render: (value) => formatDate(value),
+										},
+									]}
+									renderRowActions={(row) => (
+										<Button
+											variant="outline"
+											size="sm"
+											icon={<Trash2 className="w-3 h-3" />}
+											onClick={() => handleDeleteDamage(row.id)}
+											disabled={deletingDamageId === row.id}
+											sx={{
+												color: 'var(--error)',
+												borderColor: 'var(--error)',
+												'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
+											}}
+										>
+											{deletingDamageId === row.id ? 'Deleting...' : 'Delete'}
+										</Button>
+									)}
+								/>
 							)}
 						</DashboardPanel>
 					)}
@@ -1910,60 +1918,61 @@ export default function ContainerDetailPage() {
 									description="No invoices have been created for this container yet"
 								/>
 							) : (
-								<TableContainer>
-									<Table size="small">
-										<TableHead>
-											<TableRow>
-												<TableCell sx={{ fontWeight: 600 }}>Invoice #</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Date</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Amount</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{container.invoices.map((invoice) => (
-												<TableRow key={invoice.id} hover>
-													<TableCell sx={{ fontFamily: 'monospace' }}>{invoice.invoiceNumber}</TableCell>
-													<TableCell>{formatDate(invoice.date)}</TableCell>
-													<TableCell>
-														<StatusBadge 
-															status={invoice.status} 
-															size="sm"
-														/>
-													</TableCell>
-													<TableCell align="right" sx={{ fontWeight: 600, color: 'var(--success)' }}>
-														{formatCurrency(invoice.amount, invoice.currency)}
-													</TableCell>
-													<TableCell align="right">
-														{canManageInvoices && (
-															<Button
-																variant="outline"
-																size="sm"
-																icon={<Trash2 className="w-3 h-3" />}
-																onClick={() => handleDeleteInvoice(invoice.id)}
-																disabled={deletingInvoiceId === invoice.id}
-																sx={{ 
-																	color: 'var(--error)',
-																	borderColor: 'var(--error)',
-																	'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
-																}}
-															>
-																{deletingInvoiceId === invoice.id ? 'Deleting...' : 'Delete'}
-															</Button>
-														)}
-													</TableCell>
-												</TableRow>
-											))}
-											<TableRow>
-												<TableCell colSpan={4} sx={{ fontWeight: 700 }}>Total Revenue</TableCell>
-												<TableCell align="right" sx={{ fontWeight: 700, color: 'var(--success)' }}>
-													{formatCurrency(container.totals.invoices)}
-												</TableCell>
-											</TableRow>
-										</TableBody>
-									</Table>
-								</TableContainer>
+								<DataTable
+									data={container.invoices}
+									keyField="id"
+									columns={[
+										{
+											key: 'invoiceNumber',
+											header: 'Invoice #',
+											render: (value) => (
+												<Box component="span" sx={{ fontFamily: 'monospace' }}>{value}</Box>
+											),
+										},
+										{ key: 'date', header: 'Date', render: (value) => formatDate(value) },
+										{
+											key: 'status',
+											header: 'Status',
+											render: (_value, row) => (
+												<StatusBadge status={row.status} size="sm" />
+											),
+										},
+										{
+											key: 'amount',
+											header: 'Amount',
+											align: 'right',
+											render: (value, row) => (
+												<Box component="span" sx={{ fontWeight: 600, color: 'var(--success)' }}>
+													{formatCurrency(value, row.currency)}
+												</Box>
+											),
+										},
+									]}
+									renderRowActions={(row) => (
+										canManageInvoices ? (
+											<Button
+												variant="outline"
+												size="sm"
+												icon={<Trash2 className="w-3 h-3" />}
+												onClick={() => handleDeleteInvoice(row.id)}
+												disabled={deletingInvoiceId === row.id}
+												sx={{
+													color: 'var(--error)',
+													borderColor: 'var(--error)',
+													'&:hover': { bgcolor: 'rgba(var(--error-rgb), 0.1)' }
+												}}
+											>
+												{deletingInvoiceId === row.id ? 'Deleting...' : 'Delete'}
+											</Button>
+										) : null
+									)}
+								/>
+								<Box sx={{ mt: 2, p: 2, bgcolor: 'var(--surface)', borderRadius: 1, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+									<Box sx={{ fontSize: '0.9rem', fontWeight: 700 }}>Total Revenue</Box>
+									<Box sx={{ fontWeight: 700, color: 'var(--success)' }}>
+										{formatCurrency(container.totals.invoices)}
+									</Box>
+								</Box>
 							)}
 						</DashboardPanel>
 					)}
@@ -2036,57 +2045,59 @@ export default function ContainerDetailPage() {
 									}
 								/>
 							) : (
-								<TableContainer>
-									<Table size="small">
-										<TableHead>
-											<TableRow>
-												<TableCell sx={{ fontWeight: 600 }}>Invoice #</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Customer</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Issue Date</TableCell>
-												<TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Total</TableCell>
-												<TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>
-											</TableRow>
-										</TableHead>
-										<TableBody>
-											{container.userInvoices.map((invoice) => (
-												<TableRow key={invoice.id} hover>
-													<TableCell sx={{ fontFamily: 'monospace' }}>{invoice.invoiceNumber}</TableCell>
-													<TableCell>
-														<Box>
-															<Box sx={{ fontWeight: 600 }}>{invoice.user.name || 'N/A'}</Box>
-															<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-																{invoice.user.email}
-															</Box>
-														</Box>
-													</TableCell>
-													<TableCell>{formatDate(invoice.issueDate)}</TableCell>
-													<TableCell>
-														<StatusBadge 
-															status={invoice.status} 
-															size="sm"
-														/>
-													</TableCell>
-													<TableCell align="right" sx={{ fontWeight: 600, color: 'var(--success)' }}>
-														{formatCurrency(invoice.total)}
-													</TableCell>
-													<TableCell align="right">
-														<Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-															<Button
-																variant="outline"
-																size="sm"
-																icon={<Eye className="w-3 h-3" />}
-																onClick={() => router.push(`/dashboard/invoices/${invoice.id}`)}
-															>
-																View
-															</Button>
-														</Box>
-													</TableCell>
-												</TableRow>
-											))}
-										</TableBody>
-									</Table>
-								</TableContainer>
+								<DataTable
+									data={container.userInvoices}
+									keyField="id"
+									columns={[
+										{
+											key: 'invoiceNumber',
+											header: 'Invoice #',
+											render: (value) => (
+												<Box component="span" sx={{ fontFamily: 'monospace' }}>{value}</Box>
+											),
+										},
+										{
+											key: 'user',
+											header: 'Customer',
+											render: (_value, row) => (
+												<Box>
+													<Box sx={{ fontWeight: 600 }}>{row.user.name || 'N/A'}</Box>
+													<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+														{row.user.email}
+													</Box>
+												</Box>
+											),
+										},
+										{ key: 'issueDate', header: 'Issue Date', render: (value) => formatDate(value) },
+										{
+											key: 'status',
+											header: 'Status',
+											render: (_value, row) => (
+												<StatusBadge status={row.status} size="sm" />
+											),
+										},
+										{
+											key: 'total',
+											header: 'Total',
+											align: 'right',
+											render: (value) => (
+												<Box component="span" sx={{ fontWeight: 600, color: 'var(--success)' }}>
+													{formatCurrency(value)}
+												</Box>
+											),
+										},
+									]}
+									renderRowActions={(row) => (
+										<Button
+											variant="outline"
+											size="sm"
+											icon={<Eye className="w-3 h-3" />}
+											onClick={() => router.push(`/dashboard/invoices/${row.id}`)}
+										>
+											View
+										</Button>
+									)}
+								/>
 							)}
 						</DashboardPanel>
 					)}

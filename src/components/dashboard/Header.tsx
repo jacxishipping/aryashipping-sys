@@ -13,7 +13,6 @@ import {
 	Menu,
 	MenuItem,
 	Divider,
-	Tooltip,
   ListItemIcon,
   ListItemText
 } from '@mui/material';
@@ -29,7 +28,7 @@ import {
 import { Ship, Package, FileText } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
-import { ThemeToggle } from '@/components/design-system';
+import { ThemeToggle, Tooltip } from '@/components/design-system';
 import SiteLogo from '@/components/brand/SiteLogo';
 import { NotificationCenter } from '@/components/ui/NotificationCenter';
 import GlobalSearch from '@/components/dashboard/GlobalSearch';

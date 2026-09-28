@@ -18,7 +18,6 @@ import {
 	Tabs,
 	Tab,
 	InputAdornment,
-	Tooltip,
 	Typography,
 } from '@mui/material';
 import {

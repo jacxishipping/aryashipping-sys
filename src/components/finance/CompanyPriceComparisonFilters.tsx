@@ -8,10 +8,9 @@ import {
   FormControlLabel,
   MenuItem,
   TextField,
-  Tooltip,
 } from '@mui/material';
 import { Check, Search, X } from 'lucide-react';
-import { Button } from '@/components/design-system';
+import { Button, Tooltip } from '@/components/design-system';
 import {
   DEFAULT_SHIPPING_RATE_CONFIG,
   US_STATES,
