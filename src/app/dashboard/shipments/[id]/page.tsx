@@ -32,7 +32,7 @@ import {
 } from 'lucide-react';
 import { Tabs, Tab, Box, Menu, MenuItem } from '@mui/material';
 import { MoreVertical } from 'lucide-react';
-import { Breadcrumbs, ConfirmDialog, CopyButton, toast, Tooltip } from '@/components/design-system';
+import { Breadcrumbs, ConfirmDialog, CopyButton, PageHeader, toast, Tooltip } from '@/components/design-system';
 import ShipmentMilestoneStepper from '@/components/shipments/ShipmentMilestoneStepper';
 import ShipmentLiveMapPanel from '@/components/shipments/ShipmentLiveMapPanel';
 
@@ -1057,6 +1057,57 @@ export default function ShipmentDetailPage() {
             ]}
           />
 
+          <PageHeader
+            title={vehicleLabel}
+            description={`VIN ${shipment.vehicleVIN || 'Not recorded'} · Lot ${shipment.lotNumber || 'Not recorded'} · Auction ${shipment.auctionName || 'Not recorded'}`}
+            actions={
+              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+                <StatusBadge status={shipment.status} size="sm" />
+                {shipment.paymentStatus && (
+                  <StatusBadge status={shipment.paymentStatus} size="sm" />
+                )}
+                {shipment.releaseToken && (
+                  <StatusBadge status="SUCCESS" size="sm" />
+                )}
+                {shipment.vehicleVIN && <CopyButton value={shipment.vehicleVIN} label="VIN" />}
+                {shipment.lotNumber && <CopyButton value={shipment.lotNumber} label="Lot #" />}
+                <Button href="/dashboard/shipments" variant="outline" size="sm">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openShipmentTab('map')}
+                  className="border-[rgba(var(--info-rgb),0.4)] text-[var(--info)] hover:bg-[rgba(var(--info-rgb),0.1)]"
+                >
+                  <Radio className="mr-2 h-4 w-4 animate-pulse text-[var(--info)]" />
+                  Live Map
+                </Button>
+                <Tooltip title="Download a PDF receipt for this shipment. For official invoices, use the Billing tab on this shipment.">
+                  <Button variant="outline" size="sm" onClick={handleDownloadReceipt}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    Receipt
+                  </Button>
+                </Tooltip>
+                {shipment.releaseToken && (
+                  <Tooltip title="Download release token document as PDF with customer, vehicle, and payment details.">
+                    <Button variant="outline" size="sm" onClick={handleDownloadReleaseToken}>
+                      <FileText className="mr-2 h-4 w-4" />
+                      Token PDF
+                    </Button>
+                  </Tooltip>
+                )}
+                {canManageShipmentRecord && (
+                  <Button href={`/dashboard/shipments/${shipment.id}/edit`} size="sm">
+                    <PenLine className="mr-2 h-4 w-4" />
+                    Edit
+                  </Button>
+                )}
+              </Box>
+            }
+          />
+
           <DashboardPanel noHeaderBorder>
             <div className="flex flex-col gap-5 lg:flex-row">
               <button
@@ -1077,74 +1128,7 @@ export default function ShipmentDetailPage() {
               </button>
 
               <div className="min-w-0 flex-1">
-                <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-                  <div className="min-w-0">
-                    <div className="mb-2 flex flex-wrap items-center gap-2">
-                      <StatusBadge status={shipment.status} size="sm" />
-                      {shipment.paymentStatus && (
-                        <StatusBadge status={shipment.paymentStatus} size="sm" />
-                      )}
-                      {shipment.releaseToken && (
-                        <StatusBadge status="SUCCESS" size="sm" />
-                      )}
-                    </div>
-
-                    <h1 className="text-2xl font-semibold leading-tight text-[var(--text-primary)] sm:text-3xl">
-                      {vehicleLabel}
-                    </h1>
-                    <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-[var(--text-secondary)]">
-                      <span className="inline-flex items-center gap-1.5">
-                        <span>VIN:</span>
-                        <strong className="font-mono text-[var(--text-primary)]">{shipment.vehicleVIN || 'Not recorded'}</strong>
-                        {shipment.vehicleVIN && <CopyButton value={shipment.vehicleVIN} label="VIN" />}
-                      </span>
-                      <span className="inline-flex items-center gap-1.5">
-                        <span>Lot:</span>
-                        <strong className="font-mono text-[var(--text-primary)]">{shipment.lotNumber || 'Not recorded'}</strong>
-                        {shipment.lotNumber && <CopyButton value={shipment.lotNumber} label="Lot #" />}
-                      </span>
-                      <span>Auction: <strong className="text-[var(--text-primary)]">{shipment.auctionName || 'Not recorded'}</strong></span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    <Button href="/dashboard/shipments" variant="outline" size="sm">
-                      <ArrowLeft className="mr-2 h-4 w-4" />
-                      Back
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openShipmentTab('map')}
-                      className="border-[rgba(var(--info-rgb),0.4)] text-[var(--info)] hover:bg-[rgba(var(--info-rgb),0.1)]"
-                    >
-                      <Radio className="mr-2 h-4 w-4 animate-pulse text-[var(--info)]" />
-                      Live Map
-                    </Button>
-                    <Tooltip title="Download a PDF receipt for this shipment. For official invoices, use the Billing tab on this shipment.">
-                      <Button variant="outline" size="sm" onClick={handleDownloadReceipt}>
-                        <FileText className="mr-2 h-4 w-4" />
-                        Receipt
-                      </Button>
-                    </Tooltip>
-                    {shipment.releaseToken && (
-                      <Tooltip title="Download release token document as PDF with customer, vehicle, and payment details.">
-                        <Button variant="outline" size="sm" onClick={handleDownloadReleaseToken}>
-                          <FileText className="mr-2 h-4 w-4" />
-                          Token PDF
-                        </Button>
-                      </Tooltip>
-                    )}
-                    {canManageShipmentRecord && (
-                      <Button href={`/dashboard/shipments/${shipment.id}/edit`} size="sm">
-                        <PenLine className="mr-2 h-4 w-4" />
-                        Edit
-                      </Button>
-                    )}
-                  </div>
-                </div>
-
-                <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                   <div className="rounded-lg border border-[var(--border)] bg-[var(--background)] p-3">
                     <div className="flex items-center gap-2 text-xs font-semibold uppercase text-[var(--text-secondary)]">
                       <User className="h-4 w-4" />

@@ -14,7 +14,8 @@ import {
   SkeletonCard, 
   CompactSkeleton, 
   toast, 
-  CopyButton 
+  CopyButton,
+  EmptyState 
 } from '@/components/design-system';
 import { exportToCSVWithHeaders } from '@/lib/export';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -415,17 +416,20 @@ export default function CustomersPage() {
             {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
           </Box>
         ) : customers.length === 0 ? (
-          <Box sx={{ minHeight: 240, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-            <User style={{ width: 48, height: 48, color: 'var(--text-secondary)' }} />
-            <Typography sx={{ color: 'var(--text-secondary)' }}>No customers found</Typography>
-            {canManageCustomers && (
-              <Link href="/dashboard/customers/new" style={{ textDecoration: 'none' }}>
-                <Button variant="primary" size="sm" icon={<UserPlus className="w-4 h-4" />}>
-                  Create Customer
-                </Button>
-              </Link>
-            )}
-          </Box>
+          <EmptyState
+            icon={<User className="w-10 h-10" />}
+            title="No customers found"
+            description="No customer accounts match your current search. Try a different search or create a new customer."
+            action={
+              canManageCustomers ? (
+                <Link href="/dashboard/customers/new" style={{ textDecoration: 'none' }}>
+                  <Button variant="primary" size="sm" icon={<UserPlus className="w-4 h-4" />}>
+                    Create Customer
+                  </Button>
+                </Link>
+              ) : undefined
+            }
+          />
         ) : (
           <>
             <div className="hidden lg:block">

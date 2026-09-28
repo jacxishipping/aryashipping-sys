@@ -15,10 +15,10 @@ import {
   Webhook,
   XCircle,
 } from 'lucide-react';
-import { Alert, Box, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, FormField, LoadingState, PageHeader, StatsCard, toast } from '@/components/design-system';
+import { Alert, Breadcrumbs, Button, FormField, LoadingState, Modal, PageHeader, StatsCard, toast } from '@/components/design-system';
 
 const DEFAULT_TWILIO_VALUES = {
   twilioAccountSid: '',
@@ -171,16 +171,26 @@ export default function CallAgentSettingsPage() {
 
   
   const [testingCall, setTestingCall] = useState(false);
+  const [testCallModalOpen, setTestCallModalOpen] = useState(false);
+  const [testCallNumber, setTestCallNumber] = useState('');
 
-  const handleTestCall = async () => {
+  const handleTestCall = () => {
     if (!config?.twilioInspection.phoneNumber) {
       toast.error('No Twilio phone number available');
       return;
     }
-    
-    // We'll prompt the user for the number using a simple window.prompt
-    const toField = window.prompt('Enter your phone number to test (e.g. +1...):');
-    if (!toField) return;
+
+    setTestCallNumber('');
+    setTestCallModalOpen(true);
+  };
+
+  const confirmTestCall = async () => {
+    const toField = testCallNumber.trim();
+    if (!toField) {
+      toast.error('Enter a phone number to test');
+      return;
+    }
+    setTestCallModalOpen(false);
 
     setTestingCall(true);
     try {
@@ -587,11 +597,11 @@ export default function CallAgentSettingsPage() {
               />
             </div>
 
-            <Alert severity="info" sx={{ alignItems: 'flex-start' }}>
+            <Alert severity="info">
               Use either TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN or TWILIO_ACCOUNT_SID + TWILIO_API_KEY + TWILIO_API_SECRET. TWILIO_PHONE_NUMBER and TWILIO_PHONE_NUMBER_SID are optional unless the Twilio account has multiple incoming numbers.
             </Alert>
 
-            <Alert severity="warning" sx={{ alignItems: 'flex-start' }}>
+            <Alert severity="warning">
               These values are stored in the application database and visible to admins on this page.
             </Alert>
 
@@ -641,7 +651,7 @@ export default function CallAgentSettingsPage() {
               </Box>
             </Box>
 
-            <Alert severity="info" sx={{ alignItems: 'flex-start' }}>
+            <Alert severity="info">
               The current endpoint host is based on {config.urls.source === 'NEXT_PUBLIC_APP_URL' ? 'NEXT_PUBLIC_APP_URL' : 'the active request host'}. Recommended base URL: {config.urls.preferredBaseUrl}
             </Alert>
           </Box>
@@ -677,7 +687,7 @@ export default function CallAgentSettingsPage() {
         <DashboardPanel title="Action Items" description="Items that will block or limit the call agent until configured.">
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {warnings.map((warning) => (
-              <Alert key={warning} severity="warning" sx={{ alignItems: 'flex-start' }}>
+              <Alert key={warning} severity="warning">
                 {warning}
               </Alert>
             ))}
@@ -705,6 +715,28 @@ export default function CallAgentSettingsPage() {
           </Box>
         </Box>
       </DashboardPanel>
+
+      <Modal
+        open={testCallModalOpen}
+        onClose={() => setTestCallModalOpen(false)}
+        title="Test Call"
+        description="Enter the phone number that should receive the test call from your Twilio number."
+        size="sm"
+        actions={
+          <>
+            <Button variant="outline" onClick={() => setTestCallModalOpen(false)}>Cancel</Button>
+            <Button variant="primary" onClick={() => void confirmTestCall()} disabled={!testCallNumber.trim()}>Start Test Call</Button>
+          </>
+        }
+      >
+        <FormField
+          label="Phone number"
+          value={testCallNumber}
+          onChange={(event) => setTestCallNumber(event.target.value)}
+          placeholder="+1..."
+          autoComplete="off"
+        />
+      </Modal>
     </DashboardSurface>
   );
 }

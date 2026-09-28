@@ -165,6 +165,8 @@ export default function InvoiceDetailPage() {
 	const [loading, setLoading] = useState(true);
 	const [updating, setUpdating] = useState(false);
 	const [disputedLineIds, setDisputedLineIds] = useState<Set<string>>(() => new Set());
+	const [disputeTarget, setDisputeTarget] = useState<{ line: { id: string; description: string; amount: number }; shipmentId: string | null } | null>(null);
+	const [disputeReason, setDisputeReason] = useState('');
 	const [isEditOpen, setIsEditOpen] = useState(false);
 	const [editModalTab, setEditModalTab] = useState<'details' | 'items'>('details');
 	const [editForm, setEditForm] = useState({
@@ -234,13 +236,20 @@ export default function InvoiceDetailPage() {
 		}
 	};
 
-	const handleDisputeLine = async (line: { id: string; description: string; amount: number }, shipmentId: string | null) => {
+	const handleDisputeLine = (line: { id: string; description: string; amount: number }, shipmentId: string | null) => {
 		if (!invoice) return;
-		const reason = window.prompt(
-			`Why are you disputing "${line.description}"?\n\nPlease describe the issue briefly so our team can review it.`,
-		);
-		if (!reason) return;
-		const trimmedReason = reason.trim();
+		setDisputeTarget({ line, shipmentId });
+		setDisputeReason('');
+	};
+
+	const closeDisputeModal = () => {
+		setDisputeTarget(null);
+		setDisputeReason('');
+	};
+
+	const submitDisputeLine = async () => {
+		if (!invoice || !disputeTarget) return;
+		const trimmedReason = disputeReason.trim();
 		if (trimmedReason.length < 5) {
 			toast.error('Please describe the reason in a few words');
 			return;
@@ -251,9 +260,9 @@ export default function InvoiceDetailPage() {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					shipmentId,
-					description: line.description,
-					amount: line.amount,
+					shipmentId: disputeTarget.shipmentId,
+					description: disputeTarget.line.description,
+					amount: disputeTarget.line.amount,
 					reason: trimmedReason,
 				}),
 			});
@@ -262,9 +271,10 @@ export default function InvoiceDetailPage() {
 			toast.success('Dispute submitted', { description: 'Our team will review it and reply shortly.' });
 			setDisputedLineIds((current) => {
 				const next = new Set(current);
-				next.add(line.id);
+				next.add(disputeTarget.line.id);
 				return next;
 			});
+			closeDisputeModal();
 		} catch (error) {
 			toast.error(error instanceof Error ? error.message : 'Failed to submit dispute');
 		}
@@ -1835,6 +1845,31 @@ export default function InvoiceDetailPage() {
 							)}
 						</DashboardPanel>
 					</Box>
+
+					<Modal
+						open={disputeTarget !== null}
+						onClose={closeDisputeModal}
+						title="Dispute Line Item"
+						description={`Why are you disputing "${disputeTarget?.line.description ?? ''}"? Please describe the issue briefly so our team can review it.`}
+						size="sm"
+						actions={
+							<>
+								<Button variant="outline" onClick={closeDisputeModal}>Cancel</Button>
+								<Button variant="primary" onClick={() => void submitDisputeLine()} disabled={disputeReason.trim().length < 5}>Submit Dispute</Button>
+							</>
+						}
+					>
+						<TextField
+							autoFocus
+							fullWidth
+							multiline
+							rows={4}
+							label="Reason"
+							placeholder="Describe the issue in a few words"
+							value={disputeReason}
+							onChange={(event) => setDisputeReason(event.target.value)}
+						/>
+					</Modal>
 				</DashboardSurface>
 			</Box>
 		</>
