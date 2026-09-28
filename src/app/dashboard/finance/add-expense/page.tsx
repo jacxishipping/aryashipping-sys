@@ -10,7 +10,7 @@ import { ArrowLeft, DollarSign, AlertCircle, CheckCircle, Package } from 'lucide
 import { Box } from '@mui/material';
 import AdminRoute from '@/components/auth/AdminRoute';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, Breadcrumbs, PageHeader, LoadingState, toast } from '@/components/design-system';
+import { Button, Breadcrumbs, PageHeader, LoadingState, Select, toast } from '@/components/design-system';
 
 interface Shipment {
   id: string;
@@ -178,24 +178,18 @@ export default function AddExpensePage() {
           {/* Shipment Selection Panel */}
           <DashboardPanel title="Select Shipment" description="Choose the vehicle or shipment to apply this expense to">
             <div>
-              <label htmlFor="shipment" className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
-                Shipment <span className="text-[var(--error)]">*</span>
-              </label>
-              <select
-                id="shipment"
+              <Select
+                label="Shipment"
                 value={selectedShipmentId}
-                onChange={(e) => setSelectedShipmentId(e.target.value)}
+                onChange={(value) => setSelectedShipmentId(String(value))}
                 disabled={!!shipmentIdParam}
-                className="w-full px-3.5 py-2 rounded-xl border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[rgba(var(--accent-gold-rgb),0.25)] focus:border-[var(--accent-gold)] text-sm transition-colors"
                 required
-              >
-                <option value="">Select a shipment...</option>
-                {shipments.map((shipment) => (
-                  <option key={shipment.id} value={shipment.id}>
-                    {shipment.trackingNumber} - {shipment.vehicleMake} {shipment.vehicleModel} ({shipment.user.name || shipment.user.email})
-                  </option>
-                ))}
-              </select>
+                placeholder="Select a shipment..."
+                options={shipments.map((shipment) => ({
+                  value: shipment.id,
+                  label: `${shipment.trackingNumber} - ${shipment.vehicleMake} ${shipment.vehicleModel} (${shipment.user.name || shipment.user.email})`,
+                }))}
+              />
               {shipmentIdParam && (
                 <p className="mt-2 text-xs text-[var(--text-secondary)]">
                   Shipment pre-selected from URL
@@ -225,22 +219,13 @@ export default function AddExpensePage() {
             <DashboardPanel title="Expense Details" description="Define the amount, category, and payment handling mode">
               <div className="space-y-4">
                 <div>
-                  <label htmlFor="expenseType" className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
-                    Expense Type <span className="text-[var(--error)]">*</span>
-                  </label>
-                  <select
-                    id="expenseType"
+                  <Select
+                    label="Expense Type"
                     value={expenseType}
-                    onChange={(e) => setExpenseType(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[rgba(var(--accent-gold-rgb),0.25)] focus:border-[var(--accent-gold)] text-sm transition-colors"
+                    onChange={(value) => setExpenseType(String(value))}
                     required
-                  >
-                    {expenseTypes.map((type) => (
-                      <option key={type.value} value={type.value}>
-                        {type.label}
-                      </option>
-                    ))}
-                  </select>
+                    options={expenseTypes}
+                  />
                 </div>
 
                 <div>

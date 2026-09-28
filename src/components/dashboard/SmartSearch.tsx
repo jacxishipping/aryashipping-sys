@@ -18,10 +18,6 @@ import {
   InputAdornment,
   Button,
   Chip,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Box,
   Typography,
   Collapse,
@@ -34,6 +30,7 @@ import {
 } from '@/lib/shipment-workflow-stage';
 import { Camera } from 'lucide-react';
 import { BarcodeScannerModal } from '@/components/ui/BarcodeScannerModal';
+import { Select } from '@/components/design-system';
 
 interface SmartSearchProps {
   onSearch: (filters: SearchFilters) => void;
@@ -424,128 +421,40 @@ export default function SmartSearch({
           >
             {/* Status Filter */}
             {showStatusFilter && (
-              <FormControl fullWidth>
-                <InputLabel
-                  sx={{
-                      color: 'var(--text-secondary)',
-                    fontSize: '0.875rem',
-                    '&.Mui-focused': {
-                      color: 'var(--accent-gold)',
-                    },
-                  }}
-                >
-                  Status
-                </InputLabel>
-                <Select
-                  value={filters.status || ''}
-                  onChange={(e) => updateFilter('status', e.target.value)}
-                  label="Status"
-                  sx={{
-                      bgcolor: 'var(--panel)',
-                      color: 'var(--text-primary)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'var(--border)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'var(--border)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                    },
-                    '& .MuiSvgIcon-root': {
-                        color: 'var(--text-secondary)',
-                    },
-                  }}
-                >
-                  <MenuItem value="">All Statuses</MenuItem>
-                  {(filters.type === 'items' ? ITEM_STATUSES : SHIPMENT_STATUSES).map((statusOption) => (
-                    <MenuItem key={statusOption.value} value={statusOption.value}>
-                      {statusOption.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Select
+                label="Status"
+                value={filters.status || ''}
+                onChange={(value) => updateFilter('status', String(value))}
+                options={[
+                  { value: '', label: 'All Statuses' },
+                  ...(filters.type === 'items' ? ITEM_STATUSES : SHIPMENT_STATUSES),
+                ]}
+              />
             )}
 
             {showDeliveryFilter && filters.type === 'shipments' && (
-              <FormControl fullWidth>
-                <InputLabel
-                  sx={{
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.875rem',
-                    '&.Mui-focused': {
-                      color: 'var(--accent-gold)',
-                    },
-                  }}
-                >
-                  Delivery Status
-                </InputLabel>
-                <Select
-                  value={filters.delivery || ''}
-                  onChange={(e) => updateFilter('delivery', e.target.value)}
-                  label="Delivery Status"
-                  sx={{
-                    bgcolor: 'var(--panel)',
-                    color: 'var(--text-primary)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: 'var(--text-secondary)',
-                    },
-                  }}
-                >
-                  <MenuItem value="">All Shipments</MenuItem>
-                  <MenuItem value="delivered">Delivered</MenuItem>
-                  <MenuItem value="undelivered">Not Delivered</MenuItem>
-                </Select>
-              </FormControl>
+              <Select
+                label="Delivery Status"
+                value={filters.delivery || ''}
+                onChange={(value) => updateFilter('delivery', String(value))}
+                options={[
+                  { value: '', label: 'All Shipments' },
+                  { value: 'delivered', label: 'Delivered' },
+                  { value: 'undelivered', label: 'Not Delivered' },
+                ]}
+              />
             )}
 
             {showYardFilter && filters.type === 'shipments' && (
-              <FormControl fullWidth>
-                <InputLabel
-                  sx={{
-                    color: 'var(--text-secondary)',
-                    fontSize: '0.875rem',
-                    '&.Mui-focused': {
-                      color: 'var(--accent-gold)',
-                    },
-                  }}
-                >
-                  Yard Intake
-                </InputLabel>
-                <Select
-                  value={filters.yardReceived || ''}
-                  onChange={(e) => updateFilter('yardReceived', e.target.value)}
-                  label="Yard Intake"
-                  sx={{
-                    bgcolor: 'var(--panel)',
-                    color: 'var(--text-primary)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                    },
-                    '& .MuiSvgIcon-root': {
-                      color: 'var(--text-secondary)',
-                    },
-                  }}
-                >
-                  <MenuItem value="">All Shipments</MenuItem>
-                  <MenuItem value="true">Yard Received Only</MenuItem>
-                </Select>
-              </FormControl>
+              <Select
+                label="Yard Intake"
+                value={filters.yardReceived || ''}
+                onChange={(value) => updateFilter('yardReceived', String(value))}
+                options={[
+                  { value: '', label: 'All Shipments' },
+                  { value: 'true', label: 'Yard Received Only' },
+                ]}
+              />
             )}
 
             {/* Date From */}

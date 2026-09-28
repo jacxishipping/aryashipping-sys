@@ -1,16 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Box,
+import { Box,
   Typography,
   TextField,
   InputAdornment,
   IconButton,
-  Alert,
-} from '@mui/material';
+  } from '@mui/material';
 import { Key, Eye, EyeOff, Copy, Sparkles, Check } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Alert, Button, Modal, toast } from '@/components/design-system';
 
 interface ResetPasswordModalProps {
   open: boolean;
@@ -205,7 +203,7 @@ export default function ResetPasswordModal({
         </Box>
 
         {password && (
-          <Alert severity="info" sx={{ fontSize: '0.8rem', py: 0.5 }}>
+          <Alert severity="info">
             Remember to copy or share this password with the customer securely. They will use this password alongside their email ({userEmail}) to log in.
           </Alert>
         )}

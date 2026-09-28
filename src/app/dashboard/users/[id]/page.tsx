@@ -44,6 +44,7 @@ import {
   EmptyState,
   StatsCard,
   StatusBadge,
+  Select,
   toast,
 } from '@/components/design-system';
 import ShipmentCard from '@/components/dashboard/ShipmentCard';
@@ -691,19 +692,16 @@ export default function UserViewPage({ params }: { params: Promise<{ id: string 
               </div>
 
               <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
-                <label className="block text-sm text-[var(--text-primary)]">
-                  <span className="mb-1 block text-xs font-semibold text-[var(--text-secondary)]">Collection Status</span>
-                  <select
-                    className="w-full rounded-lg border border-[var(--border)] bg-[var(--panel)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none"
-                    value={collectionForm.status}
-                    disabled={!canManageCollections || savingCollections}
-                    onChange={(event) => setCollectionForm((current) => ({ ...current, status: event.target.value }))}
-                  >
-                    {['CURRENT', 'FOLLOW_UP', 'PROMISED_TO_PAY', 'IN_COLLECTIONS', 'ESCALATED', 'ON_HOLD'].map((value) => (
-                      <option key={value} value={value}>{formatLabel(value)}</option>
-                    ))}
-                  </select>
-                </label>
+                <Select
+                  label="Collection Status"
+                  value={collectionForm.status}
+                  disabled={!canManageCollections || savingCollections}
+                  onChange={(value) => setCollectionForm((current) => ({ ...current, status: String(value) }))}
+                  options={['CURRENT', 'FOLLOW_UP', 'PROMISED_TO_PAY', 'IN_COLLECTIONS', 'ESCALATED', 'ON_HOLD'].map((value) => ({
+                    value,
+                    label: formatLabel(value),
+                  }))}
+                />
 
                 <label className="block text-sm text-[var(--text-primary)]">
                   <span className="mb-1 block text-xs font-semibold text-[var(--text-secondary)]">Promise To Pay Date</span>

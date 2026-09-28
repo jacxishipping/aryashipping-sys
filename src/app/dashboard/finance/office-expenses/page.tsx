@@ -5,7 +5,7 @@ import { useSession } from 'next-auth/react';
 import { formatMoney } from '@/lib/format';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Button, StatsCard, TableSkeleton, Modal, toast } from '@/components/design-system';
+import { PageHeader, Button, StatsCard, TableSkeleton, Modal, Select, toast } from '@/components/design-system';
 import {
   Building2,
   DollarSign,
@@ -56,10 +56,6 @@ import {
   IconButton,
   Tooltip,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   InputAdornment,
   Paper,
   Tabs,
@@ -578,95 +574,78 @@ export default function OfficeExpensesPage() {
 
               {/* Category Filter */}
               <Box sx={{ minWidth: 160 }}>
-                <FormControl size="small" fullWidth>
-                  <InputLabel id="cat-filter-label">Category</InputLabel>
-                  <Select
-                    labelId="cat-filter-label"
-                    label="Category"
-                    value={categoryFilter}
-                    onChange={(e) => {
-                      setCategoryFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    sx={{ bgcolor: 'var(--background)', borderRadius: 2 }}
-                  >
-                    <MenuItem value="ALL">All Categories</MenuItem>
-                    {Object.entries(CATEGORY_METADATA).map(([catKey, meta]) => (
-                      <MenuItem key={catKey} value={catKey}>
-                        <span className="mr-1.5 inline-flex items-center">{meta.icon}</span>
-                        {meta.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Category"
+                  value={categoryFilter}
+                  onChange={(value) => {
+                    setCategoryFilter(String(value));
+                    setPage(1);
+                  }}
+                  size="small"
+                  options={[
+                    { value: 'ALL', label: 'All Categories' },
+                    ...Object.entries(CATEGORY_METADATA).map(([catKey, meta]) => ({
+                      value: catKey,
+                      label: meta.label,
+                      icon: meta.icon,
+                    })),
+                  ]}
+                />
               </Box>
 
               {/* Payment Method Filter */}
               <Box sx={{ minWidth: 150 }}>
-                <FormControl size="small" fullWidth>
-                  <InputLabel id="payment-filter-label">Payment</InputLabel>
-                  <Select
-                    labelId="payment-filter-label"
-                    label="Payment"
-                    value={paymentMethodFilter}
-                    onChange={(e) => {
-                      setPaymentMethodFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    sx={{ bgcolor: 'var(--background)', borderRadius: 2 }}
-                  >
-                    <MenuItem value="ALL">All Methods</MenuItem>
-                    {PAYMENT_METHODS.map((pm) => (
-                      <MenuItem key={pm.value} value={pm.value}>
-                        {pm.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Payment"
+                  value={paymentMethodFilter}
+                  onChange={(value) => {
+                    setPaymentMethodFilter(String(value));
+                    setPage(1);
+                  }}
+                  size="small"
+                  options={[
+                    { value: 'ALL', label: 'All Methods' },
+                    ...PAYMENT_METHODS.map((pm) => ({ value: pm.value, label: pm.label })),
+                  ]}
+                />
               </Box>
 
               {/* Date Preset Filter */}
               <Box sx={{ minWidth: 140 }}>
-                <FormControl size="small" fullWidth>
-                  <InputLabel id="date-filter-label">Period</InputLabel>
-                  <Select
-                    labelId="date-filter-label"
-                    label="Period"
-                    value={dateRangePreset}
-                    onChange={(e) => {
-                      setDateRangePreset(e.target.value);
-                      setPage(1);
-                    }}
-                    sx={{ bgcolor: 'var(--background)', borderRadius: 2 }}
-                  >
-                    <MenuItem value="ALL">All Time</MenuItem>
-                    <MenuItem value="THIS_MONTH">This Month</MenuItem>
-                    <MenuItem value="LAST_MONTH">Last Month</MenuItem>
-                    <MenuItem value="THIS_YEAR">This Year</MenuItem>
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Period"
+                  value={dateRangePreset}
+                  onChange={(value) => {
+                    setDateRangePreset(String(value));
+                    setPage(1);
+                  }}
+                  size="small"
+                  options={[
+                    { value: 'ALL', label: 'All Time' },
+                    { value: 'THIS_MONTH', label: 'This Month' },
+                    { value: 'LAST_MONTH', label: 'Last Month' },
+                    { value: 'THIS_YEAR', label: 'This Year' },
+                  ]}
+                />
               </Box>
 
               {/* Status Filter */}
               <Box sx={{ minWidth: 130 }}>
-                <FormControl size="small" fullWidth>
-                  <InputLabel id="status-filter-label">Status</InputLabel>
-                  <Select
-                    labelId="status-filter-label"
-                    label="Status"
-                    value={statusFilter}
-                    onChange={(e) => {
-                      setStatusFilter(e.target.value);
-                      setPage(1);
-                    }}
-                    sx={{ bgcolor: 'var(--background)', borderRadius: 2 }}
-                  >
-                    <MenuItem value="ALL">All Status</MenuItem>
-                    <MenuItem value="PAID">Paid</MenuItem>
-                    <MenuItem value="PENDING">Pending</MenuItem>
-                    <MenuItem value="CANCELLED">Cancelled</MenuItem>
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Status"
+                  value={statusFilter}
+                  onChange={(value) => {
+                    setStatusFilter(String(value));
+                    setPage(1);
+                  }}
+                  size="small"
+                  options={[
+                    { value: 'ALL', label: 'All Status' },
+                    { value: 'PAID', label: 'Paid' },
+                    { value: 'PENDING', label: 'Pending' },
+                    { value: 'CANCELLED', label: 'Cancelled' },
+                  ]}
+                />
               </Box>
 
               <Button
@@ -1057,25 +1036,20 @@ export default function OfficeExpensesPage() {
             {/* Category & Amount */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
-                  Category *
-                </label>
-                <FormControl size="small" fullWidth>
-                  <Select
-                    value={formData.category}
-                    onChange={(e) =>
-                      setFormData({ ...formData, category: e.target.value as OfficeExpenseCategory })
-                    }
-                    sx={{ bgcolor: 'var(--background)', borderRadius: 2 }}
-                  >
-                    {Object.entries(CATEGORY_METADATA).map(([catKey, meta]) => (
-                      <MenuItem key={catKey} value={catKey}>
-                        <span className="mr-2 inline-flex items-center">{meta.icon}</span>
-                        {meta.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Category"
+                  value={formData.category}
+                  onChange={(value) =>
+                    setFormData({ ...formData, category: value as OfficeExpenseCategory })
+                  }
+                  size="small"
+                  required
+                  options={Object.entries(CATEGORY_METADATA).map(([catKey, meta]) => ({
+                    value: catKey,
+                    label: meta.label,
+                    icon: meta.icon,
+                  }))}
+                />
               </div>
 
               <div>
@@ -1117,22 +1091,13 @@ export default function OfficeExpensesPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
-                  Payment Method
-                </label>
-                <FormControl size="small" fullWidth>
-                  <Select
-                    value={formData.paymentMethod}
-                    onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                    sx={{ bgcolor: 'var(--background)', borderRadius: 2 }}
-                  >
-                    {PAYMENT_METHODS.map((pm) => (
-                      <MenuItem key={pm.value} value={pm.value}>
-                        {pm.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Payment Method"
+                  value={formData.paymentMethod}
+                  onChange={(value) => setFormData({ ...formData, paymentMethod: String(value) })}
+                  size="small"
+                  options={PAYMENT_METHODS.map((pm) => ({ value: pm.value, label: pm.label }))}
+                />
               </div>
             </div>
 
@@ -1206,22 +1171,19 @@ export default function OfficeExpensesPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[var(--text-primary)] uppercase tracking-wider mb-1.5">
-                  Status
-                </label>
-                <FormControl size="small" fullWidth>
-                  <Select
-                    value={formData.status}
-                    onChange={(e) =>
-                      setFormData({ ...formData, status: e.target.value as ExpensePaymentStatus })
-                    }
-                    sx={{ bgcolor: 'var(--background)', borderRadius: 2 }}
-                  >
-                    <MenuItem value="PAID">Paid</MenuItem>
-                    <MenuItem value="PENDING">Pending</MenuItem>
-                    <MenuItem value="CANCELLED">Cancelled</MenuItem>
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Status"
+                  value={formData.status}
+                  onChange={(value) =>
+                    setFormData({ ...formData, status: value as ExpensePaymentStatus })
+                  }
+                  size="small"
+                  options={[
+                    { value: 'PAID', label: 'Paid' },
+                    { value: 'PENDING', label: 'Pending' },
+                    { value: 'CANCELLED', label: 'Cancelled' },
+                  ]}
+                />
               </div>
             </div>
 

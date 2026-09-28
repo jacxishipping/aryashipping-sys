@@ -4,15 +4,11 @@ import { formatMoney as formatCurrency } from '@/lib/format';
 import { useEffect, useState } from 'react';
 import { 
     Box, 
-    MenuItem, 
-    FormControl, 
-    Select, 
-    InputLabel, 
     Typography,
     Paper,
     TextField
 } from '@mui/material';
-import { Button } from '@/components/design-system';
+import { Button, Select } from '@/components/design-system';
 import { Calculator, MapPin, Truck, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -262,81 +258,68 @@ export default function ShipmentCalculator() {
                 </Box>
 
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
-                    <FormControl fullWidth size="small">
-                        <InputLabel>Company Rate Sheet</InputLabel>
-                        <Select
-                            value={companyId}
-                            label="Company Rate Sheet"
-                            onChange={(e) => {
-                                setCompanyId(e.target.value);
-                                setOrigin('');
-                                setPickupLocation('');
-                                setPickupCity('');
-                                setPickupBranch('');
-                                setEstimatedCost(null);
-                                setCalculationTrace(null);
-                            }}
-                            sx={{ bgcolor: 'var(--background)' }}
-                        >
-                            <MenuItem value="">Average of all active company price lists</MenuItem>
-                            {companies.map((company) => {
+                    <Select
+                        label="Company Rate Sheet"
+                        value={companyId}
+                        onChange={(value) => {
+                            setCompanyId(String(value));
+                            setOrigin('');
+                            setPickupLocation('');
+                            setPickupCity('');
+                            setPickupBranch('');
+                            setEstimatedCost(null);
+                            setCalculationTrace(null);
+                        }}
+                        size="small"
+                        options={[
+                            { value: '', label: 'Average of all active company price lists' },
+                            ...companies.map((company) => {
                                 const activeList = company.priceLists?.[0];
                                 const rowCount = activeList
                                     ? activeList.importedAuctionRateCount || activeList.importedStateRateCount
                                     : company.priceListConfig?.auctionRates?.length || 0;
-                                return (
-                                    <MenuItem key={company.id} value={company.id}>
-                                        {company.name}{rowCount ? ` (${rowCount} rows)` : ' (no uploaded list)'}
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
+                                return {
+                                    value: company.id,
+                                    label: `${company.name}${rowCount ? ` (${rowCount} rows)` : ' (no uploaded list)'}`,
+                                };
+                            }),
+                        ]}
+                    />
 
-                    <FormControl fullWidth size="small">
-                        <InputLabel>Pickup State</InputLabel>
-                        <Select
-                            value={origin}
-                            label="Pickup State"
-                            onChange={(e) => {
-                                setOrigin(e.target.value);
-                                setPickupLocation('');
-                                setEstimatedCost(null); // Reset on change
-                                setCalculationTrace(null);
-                            }}
-                            sx={{ bgcolor: 'var(--background)' }}
-                        >
-                            {US_STATES.map((state) => (
-                                <MenuItem key={state.code} value={state.code}>
-                                    {state.name} ({state.code})
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Select
+                        label="Pickup State"
+                        value={origin}
+                        onChange={(value) => {
+                            setOrigin(String(value));
+                            setPickupLocation('');
+                            setEstimatedCost(null); // Reset on change
+                            setCalculationTrace(null);
+                        }}
+                        size="small"
+                        options={US_STATES.map((state) => ({
+                            value: state.code,
+                            label: `${state.name} (${state.code})`,
+                        }))}
+                    />
 
                     {stateAuctionRates.length > 0 && (
-                        <FormControl fullWidth size="small">
-                            <InputLabel>Pickup Location</InputLabel>
-                            <Select
-                                value={pickupLocation}
-                                label="Pickup Location"
-                                onChange={(e) => {
-                                    setPickupLocation(e.target.value);
-                                    setEstimatedCost(null);
-                                    setCalculationTrace(null);
-                                }}
-                                sx={{ bgcolor: 'var(--background)' }}
-                            >
-                                <MenuItem value="">
-                                    Lowest state rate ({formatCurrency(config.stateRates[origin] || config.fallbackRate)})
-                                </MenuItem>
-                                {stateAuctionRates.map((rate, index) => (
-                                    <MenuItem key={`${rate.stateCode}-${rate.branch}-${rate.city}-${index}`} value={String(index)}>
-                                        {formatAuctionRateLabel(rate)}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
+                        <Select
+                            label="Pickup Location"
+                            value={pickupLocation}
+                            onChange={(value) => {
+                                setPickupLocation(String(value));
+                                setEstimatedCost(null);
+                                setCalculationTrace(null);
+                            }}
+                            size="small"
+                            options={[
+                                { value: '', label: `Lowest state rate (${formatCurrency(config.stateRates[origin] || config.fallbackRate)})` },
+                                ...stateAuctionRates.map((rate, index) => ({
+                                    value: String(index),
+                                    label: formatAuctionRateLabel(rate),
+                                })),
+                            ]}
+                        />
                     )}
 
                     {!companyId && (
@@ -368,25 +351,20 @@ export default function ShipmentCalculator() {
                         </>
                     )}
 
-                    <FormControl fullWidth size="small">
-                        <InputLabel>Vehicle Type</InputLabel>
-                        <Select
-                            value={vehicleType}
-                            label="Vehicle Type"
-                            onChange={(e) => {
-                                setVehicleType(e.target.value);
-                                setEstimatedCost(null); // Reset on change
-                                setCalculationTrace(null);
-                            }}
-                            sx={{ bgcolor: 'var(--background)' }}
-                        >
-                            {config.vehicleTypes.map((type) => (
-                                <MenuItem key={type.id} value={type.id}>
-                                    {type.label}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Select
+                        label="Vehicle Type"
+                        value={vehicleType}
+                        onChange={(value) => {
+                            setVehicleType(String(value));
+                            setEstimatedCost(null); // Reset on change
+                            setCalculationTrace(null);
+                        }}
+                        size="small"
+                        options={config.vehicleTypes.map((type) => ({
+                            value: type.id,
+                            label: type.label,
+                        }))}
+                    />
                 </Box>
 
                 <Box sx={{ mt: 'auto', pt: 1 }}>

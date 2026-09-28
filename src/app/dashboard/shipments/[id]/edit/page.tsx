@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { 
   ArrowLeft, 
@@ -21,7 +21,7 @@ import {
 import { Box, Typography, LinearProgress, Autocomplete, TextField } from '@mui/material';
 
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Button, FormField, Breadcrumbs, toast, EmptyState, FormPageSkeleton } from '@/components/design-system';
+import { PageHeader, Button, FormField, Breadcrumbs, Select, toast, EmptyState, FormPageSkeleton } from '@/components/design-system';
 import ShipmentWorkflowStrip from '@/components/shipments/ShipmentWorkflowStrip';
 import { shipmentSchema, type ShipmentFormData } from '@/lib/validations/shipment';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -130,6 +130,7 @@ export default function EditShipmentPage() {
     setValue,
     watch,
     reset,
+    control,
   } = useForm<ShipmentFormData>({
     resolver: zodResolver(shipmentSchema),
     mode: 'onBlur',
@@ -601,34 +602,23 @@ export default function EditShipmentPage() {
                 </Box>
 
                 <Box>
-                  <Typography
-                    component="label"
-                    htmlFor="serviceType"
-                    sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}
-                  >
-                    Service Type *
-                  </Typography>
-                  <select
-                    id="serviceType"
-                    {...register('serviceType')}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      borderRadius: '16px',
-                      border: errors.serviceType ? '2px solid var(--error)' : '1px solid rgba(var(--border-rgb), 0.9)',
-                      backgroundColor: 'var(--background)',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.875rem',
-                    }}
-                  >
-                    <option value="SHIPPING_ONLY">Shipping Only</option>
-                    <option value="PURCHASE_AND_SHIPPING">Purchase + Shipping</option>
-                  </select>
-                  {errors.serviceType && (
-                    <Typography sx={{ fontSize: '0.75rem', color: 'var(--error)', mt: 0.5 }}>
-                      {errors.serviceType.message}
-                    </Typography>
-                  )}
+                  <Controller
+                    name="serviceType"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        label="Service Type"
+                        value={field.value}
+                        onChange={(value) => field.onChange(String(value))}
+                        required
+                        error={errors.serviceType?.message}
+                        options={[
+                          { value: 'SHIPPING_ONLY', label: 'Shipping Only' },
+                          { value: 'PURCHASE_AND_SHIPPING', label: 'Purchase + Shipping' },
+                        ]}
+                      />
+                    )}
+                  />
                 </Box>
 
                 {serviceTypeValue === 'PURCHASE_AND_SHIPPING' && (
@@ -644,42 +634,31 @@ export default function EditShipmentPage() {
                 )}
 
                 <Box>
-                  <Typography
-                    component="label"
-                    htmlFor="vehicleType"
-                    sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}
-                  >
-                    Vehicle Type *
-                  </Typography>
-                  <select
-                    id="vehicleType"
-                    {...register('vehicleType')}
-                    style={{
-                      width: '100%',
-                      padding: '10px 12px',
-                      borderRadius: '16px',
-                      border: errors.vehicleType ? '2px solid var(--error)' : '1px solid rgba(var(--border-rgb), 0.9)',
-                      backgroundColor: 'var(--background)',
-                      color: 'var(--text-primary)',
-                      fontSize: '0.875rem',
-                    }}
-                  >
-                    <option value="">Select type</option>
-                    <option value="sedan">Sedan</option>
-                    <option value="suv">SUV</option>
-                    <option value="truck">Truck</option>
-                    <option value="motorcycle">Motorcycle</option>
-                    <option value="van">Van</option>
-                    <option value="coupe">Coupe</option>
-                    <option value="convertible">Convertible</option>
-                    <option value="wagon">Wagon</option>
-                    <option value="other">Other</option>
-                  </select>
-                  {errors.vehicleType && (
-                    <Typography sx={{ fontSize: '0.75rem', color: 'var(--error)', mt: 0.5 }}>
-                      {errors.vehicleType.message}
-                    </Typography>
-                  )}
+                  <Controller
+                    name="vehicleType"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        label="Vehicle Type"
+                        value={field.value}
+                        onChange={(value) => field.onChange(String(value))}
+                        required
+                        placeholder="Select type"
+                        error={errors.vehicleType?.message}
+                        options={[
+                          { value: 'sedan', label: 'Sedan' },
+                          { value: 'suv', label: 'SUV' },
+                          { value: 'truck', label: 'Truck' },
+                          { value: 'motorcycle', label: 'Motorcycle' },
+                          { value: 'van', label: 'Van' },
+                          { value: 'coupe', label: 'Coupe' },
+                          { value: 'convertible', label: 'Convertible' },
+                          { value: 'wagon', label: 'Wagon' },
+                          { value: 'other', label: 'Other' },
+                        ]}
+                      />
+                    )}
+                  />
                 </Box>
 
                 <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2 }}>
@@ -778,26 +757,23 @@ export default function EditShipmentPage() {
 
                 {watch('hasTitle') && (
                     <Box>
-                        <Typography component="label" htmlFor="titleStatus" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>
-                            Title Status
-                        </Typography>
-                        <select
-                            id="titleStatus"
-                            {...register('titleStatus')}
-                            style={{
-                                width: '100%',
-                                padding: '10px 12px',
-                                borderRadius: '16px',
-                                border: '1px solid rgba(var(--border-rgb), 0.9)',
-                                backgroundColor: 'var(--background)',
-                                color: 'var(--text-primary)',
-                                fontSize: '0.875rem',
-                            }}
-                        >
-                            <option value="">Select status</option>
-                            <option value="PENDING">Pending</option>
-                            <option value="DELIVERED">Delivered</option>
-                        </select>
+                        <Controller
+                            name="titleStatus"
+                            control={control}
+                            render={({ field }) => (
+                                <Select
+                                    label="Title Status"
+                                    value={field.value}
+                                    onChange={(value) => field.onChange(String(value))}
+                                    placeholder="Select status"
+                                    error={errors.titleStatus?.message}
+                                    options={[
+                                        { value: 'PENDING', label: 'Pending' },
+                                        { value: 'DELIVERED', label: 'Delivered' },
+                                    ]}
+                                />
+                            )}
+                        />
                     </Box>
                 )}
               </Box>
@@ -963,31 +939,24 @@ export default function EditShipmentPage() {
 
                 {!isTransitManaged && !isDispatchManaged && (
                   <Box>
-                    <Typography component="label" htmlFor="status" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>
-                      Shipment Status *
-                    </Typography>
-                    <select
-                      id="status"
-                      {...register('status')}
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        borderRadius: '16px',
-                        border: errors.status ? '2px solid var(--error)' : '1px solid rgba(var(--border-rgb), 0.9)',
-                        backgroundColor: 'var(--background)',
-                        color: 'var(--text-primary)',
-                        fontSize: '0.875rem',
-                      }}
-                    >
-                      <option value="ON_HAND">On Hand</option>
-                      <option value="IN_TRANSIT">In Transit</option>
-                      <option value="RELEASED">Released</option>
-                    </select>
-                    {errors.status && (
-                      <Typography sx={{ fontSize: '0.75rem', color: 'var(--error)', mt: 0.5 }}>
-                        {errors.status.message}
-                      </Typography>
-                    )}
+                    <Controller
+                      name="status"
+                      control={control}
+                      render={({ field }) => (
+                        <Select
+                          label="Shipment Status"
+                          value={field.value}
+                          onChange={(value) => field.onChange(String(value))}
+                          required
+                          error={errors.status?.message}
+                          options={[
+                            { value: 'ON_HAND', label: 'On Hand' },
+                            { value: 'IN_TRANSIT', label: 'In Transit' },
+                            { value: 'RELEASED', label: 'Released' },
+                          ]}
+                        />
+                      )}
+                    />
                   </Box>
                 )}
 

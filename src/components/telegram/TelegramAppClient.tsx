@@ -11,13 +11,12 @@ import {
   Paper,
   TextField,
   Typography,
-  Alert,
   IconButton,
   InputAdornment,
 } from '@mui/material';
+import { Alert } from '@/components/design-system';
 import {
   VpnKey,
-  CheckCircle,
   HelpOutline,
   ArrowForward,
   Close,
@@ -267,36 +266,15 @@ export function TelegramAppClient() {
                 </Typography>
 
                 {errorMessage && (
-                  <Alert
-                    severity="error"
-                    sx={{
-                      mb: 2.5,
-                      bgcolor: 'rgba(239, 68, 68, 0.15)',
-                      border: '1px solid rgba(239, 68, 68, 0.3)',
-                      color: '#fca5a5',
-                      textAlign: 'left',
-                      fontSize: '0.85rem',
-                    }}
-                  >
-                    {errorMessage}
-                  </Alert>
+                  <Box sx={{ mb: 2.5 }}>
+                    <Alert severity="error">{errorMessage}</Alert>
+                  </Box>
                 )}
 
                 {successMessage && (
-                  <Alert
-                    icon={<CheckCircle fontSize="inherit" />}
-                    severity="success"
-                    sx={{
-                      mb: 2.5,
-                      bgcolor: 'rgba(34, 197, 94, 0.15)',
-                      border: '1px solid rgba(34, 197, 94, 0.3)',
-                      color: '#86efac',
-                      textAlign: 'left',
-                      fontSize: '0.85rem',
-                    }}
-                  >
-                    {successMessage}
-                  </Alert>
+                  <Box sx={{ mb: 2.5 }}>
+                    <Alert severity="success">{successMessage}</Alert>
+                  </Box>
                 )}
 
                 <Box sx={{ mb: 2 }}>

@@ -7,13 +7,11 @@ import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { Visibility, VisibilityOff, Email, Lock, ArrowForward, VpnKey } from '@mui/icons-material';
 import SiteLogo from '@/components/brand/SiteLogo';
-import { Button as DSButton } from '@/components/design-system';
-import { 
-	Button, 
+import { Alert, Button as DSButton } from '@/components/design-system';
+import { Button, 
 	TextField, 
 	InputAdornment, 
 	IconButton, 
-	Alert, 
 	CircularProgress, 
 	Box, 
 	Typography,
@@ -243,20 +241,9 @@ export default function SignInPage() {
 
 						{/* Error Message */}
 						{error && (
-							<Alert 
-								severity="error"
-								sx={{
-									mb: 2,
-									bgcolor: 'rgba(var(--error-rgb), 0.15)',
-									border: '1px solid rgba(var(--error-rgb), 0.4)',
-									color: 'var(--error)',
-									'& .MuiAlert-icon': {
-										color: 'var(--error)',
-									},
-								}}
-							>
-								{error}
-							</Alert>
+							<Box sx={{ mb: 2 }}>
+								<Alert severity="error">{error}</Alert>
+							</Box>
 						)}
 
 						{/* Form */}

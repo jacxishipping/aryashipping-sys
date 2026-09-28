@@ -25,11 +25,7 @@ import {
 } from 'lucide-react';
 import {
   Box,
-  FormControl,
   IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -43,6 +39,7 @@ import {
   PageHeader,
   Modal,
   ConfirmDialog,
+  Select,
 } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
@@ -694,43 +691,38 @@ export default function LedgerPage() {
                 fullWidth
               />
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(4, 1fr)' }, gap: 2 }}>
-                <FormControl size="small" fullWidth>
-                  <InputLabel>Type</InputLabel>
-                  <Select
-                    value={filters.type}
-                    onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-                    label="Type"
-                  >
-                    <MenuItem value="">All Types</MenuItem>
-                    <MenuItem value="DEBIT">Debit</MenuItem>
-                    <MenuItem value="CREDIT">Credit</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl size="small" fullWidth>
-                  <InputLabel>Source</InputLabel>
-                  <Select
-                    value={filters.source}
-                    onChange={(e) => setFilters({ ...filters, source: e.target.value as LedgerSourceFilter })}
-                    label="Source"
-                  >
-                    <MenuItem value="">All Sources</MenuItem>
-                    <MenuItem value="BANK_IMPORT">Bank Imports</MenuItem>
-                    <MenuItem value="MANUAL">Manual Entries</MenuItem>
-                  </Select>
-                </FormControl>
-                <FormControl size="small" fullWidth>
-                  <InputLabel>Transaction Info</InputLabel>
-                  <Select
-                    value={filters.transactionInfoType}
-                    onChange={(e) => setFilters({ ...filters, transactionInfoType: e.target.value })}
-                    label="Transaction Info"
-                  >
-                    <MenuItem value="">All Transaction Types</MenuItem>
-                    {(Object.entries(transactionInfoTypeLabels) as Array<[TransactionInfoType, string]>).map(([value, label]) => (
-                      <MenuItem key={value} value={value}>{label}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Type"
+                  value={filters.type}
+                  onChange={(value) => setFilters({ ...filters, type: String(value) })}
+                  size="small"
+                  options={[
+                    { value: '', label: 'All Types' },
+                    { value: 'DEBIT', label: 'Debit' },
+                    { value: 'CREDIT', label: 'Credit' },
+                  ]}
+                />
+                <Select
+                  label="Source"
+                  value={filters.source}
+                  onChange={(value) => setFilters({ ...filters, source: value as LedgerSourceFilter })}
+                  size="small"
+                  options={[
+                    { value: '', label: 'All Sources' },
+                    { value: 'BANK_IMPORT', label: 'Bank Imports' },
+                    { value: 'MANUAL', label: 'Manual Entries' },
+                  ]}
+                />
+                <Select
+                  label="Transaction Info"
+                  value={filters.transactionInfoType}
+                  onChange={(value) => setFilters({ ...filters, transactionInfoType: String(value) })}
+                  size="small"
+                  options={[
+                    { value: '', label: 'All Transaction Types' },
+                    ...(Object.entries(transactionInfoTypeLabels) as Array<[TransactionInfoType, string]>).map(([value, label]) => ({ value, label })),
+                  ]}
+                />
                 <TextField
                   label="Start Date"
                   type="date"
@@ -835,32 +827,26 @@ export default function LedgerPage() {
                 );
               })()}
 
-              <FormControl fullWidth size="small">
-                <InputLabel>Type *</InputLabel>
-                <Select
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value as 'DEBIT' | 'CREDIT' })}
-                  label="Type *"
-                  required
-                >
-                  <MenuItem value="DEBIT">Debit / Charge</MenuItem>
-                  <MenuItem value="CREDIT">Credit / Payment</MenuItem>
-                </Select>
-              </FormControl>
+              <Select
+                label="Type"
+                value={formData.type}
+                onChange={(value) => setFormData({ ...formData, type: value as 'DEBIT' | 'CREDIT' })}
+                size="small"
+                required
+                options={[
+                  { value: 'DEBIT', label: 'Debit / Charge' },
+                  { value: 'CREDIT', label: 'Credit / Payment' },
+                ]}
+              />
 
-              <FormControl fullWidth size="small">
-                <InputLabel>Category *</InputLabel>
-                <Select
-                  value={formData.transactionInfoType}
-                  onChange={(e) => setFormData({ ...formData, transactionInfoType: e.target.value as TransactionInfoType })}
-                  label="Category *"
-                  required
-                >
-                  {Object.entries(transactionInfoTypeLabels).map(([value, label]) => (
-                    <MenuItem key={value} value={value}>{label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Select
+                label="Category"
+                value={formData.transactionInfoType}
+                onChange={(value) => setFormData({ ...formData, transactionInfoType: value as TransactionInfoType })}
+                size="small"
+                required
+                options={Object.entries(transactionInfoTypeLabels).map(([value, label]) => ({ value, label }))}
+              />
 
               <TextField
                 label="Description *"

@@ -3,16 +3,12 @@
 import { useState } from 'react';
 import {
 	TextField,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
 	Box,
 	Checkbox,
 	FormControlLabel,
 } from '@mui/material';
 import { MapPin } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 
 interface AddTrackingEventModalProps {
 	open: boolean;
@@ -164,20 +160,14 @@ export default function AddTrackingEventModal({
 			}
 		>
 			<Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-					<FormControl fullWidth size="small" required>
-						<InputLabel>Status/Event Type</InputLabel>
-						<Select
-							value={formData.status}
-							onChange={(e) => handleChange('status', e.target.value)}
-							label="Status/Event Type"
-						>
-							{trackingStatuses.map((status) => (
-								<MenuItem key={status.value} value={status.value}>
-									{status.label}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+					<Select
+						label="Status/Event Type"
+						value={formData.status}
+						onChange={(value) => handleChange('status', String(value))}
+						size="small"
+						required
+						options={trackingStatuses}
+					/>
 
 					<TextField
 						size="small"
@@ -208,20 +198,13 @@ export default function AddTrackingEventModal({
 					/>
 
 					<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-						<FormControl fullWidth size="small">
-							<InputLabel>Source</InputLabel>
-							<Select
-								value={formData.source}
-								onChange={(e) => handleChange('source', e.target.value)}
-								label="Source"
-							>
-								{sourceOptions.map((source) => (
-									<MenuItem key={source.value} value={source.value}>
-										{source.label}
-									</MenuItem>
-								))}
-							</Select>
-						</FormControl>
+						<Select
+							label="Source"
+							value={formData.source}
+							onChange={(value) => handleChange('source', String(value))}
+							size="small"
+							options={sourceOptions}
+						/>
 
 						<FormControlLabel
 							control={

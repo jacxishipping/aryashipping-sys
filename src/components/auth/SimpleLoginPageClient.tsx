@@ -11,12 +11,12 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Alert,
   CircularProgress,
   Box,
   Typography,
   Paper,
 } from '@mui/material';
+import { Alert } from '@/components/design-system';
 import { getPortalBrandIdentity } from '@/lib/partner-portal-branding';
 
 type PortalLoginBranding = {
@@ -146,20 +146,9 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 							</Box>
 
 							{error && (
-								<Alert
-									severity="error"
-									sx={{
-										mb: 2,
-										bgcolor: 'rgba(var(--error-rgb), 0.15)',
-										border: '1px solid rgba(var(--error-rgb), 0.4)',
-										color: 'var(--error)',
-										'& .MuiAlert-icon': {
-											color: 'var(--error)',
-										},
-									}}
-								>
-									{error}
-								</Alert>
+								<Box sx={{ mb: 2 }}>
+									<Alert severity="error">{error}</Alert>
+								</Box>
 							)}
 
 							<Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
@@ -386,22 +375,9 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 						</Box>
 
 						{error && (
-							<Alert
-								severity="error"
-								sx={{
-									mb: 3,
-									bgcolor: 'rgba(var(--error-rgb), 0.15)',
-									border: '1px solid rgba(var(--error-rgb), 0.4)',
-									color: 'var(--error)',
-									fontSize: '1rem',
-									'& .MuiAlert-icon': {
-										color: 'var(--error)',
-										fontSize: 24,
-									},
-								}}
-							>
-								{error}
-							</Alert>
+							<Box sx={{ mb: 3 }}>
+								<Alert severity="error">{error}</Alert>
+							</Box>
 						)}
 
 						<Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

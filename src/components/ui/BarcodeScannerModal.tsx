@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 import { Camera, Flashlight, SwitchCamera, X, AlertCircle, CheckCircle, RefreshCw, Upload } from 'lucide-react';
-import { Box, Typography, IconButton, Alert } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
 import Modal from '@/components/design-system/Modal';
-import { Button } from '@/components/design-system';
+import { Alert, Button } from '@/components/design-system';
 import { sanitizeTrackNumber } from '@/lib/tracking-sanitize';
 
 interface BarcodeScannerModalProps {
@@ -386,9 +386,9 @@ export function BarcodeScannerModal({
 
         {/* Error Feedback */}
         {error && (
-          <Alert severity="error" sx={{ mt: 2, width: '100%', fontSize: '0.8125rem' }}>
-            {error}
-          </Alert>
+          <Box sx={{ mt: 2, width: '100%' }}>
+            <Alert severity="error">{error}</Alert>
+          </Box>
         )}
       </Box>
     </Modal>

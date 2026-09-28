@@ -8,10 +8,6 @@ import Link from 'next/link';
 import { 
   Box, 
   TextField, 
-  Select, 
-  MenuItem, 
-  FormControl, 
-  InputLabel, 
   Checkbox, 
   Divider, 
   InputAdornment,
@@ -40,7 +36,7 @@ import {
 } from 'lucide-react';
 import { Search } from '@mui/icons-material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal } from '@/components/design-system';
+import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select } from '@/components/design-system';
 import AdminRoute from '@/components/auth/AdminRoute';
 
 interface User {
@@ -543,18 +539,14 @@ export default function RecordPaymentPage() {
                 />
               ) : (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Payment Category *</InputLabel>
-                    <Select
-                      value={paymentCategory}
-                      onChange={(e) => setPaymentCategory(e.target.value as PaymentCategory)}
-                      label="Payment Category *"
-                    >
-                      {Object.entries(paymentCategoryLabels).map(([value, label]) => (
-                        <MenuItem key={value} value={value}>{label}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <Select
+                    label="Payment Category"
+                    value={paymentCategory}
+                    onChange={(value) => setPaymentCategory(value as PaymentCategory)}
+                    size="small"
+                    required
+                    options={Object.entries(paymentCategoryLabels).map(([value, label]) => ({ value, label }))}
+                  />
 
                   {(() => {
                     const q = shipmentSearch.trim().toLowerCase();
@@ -799,59 +791,28 @@ export default function RecordPaymentPage() {
                   helperText={`Enter the amount to apply against the shipment's ${paymentCategoryLabels[paymentCategory].toLowerCase()} balance`}
                 />
 
-                <FormControl fullWidth size="medium">
-                  <InputLabel>Payment Category *</InputLabel>
-                  <Select
-                    value={paymentCategory}
-                    onChange={(e) => setPaymentCategory(e.target.value as PaymentCategory)}
-                    label="Payment Category *"
-                  >
-                    {Object.entries(paymentCategoryLabels).map(([value, label]) => (
-                      <MenuItem key={value} value={value}>{label}</MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Payment Category"
+                  value={paymentCategory}
+                  onChange={(value) => setPaymentCategory(value as PaymentCategory)}
+                  required
+                  options={Object.entries(paymentCategoryLabels).map(([value, label]) => ({ value, label }))}
+                />
 
                 {/* Payment Method */}
-                <FormControl fullWidth size="medium">
-                  <InputLabel>Payment Method *</InputLabel>
-                  <Select
-                    value={paymentMethod}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    label="Payment Method *"
-                  >
-                    <MenuItem value="CASH">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <DollarSign className="w-4 h-4" />
-                        Cash
-                      </Box>
-                    </MenuItem>
-                    <MenuItem value="BANK_TRANSFER">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <CreditCard className="w-4 h-4" />
-                        Bank Transfer
-                      </Box>
-                    </MenuItem>
-                    <MenuItem value="CHECK">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <FileText className="w-4 h-4" />
-                        Check
-                      </Box>
-                    </MenuItem>
-                    <MenuItem value="CREDIT_CARD">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <CreditCard className="w-4 h-4" />
-                        Credit Card
-                      </Box>
-                    </MenuItem>
-                    <MenuItem value="WIRE">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <CreditCard className="w-4 h-4" />
-                        Wire Transfer
-                      </Box>
-                    </MenuItem>
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Payment Method"
+                  value={paymentMethod}
+                  onChange={(value) => setPaymentMethod(String(value))}
+                  required
+                  options={[
+                    { value: 'CASH', label: 'Cash', icon: <DollarSign className="w-4 h-4" /> },
+                    { value: 'BANK_TRANSFER', label: 'Bank Transfer', icon: <CreditCard className="w-4 h-4" /> },
+                    { value: 'CHECK', label: 'Check', icon: <FileText className="w-4 h-4" /> },
+                    { value: 'CREDIT_CARD', label: 'Credit Card', icon: <CreditCard className="w-4 h-4" /> },
+                    { value: 'WIRE', label: 'Wire Transfer', icon: <CreditCard className="w-4 h-4" /> },
+                  ]}
+                />
 
                 {/* Notes */}
                 <TextField

@@ -16,7 +16,7 @@ import {
   Calendar,
   Layers,
 } from 'lucide-react';
-import { Button, toast, Modal } from '@/components/design-system';
+import { Button, toast, Modal, Select } from '@/components/design-system';
 import { formatMoney as formatCurrency } from '@/lib/format';
 import type { OfficeExpenseCategory } from './page';
 
@@ -446,21 +446,16 @@ export default function BudgetsTab({ categoryLabels }: BudgetsTabProps) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">
-                Expense Category
-              </label>
-              <select
+              <Select
+                label="Expense Category"
                 value={formCategory}
-                onChange={(e) => setFormCategory(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-              >
-                <option value="ALL">★ Overall Monthly OpEx Cap</option>
-                {Object.entries(categoryLabels).map(([cat, label]) => (
-                  <option key={cat} value={cat}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setFormCategory(String(value))}
+                size="small"
+                options={[
+                  { value: 'ALL', label: '★ Overall Monthly OpEx Cap' },
+                  ...Object.entries(categoryLabels).map(([cat, label]) => ({ value: cat, label })),
+                ]}
+              />
             </div>
 
             <div>

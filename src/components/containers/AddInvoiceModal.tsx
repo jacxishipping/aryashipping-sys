@@ -3,17 +3,13 @@
 import { useRef, useState } from 'react';
 import {
 	TextField,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
 	Box,
 	InputAdornment,
 	Typography,
 	Chip,
 } from '@mui/material';
 import { AlertTriangle, FileText, Upload } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 
 interface AddInvoiceModalProps {
 	open: boolean;
@@ -345,20 +341,14 @@ export default function AddInvoiceModal({
 						/>
 					</Box>
 
-					<FormControl fullWidth size="small" required>
-						<InputLabel>Status</InputLabel>
-						<Select
-							value={formData.status}
-							onChange={(e) => handleChange('status', e.target.value)}
-							label="Status"
-						>
-							{invoiceStatuses.map((status) => (
-								<MenuItem key={status.value} value={status.value}>
-									{status.label}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+					<Select
+						label="Status"
+						value={formData.status}
+						onChange={(value) => handleChange('status', String(value))}
+						size="small"
+						required
+						options={invoiceStatuses}
+					/>
 
 					<TextField
 						size="small"

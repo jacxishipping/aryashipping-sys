@@ -3,16 +3,12 @@
 import { useState } from 'react';
 import {
 	TextField,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
 	Box,
 	InputAdornment,
 	Typography,
 } from '@mui/material';
 import { DollarSign } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 
 interface Shipment {
 	id: string;
@@ -165,47 +161,28 @@ export default function AddDamageModal({
 		>
 			<Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
 					{/* Shipment selector */}
-					<FormControl fullWidth size="small" required>
-						<InputLabel sx={{ color: 'var(--text-secondary)' }}>Shipment</InputLabel>
-						<Select
-							value={formData.shipmentId}
-							onChange={(e) => handleChange('shipmentId', e.target.value)}
-							label="Shipment"
-							sx={{
-								color: 'var(--text-primary)',
-								'& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-							}}
-						>
-							<MenuItem value=""><em>Select a shipment…</em></MenuItem>
-							{shipments.map((s) => (
-								<MenuItem key={s.id} value={s.id}>
-									{[s.vehicleMake, s.vehicleModel].filter(Boolean).join(' ') || 'Unknown Vehicle'}
-									{s.vehicleVIN ? ` — ${s.vehicleVIN}` : ''}
-									{s.user ? ` (${s.user.name || s.user.email})` : ''}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+					<Select
+						label="Shipment"
+						value={formData.shipmentId}
+						onChange={(value) => handleChange('shipmentId', String(value))}
+						size="small"
+						required
+						placeholder="Select a shipment…"
+						options={shipments.map((s) => ({
+							value: s.id,
+							label: `${[s.vehicleMake, s.vehicleModel].filter(Boolean).join(' ') || 'Unknown Vehicle'}${s.vehicleVIN ? ` — ${s.vehicleVIN}` : ''}${s.user ? ` (${s.user.name || s.user.email})` : ''}`,
+						}))}
+					/>
 
 					{/* Damage Type */}
-					<FormControl fullWidth size="small" required>
-						<InputLabel sx={{ color: 'var(--text-secondary)' }}>Damage Type</InputLabel>
-						<Select
-							value={formData.damageType}
-							onChange={(e) => handleChange('damageType', e.target.value)}
-							label="Damage Type"
-							sx={{
-								color: 'var(--text-primary)',
-								'& .MuiOutlinedInput-notchedOutline': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-							}}
-						>
-							{damageTypeOptions.map((opt) => (
-								<MenuItem key={opt.value} value={opt.value}>
-									{opt.label}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+					<Select
+						label="Damage Type"
+						value={formData.damageType}
+						onChange={(value) => handleChange('damageType', String(value))}
+						size="small"
+						required
+						options={damageTypeOptions}
+					/>
 
 					{/* Damage type explanation */}
 					{selectedDamageType && (

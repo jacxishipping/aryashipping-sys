@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Bell, X, Check, Package, Ship, FileText, AlertCircle, RefreshCw } from 'lucide-react';
-import { IconButton, Badge, Drawer, Box, Typography, Divider } from '@mui/material';
-import { toast } from '@/components/design-system';
+import { IconButton, Badge, Box, Typography, Divider } from '@mui/material';
+import { Drawer, EmptyState, toast } from '@/components/design-system';
 
 interface Notification {
   id: string;
@@ -208,37 +208,15 @@ export function NotificationCenter() {
 
       <Drawer
         anchor="right"
+        size="sm"
         open={open}
         onClose={() => setOpen(false)}
-        PaperProps={{
-          sx: {
-            width: { xs: '100%', sm: 400 },
-            bgcolor: 'var(--panel)',
-            color: 'var(--text-primary)',
-          },
-        }}
-      >
-        {/* Header */}
-        <Box
-          sx={{
-            p: 3,
-            borderBottom: '1px solid var(--border)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Box>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-              Notifications
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>
-              {unreadCount} unread
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+        title="Notifications"
+        description={`${unreadCount} unread`}
+        badge={
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <IconButton onClick={fetchNotifications} size="small" title="Refresh">
-                 <RefreshCw className="w-4 h-4" />
+              <RefreshCw className="w-4 h-4" />
             </IconButton>
             {unreadCount > 0 && (
               <button
@@ -248,14 +226,10 @@ export function NotificationCenter() {
                 Mark all read
               </button>
             )}
-            <IconButton onClick={() => setOpen(false)} size="small">
-              <X className="w-5 h-5" />
-            </IconButton>
           </Box>
-        </Box>
-
-        {/* Notifications List */}
-        <Box sx={{ flex: 1, overflow: 'auto' }}>
+        }
+        contentSx={{ p: 0, gap: 0 }}
+      >
           {loading ? (
             <Box
               sx={{
@@ -268,22 +242,11 @@ export function NotificationCenter() {
               <RefreshCw className="w-6 h-6 text-[var(--text-secondary)] animate-spin" />
             </Box>
           ) : notifications.length === 0 ? (
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                py: 8,
-                px: 3,
-                textAlign: 'center',
-              }}
-            >
-              <Bell className="w-12 h-12 text-[var(--text-secondary)] opacity-50 mb-3" />
-              <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                No notifications yet
-              </Typography>
-            </Box>
+            <EmptyState
+              icon={<Bell className="w-10 h-10" />}
+              title="No notifications yet"
+              description="You're all caught up."
+            />
           ) : (
             notifications.map((notification, index) => (
               <div key={notification.id}>
@@ -395,7 +358,6 @@ export function NotificationCenter() {
               </div>
             ))
           )}
-        </Box>
       </Drawer>
     </>
   );

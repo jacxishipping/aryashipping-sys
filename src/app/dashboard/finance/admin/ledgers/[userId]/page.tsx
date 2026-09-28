@@ -27,14 +27,10 @@ import {
   Box,
   Typography,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   IconButton,
   Chip,
 } from '@mui/material';
-import { Alert, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Modal, ConfirmDialog } from '@/components/design-system';
+import { Alert, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Modal, ConfirmDialog, Select } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -597,18 +593,17 @@ export default function UserLedgerManagementPage() {
 
             {showFilters && (
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2 }}>
-                <FormControl size="small" fullWidth>
-                  <InputLabel>Type</InputLabel>
-                  <Select
-                    value={filters.type}
-                    onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-                    label="Type"
-                  >
-                    <MenuItem value="">All Types</MenuItem>
-                    <MenuItem value="DEBIT">Debit Only</MenuItem>
-                    <MenuItem value="CREDIT">Credit Only</MenuItem>
-                  </Select>
-                </FormControl>
+                <Select
+                  label="Type"
+                  value={filters.type}
+                  onChange={(value) => setFilters({ ...filters, type: String(value) })}
+                  size="small"
+                  options={[
+                    { value: '', label: 'All Types' },
+                    { value: 'DEBIT', label: 'Debit Only' },
+                    { value: 'CREDIT', label: 'Credit Only' },
+                  ]}
+                />
                 <TextField
                   label="Start Date"
                   type="date"
@@ -760,32 +755,24 @@ export default function UserLedgerManagementPage() {
                 );
               })()}
 
-              <FormControl fullWidth>
-                <InputLabel>Type *</InputLabel>
-                <Select
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value as 'DEBIT' | 'CREDIT' })}
-                  label="Type *"
-                  required
-                >
-                  <MenuItem value="DEBIT">Debit / Charge Customer</MenuItem>
-                  <MenuItem value="CREDIT">Credit / Customer Payment</MenuItem>
-                </Select>
-              </FormControl>
+              <Select
+                label="Type"
+                value={formData.type}
+                onChange={(value) => setFormData({ ...formData, type: value as 'DEBIT' | 'CREDIT' })}
+                required
+                options={[
+                  { value: 'DEBIT', label: 'Debit / Charge Customer' },
+                  { value: 'CREDIT', label: 'Credit / Customer Payment' },
+                ]}
+              />
 
-              <FormControl fullWidth>
-                <InputLabel>Category *</InputLabel>
-                <Select
-                  value={formData.transactionInfoType}
-                  onChange={(e) => setFormData({ ...formData, transactionInfoType: e.target.value as TransactionInfoType })}
-                  label="Category *"
-                  required
-                >
-                  {Object.entries(transactionInfoTypeLabels).map(([value, label]) => (
-                    <MenuItem key={value} value={value}>{label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <Select
+                label="Category"
+                value={formData.transactionInfoType}
+                onChange={(value) => setFormData({ ...formData, transactionInfoType: value as TransactionInfoType })}
+                required
+                options={Object.entries(transactionInfoTypeLabels).map(([value, label]) => ({ value, label }))}
+              />
 
               <TextField
                 label="Description *"

@@ -3,15 +3,11 @@
 import { useEffect, useState } from 'react';
 import {
 	TextField,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
 	Box,
 	InputAdornment,
 } from '@mui/material';
 import { DollarSign } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 
 export interface EditableTransitExpense {
 	id: string;
@@ -156,25 +152,19 @@ export default function AddTransitExpenseModal({
 			}
 		>
 			<Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-					<FormControl fullWidth size="small" required>
-						<InputLabel>Expense Type</InputLabel>
-						<Select
-							value={formData.type}
-							onChange={(e) => handleChange('type', e.target.value)}
-							label="Expense Type"
-						>
-							{!expenseTypes.some((type) => type.value === formData.type) && (
-								<MenuItem value={formData.type}>
-									{formData.type.replace(/_/g, ' ')}
-								</MenuItem>
-							)}
-							{expenseTypes.map((type) => (
-								<MenuItem key={type.value} value={type.value}>
-									{type.label}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
+					<Select
+						label="Expense Type"
+						value={formData.type}
+						onChange={(value) => handleChange('type', String(value))}
+						size="small"
+						required
+						options={[
+							...(!expenseTypes.some((type) => type.value === formData.type)
+								? [{ value: formData.type, label: formData.type.replace(/_/g, ' ') }]
+								: []),
+							...expenseTypes,
+						]}
+					/>
 
 					<Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 2 }}>
 						<TextField

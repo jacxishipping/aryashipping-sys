@@ -4,11 +4,10 @@ import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import {
-  ArrowLeft,
+import { ArrowLeft,
   Save,
   Loader2,
   AlertCircle,
@@ -23,18 +22,17 @@ import {
   Shield,
   Check,
 } from 'lucide-react';
-import { Box, Typography, Alert, Divider, TextField, InputAdornment, IconButton } from '@mui/material';
-import { 
-  DashboardSurface, 
+import { Box, Typography, Divider, TextField, InputAdornment, IconButton } from '@mui/material';
+import { DashboardSurface, 
   DashboardPanel 
 } from '@/components/dashboard/DashboardSurface';
-import { 
-  PageHeader, 
+import { Alert, PageHeader, 
   Button, 
   Breadcrumbs, 
   ConfirmDialog,
   FormField, 
   LoadingState,
+  Select,
   toast,
 } from '@/components/design-system';
 import { formatLoginCode, loginCodeToVoiceDigits } from '@/lib/loginCode';
@@ -105,6 +103,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
     setValue,
     getValues,
     watch,
+    control,
     formState: { errors, isSubmitting },
     reset,
   } = useForm<UserFormData>({
@@ -311,9 +310,11 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
 
       <DashboardPanel className="max-w-2xl mx-auto">
         {error && (
-          <Alert severity="error" sx={{ mb: 3 }} icon={<AlertCircle className="w-5 h-5" />}>
-            {error}
-          </Alert>
+          <Box sx={{ mb: 3 }}>
+            <Alert severity="error" icon={<AlertCircle className="w-5 h-5" />}>
+              {error}
+            </Alert>
+          </Box>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -369,21 +370,24 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
           </Box>
 
           <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>Role</Typography>
-            <select
-              {...register('role')}
-              className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-gold)] focus:border-transparent outline-none transition-all"
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-              <option value="manager">Manager</option>
-              <option value="customer_service">Customer Service</option>
-            </select>
-            {errors.role && (
-              <Typography color="error" variant="caption" sx={{ mt: 0.5, display: 'block' }}>
-                {errors.role.message}
-              </Typography>
-            )}
+            <Controller
+              name="role"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  label="Role"
+                  value={field.value}
+                  onChange={(value) => field.onChange(String(value))}
+                  error={errors.role?.message}
+                  options={[
+                    { value: 'user', label: 'User' },
+                    { value: 'admin', label: 'Admin' },
+                    { value: 'manager', label: 'Manager' },
+                    { value: 'customer_service', label: 'Customer Service' },
+                  ]}
+                />
+              )}
+            />
           </Box>
 
           <Divider sx={{ my: 3, borderColor: 'var(--border)' }} />
@@ -564,20 +568,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
                   This user can login using this code at <Box component="span" sx={{ color: 'var(--accent-gold)', fontWeight: 500 }}>/auth/simple-login</Box>
                 </Typography>
 
-                <Alert
-                  severity="info"
-                  icon={<PhoneCall className="w-4 h-4" />}
-                  sx={{
-                    alignItems: 'flex-start',
-                    bgcolor: 'rgba(var(--info-rgb), 0.08)',
-                    border: '1px solid rgba(var(--info-rgb), 0.18)',
-                    color: 'var(--text-primary)',
-                    '& .MuiAlert-icon': {
-                      color: 'var(--info)',
-                      mt: '2px',
-                    },
-                  }}
-                >
+                <Alert severity="info" icon={<PhoneCall className="w-4 h-4" />}>
                   The call agent asks for an 8-digit phone keypad code. If this access code contains letters, share the keypad version below with the customer for phone support.
                 </Alert>
 

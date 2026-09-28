@@ -15,7 +15,7 @@ import {
   AlertCircle,
   Repeat,
 } from 'lucide-react';
-import { Button, toast, Modal } from '@/components/design-system';
+import { Button, toast, Modal, Select } from '@/components/design-system';
 import { formatMoney as formatCurrency } from '@/lib/format';
 import type { OfficeExpenseCategory } from './page';
 
@@ -424,21 +424,14 @@ export default function RecurringExpensesTab({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">
-                Category *
-              </label>
-              <select
-                required
+              <Select
+                label="Category"
                 value={formCategory}
-                onChange={(e) => setFormCategory(e.target.value as OfficeExpenseCategory)}
-                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-              >
-                {Object.entries(categoryLabels).map(([cat, label]) => (
-                  <option key={cat} value={cat}>
-                    {label}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setFormCategory(value as OfficeExpenseCategory)}
+                size="small"
+                required
+                options={Object.entries(categoryLabels).map(([cat, label]) => ({ value: cat, label }))}
+              />
             </div>
 
             <div>
@@ -463,20 +456,20 @@ export default function RecurringExpensesTab({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">
-                Frequency *
-              </label>
-              <select
+              <Select
+                label="Frequency"
                 value={formFrequency}
-                onChange={(e) => setFormFrequency(e.target.value as RecurringFrequency)}
-                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-              >
-                <option value="MONTHLY">Monthly</option>
-                <option value="QUARTERLY">Quarterly (Every 3 Months)</option>
-                <option value="YEARLY">Yearly (Annual)</option>
-                <option value="WEEKLY">Weekly</option>
-                <option value="BIWEEKLY">Bi-Weekly (Every 2 Weeks)</option>
-              </select>
+                onChange={(value) => setFormFrequency(value as RecurringFrequency)}
+                size="small"
+                required
+                options={[
+                  { value: 'MONTHLY', label: 'Monthly' },
+                  { value: 'QUARTERLY', label: 'Quarterly (Every 3 Months)' },
+                  { value: 'YEARLY', label: 'Yearly (Annual)' },
+                  { value: 'WEEKLY', label: 'Weekly' },
+                  { value: 'BIWEEKLY', label: 'Bi-Weekly (Every 2 Weeks)' },
+                ]}
+              />
             </div>
 
             <div>
@@ -510,21 +503,20 @@ export default function RecurringExpensesTab({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">
-                Payment Method
-              </label>
-              <select
+              <Select
+                label="Payment Method"
                 value={formPaymentMethod}
-                onChange={(e) => setFormPaymentMethod(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-background border border-border text-sm text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-              >
-                <option value="BANK_TRANSFER">Bank Wire / ACH</option>
-                <option value="CREDIT_CARD">Credit Card</option>
-                <option value="CHECK">Check</option>
-                <option value="CASH">Cash</option>
-                <option value="ZELLE">Zelle</option>
-                <option value="OTHER">Other</option>
-              </select>
+                onChange={(value) => setFormPaymentMethod(String(value))}
+                size="small"
+                options={[
+                  { value: 'BANK_TRANSFER', label: 'Bank Wire / ACH' },
+                  { value: 'CREDIT_CARD', label: 'Credit Card' },
+                  { value: 'CHECK', label: 'Check' },
+                  { value: 'CASH', label: 'Cash' },
+                  { value: 'ZELLE', label: 'Zelle' },
+                  { value: 'OTHER', label: 'Other' },
+                ]}
+              />
             </div>
           </div>
 

@@ -29,6 +29,7 @@ import {
   StatsCard,
   PageHeader,
   Modal,
+  Select,
 } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -414,29 +415,31 @@ export default function LedgerTransfersPage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <select
+              <Select
+                label="Type"
                 value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-                aria-label="Filter by transfer type"
-                className="px-3 py-2 bg-background border border-border rounded-lg text-xs font-medium text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-              >
-                <option value="ALL">All Types</option>
-                <option value="USER_TO_USER">Customer ➔ Customer</option>
-                <option value="USER_TO_COMPANY">Customer ➔ Company</option>
-                <option value="COMPANY_TO_USER">Company ➔ Customer</option>
-                <option value="COMPANY_TO_COMPANY">Company ➔ Company</option>
-              </select>
+                onChange={(value) => setSelectedType(String(value))}
+                size="small"
+                options={[
+                  { value: 'ALL', label: 'All Types' },
+                  { value: 'USER_TO_USER', label: 'Customer ➔ Customer' },
+                  { value: 'USER_TO_COMPANY', label: 'Customer ➔ Company' },
+                  { value: 'COMPANY_TO_USER', label: 'Company ➔ Customer' },
+                  { value: 'COMPANY_TO_COMPANY', label: 'Company ➔ Company' },
+                ]}
+              />
 
-              <select
+              <Select
+                label="Status"
                 value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                aria-label="Filter by transfer status"
-                className="px-3 py-2 bg-background border border-border rounded-lg text-xs font-medium text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-              >
-                <option value="ALL">All Statuses</option>
-                <option value="COMPLETED">Completed</option>
-                <option value="CANCELLED">Cancelled</option>
-              </select>
+                onChange={(value) => setSelectedStatus(String(value))}
+                size="small"
+                options={[
+                  { value: 'ALL', label: 'All Statuses' },
+                  { value: 'COMPLETED', label: 'Completed' },
+                  { value: 'CANCELLED', label: 'Cancelled' },
+                ]}
+              />
 
               <input
                 type="date"
@@ -650,22 +653,17 @@ export default function LedgerTransfersPage() {
             {/* Step 2: Source & Destination */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">
-                  From (Source Account) *
-                </label>
-                <select
-                  required
+                <Select
+                  label="From (Source Account)"
                   value={formSourceId}
-                  onChange={(e) => setFormSourceId(e.target.value)}
-                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-                >
-                  <option value="">Select source account...</option>
-                  {sourceOptions.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.name} ({opt.type === 'USER' ? opt.email : opt.code || 'Company'}) — Balance: {formatCurrency(opt.balance)}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(value) => setFormSourceId(String(value))}
+                  required
+                  placeholder="Select source account..."
+                  options={sourceOptions.map((opt) => ({
+                    value: opt.id,
+                    label: `${opt.name} (${opt.type === 'USER' ? opt.email : opt.code || 'Company'}) — Balance: ${formatCurrency(opt.balance)}`,
+                  }))}
+                />
                 {selectedSourceParty && (
                   <div className="mt-1 text-xs text-muted-foreground flex items-center justify-between">
                     <span>Current Balance:</span>
@@ -677,22 +675,17 @@ export default function LedgerTransfersPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-muted-foreground uppercase mb-1">
-                  To (Destination Account) *
-                </label>
-                <select
-                  required
+                <Select
+                  label="To (Destination Account)"
                   value={formDestId}
-                  onChange={(e) => setFormDestId(e.target.value)}
-                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm text-foreground focus:outline-none focus:border-[var(--accent-gold)]"
-                >
-                  <option value="">Select destination account...</option>
-                  {destOptions.map((opt) => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.name} ({opt.type === 'USER' ? opt.email : opt.code || 'Company'}) — Balance: {formatCurrency(opt.balance)}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(value) => setFormDestId(String(value))}
+                  required
+                  placeholder="Select destination account..."
+                  options={destOptions.map((opt) => ({
+                    value: opt.id,
+                    label: `${opt.name} (${opt.type === 'USER' ? opt.email : opt.code || 'Company'}) — Balance: ${formatCurrency(opt.balance)}`,
+                  }))}
+                />
                 {selectedDestParty && (
                   <div className="mt-1 text-xs text-muted-foreground flex items-center justify-between">
                     <span>Current Balance:</span>

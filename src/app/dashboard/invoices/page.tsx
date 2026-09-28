@@ -10,10 +10,6 @@ import Link from 'next/link';
 import { 
 	Box, 
 	Chip,
-	MenuItem,
-	Select,
-	FormControl,
-	InputLabel,
 	TextField,
 	InputAdornment,
 } from '@mui/material';
@@ -42,6 +38,7 @@ import {
 	StatusBadge,
 	CopyButton,
 	StatusFilterPills,
+	Select,
 } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { exportToCSVWithHeaders } from '@/lib/export';
@@ -696,19 +693,19 @@ const confirmAction = useConfirmAction();
 						mb: 3
 					}}>
 						{/* Items per page selector */}
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-							<span style={{ fontSize: '0.875rem' }}>Items per page:</span>
-							<FormControl size="small" sx={{ minWidth: 80 }}>
-								<Select
-									value={itemsPerPage}
-									onChange={(e) => handleItemsPerPageChange(Number(e.target.value))}
-								>
-									<MenuItem value={10}>10</MenuItem>
-									<MenuItem value={25}>25</MenuItem>
-									<MenuItem value={50}>50</MenuItem>
-									<MenuItem value={100}>100</MenuItem>
-								</Select>
-							</FormControl>
+						<Box sx={{ minWidth: 130 }}>
+							<Select
+								label="Items per page"
+								value={itemsPerPage}
+								onChange={(value) => handleItemsPerPageChange(Number(value))}
+								size="small"
+								options={[
+									{ value: 10, label: '10' },
+									{ value: 25, label: '25' },
+									{ value: 50, label: '50' },
+									{ value: 100, label: '100' },
+								]}
+							/>
 						</Box>
 
 						{/* Pagination info and controls */}

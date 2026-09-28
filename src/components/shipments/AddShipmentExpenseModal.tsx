@@ -3,10 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
 	TextField,
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
 	Box,
 	InputAdornment,
 	FormControlLabel,
@@ -14,7 +10,7 @@ import {
 	CircularProgress,
 } from '@mui/material';
 import { DollarSign, Plus, Trash2, Paperclip, X, TrendingUp, TrendingDown } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 
 interface ShipmentOption {
 	id: string;
@@ -420,26 +416,27 @@ export default function AddShipmentExpenseModal({
 									</Button>
 								</Box>
 
-								<FormControl fullWidth size="small" required>
-									<InputLabel>Shipment</InputLabel>
-									<Select value={item.shipmentId} onChange={(e) => updateItem(index, 'shipmentId', e.target.value)} label="Shipment">
-										<MenuItem value=""><em>Select a shipment...</em></MenuItem>
-										{shipments?.map((s) => (
-											<MenuItem key={s.id} value={s.id}>
-												{s.vehicleMake} {s.vehicleModel}{s.vehicleVIN ? ` - ${s.vehicleVIN}` : ''}{s.user ? ` (${s.user.name || s.user.email})` : ''}
-											</MenuItem>
-										))}
-									</Select>
-								</FormControl>
+								<Select
+									label="Shipment"
+									value={item.shipmentId}
+									onChange={(value) => updateItem(index, 'shipmentId', String(value))}
+									size="small"
+									required
+									placeholder="Select a shipment..."
+									options={(shipments || []).map((s) => ({
+										value: s.id,
+										label: `${s.vehicleMake} ${s.vehicleModel}${s.vehicleVIN ? ` - ${s.vehicleVIN}` : ''}${s.user ? ` (${s.user.name || s.user.email})` : ''}`,
+									}))}
+								/>
 
-								<FormControl fullWidth size="small" required>
-									<InputLabel>Expense Type</InputLabel>
-									<Select value={item.expenseType} onChange={(e) => updateItem(index, 'expenseType', e.target.value)} label="Expense Type">
-										{expenseTypes.map((type) => (
-											<MenuItem key={type.value} value={type.value}>{type.label}</MenuItem>
-										))}
-									</Select>
-								</FormControl>
+								<Select
+									label="Expense Type"
+									value={item.expenseType}
+									onChange={(value) => updateItem(index, 'expenseType', String(value))}
+									size="small"
+									required
+									options={expenseTypes}
+								/>
 
 								<TextField size="small" label="Description" value={item.description} onChange={(e) => updateItem(index, 'description', e.target.value)} required />
 
@@ -502,44 +499,44 @@ export default function AddShipmentExpenseModal({
 				) : (
 					<>
 						{shouldShowShipmentSelector && (
-							<FormControl fullWidth size="small" required>
-								<InputLabel>Shipment</InputLabel>
-								<Select value={selectedShipmentId} onChange={(e) => setSelectedShipmentId(e.target.value)} label="Shipment">
-									<MenuItem value=""><em>Select a shipment...</em></MenuItem>
-									{shipmentOptions.map((s) => (
-										<MenuItem key={s.id} value={s.id}>
-											{s.vehicleMake} {s.vehicleModel}{s.vehicleVIN ? ` - ${s.vehicleVIN}` : ''}{s.user ? ` (${s.user.name || s.user.email})` : ''}
-										</MenuItem>
-									))}
-								</Select>
-							</FormControl>
+							<Select
+								label="Shipment"
+								value={selectedShipmentId}
+								onChange={(value) => setSelectedShipmentId(String(value))}
+								size="small"
+								required
+								placeholder="Select a shipment..."
+								options={shipmentOptions.map((s) => ({
+									value: s.id,
+									label: `${s.vehicleMake} ${s.vehicleModel}${s.vehicleVIN ? ` - ${s.vehicleVIN}` : ''}${s.user ? ` (${s.user.name || s.user.email})` : ''}`,
+								}))}
+							/>
 						)}
 
 						{/* Accounting Leg Selector (when context is not locked by props) */}
 						{!contextTypeProp && (
-							<FormControl fullWidth size="small">
-								<InputLabel>Accounting Leg / Posting Route</InputLabel>
-								<Select
-									value={selectedContextType}
-									onChange={(e) => setSelectedContextType(e.target.value as any)}
-									label="Accounting Leg / Posting Route"
-								>
-									<MenuItem value=""><em>Auto-detect from expense type & shipment setup</em></MenuItem>
-									<MenuItem value="CONTAINER">Container / Ocean Shipping Line</MenuItem>
-									<MenuItem value="DISPATCH">Dispatch / Inland Towing Carrier</MenuItem>
-									<MenuItem value="TRANSIT">Transit / Destination Transport Carrier</MenuItem>
-								</Select>
-							</FormControl>
+							<Select
+								label="Accounting Leg / Posting Route"
+								value={selectedContextType}
+								onChange={(value) => setSelectedContextType(value as any)}
+								size="small"
+								placeholder="Auto-detect from expense type & shipment setup"
+								options={[
+									{ value: 'CONTAINER', label: 'Container / Ocean Shipping Line' },
+									{ value: 'DISPATCH', label: 'Dispatch / Inland Towing Carrier' },
+									{ value: 'TRANSIT', label: 'Transit / Destination Transport Carrier' },
+								]}
+							/>
 						)}
 
-						<FormControl fullWidth size="small" required>
-							<InputLabel>Expense Type</InputLabel>
-							<Select value={formData.expenseType} onChange={(e) => handleChange('expenseType', e.target.value)} label="Expense Type">
-								{expenseTypes.map((type) => (
-									<MenuItem key={type.value} value={type.value}>{type.label}</MenuItem>
-								))}
-							</Select>
-						</FormControl>
+						<Select
+							label="Expense Type"
+							value={formData.expenseType}
+							onChange={(value) => handleChange('expenseType', String(value))}
+							size="small"
+							required
+							options={expenseTypes}
+						/>
 
 						<TextField
 							size="small"

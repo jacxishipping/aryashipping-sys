@@ -2,8 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import {
-  CheckCircle2,
+import { CheckCircle2,
   ChevronDown,
   ChevronUp,
   CircleDashed,
@@ -20,9 +19,9 @@ import {
   Truck,
   X,
 } from 'lucide-react';
-import { Alert, Box, CircularProgress, TextField } from '@mui/material';
+import { Box, CircularProgress, TextField } from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Alert, Button, Modal, toast } from '@/components/design-system';
 import { cn } from '@/lib/utils';
 import { formatMoney as formatSnapshotMoney } from '@/lib/format';
 import { ShipmentProfitabilityCard } from '@/components/dashboard/ShipmentProfitabilityCard';
@@ -967,12 +966,12 @@ export default function ShipmentFinancialsTab({
       >
         <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
           {editingInvoiceNumber ? (
-            <Alert severity="info" sx={{ fontSize: '0.85rem' }}>
+            <Alert severity="info">
               This expense is linked to Invoice <strong>{editingInvoiceNumber}</strong>. Description, notes, and receipt
               attachments can be updated. To change billed amounts, please issue an adjustment or credit note in the Billing tab.
             </Alert>
           ) : (
-            <Alert severity="warning" sx={{ fontSize: '0.85rem' }}>
+            <Alert severity="warning">
               Note: Type and amount cannot be edited to maintain ledger integrity. You may update description, notes, and receipt documents.
             </Alert>
           )}

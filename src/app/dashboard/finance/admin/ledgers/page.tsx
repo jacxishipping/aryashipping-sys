@@ -15,8 +15,8 @@ import {
   FilterList,
   Payment,
 } from '@mui/icons-material';
-import {  Box, Typography, TextField, Select, MenuItem, FormControl, InputLabel, Chip } from '@mui/material';
-import { Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader } from '@/components/design-system';
+import {  Box, Typography, TextField, Chip } from '@mui/material';
+import { Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Select } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -358,20 +358,21 @@ export default function AdminLedgersPage() {
               }}
               fullWidth
             />
-            <FormControl size="small" sx={{ minWidth: 200 }}>
-              <InputLabel>Balance Filter</InputLabel>
+            <Box sx={{ minWidth: 200 }}>
               <Select
-                value={filterBalance}
-                onChange={(e) => setFilterBalance(e.target.value as typeof filterBalance)}
                 label="Balance Filter"
-                startAdornment={<FilterList sx={{ ml: 1, mr: 0.5, color: 'var(--text-secondary)', fontSize: 20 }} />}
-              >
-                <MenuItem value="all">All Balances</MenuItem>
-                <MenuItem value="positive">Owes Money</MenuItem>
-                <MenuItem value="zero">Zero Balance</MenuItem>
-                <MenuItem value="negative">Credit Balance</MenuItem>
-              </Select>
-            </FormControl>
+                value={filterBalance}
+                onChange={(value) => setFilterBalance(value as typeof filterBalance)}
+                size="small"
+                leftIcon={<FilterList sx={{ fontSize: 20 }} />}
+                options={[
+                  { value: 'all', label: 'All Balances' },
+                  { value: 'positive', label: 'Owes Money' },
+                  { value: 'zero', label: 'Zero Balance' },
+                  { value: 'negative', label: 'Credit Balance' },
+                ]}
+              />
+            </Box>
           </Box>
         </DashboardPanel>
 

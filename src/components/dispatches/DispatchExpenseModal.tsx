@@ -3,16 +3,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
-  FormControl,
   InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
 } from '@mui/material';
 import { DollarSign, Paperclip, Upload } from 'lucide-react';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 import {
   DEFAULT_DISPATCH_EXPENSE_CATEGORY,
   DISPATCH_EXPENSE_CATEGORY_OPTIONS,
@@ -219,27 +215,23 @@ export default function DispatchExpenseModal({
     >
       <Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-            <FormControl fullWidth size="small" required>
-              <InputLabel>Category</InputLabel>
-              <Select
-                value={formData.category}
-                onChange={(e) => handleCategoryChange(e.target.value as DispatchExpenseCategory)}
-                label="Category"
-              >
-                {DISPATCH_EXPENSE_CATEGORY_OPTIONS.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Select
+              label="Category"
+              value={formData.category}
+              onChange={(value) => handleCategoryChange(value as DispatchExpenseCategory)}
+              size="small"
+              required
+              options={DISPATCH_EXPENSE_CATEGORY_OPTIONS}
+            />
 
-            <FormControl fullWidth size="small" required>
-              <InputLabel>Expense Type</InputLabel>
-              <Select value={formData.type} onChange={(e) => handleChange('type', e.target.value)} label="Expense Type">
-                {typeOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <Select
+              label="Expense Type"
+              value={formData.type}
+              onChange={(value) => handleChange('type', String(value))}
+              size="small"
+              required
+              options={typeOptions}
+            />
           </Box>
 
           <TextField

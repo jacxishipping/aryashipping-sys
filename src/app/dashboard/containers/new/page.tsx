@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 import { ArrowLeft, Download, Loader2, Ship, Anchor, Calendar, MapPin, AlertCircle, ChevronRight, ChevronLeft } from 'lucide-react';
 import { Stepper, Step, StepLabel, Box } from '@mui/material';
-import { PageHeader, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, FormField } from '@/components/design-system';
+import { PageHeader, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, FormField, Select } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 
 const steps = ['Basic Info', 'Shipping Details', 'Ports', 'Dates', 'Additional Info'];
@@ -316,24 +316,17 @@ export default function NewContainerPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
-                    <label className="mb-2 block text-xs font-semibold uppercase tracking-wide text-[var(--text-secondary)]">
-                      Container Company *
-                    </label>
-                    <select
-                      id="companyId"
-                      name="companyId"
+                    <Select
+                      label="Container Company"
                       value={formData.companyId}
-                      onChange={handleChange}
+                      onChange={(value) => handleChange({ target: { name: 'companyId', value: String(value) } } as React.ChangeEvent<HTMLSelectElement>)}
                       required
-                      className="w-full rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(var(--accent-gold-rgb),0.25)] focus:border-[var(--accent-gold)]"
-                    >
-                      <option value="">Select a company...</option>
-                      {companies.map((company) => (
-                        <option key={company.id} value={company.id}>
-                          {company.name}{company.code ? ` (${company.code})` : ''}
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Select a company..."
+                      options={companies.map((company) => ({
+                        value: company.id,
+                        label: `${company.name}${company.code ? ` (${company.code})` : ''}`,
+                      }))}
+                    />
                     <p className="mt-1 text-xs text-[var(--text-secondary)]">
                       All container and shipment expenses will post to this company ledger.
                     </p>

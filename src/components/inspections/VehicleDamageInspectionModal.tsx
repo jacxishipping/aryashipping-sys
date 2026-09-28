@@ -36,13 +36,11 @@ import {
   Sparkles,
   Save,
   Gauge,
-  Key,
-  Fuel,
   UploadCloud,
   ChevronRight,
   Info,
 } from 'lucide-react';
-import { toast, CopyButton, Button } from '@/components/design-system';
+import { toast, CopyButton, Button, Select } from '@/components/design-system';
 
 interface VehicleDamageInspectionModalProps {
   isOpen: boolean;
@@ -647,36 +645,28 @@ export default function VehicleDamageInspectionModal({
                   {/* Damage Type & Severity */}
                   <div className="grid grid-cols-2 gap-2.5">
                     <div>
-                      <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-                        Damage Category
-                      </label>
-                      <select
+                      <Select
+                        label="Damage Category"
                         value={pinFormDamageType}
-                        onChange={(e) => setPinFormDamageType(e.target.value as DamageType)}
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
-                      >
-                        {Object.entries(DAMAGE_TYPE_LABELS).map(([key, label]) => (
-                          <option key={key} value={key}>
-                            {label}
-                          </option>
-                        ))}
-                      </select>
+                        onChange={(value) => setPinFormDamageType(value as DamageType)}
+                        size="small"
+                        options={Object.entries(DAMAGE_TYPE_LABELS).map(([key, label]) => ({ value: key, label }))}
+                      />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-                        Severity Level
-                      </label>
-                      <select
+                      <Select
+                        label="Severity Level"
                         value={pinFormSeverity}
-                        onChange={(e) => setPinFormSeverity(e.target.value as DamageSeverity)}
-                        className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
-                      >
-                        <option value="LOW">Minor (Surface scratch, ding)</option>
-                        <option value="MEDIUM">Moderate (Noticeable dent, chip)</option>
-                        <option value="HIGH">Major (Cracked bumper, tear)</option>
-                        <option value="CRITICAL">Critical (Frame / Deployed)</option>
-                      </select>
+                        onChange={(value) => setPinFormSeverity(value as DamageSeverity)}
+                        size="small"
+                        options={[
+                          { value: 'LOW', label: 'Minor (Surface scratch, ding)' },
+                          { value: 'MEDIUM', label: 'Moderate (Noticeable dent, chip)' },
+                          { value: 'HIGH', label: 'Major (Cracked bumper, tear)' },
+                          { value: 'CRITICAL', label: 'Critical (Frame / Deployed)' },
+                        ]}
+                      />
                     </div>
                   </div>
 
@@ -866,110 +856,99 @@ export default function VehicleDamageInspectionModal({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1 flex items-center gap-1">
-                      <Fuel className="w-3.5 h-3.5" />
-                      <span>Fuel Level</span>
-                    </label>
-                    <select
+                    <Select
+                      label="Fuel Level"
                       value={fuelLevel}
-                      onChange={(e) => setFuelLevel(e.target.value as FuelLevel)}
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
-                    >
-                      <option value="EMPTY">Empty</option>
-                      <option value="QUARTER">1/4 Tank</option>
-                      <option value="HALF">1/2 Tank</option>
-                      <option value="THREE_QUARTERS">3/4 Tank</option>
-                      <option value="FULL">Full Tank</option>
-                    </select>
+                      onChange={(value) => setFuelLevel(value as FuelLevel)}
+                      size="small"
+                      options={[
+                        { value: 'EMPTY', label: 'Empty' },
+                        { value: 'QUARTER', label: '1/4 Tank' },
+                        { value: 'HALF', label: '1/2 Tank' },
+                        { value: 'THREE_QUARTERS', label: '3/4 Tank' },
+                        { value: 'FULL', label: 'Full Tank' },
+                      ]}
+                    />
                   </div>
                 </div>
 
                 {/* Key Status & Drivability */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1 flex items-center gap-1">
-                      <Key className="w-3.5 h-3.5" />
-                      <span>Keys Present</span>
-                    </label>
-                    <select
+                    <Select
+                      label="Keys Present"
                       value={keyStatus}
-                      onChange={(e) => setKeyStatus(e.target.value as KeyStatus)}
-                      className={`w-full px-2.5 py-1.5 rounded-lg border text-xs font-semibold focus:outline-none ${
-                        keyStatus === 'NO_KEYS'
-                          ? 'border-red-500/60 bg-red-500/10 text-red-400'
-                          : 'border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)]'
-                      }`}
-                    >
-                      <option value="TWO_KEYS">✓ 2 Keys Present</option>
-                      <option value="ONE_KEY">✓ 1 Key Present</option>
-                      <option value="FOB_ONLY">✓ Smart Fob Only</option>
-                      <option value="NO_KEYS">⚠️ NO KEYS (Yard Hold)</option>
-                    </select>
+                      onChange={(value) => setKeyStatus(value as KeyStatus)}
+                      size="small"
+                      error={keyStatus === 'NO_KEYS' ? 'No keys — yard hold' : undefined}
+                      options={[
+                        { value: 'TWO_KEYS', label: '✓ 2 Keys Present' },
+                        { value: 'ONE_KEY', label: '✓ 1 Key Present' },
+                        { value: 'FOB_ONLY', label: '✓ Smart Fob Only' },
+                        { value: 'NO_KEYS', label: '⚠️ NO KEYS (Yard Hold)' },
+                      ]}
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-                      Drivability
-                    </label>
-                    <select
+                    <Select
+                      label="Drivability"
                       value={drivableStatus}
-                      onChange={(e) => setDrivableStatus(e.target.value as DrivableStatus)}
-                      className="w-full px-2.5 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
-                    >
-                      <option value="RUNS_AND_DRIVES">Runs & Drives</option>
-                      <option value="STARTS_WITH_BOOST">Starts with Boost/Jump</option>
-                      <option value="ENGINE_STARTS_ONLY">Engine Starts (Won&apos;t move)</option>
-                      <option value="NON_RUNNER_TOW">Non-Runner (Forklift/Tow)</option>
-                    </select>
+                      onChange={(value) => setDrivableStatus(value as DrivableStatus)}
+                      size="small"
+                      options={[
+                        { value: 'RUNS_AND_DRIVES', label: 'Runs & Drives' },
+                        { value: 'STARTS_WITH_BOOST', label: 'Starts with Boost/Jump' },
+                        { value: 'ENGINE_STARTS_ONLY', label: "Engine Starts (Won't move)" },
+                        { value: 'NON_RUNNER_TOW', label: 'Non-Runner (Forklift/Tow)' },
+                      ]}
+                    />
                   </div>
                 </div>
 
                 {/* Glass, Airbags & Tires */}
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
-                      Windshield
-                    </label>
-                    <select
+                    <Select
+                      label="Windshield"
                       value={windshieldCondition}
-                      onChange={(e) => setWindshieldCondition(e.target.value as WindshieldCondition)}
-                      className="w-full px-2 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[11px] text-[var(--text-primary)]"
-                    >
-                      <option value="INTACT">Intact</option>
-                      <option value="CHIPPED">Chipped</option>
-                      <option value="CRACKED">Cracked</option>
-                      <option value="SHATTERED">Shattered</option>
-                    </select>
+                      onChange={(value) => setWindshieldCondition(value as WindshieldCondition)}
+                      size="small"
+                      options={[
+                        { value: 'INTACT', label: 'Intact' },
+                        { value: 'CHIPPED', label: 'Chipped' },
+                        { value: 'CRACKED', label: 'Cracked' },
+                        { value: 'SHATTERED', label: 'Shattered' },
+                      ]}
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
-                      Airbags
-                    </label>
-                    <select
+                    <Select
+                      label="Airbags"
                       value={airbagStatus}
-                      onChange={(e) => setAirbagStatus(e.target.value as AirbagStatus)}
-                      className="w-full px-2 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[11px] text-[var(--text-primary)]"
-                    >
-                      <option value="INTACT">Intact</option>
-                      <option value="DEPLOYED">⚠️ Deployed</option>
-                    </select>
+                      onChange={(value) => setAirbagStatus(value as AirbagStatus)}
+                      size="small"
+                      options={[
+                        { value: 'INTACT', label: 'Intact' },
+                        { value: 'DEPLOYED', label: '⚠️ Deployed' },
+                      ]}
+                    />
                   </div>
 
                   <div>
-                    <label className="block text-[11px] font-semibold text-[var(--text-secondary)] mb-1">
-                      Tires
-                    </label>
-                    <select
+                    <Select
+                      label="Tires"
                       value={tireCondition}
-                      onChange={(e) => setTireCondition(e.target.value as TireCondition)}
-                      className="w-full px-2 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[11px] text-[var(--text-primary)]"
-                    >
-                      <option value="ALL_GOOD">4 Inflated</option>
-                      <option value="ONE_FLAT">1 Flat</option>
-                      <option value="MULTIPLE_FLAT">Multi Flat</option>
-                      <option value="MISSING_WHEEL">Missing</option>
-                    </select>
+                      onChange={(value) => setTireCondition(value as TireCondition)}
+                      size="small"
+                      options={[
+                        { value: 'ALL_GOOD', label: '4 Inflated' },
+                        { value: 'ONE_FLAT', label: '1 Flat' },
+                        { value: 'MULTIPLE_FLAT', label: 'Multi Flat' },
+                        { value: 'MISSING_WHEEL', label: 'Missing' },
+                      ]}
+                    />
                   </div>
                 </div>
 

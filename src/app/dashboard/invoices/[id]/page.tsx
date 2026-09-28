@@ -14,10 +14,6 @@ import {
 	TableHead, 
 	TableRow,
 	Divider,
-	MenuItem,
-	Select,
-	FormControl,
-	InputLabel,
 	TextField,
 	Tabs,
 	Tab,
@@ -54,6 +50,7 @@ import {
 	CopyButton,
 	StatusBadge,
 	Modal,
+	Select,
 } from '@/components/design-system';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 
@@ -1094,30 +1091,29 @@ export default function InvoiceDetailPage() {
 														}))}
 														fullWidth
 													/>
-													<FormControl fullWidth size="small">
-														<InputLabel>Category / Type</InputLabel>
-														<Select
-															label="Category / Type"
-															value={lineItemEdits[item.id]?.type ?? item.type}
-															onChange={(event) => setLineItemEdits((current) => ({
-																...current,
-																[item.id]: {
-																	description: current[item.id]?.description ?? item.description,
-																	type: event.target.value,
-																	quantity: current[item.id]?.quantity ?? String(item.quantity ?? 1),
-																	amount: current[item.id]?.amount ?? String(item.amount ?? 0),
-																	companyAmount: current[item.id]?.companyAmount ?? String((item as any).linkedCompanyLedgerEntry?.amount ?? 0),
-																},
-															}))}
-														>
-															<MenuItem value="OTHER_FEE">Other Fee</MenuItem>
-															<MenuItem value="SHIPPING_FEE">Shipping Fee</MenuItem>
-															<MenuItem value="INSURANCE">Insurance</MenuItem>
-															<MenuItem value="CUSTOMS_FEE">Customs Fee</MenuItem>
-															<MenuItem value="STORAGE_FEE">Storage Fee</MenuItem>
-															<MenuItem value="HANDLING_FEE">Handling Fee</MenuItem>
-														</Select>
-													</FormControl>
+													<Select
+														label="Category / Type"
+														value={lineItemEdits[item.id]?.type ?? item.type}
+														onChange={(value) => setLineItemEdits((current) => ({
+															...current,
+															[item.id]: {
+																description: current[item.id]?.description ?? item.description,
+																type: String(value),
+																quantity: current[item.id]?.quantity ?? String(item.quantity ?? 1),
+																amount: current[item.id]?.amount ?? String(item.amount ?? 0),
+																companyAmount: current[item.id]?.companyAmount ?? String((item as any).linkedCompanyLedgerEntry?.amount ?? 0),
+															},
+														}))}
+														size="small"
+														options={[
+															{ value: 'OTHER_FEE', label: 'Other Fee' },
+															{ value: 'SHIPPING_FEE', label: 'Shipping Fee' },
+															{ value: 'INSURANCE', label: 'Insurance' },
+															{ value: 'CUSTOMS_FEE', label: 'Customs Fee' },
+															{ value: 'STORAGE_FEE', label: 'Storage Fee' },
+															{ value: 'HANDLING_FEE', label: 'Handling Fee' },
+														]}
+													/>
 												</Box>
 
 												{/* Row 2: Quantity, Amount, Company Cost */}
@@ -1234,21 +1230,20 @@ export default function InvoiceDetailPage() {
 										onChange={(event) => setManualLineItem((current) => ({ ...current, description: event.target.value }))}
 										fullWidth
 									/>
-									<FormControl fullWidth size="small">
-										<InputLabel>Type</InputLabel>
-										<Select
-											label="Type"
-											value={manualLineItem.type}
-											onChange={(event) => setManualLineItem((current) => ({ ...current, type: event.target.value }))}
-										>
-											<MenuItem value="OTHER_FEE">Other Fee</MenuItem>
-											<MenuItem value="SHIPPING_FEE">Shipping</MenuItem>
-											<MenuItem value="INSURANCE">Insurance</MenuItem>
-											<MenuItem value="CUSTOMS_FEE">Customs</MenuItem>
-											<MenuItem value="STORAGE_FEE">Storage</MenuItem>
-											<MenuItem value="HANDLING_FEE">Handling</MenuItem>
-										</Select>
-									</FormControl>
+									<Select
+										label="Type"
+										value={manualLineItem.type}
+										onChange={(value) => setManualLineItem((current) => ({ ...current, type: String(value) }))}
+										size="small"
+										options={[
+											{ value: 'OTHER_FEE', label: 'Other Fee' },
+											{ value: 'SHIPPING_FEE', label: 'Shipping' },
+											{ value: 'INSURANCE', label: 'Insurance' },
+											{ value: 'CUSTOMS_FEE', label: 'Customs' },
+											{ value: 'STORAGE_FEE', label: 'Storage' },
+											{ value: 'HANDLING_FEE', label: 'Handling' },
+										]}
+									/>
 								</Box>
 
 								<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', md: isAdmin ? '1fr 1.5fr 1.5fr' : '1fr 2fr' }, gap: 1.5 }}>
@@ -1429,20 +1424,20 @@ export default function InvoiceDetailPage() {
 									<StatusBadge status={invoice.status} size="sm" />
 								</Box>
 								{isAdmin && invoice.status !== 'PAID' && invoice.status !== 'CANCELLED' && (
-									<FormControl fullWidth size="small">
-										<InputLabel>Update Status</InputLabel>
-										<Select
-											value={invoice.status}
-											onChange={(e) => handleStatusUpdate(e.target.value)}
-											disabled={updating}
-										>
-											<MenuItem value="DRAFT">Draft</MenuItem>
-											<MenuItem value="PENDING">Pending</MenuItem>
-											<MenuItem value="SENT">Sent</MenuItem>
-											<MenuItem value="PAID">Paid</MenuItem>
-											<MenuItem value="CANCELLED">Cancelled</MenuItem>
-										</Select>
-									</FormControl>
+									<Select
+										label="Update Status"
+										value={invoice.status}
+										onChange={(value) => handleStatusUpdate(String(value))}
+										size="small"
+										disabled={updating}
+										options={[
+											{ value: 'DRAFT', label: 'Draft' },
+											{ value: 'PENDING', label: 'Pending' },
+											{ value: 'SENT', label: 'Sent' },
+											{ value: 'PAID', label: 'Paid' },
+											{ value: 'CANCELLED', label: 'Cancelled' },
+										]}
+									/>
 								)}
 							</Box>
 						</DashboardPanel>

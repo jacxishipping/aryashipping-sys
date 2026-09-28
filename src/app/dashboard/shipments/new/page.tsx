@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { ArrowLeft, Upload, X, Loader2, Package, User, FileText, CheckCircle, ArrowRight, Camera } from 'lucide-react';
 import { Box, Stepper, Step, StepLabel, Typography, LinearProgress, Autocomplete, TextField } from '@mui/material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Button, FormField, Breadcrumbs, toast } from '@/components/design-system';
+import { PageHeader, Button, FormField, Breadcrumbs, Select, toast } from '@/components/design-system';
 import { shipmentSchema, type ShipmentFormData } from '@/lib/validations/shipment';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { BarcodeScannerModal } from '@/components/ui/BarcodeScannerModal';
@@ -109,6 +109,7 @@ export default function NewShipmentPage() {
 		setValue,
 		watch,
 		trigger,
+		control,
 	} = useForm<ShipmentFormData>({
 		resolver: zodResolver(shipmentSchema),
 		mode: 'onBlur',
@@ -593,40 +594,23 @@ export default function NewShipmentPage() {
 
 								{/* Service Type - NEW */}
 								<Box>
-									<Typography
-										component="label"
-										htmlFor="serviceType"
-										sx={{
-											display: 'block',
-											fontSize: '0.875rem',
-											fontWeight: 500,
-											color: 'var(--text-primary)',
-											mb: 1,
-										}}
-									>
-										Service Type *
-									</Typography>
-									<select
-										id="serviceType"
-										{...register('serviceType')}
-										style={{
-											width: '100%',
-											padding: '10px 12px',
-											borderRadius: '16px',
-											border: errors.serviceType ? '2px solid var(--error)' : '1px solid rgba(var(--border-rgb), 0.9)',
-											backgroundColor: 'var(--background)',
-											color: 'var(--text-primary)',
-											fontSize: '0.875rem',
-										}}
-									>
-										<option value="SHIPPING_ONLY">Shipping Only (Customer owns vehicle)</option>
-										<option value="PURCHASE_AND_SHIPPING">Purchase + Shipping (We buy for customer)</option>
-									</select>
-									{errors.serviceType && (
-										<Typography sx={{ fontSize: '0.75rem', color: 'var(--error)', mt: 0.5 }}>
-											{errors.serviceType.message}
-										</Typography>
-									)}
+									<Controller
+										name="serviceType"
+										control={control}
+										render={({ field }) => (
+											<Select
+												label="Service Type"
+												value={field.value}
+												onChange={(value) => field.onChange(String(value))}
+												required
+												error={errors.serviceType?.message}
+												options={[
+													{ value: 'SHIPPING_ONLY', label: 'Shipping Only (Customer owns vehicle)' },
+													{ value: 'PURCHASE_AND_SHIPPING', label: 'Purchase + Shipping (We buy for customer)' },
+												]}
+											/>
+										)}
+									/>
 									<Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mt: 0.5 }}>
 										{serviceTypeValue === 'PURCHASE_AND_SHIPPING' 
 											? '📦 Purchase + Shipping: We buy the vehicle from auction/dealer and ship it'
@@ -675,48 +659,31 @@ export default function NewShipmentPage() {
 
 								{/* Vehicle Type */}
 								<Box>
-									<Typography
-										component="label"
-										htmlFor="vehicleType"
-										sx={{
-											display: 'block',
-											fontSize: '0.875rem',
-											fontWeight: 500,
-											color: 'var(--text-primary)',
-											mb: 1,
-										}}
-									>
-										Vehicle Type *
-									</Typography>
-									<select
-										id="vehicleType"
-										{...register('vehicleType')}
-										style={{
-											width: '100%',
-											padding: '10px 12px',
-											borderRadius: '16px',
-											border: errors.vehicleType ? '2px solid var(--error)' : '1px solid rgba(var(--border-rgb), 0.9)',
-											backgroundColor: 'var(--background)',
-											color: 'var(--text-primary)',
-											fontSize: '0.875rem',
-										}}
-									>
-										<option value="">Select type</option>
-										<option value="sedan">Sedan</option>
-										<option value="suv">SUV</option>
-										<option value="truck">Truck</option>
-										<option value="motorcycle">Motorcycle</option>
-										<option value="van">Van</option>
-										<option value="coupe">Coupe</option>
-										<option value="convertible">Convertible</option>
-										<option value="wagon">Wagon</option>
-										<option value="other">Other</option>
-									</select>
-									{errors.vehicleType && (
-										<Typography sx={{ fontSize: '0.75rem', color: 'var(--error)', mt: 0.5 }}>
-											{errors.vehicleType.message}
-										</Typography>
-									)}
+									<Controller
+										name="vehicleType"
+										control={control}
+										render={({ field }) => (
+											<Select
+												label="Vehicle Type"
+												value={field.value}
+												onChange={(value) => field.onChange(String(value))}
+												required
+												placeholder="Select type"
+												error={errors.vehicleType?.message}
+												options={[
+													{ value: 'sedan', label: 'Sedan' },
+													{ value: 'suv', label: 'SUV' },
+													{ value: 'truck', label: 'Truck' },
+													{ value: 'motorcycle', label: 'Motorcycle' },
+													{ value: 'van', label: 'Van' },
+													{ value: 'coupe', label: 'Coupe' },
+													{ value: 'convertible', label: 'Convertible' },
+													{ value: 'wagon', label: 'Wagon' },
+													{ value: 'other', label: 'Other' },
+												]}
+											/>
+										)}
+									/>
 								</Box>
 
 								{/* Make, Model, Year */}
@@ -753,37 +720,24 @@ export default function NewShipmentPage() {
 										{...register('vehicleColor')}
 									/>
 									<Box>
-										<Typography
-											component="label"
-											htmlFor="auctionName"
-											sx={{
-												display: 'block',
-												fontSize: '0.875rem',
-												fontWeight: 500,
-												color: 'var(--text-primary)',
-												mb: 1,
-											}}
-										>
-											Auction
-										</Typography>
-										<select
-											id="auctionName"
-											{...register('auctionName')}
-											style={{
-												width: '100%',
-												padding: '10px 12px',
-												borderRadius: '16px',
-												border: '1px solid rgba(var(--border-rgb), 0.9)',
-												backgroundColor: 'var(--background)',
-												color: 'var(--text-primary)',
-												fontSize: '0.875rem',
-											}}
-										>
-											<option value="">Select auction</option>
-											<option value="Copart">Copart</option>
-											<option value="IAAI">IAAI</option>
-											<option value="Other">Other</option>
-										</select>
+										<Controller
+											name="auctionName"
+											control={control}
+											render={({ field }) => (
+												<Select
+													label="Auction"
+													value={field.value}
+													onChange={(value) => field.onChange(String(value))}
+													placeholder="Select auction"
+													error={errors.auctionName?.message}
+													options={[
+														{ value: 'Copart', label: 'Copart' },
+														{ value: 'IAAI', label: 'IAAI' },
+														{ value: 'Other', label: 'Other' },
+													]}
+												/>
+											)}
+										/>
 									</Box>
 									<Box>
 										<Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-end' }}>
@@ -884,36 +838,23 @@ export default function NewShipmentPage() {
 								{/* Title Status */}
 								{watch('hasTitle') && (
 									<Box>
-										<Typography
-											component="label"
-											htmlFor="titleStatus"
-											sx={{
-												display: 'block',
-												fontSize: '0.875rem',
-												fontWeight: 500,
-												color: 'var(--text-primary)',
-												mb: 1,
-											}}
-										>
-											Title Status
-										</Typography>
-										<select
-											id="titleStatus"
-											{...register('titleStatus')}
-											style={{
-												width: '100%',
-												padding: '10px 12px',
-												borderRadius: '16px',
-												border: '1px solid rgba(var(--border-rgb), 0.9)',
-												backgroundColor: 'var(--background)',
-												color: 'var(--text-primary)',
-												fontSize: '0.875rem',
-											}}
-										>
-											<option value="">Select status</option>
-											<option value="PENDING">Pending</option>
-											<option value="DELIVERED">Delivered</option>
-										</select>
+										<Controller
+											name="titleStatus"
+											control={control}
+											render={({ field }) => (
+												<Select
+													label="Title Status"
+													value={field.value}
+													onChange={(value) => field.onChange(String(value))}
+													placeholder="Select status"
+													error={errors.titleStatus?.message}
+													options={[
+														{ value: 'PENDING', label: 'Pending' },
+														{ value: 'DELIVERED', label: 'Delivered' },
+													]}
+												/>
+											)}
+										/>
 									</Box>
 								)}
 
@@ -1181,41 +1122,24 @@ export default function NewShipmentPage() {
 							<Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 								{/* Status */}
 								<Box>
-									<Typography
-										component="label"
-										htmlFor="status"
-										sx={{
-											display: 'block',
-											fontSize: '0.875rem',
-											fontWeight: 500,
-											color: 'var(--text-primary)',
-											mb: 1,
-										}}
-									>
-										Shipment Status *
-									</Typography>
-									<select
-										id="status"
-										{...register('status')}
-										style={{
-											width: '100%',
-											padding: '10px 12px',
-											borderRadius: '16px',
-											border: errors.status ? '2px solid var(--error)' : '1px solid rgba(var(--border-rgb), 0.9)',
-											backgroundColor: 'var(--background)',
-											color: 'var(--text-primary)',
-											fontSize: '0.875rem',
-										}}
-									>
-										<option value="ON_HAND">On Hand</option>
-										<option value="IN_TRANSIT">In Transit</option>
-										<option value="RELEASED">Released</option>
-									</select>
-									{errors.status && (
-										<Typography sx={{ fontSize: '0.75rem', color: 'var(--error)', mt: 0.5 }}>
-											{errors.status.message}
-										</Typography>
-									)}
+									<Controller
+										name="status"
+										control={control}
+										render={({ field }) => (
+											<Select
+												label="Shipment Status"
+												value={field.value}
+												onChange={(value) => field.onChange(String(value))}
+												required
+												error={errors.status?.message}
+												options={[
+													{ value: 'ON_HAND', label: 'On Hand' },
+													{ value: 'IN_TRANSIT', label: 'In Transit' },
+													{ value: 'RELEASED', label: 'Released' },
+												]}
+											/>
+										)}
+									/>
 									<Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mt: 0.5 }}>
 										{statusValue === 'ON_HAND'
 											? 'Vehicle is currently on hand, not yet assigned to a container'
