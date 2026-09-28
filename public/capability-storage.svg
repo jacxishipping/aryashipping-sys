@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <defs>
+    <linearGradient id="storage-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#F3F4F6" />
+      <stop offset="100%" stop-color="#E5E7EB" />
+    </linearGradient>
+    <filter id="ultra-shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="25" stdDeviation="30" flood-color="#000" flood-opacity="0.08" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#storage-bg)" />
+
+  <!-- Flowing energetic data lines connecting to the center -->
+  <g stroke="#D4AF37" fill="none" opacity="0.6">
+    <path d="M 0,100 C 400,200 600,400 800,500" stroke-width="2" stroke-dasharray="20 40">
+      <animate attributeName="stroke-dashoffset" values="60; 0" dur="2s" repeatCount="indefinite" />
+    </path>
+    <path d="M 1600,200 C 1300,300 1000,450 800,500" stroke-width="2" stroke-dasharray="10 30">
+      <animate attributeName="stroke-dashoffset" values="40; 0" dur="3s" repeatCount="indefinite" />
+    </path>
+    <path d="M 200,900 C 500,800 700,600 800,500" stroke-width="3" stroke-dasharray="15 35">
+      <animate attributeName="stroke-dashoffset" values="50; 0" dur="2.5s" repeatCount="indefinite" />
+    </path>
+    <path d="M 1400,900 C 1100,800 900,600 800,500" stroke-width="4" stroke-dasharray="30 50">
+      <animate attributeName="stroke-dashoffset" values="80; 0" dur="4s" repeatCount="indefinite" />
+    </path>
+  </g>
+
+  <!-- Clean 3D Architecture Structure / Tesseract -->
+  <g transform="translate(800, 500) scale(1.5)" filter="url(#ultra-shadow)">
+    <!-- Outer wireframe cube -->
+    <path d="M 0,-200 L 173.2,-100 L 173.2,100 L 0,200 L -173.2,100 L -173.2,-100 Z" fill="#FFFFFF" stroke="#D1D5DB" stroke-width="2" opacity="0.8"/>
+    <path d="M 0,-200 L 0,0 M 173.2,-100 L 0,0 M -173.2,-100 L 0,0 M 173.2,100 L 0,0 M -173.2,100 L 0,0 M 0,200 L 0,0" fill="none" stroke="#D4AF37" stroke-width="1.5" opacity="0.5"/>
+    
+    <!-- Inner glowing cube -->
+    <path d="M 0,-100 L 86.6,-50 L 86.6,50 L 0,100 L -86.6,50 L -86.6,-50 Z" fill="#F9FAFB" stroke="#B8860B" stroke-width="3"/>
+    <path d="M -86.6,-50 L 0,0 L 86.6,-50 M 0,0 L 0,100" fill="none" stroke="#B8860B" stroke-width="3"/>
+    
+    <!-- Floating Data Nodes inside -->
+    <circle cx="0" cy="-50" r="5" fill="#111827" />
+    <circle cx="43.3" cy="25" r="4" fill="#D4AF37" />
+    <circle cx="-43.3" cy="25" r="4" fill="#D4AF37" />
+    <circle cx="0" cy="50" r="6" fill="#111827" />
+  </g>
+
+  <g font-family="Arial, Helvetica, sans-serif" opacity="0.05">
+    <text x="-50" y="800" font-size="200" font-weight="bold" fill="#000000" transform="rotate(-90 100 800)">VAULT // 04</text>
+  </g>
+</svg>

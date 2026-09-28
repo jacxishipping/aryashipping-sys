@@ -1,0 +1,1878 @@
+// This is the NEW schema for Container System Restructure
+// ⚠️ This will REPLACE the current schema.prisma after review
+// This implements the complete container-first architecture
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// AUTHENTICATION MODELS (Unchanged)
+// ============================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  loginCode     String?        @unique // Simple 8-character login code for easy access
+  role          String         @default("user")
+  phone         String?
+  address       String?
+  city          String?
+  country       String?
+  collectionStatus CollectionStatus @default(CURRENT)
+  promiseToPayDate DateTime?
+  collectionFollowUpDate DateTime?
+  collectionNotes String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  accounts      Account[]
+  documents     Document[]
+  payments      Payment[]
+  quotes        Quote[]
+  sessions      Session[]
+  shipments     Shipment[]
+  settings      UserSettings?
+  ledgerEntries LedgerEntry[]
+  invoices      UserInvoice[]
+  shipmentCharges ShipmentCharge[]
+  receivedNotifications Notification[] @relation("NotificationRecipient")
+  sentNotifications     Notification[] @relation("NotificationSender")
+  partnerPortalMemberships PartnerPortalMembership[]
+  plaidItems     PlaidItem[]
+  recordedOfficeExpenses OfficeExpense[] @relation("RecordedOfficeExpenses")
+  sourceTransfers LedgerTransfer[] @relation("SourceUserTransfers")
+  destTransfers   LedgerTransfer[] @relation("DestUserTransfers")
+  createdTransfers LedgerTransfer[] @relation("CreatedTransfers")
+  createdRecurringExpenses RecurringExpense[] @relation("CreatedRecurringExpenses")
+  createdExpenseBudgets ExpenseBudget[] @relation("CreatedExpenseBudgets")
+
+  @@index([loginCode])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// NOTIFICATION MODEL (New)
+// ============================================
+
+model Notification {
+  id          String           @id @default(cuid())
+  userId      String
+  senderId    String?
+  title       String
+  description String
+  type        NotificationType @default(INFO)
+  read        Boolean          @default(false)
+  link        String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  user        User             @relation("NotificationRecipient", fields: [userId], references: [id], onDelete: Cascade)
+  sender      User?            @relation("NotificationSender", fields: [senderId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([senderId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+// ============================================
+// SHIPMENT MODEL (Simplified - Car Info Only)
+// ============================================
+
+model Shipment {
+  id String @id @default(cuid())
+
+  // Service Type - NEW: Differentiates between purchase+shipping vs shipping-only
+  serviceType ServiceType @default(SHIPPING_ONLY)
+
+  // Vehicle Information
+  vehicleType    String
+  vehicleMake    String?
+  vehicleModel   String?
+  vehicleYear    Int?
+  vehicleVIN     String?      @unique
+  vehicleColor   String?
+  lotNumber      String?
+  auctionName    String?
+  hasKey         Boolean?
+  hasTitle       Boolean?
+  titleStatus    TitleStatus?
+  vehicleAge     Int?
+  weight         Float?
+  dimensions     String?
+  insuranceValue Float?
+  arrivalPhotos  String[]     @default([])
+  vehiclePhotos  String[]     @default([])
+
+  // Purchase Information - NEW: Only applicable for PURCHASE_AND_SHIPPING service type
+  purchasePrice    Float? // Vehicle purchase price (when company buys for customer)
+  purchaseDate     DateTime? // Date vehicle was purchased
+  purchaseLocation String? // Auction/Dealer location
+  dealerName       String? // Dealer or auction house name
+  purchaseNotes    String? // Additional purchase details
+
+  // Status and Assignment
+  status        ShipmentSimpleStatus @default(ON_HAND)
+  dispatchId    String?
+  containerId   String?
+  transitId     String?
+  shippingCompanyId String?
+  userId        String // Owner/Customer
+  internalNotes String?
+
+  // Financial (shipping service price)
+  price              Float? // Customer shipping fare (separate from purchase price)
+  companyShippingFare Float? // Internal company shipping cost
+  priceListPricingSnapshot Json?
+  
+  // Damage Tracking
+  damageCost    Float? // Cost of damage charged to company (company ledger debit)
+  damageCredit  Float? // Credit given to customer for damage assumed by company (user ledger credit)
+  
+  paymentStatus PaymentStatus @default(PENDING)
+  paymentMode   PaymentMode?
+  releaseToken  String?       @unique
+  releaseTokenCreatedAt DateTime?
+  companyGetpassStartedAt DateTime?
+  companyGetpassCompletedAt DateTime?
+  companyGetpassDurationSeconds Int?
+  companyGatePassRequested Boolean @default(false)
+  companyGatePassRequestedAt DateTime?
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  dispatch         Dispatch?         @relation(fields: [dispatchId], references: [id], onDelete: SetNull)
+  container        Container?        @relation(fields: [containerId], references: [id], onDelete: SetNull)
+  transit          Transit?          @relation(fields: [transitId], references: [id], onDelete: SetNull)
+  shippingCompany  Company?          @relation("ShipmentShippingCompany", fields: [shippingCompanyId], references: [id], onDelete: SetNull)
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents        Document[]
+  payments         Payment[]
+  qualityChecks    QualityCheck[]
+  ledgerEntries    LedgerEntry[]
+  invoiceLineItems InvoiceLineItem[]
+  invoices         UserInvoice[]     @relation("ShipmentInvoice")
+  dispatchExpenses DispatchExpense[]
+  transitExpenses  TransitExpense[]
+  containerDamages ContainerDamage[]
+  auditLogs        ShipmentAuditLog[]
+  charges          ShipmentCharge[]
+  partnerPortalAssignment PartnerShipmentAssignment?
+  partnerPortalLedgerEntries PartnerPortalLedgerEntry[]
+  partnerPortalPaymentRecords PartnerPortalPaymentRecord[]
+
+  @@index([userId])
+  @@index([dispatchId])
+  @@index([containerId])
+  @@index([transitId])
+  @@index([shippingCompanyId])
+  @@index([status])
+  @@index([vehicleVIN])
+  @@index([serviceType])
+  @@index([createdAt]) // ⚡ Bolt: Added index to optimize frequent sorting by createdAt
+}
+
+// ============================================
+// CONTAINER MODEL (Primary Shipping Unit)
+// ============================================
+
+model Container {
+  id              String @id @default(cuid())
+  containerNumber String @unique
+  companyId       String?
+
+  // Shipping Information
+  trackingNumber String? @unique
+  vesselName     String?
+  voyageNumber   String?
+  shippingLine   String?
+  bookingNumber  String?
+
+  // Ports
+  loadingPort        String?
+  destinationPort    String?
+  transshipmentPorts String[] @default([])
+
+  // Dates
+  loadingDate      DateTime?
+  departureDate    DateTime?
+  estimatedArrival DateTime?
+  actualArrival    DateTime?
+
+  // Status and Progress
+  status          ContainerLifecycleStatus @default(CREATED)
+  currentLocation String?
+  progress        Int                      @default(0)
+
+  // Capacity
+  maxCapacity  Int @default(4)
+  currentCount Int @default(0)
+
+  // Notes and Documentation
+  notes               String?
+  lastLocationUpdate  DateTime?
+  autoTrackingEnabled Boolean   @default(true)
+
+  // Expense Allocation
+  expenseAllocationMethod ExpenseAllocationMethod @default(EQUAL)
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  company        Company?          @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  shipments      Shipment[]
+  expenses       ContainerExpense[]
+  damages        ContainerDamage[]
+  invoices       ContainerInvoice[]
+  documents      ContainerDocument[]
+  trackingEvents ContainerTrackingEvent[]
+  auditLogs      ContainerAuditLog[]
+  userInvoices   UserInvoice[]
+
+  @@index([status])
+  @@index([companyId])
+  @@index([shippingLine])
+  @@index([destinationPort])
+  @@index([estimatedArrival])
+  @@index([trackingNumber])
+  @@index([createdAt]) // ⚡ Bolt: Added index to optimize frequent sorting by createdAt
+}
+
+// ============================================
+// CONTAINER SUB-MODELS
+// ============================================
+
+model ContainerExpense {
+  id            String   @id @default(cuid())
+  containerId   String
+  type          String // Shipping, Customs, Storage, Handling, etc.
+  amount        Float
+  currency      String   @default("USD")
+  date          DateTime @default(now())
+  vendor        String?
+  invoiceNumber String?
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  container Container @relation(fields: [containerId], references: [id], onDelete: Cascade)
+
+  @@index([containerId])
+  @@index([type])
+}
+
+model ContainerDamage {
+  id          String     @id @default(cuid())
+  containerId String
+  shipmentId  String
+  damageType  DamageType
+  amount      Float
+  description String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  container Container @relation(fields: [containerId], references: [id], onDelete: Cascade)
+  shipment  Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+
+  @@index([containerId])
+  @@index([shipmentId])
+  @@index([damageType])
+}
+
+model ContainerInvoice {
+  id            String        @id @default(cuid())
+  containerId   String
+  invoiceNumber String
+  amount        Float
+  currency      String        @default("USD")
+  vendor        String?
+  date          DateTime
+  dueDate       DateTime?
+  status        InvoiceStatus @default(DRAFT)
+  fileUrl       String?
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  container Container @relation(fields: [containerId], references: [id], onDelete: Cascade)
+
+  @@index([containerId])
+  @@index([status])
+}
+
+model ContainerDocument {
+  id          String   @id @default(cuid())
+  containerId String
+  type        String // BOL, Customs, Packing_List, Photos, Export_Docs, etc.
+  name        String
+  fileUrl     String
+  fileType    String
+  fileSize    Int
+  uploadedBy  String
+  uploadedAt  DateTime @default(now())
+  notes       String?
+
+  container Container @relation(fields: [containerId], references: [id], onDelete: Cascade)
+
+  @@index([containerId])
+  @@index([type])
+}
+
+model ContainerTrackingEvent {
+  id          String   @id @default(cuid())
+  containerId String
+  status      String
+  location    String?
+  vesselName  String?
+  description String?
+  eventDate   DateTime
+  source      String? // API, Manual, System
+  completed   Boolean  @default(false)
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime @default(now())
+
+  container Container @relation(fields: [containerId], references: [id], onDelete: Cascade)
+
+  @@index([containerId])
+  @@index([eventDate])
+}
+
+model ContainerAuditLog {
+  id          String   @id @default(cuid())
+  containerId String
+  action      String // Status_Change, Shipment_Added, ETA_Updated, Expense_Added, etc.
+  description String
+  performedBy String
+  oldValue    String?
+  newValue    String?
+  metadata    Json?
+  timestamp   DateTime @default(now())
+
+  container Container @relation(fields: [containerId], references: [id], onDelete: Cascade)
+
+  @@index([containerId])
+  @@index([timestamp])
+  @@index([action])
+}
+
+model ShipmentAuditLog {
+  id          String   @id @default(cuid())
+  shipmentId  String
+  action      String
+  description String
+  performedBy String
+  oldValue    String?
+  newValue    String?
+  metadata    Json?
+  timestamp   DateTime @default(now())
+
+  shipment Shipment @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+
+  @@index([shipmentId])
+  @@index([timestamp])
+  @@index([action])
+}
+
+// ============================================
+// OTHER MODELS (Mostly Unchanged)
+// ============================================
+
+model Quote {
+  id           String      @id @default(cuid())
+  userId       String?
+  vehicleType  String?
+  vehicleMake  String?
+  vehicleModel String?
+  vehicleYear  Int?
+  origin       String?
+  destination  String?
+  price        Float?
+  status       QuoteStatus @default(PENDING)
+  validUntil   DateTime?
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  email        String
+  message      String
+  name         String
+  phone        String
+  user         User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  userId        String
+  shipmentId    String
+  invoiceId     String?
+  amount        Float
+  currency      String        @default("USD")
+  status        PaymentStatus @default(PENDING)
+  method        PaymentMethod
+  transactionId String?
+  gateway       String?
+  idempotencyKey String?
+  refundedAt    DateTime?
+  refundReason  String?
+  refundOfPaymentId String?   // Self-reference for refund payments
+  metadata      Json?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  shipment      Shipment      @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoice       UserInvoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  allocations   PaymentAllocation[]
+
+  @@index([userId])
+  @@index([shipmentId])
+  @@index([invoiceId])
+  @@index([status])
+}
+
+/// Tracks how a single Payment is allocated across one or more invoices.
+/// Replaces the previous convention of storing `shipmentIds` in Payment.metadata
+/// without a schema-enforced link to UserInvoice.
+model PaymentAllocation {
+  id           String    @id @default(cuid())
+  paymentId    String
+  invoiceId    String
+  /// Amount of this payment applied to this invoice.
+  amount       Float
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  payment      Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  invoice      UserInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId])
+  @@index([invoiceId])
+  @@unique([paymentId, invoiceId])
+}
+
+model UserSettings {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  theme               String   @default("futuristic")
+  accentColor         String   @default("#00BFFF")
+  sidebarDensity      String   @default("comfortable")
+  animationsEnabled   Boolean  @default(true)
+  notifyShipmentEmail Boolean  @default(true)
+  notifyShipmentPush  Boolean  @default(true)
+  notifyPaymentEmail  Boolean  @default(true)
+  notifyCriticalSms   Boolean  @default(false)
+  twoFactorEnabled    Boolean  @default(false)
+  language            String   @default("en")
+  calculatorConfig    Json     @default("{}")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model CallAgentSettings {
+  id                   String   @id @default(cuid())
+  scope                String   @unique @default("default")
+  twilioAccountSid     String?
+  twilioAuthToken      String?
+  twilioApiKey         String?
+  twilioApiSecret      String?
+  twilioPhoneNumber    String?
+  twilioPhoneNumberSid String?
+  geminiApiKey         String?
+  geminiLiveApiKey     String?
+  geminiVoiceModel     String?
+  geminiLiveModel      String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model AiProviderSettings {
+  id                 String   @id @default(cuid())
+  scope              String   @unique @default("default")
+  enabled            Boolean  @default(true)
+  provider           String   @default("tokenrouter-ai")
+  apiKey             String?
+  chatCompletionsUrl String?
+  modelsUrl          String?
+  model              String?
+  maxTokens          Int      @default(500)
+  temperature        Float    @default(0.3)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model CommunicationProviderSettings {
+  id                    String   @id @default(cuid())
+  scope                 String   @unique @default("default")
+  emailEnabled          Boolean  @default(false)
+  emailProvider         String   @default("resend")
+  emailApiKey           String?
+  emailFromAddress      String?
+  emailReplyToAddress   String?
+  smsEnabled            Boolean  @default(false)
+  smsProvider           String   @default("twilio")
+  smsAccountSid         String?
+  smsAuthToken          String?
+  smsFromNumber         String?
+  smsMessagingServiceSid String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model Contact {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  status    ContactStatus @default(NEW)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+}
+
+model Newsletter {
+  id        String           @id @default(cuid())
+  email     String           @unique
+  status    NewsletterStatus @default(ACTIVE)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model BlogPost {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  content       String
+  excerpt       String?
+  featuredImage String?
+  author        String
+  published     Boolean   @default(false)
+  publishedAt   DateTime?
+  tags          String[]
+  views         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Testimonial {
+  id        String            @id @default(cuid())
+  name      String
+  location  String
+  rating    Int
+  content   String
+  image     String?
+  featured  Boolean           @default(false)
+  status    TestimonialStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model QualityCheck {
+  id         String             @id @default(cuid())
+  shipmentId String
+  checkType  QualityCheckType
+  status     QualityCheckStatus @default(PENDING)
+  inspector  String?
+  notes      String?
+  photos     String[]           @default([])
+  checkedAt  DateTime?
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime           @updatedAt
+  shipment   Shipment           @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+}
+
+model Document {
+  id          String           @id @default(cuid())
+  name        String
+  description String?
+  fileUrl     String
+  fileType    String
+  fileSize    Int
+  category    DocumentCategory
+  shipmentId  String?
+  userId      String?
+  uploadedBy  String
+  isPublic    Boolean          @default(false)
+  tags        String[]         @default([])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  shipment    Shipment?        @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Route {
+  id            String      @id @default(cuid())
+  name          String
+  origin        String
+  destination   String
+  waypoints     Json[]      @default([])
+  distance      Float?
+  estimatedTime Int?
+  cost          Float?
+  status        RouteStatus @default(ACTIVE)
+  preferences   Json?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+// ============================================
+// USER INVOICE MODELS (Customer Invoicing)
+// ============================================
+
+model UserInvoice {
+  id            String @id @default(cuid())
+  invoiceNumber String @unique // INV-2025-001
+  userId        String
+  containerId   String? // Optional: container-level invoices
+  shipmentId    String? // Per-shipment invoice (auto-created on shipment creation)
+  // Invoice Details
+  status    UserInvoiceStatus @default(PENDING)
+  issueDate DateTime          @default(now())
+  dueDate   DateTime?
+  paidDate  DateTime?
+
+  // Amounts
+  subtotal Float // Sum of all line items
+  tax      Float @default(0)
+  discount Float @default(0)
+  total    Float
+  // Partial-payment tracking
+  amountPaid      Float @default(0)
+  amountRemaining Float
+
+  // Reversal / void tracking
+  voidedAt      DateTime?
+  voidedReason  String?
+  reversedInvoiceId String? // If this is a credit-note reversal, the original invoice it offsets
+
+  // Reminder tracking (Phase 2)
+  lastReminderAt DateTime?
+  lastReminderDaysAgo Int?
+
+  // Payment
+  paymentMethod    String?
+  paymentReference String?
+
+  // Phase 3: FX snapshot so a foreign-currency invoice preserves the exact rate
+  // used at issue time (no silent re-pricing on report day).
+  currency    String  @default("USD")
+  fxRate      Float? // 1 base currency = fxRate of `currency`; null when USD
+  fxEffective DateTime?
+
+  // Notes
+  notes         String?
+  internalNotes String?
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  container Container?        @relation(fields: [containerId], references: [id], onDelete: SetNull)
+  shipment  Shipment?         @relation("ShipmentInvoice", fields: [shipmentId], references: [id], onDelete: SetNull)
+  lineItems InvoiceLineItem[]
+  auditLogs InvoiceAuditLog[]
+  shipmentCharges ShipmentCharge[]
+  payments  Payment[]
+  allocations PaymentAllocation[]
+  bankReconciliations BankReconciliation[]
+
+  @@index([userId])
+  @@index([containerId])
+  @@index([shipmentId])
+  @@index([status])
+  @@index([invoiceNumber])
+  @@index([issueDate])
+  @@index([dueDate])
+  @@index([createdAt]) // ⚡ Bolt: Added index to optimize frequent sorting by createdAt
+  @@index([userId, status, dueDate]) // AR-aging composite index
+}
+
+model PlaidItem {
+  id                    String                   @id @default(cuid())
+  userId                String
+  itemId                String                   @unique
+  accessTokenCiphertext String
+  institutionId         String?
+  institutionName       String?
+  lastCursor            String?
+  lastSyncAt            DateTime?
+  selectedAccounts      Json?
+  status                String                   @default("ACTIVE")
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  user                  User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  syncedTransactions    PlaidSyncedTransaction[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model PlaidSyncedTransaction {
+  id                 String    @id @default(cuid())
+  plaidItemId        String
+  plaidTransactionId String    @unique
+  accountId          String
+  ledgerEntryId      String?
+  isRemoved          Boolean   @default(false)
+  transactionDate    DateTime
+  amount             Float
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  plaidItem          PlaidItem @relation(fields: [plaidItemId], references: [id], onDelete: Cascade)
+
+  @@index([plaidItemId])
+  @@index([ledgerEntryId])
+  @@index([isRemoved])
+}
+
+model ShipmentCharge {
+  id               String                   @id @default(cuid())
+  shipmentId       String
+  userId           String
+  invoiceId        String?
+  chargeCode       String
+  category         ShipmentChargeCategory
+  billingMilestone ShipmentBillingMilestone
+  sourceType       ShipmentChargeSourceType
+  sourceId         String?
+  description      String
+  quantity         Float                    @default(1)
+  unitAmount       Float
+  totalAmount      Float
+  currency         String                   @default("USD")
+  status           ShipmentChargeStatus     @default(DRAFT)
+  billableAt       DateTime?
+  approvedBy       String?
+  approvedAt       DateTime?
+  invoicedAt       DateTime?
+  paidAt           DateTime?
+  voidedAt         DateTime?
+  notes            String?
+  metadata         Json?
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+
+  shipment  Shipment               @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  user      User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  invoice   UserInvoice?           @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  auditLogs ShipmentChargeAuditLog[]
+  lineItems InvoiceLineItem[]
+
+  @@index([shipmentId])
+  @@index([userId])
+  @@index([invoiceId])
+  @@index([status])
+  @@index([category])
+  @@index([billingMilestone])
+  @@index([sourceType, sourceId])
+  @@index([billableAt])
+  @@index([createdAt])
+}
+
+model ShipmentChargeAuditLog {
+  id          String   @id @default(cuid())
+  chargeId     String
+  action      String
+  description String
+  performedBy String
+  oldValue    String?
+  newValue    String?
+  metadata    Json?
+  timestamp   DateTime @default(now())
+
+  charge ShipmentCharge @relation(fields: [chargeId], references: [id], onDelete: Cascade)
+
+  @@index([chargeId])
+  @@index([timestamp])
+  @@index([action])
+}
+
+model InvoiceAuditLog {
+  id          String   @id @default(cuid())
+  invoiceId    String
+  action      String
+  description String
+  performedBy String
+  oldValue    String?
+  newValue    String?
+  metadata    Json?
+  timestamp   DateTime @default(now())
+
+  invoice UserInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+  @@index([timestamp])
+  @@index([action])
+}
+
+model AiInteractionLog {
+  id             String   @id @default(cuid())
+  feature        String
+  entityType     String?
+  entityId       String?
+  actorUserId    String?
+  provider       String
+  model          String?
+  prompt         String
+  response       String?
+  requestPayload Json?
+  responsePayload Json?
+  status         String   @default("SUCCESS")
+  createdAt      DateTime @default(now())
+
+  @@index([feature])
+  @@index([entityType, entityId])
+  @@index([actorUserId])
+  @@index([createdAt])
+}
+
+model InvoiceLineItem {
+  id        String @id @default(cuid())
+  invoiceId String
+
+  // Line Item Details
+  description String // "2015 Honda Accord - Vehicle Price"
+  shipmentId  String? // Link to shipment
+  type        LineItemType // VEHICLE_PRICE, INSURANCE, SHARED_EXPENSE
+
+  quantity  Float @default(1)
+  unitPrice Float
+  amount    Float // quantity × unitPrice
+  expenseSource String?
+
+  // Phase 3: schema-enforced link to the ShipmentCharge this line item was
+  // materialised from. Replaces the previous description-string matching in
+  // invoice-ledger-sync.ts.
+  chargeId String?
+
+  // Metadata
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  invoice  UserInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  shipment Shipment?   @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  charge   ShipmentCharge? @relation(fields: [chargeId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId])
+  @@index([shipmentId])
+  @@index([type])
+  @@index([expenseSource])
+  @@index([chargeId])
+}
+
+// ============================================
+// FINANCIAL MODELS (From Accounting System)
+// ============================================
+
+model LedgerEntry {
+  id              String          @id @default(cuid())
+  userId          String
+  shipmentId      String?
+  transactionDate DateTime        @default(now())
+  description     String
+  type            LedgerEntryType
+  transactionInfoType TransactionInfoType?
+  amount          Float
+  balance         Float
+  createdBy       String
+  notes           String?
+  metadata        Json?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shipment        Shipment?       @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  auditLogs       AuditLog[]
+  bankReconciliations BankReconciliation[]
+
+  @@index([userId])
+  @@index([shipmentId])
+  @@index([transactionDate])
+  @@index([transactionInfoType])
+}
+
+model Company {
+  id            String               @id @default(cuid())
+  name          String
+  code          String?              @unique
+  email         String?
+  phone         String?
+  address       String?
+  country       String?
+  notes         String?
+  companyType   CompanyType          @default(SHIPPING) // Kept for backward compat
+  isDispatch    Boolean              @default(false)
+  isShipping    Boolean              @default(false)
+  isTransit     Boolean              @default(false)
+  isActive      Boolean              @default(true)
+  priceListConfig Json                @default("{}")
+  createdBy     String?
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+  ledgerEntries CompanyLedgerEntry[]
+  priceLists    CompanyPriceList[]
+  dispatches    Dispatch[]
+  transits      Transit[]
+  transitEvents TransitEvent[]
+  shipments     Shipment[]           @relation("ShipmentShippingCompany")
+  containers    Container[]
+  sourceTransfers LedgerTransfer[] @relation("SourceCompanyTransfers")
+  destTransfers   LedgerTransfer[] @relation("DestCompanyTransfers")
+
+  @@index([name])
+  @@index([isActive])
+  @@index([companyType])
+}
+
+model CompanyPriceList {
+  id                       String   @id @default(cuid())
+  companyId                String
+  name                     String
+  destinationLabel         String
+  sourceFileName           String
+  importMode               String
+  config                   Json     @default("{}")
+  importedStateRateCount   Int      @default(0)
+  importedAuctionRateCount Int      @default(0)
+  warnings                 Json     @default("[]")
+  isActive                 Boolean  @default(true)
+  effectiveFrom            DateTime?
+  importedBy               String?
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
+  company                  Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model CompanyLedgerEntry {
+  id              String          @id @default(cuid())
+  companyId       String
+  transactionDate DateTime        @default(now())
+  description     String
+  type            LedgerEntryType
+  amount          Float
+  balance         Float
+  category        String?
+  reference       String?
+  notes           String?
+  metadata        Json?
+  createdBy       String
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  company         Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId])
+  @@index([transactionDate])
+  @@index([type])
+}
+
+model PartnerPortal {
+  id                String                    @id @default(cuid())
+  name              String
+  code              String?                   @unique
+  customDomain      String?                   @unique
+  customDomainVerificationToken String?
+  customDomainVerifiedAt DateTime?
+  companyLabel      String?
+  accentColor       String?
+  logoUrl           String?
+  notifyOnShipmentAssigned Boolean            @default(true)
+  autoAssignToSingleCustomer Boolean          @default(false)
+  defaultShipmentNotes String?
+  requireCustomerLinkForReady Boolean         @default(true)
+  notes             String?
+  isActive          Boolean                   @default(true)
+  createdBy         String?
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
+  memberships       PartnerPortalMembership[]
+  customers         PartnerCustomer[]
+  shipmentAssignments PartnerShipmentAssignment[]
+  ledgerEntries     PartnerPortalLedgerEntry[]
+  paymentRecords    PartnerPortalPaymentRecord[]
+
+  @@index([name])
+  @@index([isActive])
+}
+
+model PartnerPortalMembership {
+  id         String                      @id @default(cuid())
+  portalId   String
+  userId     String
+  partnerCustomerId String?
+  role       PartnerPortalMembershipRole @default(STAFF)
+  createdBy  String?
+  createdAt  DateTime                    @default(now())
+  updatedAt  DateTime                    @updatedAt
+  portal      PartnerPortal              @relation(fields: [portalId], references: [id], onDelete: Cascade)
+  user        User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partnerCustomer PartnerCustomer?       @relation(fields: [partnerCustomerId], references: [id], onDelete: SetNull)
+
+  @@unique([portalId, userId])
+  @@index([userId])
+  @@index([partnerCustomerId])
+  @@index([role])
+}
+
+model PartnerCustomer {
+  id          String                    @id @default(cuid())
+  portalId    String
+  name        String
+  email       String?
+  phone       String?
+  address     String?
+  city        String?
+  country     String?
+  notes       String?
+  createdBy   String?
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
+  portal      PartnerPortal             @relation(fields: [portalId], references: [id], onDelete: Cascade)
+  memberships PartnerPortalMembership[]
+  shipmentAssignments PartnerShipmentAssignment[]
+  ledgerEntries PartnerPortalLedgerEntry[]
+  paymentRecords PartnerPortalPaymentRecord[]
+
+  @@index([portalId])
+  @@index([name])
+}
+
+model PartnerShipmentAssignment {
+  id                String           @id @default(cuid())
+  portalId          String
+  shipmentId        String           @unique
+  partnerCustomerId String?
+  assignedBy        String
+  linkedBy          String?
+  notes             String?
+  noteSource        PartnerShipmentAssignmentNoteSource?
+  assignedAt        DateTime         @default(now())
+  linkedAt          DateTime?
+  updatedAt         DateTime         @updatedAt
+  portal            PartnerPortal    @relation(fields: [portalId], references: [id], onDelete: Cascade)
+  shipment          Shipment         @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+  partnerCustomer   PartnerCustomer? @relation(fields: [partnerCustomerId], references: [id], onDelete: SetNull)
+
+  @@index([portalId])
+  @@index([partnerCustomerId])
+  @@index([assignedAt])
+}
+
+model PartnerPortalPaymentRecord {
+  id                String          @id @default(cuid())
+  portalId          String
+  partnerCustomerId String
+  shipmentId        String?
+  amount            Float
+  paymentDate       DateTime        @default(now())
+  paymentMethod     String
+  reference         String?
+  notes             String?
+  metadata          Json?
+  createdBy         String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  portal            PartnerPortal   @relation(fields: [portalId], references: [id], onDelete: Cascade)
+  partnerCustomer   PartnerCustomer @relation(fields: [partnerCustomerId], references: [id], onDelete: Cascade)
+  shipment          Shipment?       @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  ledgerEntries     PartnerPortalLedgerEntry[]
+
+  @@index([portalId])
+  @@index([partnerCustomerId])
+  @@index([shipmentId])
+  @@index([paymentDate])
+}
+
+model PartnerPortalLedgerEntry {
+  id                String                   @id @default(cuid())
+  portalId          String
+  partnerCustomerId String
+  shipmentId        String?
+  paymentRecordId   String?
+  transactionDate   DateTime                 @default(now())
+  description       String
+  type              LedgerEntryType
+  amount            Float
+  balance           Float
+  paymentMethod     String?
+  reference         String?
+  notes             String?
+  metadata          Json?
+  createdBy         String
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  portal            PartnerPortal            @relation(fields: [portalId], references: [id], onDelete: Cascade)
+  partnerCustomer   PartnerCustomer          @relation(fields: [partnerCustomerId], references: [id], onDelete: Cascade)
+  shipment          Shipment?                @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+  paymentRecord     PartnerPortalPaymentRecord? @relation(fields: [paymentRecordId], references: [id], onDelete: SetNull)
+
+  @@index([portalId])
+  @@index([partnerCustomerId])
+  @@index([shipmentId])
+  @@index([paymentRecordId])
+  @@index([transactionDate])
+  @@index([type])
+}
+
+// ============================================
+// DISPATCH MODELS (Origin yard → port handoff)
+// ============================================
+
+model Dispatch {
+  id                String         @id @default(cuid())
+  referenceNumber   String         @unique
+  companyId         String
+  origin            String
+  destination       String
+  status            DispatchStatus @default(PENDING)
+  dispatchDate      DateTime?
+  estimatedArrival  DateTime?
+  actualArrival     DateTime?
+  cost              Float?
+  notes             String?
+  createdBy         String
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  company   Company           @relation(fields: [companyId], references: [id])
+  shipments Shipment[]
+  events    DispatchEvent[]
+  expenses  DispatchExpense[]
+
+  @@index([companyId])
+  @@index([status])
+}
+
+model DispatchEvent {
+  id          String   @id @default(cuid())
+  dispatchId  String
+  status      String
+  location    String?
+  description String?
+  eventDate   DateTime @default(now())
+  createdBy   String
+  createdAt   DateTime @default(now())
+
+  dispatch Dispatch @relation(fields: [dispatchId], references: [id], onDelete: Cascade)
+
+  @@index([dispatchId])
+  @@index([eventDate])
+}
+
+model DispatchExpense {
+  id            String   @id @default(cuid())
+  dispatchId    String
+  shipmentId    String?
+  type          String   @default("OTHER")
+  description   String
+  amount        Float
+  currency      String   @default("USD")
+  date          DateTime @default(now())
+  vendor        String?
+  invoiceNumber String?
+  category      String?
+  attachmentUrl  String?
+  attachmentName String?
+  attachmentType String?
+  notes         String?
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  dispatch Dispatch  @relation(fields: [dispatchId], references: [id], onDelete: Cascade)
+  shipment Shipment? @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+
+  @@index([dispatchId])
+  @@index([shipmentId])
+  @@index([type])
+}
+
+// ============================================
+// TRANSIT MODELS (UAE → Afghanistan delivery)
+// ============================================
+
+model Transit {
+  id                String        @id @default(cuid())
+  referenceNumber   String        @unique
+  companyId         String?
+  origin            String        @default("Dubai, UAE")
+  destination       String        @default("Kabul, Afghanistan")
+  status            TransitStatus @default(PENDING)
+  dispatchDate      DateTime?
+  estimatedDelivery DateTime?
+  actualDelivery    DateTime?
+  deliveryReceiverName String?
+  deliveryProofUrl  String?
+  deliveryProofName String?
+  deliveryProofType String?
+  deliveryNotes     String?
+  cost              Float? // Agreed transit cost
+  notes             String?
+  createdBy         String
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  company   Company?         @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  shipments Shipment[]
+  events    TransitEvent[]
+  expenses  TransitExpense[]
+
+  @@index([companyId])
+  @@index([status])
+}
+
+model TransitEvent {
+  id          String   @id @default(cuid())
+  transitId   String
+  companyId   String
+  origin      String
+  destination String
+  status      String
+  location    String?
+  description String?
+  eventDate   DateTime @default(now())
+  createdBy   String
+  createdAt   DateTime @default(now())
+
+  transit Transit @relation(fields: [transitId], references: [id], onDelete: Cascade)
+  company Company @relation(fields: [companyId], references: [id])
+  expenses TransitExpense[]
+
+  @@index([transitId])
+  @@index([companyId])
+  @@index([eventDate])
+}
+
+model TransitExpense {
+  id            String   @id @default(cuid())
+  transitId     String
+  transitEventId String?
+  shipmentId    String?
+  type          String   @default("OTHER")
+  description   String
+  amount        Float
+  currency      String   @default("USD")
+  date          DateTime @default(now())
+  vendor        String?
+  invoiceNumber String?
+  category      String?
+  notes         String?
+  createdBy     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  transit  Transit   @relation(fields: [transitId], references: [id], onDelete: Cascade)
+  transitEvent TransitEvent? @relation(fields: [transitEventId], references: [id], onDelete: SetNull)
+  shipment Shipment? @relation(fields: [shipmentId], references: [id], onDelete: SetNull)
+
+  @@index([transitId])
+  @@index([transitEventId])
+  @@index([shipmentId])
+  @@index([type])
+}
+
+model AuditLog {
+  id          String       @id @default(cuid())
+  entityType  String
+  entityId    String
+  action      AuditAction
+  performedBy String
+  performedAt DateTime     @default(now())
+  changes     Json?
+  ipAddress   String?
+  userAgent   String?
+  ledgerEntry LedgerEntry? @relation(fields: [entityId], references: [id], onDelete: Cascade)
+
+  @@index([entityType, entityId])
+  @@index([performedBy])
+  @@index([performedAt])
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum CompanyType {
+  SHIPPING // Shipping company managing containers and shipments
+  DISPATCH // Dispatch company managing origin transport to port
+  TRANSIT  // Transit company managing inter-city transportation
+}
+
+enum ServiceType {
+  PURCHASE_AND_SHIPPING // Company buys car for customer + shipping
+  SHIPPING_ONLY // Customer already owns car, just shipping service
+}
+
+enum ShipmentSimpleStatus {
+  ON_HAND
+  DISPATCHING
+  IN_TRANSIT
+  RELEASED
+  IN_TRANSIT_TO_DESTINATION
+  DELIVERED
+}
+
+enum DispatchStatus {
+  PENDING
+  DISPATCHED
+  ARRIVED_AT_PORT
+  COMPLETED
+  CANCELLED
+}
+
+enum ContainerLifecycleStatus {
+  CREATED
+  WAITING_FOR_LOADING
+  LOADED
+  IN_TRANSIT
+  ARRIVED_PORT
+  CUSTOMS_CLEARANCE
+  RELEASED
+  CLOSED
+}
+
+enum DeliveryAlertStatus {
+  ON_TIME
+  WARNING
+  OVERDUE
+  DELIVERED
+}
+
+enum Role {
+  USER
+  ADMIN
+  MANAGER
+  CUSTOMER_SERVICE
+}
+
+enum QuoteStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+  ACCEPTED
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+  CANCELLED
+}
+
+enum CollectionStatus {
+  CURRENT
+  FOLLOW_UP
+  PROMISED_TO_PAY
+  IN_COLLECTIONS
+  ESCALATED
+  ON_HOLD
+}
+
+enum PartnerPortalMembershipRole {
+  ADMIN
+  STAFF
+}
+
+enum PartnerShipmentAssignmentNoteSource {
+  MANUAL
+  PORTAL_DEFAULT
+}
+
+enum TitleStatus {
+  PENDING
+  DELIVERED
+}
+
+enum QualityCheckType {
+  INITIAL_INSPECTION
+  PRE_LOADING
+  POST_LOADING
+  DELIVERY_INSPECTION
+  DAMAGE_ASSESSMENT
+}
+
+enum QualityCheckStatus {
+  PENDING
+  IN_PROGRESS
+  PASSED
+  FAILED
+  REQUIRES_ATTENTION
+}
+
+enum DocumentCategory {
+  INVOICE
+  BILL_OF_LADING
+  CUSTOMS
+  INSURANCE
+  TITLE
+  INSPECTION_REPORT
+  PHOTO
+  CONTRACT
+  OTHER
+  EXPORT_DOCUMENT
+  PACKING_LIST
+}
+
+enum RouteStatus {
+  ACTIVE
+  INACTIVE
+  OPTIMIZING
+  ARCHIVED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  PAYPAL
+  STRIPE
+  WIRE_TRANSFER
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum NewsletterStatus {
+  ACTIVE
+  UNSUBSCRIBED
+  BOUNCED
+}
+
+enum TestimonialStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  CANCELLED
+  PENDING
+  VOID
+  REFUNDED
+}
+
+enum UserInvoiceStatus {
+  DRAFT
+  PENDING
+  SENT
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  CANCELLED
+  VOID
+  REFUNDED
+}
+
+enum LineItemType {
+  VEHICLE_PRICE
+  PURCHASE_PRICE // Vehicle purchase price (for PURCHASE_AND_SHIPPING service type)
+  INSURANCE
+  SHIPPING_FEE
+  CUSTOMS_FEE
+  STORAGE_FEE
+  HANDLING_FEE
+  OTHER_FEE
+  DISCOUNT
+}
+
+enum ShipmentChargeStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  INVOICED
+  PAID
+  DISPUTED
+  VOID
+}
+
+enum ShipmentChargeCategory {
+  PURCHASE
+  SHIPPING
+  INSURANCE
+  CUSTOMS
+  STORAGE
+  HANDLING
+  ADJUSTMENT
+  DAMAGE
+  CREDIT
+  OTHER
+}
+
+enum ShipmentBillingMilestone {
+  INTAKE
+  PURCHASE
+  ORIGIN_HANDOFF
+  OCEAN_FREIGHT
+  DESTINATION_PORT
+  RELEASE
+  DELIVERY
+  FINAL_SETTLEMENT
+  MANUAL
+}
+
+enum ShipmentChargeSourceType {
+  MANUAL
+  LEDGER_ENTRY
+  CONTAINER_ALLOCATION
+  SHIPMENT
+  DAMAGE
+  PAYMENT_ADJUSTMENT
+  SYSTEM
+}
+
+enum PaymentMode {
+  CASH
+  DUE
+}
+
+enum LedgerEntryType {
+  DEBIT
+  CREDIT
+}
+
+enum TransactionInfoType {
+  CAR_PAYMENT
+  SHIPPING_PAYMENT
+  STORAGE_PAYMENT
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+}
+
+enum ExpenseAllocationMethod {
+  EQUAL // Divide equally among all shipments
+  BY_VALUE // Weighted by insurance value
+  BY_WEIGHT // Weighted by vehicle weight
+  CUSTOM // Custom allocation percentages
+}
+
+enum DamageType {
+  WE_PAY      // Business compensates the customer (credit user ledger)
+  COMPANY_PAYS // Shipping company is responsible (debit company ledger)
+}
+
+enum TransitStatus {
+  PENDING
+  DISPATCHED
+  IN_TRANSIT
+  ARRIVED
+  DELIVERED
+  CANCELLED
+}
+
+// ============================================
+// RATE LIMIT MODEL (Security)
+// ============================================
+
+model RateLimit {
+  id         String   @id @default(cuid())
+  identifier String   @unique // IP address or other identifier
+  count      Int      @default(0)
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@index([expiresAt])
+}
+
+// ============================================
+// PHASE 3: FX RATE + BANK RECONCILIATION MODELS
+// ============================================
+
+/// Snapshot of a currency exchange rate, so invoices can store the exact rate
+/// used at the time of calculation (no silent re-pricing on report day).
+model ExchangeRate {
+  id        String   @id @default(cuid())
+  base      String   @default("USD")
+  currency  String
+  rate      Float    // 1 base currency = `rate` of `currency`
+  source    String   @default("MANUAL") // MANUAL | EXCHANGERATE_API | OPENEXCHANGERATES | FIXED
+  effective DateTime @default(now())
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@unique([currency, effective])
+  @@index([currency])
+  @@index([effective])
+}
+
+/// Per-row reconciliation between an imported bank transaction and the ledger
+/// entry it was matched to. Replaces the previous "metadata-only" convention.
+model BankReconciliation {
+  id          String  @id @default(cuid())
+  bankSource  String // PLAIN | PLIAD | FINICITY | BOA_CSV
+  sourceKey   String // plaidTransactionId | finicityCustomerId:accountId:transactionId | sha256 fingerprint
+  ledgerEntryId String?
+  invoiceId   String?
+  matchedAt   DateTime?
+  matchedBy   String? // user who confirmed the match
+  status      String  @default("UNMATCHED") // UNMATCHED | MATCHED | DISPUTED | IGNORED
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ledgerEntry LedgerEntry?  @relation(fields: [ledgerEntryId], references: [id], onDelete: SetNull)
+  invoice     UserInvoice?  @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@unique([bankSource, sourceKey])
+  @@index([ledgerEntryId])
+  @@index([invoiceId])
+  @@index([status])
+}
+
+// ============================================
+// OFFICE & OPERATING EXPENSES (OpEx)
+// ============================================
+
+model OfficeExpense {
+  id              String                @id @default(cuid())
+  title           String
+  category        OfficeExpenseCategory @default(OTHER)
+  amount          Float
+  currency        String                @default("USD")
+  expenseDate     DateTime              @default(now())
+  paymentMethod   String                @default("CASH") // CASH, BANK_TRANSFER, CHECK, CREDIT_CARD, DEBIT_CARD, ZELLE, OTHER
+  vendor          String?               // Paid to / Vendor / Landlord / Utility / Provider
+  referenceNumber String?               // Receipt #, Check #, Invoice #
+  receiptUrl      String?               // Receipt or invoice attachment URL
+  receiptName     String?               // Original attachment name
+  notes           String?
+  status          ExpensePaymentStatus  @default(PAID) // PAID, PENDING, CANCELLED
+  recurringExpenseId String?
+  recurringExpense RecurringExpense?    @relation("RecurringOfficeExpenses", fields: [recurringExpenseId], references: [id], onDelete: SetNull)
+  recordedById    String?
+  recordedBy      User?                 @relation("RecordedOfficeExpenses", fields: [recordedById], references: [id], onDelete: SetNull)
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
+
+  @@index([category])
+  @@index([expenseDate])
+  @@index([status])
+  @@index([recurringExpenseId])
+  @@index([recordedById])
+  @@index([createdAt])
+}
+
+enum OfficeExpenseCategory {
+  RENT
+  UTILITIES
+  SALARIES_PAYROLL
+  OFFICE_SUPPLIES
+  EQUIPMENT_HARDWARE
+  SOFTWARE_SUBSCRIPTIONS
+  MAINTENANCE_REPAIRS
+  TRAVEL_TRANSPORT
+  MARKETING_ADVERTISING
+  LEGAL_PROFESSIONAL
+  COMMUNICATION_INTERNET
+  TAXES_GOVERNMENT_FEES
+  BANK_FEES
+  MEALS_ENTERTAINMENT
+  OTHER
+}
+
+enum ExpensePaymentStatus {
+  PAID
+  PENDING
+  CANCELLED
+}
+
+enum RecurringFrequency {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+  WEEKLY
+  BIWEEKLY
+}
+
+model RecurringExpense {
+  id                 String                @id @default(cuid())
+  title              String
+  category           OfficeExpenseCategory @default(OTHER)
+  amount             Float
+  currency           String                @default("USD")
+  frequency          RecurringFrequency    @default(MONTHLY)
+  dayOfMonth         Int                   @default(1) // Day of month to trigger (1-31)
+  startDate          DateTime              @default(now())
+  endDate            DateTime?
+  paymentMethod      String                @default("BANK_TRANSFER")
+  vendor             String?
+  referencePrefix    String?               // Prefix for generated receipt/ref numbers
+  notes              String?
+  isActive           Boolean               @default(true)
+  autoCreatePaid     Boolean               @default(true) // true = create as PAID, false = create as PENDING
+  lastGeneratedDate  DateTime?
+  nextDueDate        DateTime
+  createdById        String?
+  createdBy          User?                 @relation("CreatedRecurringExpenses", fields: [createdById], references: [id], onDelete: SetNull)
+  generatedExpenses  OfficeExpense[]       @relation("RecurringOfficeExpenses")
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  @@index([isActive])
+  @@index([nextDueDate])
+  @@index([category])
+  @@index([frequency])
+  @@index([createdById])
+}
+
+model ExpenseBudget {
+  id               String                 @id @default(cuid())
+  name             String
+  category         OfficeExpenseCategory? // null = Overall monthly OpEx Cap
+  amount           Float                  // Budget limit
+  currency         String                 @default("USD")
+  month            Int?                   // 1-12 (null = perpetual default monthly cap)
+  year             Int?                   // e.g. 2026 (null = perpetual default)
+  warningThreshold Float                  @default(80.0) // % at which to show warning (e.g. 80%)
+  notifyOnWarning  Boolean                @default(true)
+  notifyOnExceeded Boolean                @default(true)
+  notes            String?
+  createdById      String?
+  createdBy        User?                  @relation("CreatedExpenseBudgets", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+
+  @@index([category])
+  @@index([year, month])
+  @@index([createdById])
+}
+
+model LedgerTransfer {
+  id                         String               @id @default(cuid())
+  transferNumber             String               @unique
+  transferType               LedgerTransferType
+  amount                     Float
+  currency                   String               @default("USD")
+  transferDate               DateTime             @default(now())
+  
+  // Source
+  sourceType                 LedgerPartyType
+  sourceUserId               String?
+  sourceUser                 User?                @relation("SourceUserTransfers", fields: [sourceUserId], references: [id], onDelete: SetNull)
+  sourceCompanyId            String?
+  sourceCompany              Company?             @relation("SourceCompanyTransfers", fields: [sourceCompanyId], references: [id], onDelete: SetNull)
+  sourceLedgerEntryId        String?
+  sourceCompanyLedgerEntryId String?
+
+  // Destination
+  destType                   LedgerPartyType
+  destUserId                 String?
+  destUser                   User?                @relation("DestUserTransfers", fields: [destUserId], references: [id], onDelete: SetNull)
+  destCompanyId              String?
+  destCompany                Company?             @relation("DestCompanyTransfers", fields: [destCompanyId], references: [id], onDelete: SetNull)
+  destLedgerEntryId          String?
+  destCompanyLedgerEntryId   String?
+
+  reference                  String?
+  notes                      String?
+  status                     LedgerTransferStatus @default(COMPLETED)
+  
+  createdById                String?
+  createdBy                  User?                @relation("CreatedTransfers", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt                  DateTime             @default(now())
+  updatedAt                  DateTime             @updatedAt
+
+  @@index([transferType])
+  @@index([transferDate])
+  @@index([sourceUserId])
+  @@index([sourceCompanyId])
+  @@index([destUserId])
+  @@index([destCompanyId])
+  @@index([createdById])
+  @@index([status])
+}
+
+enum LedgerTransferType {
+  USER_TO_USER
+  USER_TO_COMPANY
+  COMPANY_TO_USER
+  COMPANY_TO_COMPANY
+}
+
+enum LedgerPartyType {
+  USER
+  COMPANY
+}
+
+enum LedgerTransferStatus {
+  COMPLETED
+  CANCELLED
+}
+

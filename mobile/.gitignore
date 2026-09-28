@@ -1,0 +1,22 @@
+node_modules/
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+.env
+.env.local
+
+# EAS / Google Play service account key (never commit secrets)
+google-service-account.json
+
+# macOS
+.DS_Store
+
+# TypeScript
+*.tsbuildinfo

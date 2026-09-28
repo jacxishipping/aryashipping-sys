@@ -1,0 +1,15 @@
+name: Atomesus
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Cipher
+    provider: openai
+    model: cipher
+    apiBase: https://api.atomesus.com/v1
+    apiKey: atms_sk_f6a0ee46e6e67031748dde8f9b605ada2a5ef19be41ba6230ae67e10057e601b
+
+    roles:
+      - chat
+      - edit
+      - apply

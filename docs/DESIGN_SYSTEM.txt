@@ -1,0 +1,455 @@
+JACXI SHIPPING DESIGN SYSTEM
+
+Purpose
+This file documents the current live design system used in the application. It describes the visual tokens, layout patterns, spacing rules, component behavior, and implementation conventions used across the site and dashboard.
+
+Primary source of truth
+1. src/app/globals.css
+2. src/theme/theme.ts
+3. src/lib/design-tokens/*
+4. src/components/design-system/*
+5. src/components/dashboard/DashboardSurface.tsx
+
+Important implementation note
+The runtime surface color currently used by the app is:
+- background: #F9FAFB
+- panel: #FFFFFF
+
+==================================================
+1. DESIGN PRINCIPLES
+==================================================
+
+1. Clean enterprise UI
+- Light theme by default
+- White panels on a soft gray background
+- Gold accent reserved for primary actions and highlights
+- Neutral typography with semantic status colors
+
+2. Consistency over one-off styling
+- Shared components are preferred over page-specific button, input, badge, and panel styling
+- The design-system folder defines the canonical reusable UI pieces
+
+3. Readability first
+- Strong contrast between content, surfaces, and borders
+- Uppercase micro-labels are used for metadata and stat labels
+- Semantic states use colored text and borders with soft tinted backgrounds
+
+4. Responsive behavior
+- Components collapse vertically on smaller screens
+- Dashboard keeps a fixed header and mobile bottom navigation
+- Mobile interactions maintain minimum 44x44 touch targets
+
+==================================================
+2. COLOR SYSTEM
+==================================================
+
+Core runtime tokens
+- Accent gold: #D4AF37
+- Background: #F9FAFB
+- Panel: #FFFFFF
+- Border: #E5E7EB
+- Text primary: #1C1C1E
+- Text secondary: #5F6368
+
+Semantic colors
+- Success: #10B981
+- Success light: #D1FAE5
+- Success dark: #047857
+- Warning: #F59E0B
+- Warning light: #FEF3C7
+- Warning dark: #B45309
+- Error: #EF4444
+- Error light: #FEE2E2
+- Error dark: #B91C1C
+- Info: #3B82F6
+- Info light: #DBEAFE
+- Info dark: #1D4ED8
+
+Extended token scales from src/lib/design-tokens/colors.ts
+- Primary gold scale: 50-900
+- Neutral scale: 50-950
+- Success scale: 50-900
+- Warning scale: 50-900
+- Error scale: 50-900
+- Info scale: 50-900
+
+Brand usage rules
+- Use gold for primary CTA buttons, focus emphasis, active highlights, and key accents
+- Use neutral surfaces for cards, tables, panels, and forms
+- Use semantic colors only for state, validation, progress, and alerts
+- Do not use random Tailwind colors directly when a design token or semantic color exists
+
+Status color mapping patterns
+- On hand / paid / success states: green
+- In transit / partial / info states: blue
+- Pending / waiting / warning states: amber
+- Error / overdue / delayed states: red
+- Closed / cancelled / neutral states: gray
+- Customs and some transit-specific states may use violet or orange for distinction
+
+==================================================
+3. TYPOGRAPHY SYSTEM
+==================================================
+
+Font families
+- Primary sans stack: var(--font-inter), var(--font-urbanist), system-ui, sans-serif
+- MUI theme stack: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif
+- Mono stack: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace
+
+Core type scale from src/lib/design-tokens/typography.ts
+- xs: 12px / 16px line-height
+- sm: 14px / 20px line-height
+- base: 16px / 24px line-height
+- lg: 18px / 28px line-height
+- xl: 20px / 28px line-height
+- 2xl: 24px / 32px line-height
+- 3xl: 30px / 36px line-height
+- 4xl: 36px / 40px line-height
+- 5xl: 48px / 1.2 line-height
+- 6xl: 60px / 1 line-height
+
+Font weights
+- Normal: 400
+- Medium: 500
+- Semibold: 600
+- Bold: 700
+- Extra bold: 800
+
+Letter spacing
+- Tight display headings use negative tracking
+- Standard body copy uses normal tracking
+- Metadata labels use widest tracking: 0.15em and uppercase
+
+Common text presets used in the app
+- Page title: 36px, semibold, slightly tight tracking
+- Section title: 24px, semibold
+- Card title: about 15px, semibold
+- Body: about 15px, regular
+- Small/helper text: 14px
+- Label text: 12px, uppercase, 0.15em tracking, semibold
+- Stat value: 24px, bold
+- Button text: 14px, semibold
+
+Actual component usage patterns
+- PageHeader title: 1.5rem to 2rem responsive, weight 600
+- PageHeader description: about 0.85rem to 0.95rem
+- StatsCard label: 0.65rem to 0.75rem uppercase
+- StatsCard value: 1.125rem to 1.75rem depending on size
+- Dashboard panel titles: about 0.95rem semibold
+
+==================================================
+4. SPACING SYSTEM
+==================================================
+
+Base spacing rule
+- The token scale is built on a 4px base unit
+
+Core spacing scale
+- 2px, 4px, 6px, 8px, 10px, 12px, 14px, 16px, 20px, 24px, 28px, 32px, 36px, 40px, 44px, 48px, 56px, 64px and larger steps for large layouts
+
+Semantic spacing guidance
+- Component padding: 12px / 16px / 24px
+- Card padding: 16px / 24px / 32px
+- Section spacing: 32px / 48px / 64px
+- Element gaps: 4px / 8px / 12px / 16px / 24px
+- Page padding: 16px mobile, 24px tablet, 32px desktop
+
+Common real usage in components
+- Section wrapper: px-4, sm:px-6, lg:px-8
+- Dashboard surface: px-3 py-4, sm:px-5, lg:px-8
+- Dashboard panel header/body: px-4, pt-4, pb-3 or pb-4
+- PageHeader main gap: 20px
+- Meta cards: 8px 12px
+- Mobile cards: 16px outer padding, 12px element gaps
+
+==================================================
+5. BORDERS, RADIUS, AND SHAPES
+==================================================
+
+Border widths
+- Thin: 1px
+- Medium: 2px
+- Thick: 4px
+
+Radius scale
+- 4px, 8px, 12px, 16px, 24px, 32px, full pill
+
+Practical usage
+- Inputs: 16px visual radius through MUI borderRadius: 2
+- Buttons: 16px visual radius through MUI borderRadius: 2
+- Cards and panels: 12px to 16px depending on component
+- Status badges: pill-like rounded shape, 12px radius
+
+Border state rules
+- Default border: 1px solid var(--border)
+- Hover border: gold
+- Focus border: 2px solid gold
+- Error border: semantic red
+
+==================================================
+6. SHADOWS AND DEPTH
+==================================================
+
+General elevation scale
+- Small: subtle resting card shadow
+- Medium: standard card or form element shadow
+- Large: raised panel hover shadow
+- XL and above: overlays, floating elements, and modals
+
+Design-system semantic shadows
+- Card: 0 12px 30px rgba(var(--text-primary-rgb), 0.08)
+- Card hover: 0 20px 40px rgba(var(--text-primary-rgb), 0.12)
+- Panel: 0 16px 40px rgba(var(--text-primary-rgb), 0.08)
+- Floating: 0 16px 48px rgba(var(--text-primary-rgb), 0.12)
+- Dropdown: layered shadow for popovers
+- Modal: 0 24px 60px rgba(var(--text-primary-rgb), 0.15)
+- Focus ring shadow: 0 0 0 3px rgba(var(--accent-gold-rgb), 0.2)
+
+Usage rule
+- Rest state should be quiet
+- Hover can add lift and stronger shadow
+- Depth should support hierarchy, not become decorative noise
+
+==================================================
+7. MOTION AND INTERACTION
+==================================================
+
+Duration tokens
+- Fast: 150ms
+- Normal: 300ms
+- Slow: 500ms
+- Slower: 700ms
+- Slowest: 1000ms
+
+Primary easing
+- cubic-bezier(0.4, 0, 0.2, 1)
+
+Common transition patterns
+- Fast UI feedback: all 150ms cubic-bezier(0.4, 0, 0.2, 1)
+- Standard transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1)
+- Transform transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1)
+
+Implemented interaction rules
+- Buttons lift by 1px on hover and scale down on active press
+- Stats cards lift by 4px on hover
+- Error shake animation exists globally for invalid form feedback
+- Smooth scroll is enabled globally
+- Keyboard focus uses a gold outline with 2px offset
+
+Animation patterns available
+- Fade
+- Slide up/down/left/right
+- Scale and scale-up
+- Staggered entrance
+- Pulse
+- Shake
+- Shimmer for loading skeletons
+
+==================================================
+8. LAYOUT SYSTEM
+==================================================
+
+Global layout structure
+- Application uses a light background shell with white content surfaces
+- Dashboard layout is header + sidebar + main content + mobile bottom navigation
+- Main dashboard area is scrollable while the shell remains stable
+
+Core layout wrappers
+
+Section
+- Used for public-facing sections
+- Horizontal padding: 16px mobile, 24px tablet, 32px desktop
+- Full width wrapper
+
+DashboardSurface
+- Max width: 1380px
+- Centers dashboard content
+- Default padding: px-3 py-4, sm:px-5, lg:px-8
+- Used as the top-level content wrapper inside dashboard pages
+
+DashboardHeader
+- Rounded, bordered header container
+- Flexible column-to-row layout
+- Supports metadata blocks and action area
+- Uses elevated glass/panel styling and strong heading hierarchy
+
+DashboardPanel
+- Standard content container for tables, forms, summaries, and lists
+- Rounded 2xl panel, border, white surface, medium shadow
+- Optional title, description, actions, footer
+- Common internal padding: 16px
+
+DashboardGrid
+- Grid wrapper with default gap of 12px
+- Used to compose cards and panels in responsive layouts
+
+PageHeader
+- Standard page introduction block
+- Title + description + optional actions + optional metric pills
+- Responsive stack on mobile, row layout on desktop
+
+==================================================
+9. COMPONENT DESIGN RULES
+==================================================
+
+Buttons
+- Variants: primary, secondary, outline, ghost, danger
+- Sizes: sm, md, lg
+- Height: 32px, 40px, 48px
+- Text is sentence case, not forced uppercase
+- Weight: 600
+- Primary button: gold background, light text
+- Secondary button: white panel with border
+- Outline button: transparent with border
+- Ghost button: transparent, low emphasis
+- Danger button: red background, white text
+- Loading state shows inline CircularProgress
+- Icon support exists for both start and end positions
+
+Icon buttons
+- Same variant language as buttons
+- Square size tokens: 32px, 40px, 48px
+
+Form fields
+- Label above field
+- Label size: 14px, weight 500
+- Inputs use background tone, border, and gold focus state
+- Helper text is 12px
+- Error helper text switches to red
+- Supports left and right adornment icons
+
+Status badges
+- Variants: default, dot, outline
+- Sizes: sm, md, lg
+- Pill treatment with semantic tint + border + text color
+- Used for shipment, payment, and generic statuses
+- Text is generated from normalized status keys such as IN_TRANSIT -> In Transit
+
+Stats cards
+- White panel with border and subtle shadow
+- Left icon block with tinted background
+- Uppercase micro-label
+- Bold metric value
+- Optional subtitle
+- Optional trend chip on the right
+- Hover state lifts card by 4px
+- Variants: default, secondary, success, warning, error, info
+- Sizes: sm, md, lg
+
+Mobile cards
+- Compact stacked card for mobile list views
+- White panel, border, rounded corners, 16px padding
+- Optional image, status area, body content, and action row
+
+Tables
+- Standardized through design-system/Table.tsx
+- Expected to live inside DashboardPanel surfaces when used in dashboard pages
+- Borders and spacing should follow panel conventions rather than ad hoc table styling
+
+Alerts, loading, empty states, skeletons, toasts, tooltips, breadcrumbs, modals
+- These live in src/components/design-system and should be preferred over one-off page versions
+- All should inherit the same token system for color, spacing, border radius, and motion
+
+==================================================
+10. CURRENT DESIGN-SYSTEM COMPONENT INVENTORY
+==================================================
+
+Form components
+- FormField
+- Select
+
+Action components
+- Button
+- IconButton
+- ActionButton (legacy)
+
+Status and feedback
+- StatusBadge
+- Alert
+- LoadingState
+- EmptyState
+- Toast / Toaster
+
+Layout components
+- StatsCard
+- PageHeader
+- Table
+- Breadcrumbs
+- MobileCard
+
+Overlay and assistance
+- Modal
+- ConfirmDialog
+- Tooltip
+- ThemeToggle
+- KeyboardShortcutHelp
+
+Loading helpers
+- Skeleton
+- SkeletonText
+- SkeletonParagraph
+- SkeletonAvatar
+- SkeletonCard
+- SkeletonTable
+- SkeletonTableRow
+- SkeletonStatsCard
+- SkeletonFormField
+- SkeletonImage
+- SkeletonGroup
+- DashboardPageSkeleton
+- DetailPageSkeleton
+- FormPageSkeleton
+- CompactSkeleton
+- TableSkeleton
+- StatsGridSkeleton
+
+==================================================
+11. ACCESSIBILITY AND USABILITY RULES
+==================================================
+
+Implemented rules in the codebase
+- Focus-visible outline: 2px gold with 2px offset
+- Skip link exists for keyboard users
+- Mobile touch targets use a 44x44px minimum
+- Inputs force 16px font size on mobile to avoid iOS zoom
+- Text wrapping and overflow handling are built into mobile styles
+
+Practical guidance
+- Keep labels visible for important forms
+- Prefer semantic status color plus text, not color alone
+- Keep action groups wrapped and responsive
+- Avoid dense layouts that break touch targets on mobile
+
+==================================================
+12. IMPLEMENTATION STACK
+==================================================
+
+The UI system is implemented with:
+- Next.js 16
+- React 19
+- Tailwind CSS 4
+- Material UI 7
+- class-variance-authority and clsx for variant composition where needed
+
+Design implementation pattern
+- CSS variables define the global token values
+- Tailwind theme maps selected variables for utility usage
+- MUI theme mirrors the same palette and typography decisions
+- Reusable components in src/components/design-system provide the canonical API for product UI
+
+==================================================
+13. WORKING RULES FOR FUTURE UI CHANGES
+==================================================
+
+1. Reuse existing design-system components before creating new UI primitives.
+2. Use CSS variables and design tokens instead of hard-coded colors and spacing.
+3. Keep primary action emphasis gold, and reserve semantic colors for state.
+4. Use white panels on the light gray app background for dashboard surfaces.
+5. Prefer 12px to 16px radius and 12px to 24px spacing for most interface blocks.
+6. Keep headings semibold, metadata uppercase, and body copy neutral.
+7. Use subtle motion: lift, fade, and focus states rather than dramatic animation.
+8. Build mobile-first layouts that stack cleanly and preserve touch target size.
+9. Keep panel/table/form patterns inside DashboardSurface and DashboardPanel where possible.
+10. If a token file conflicts with globals.css or theme.ts, verify the runtime value before documenting or reusing it.
+
+End of file.

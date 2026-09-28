@@ -1,0 +1,189 @@
+import { NextResponse } from 'next/server';
+import { InvoiceStatus, Prisma, PrismaClient } from '@prisma/client';
+import { auth } from '@/lib/auth';
+
+const prisma = new PrismaClient();
+
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (session.user?.role !== 'admin') {
+      return NextResponse.json(
+        { message: 'Forbidden: Only admins can view invoices' },
+        { status: 403 }
+      );
+    }
+
+    const invoice = await prisma.containerInvoice.findUnique({
+      where: { id },
+      include: {
+        container: {
+          select: {
+            containerNumber: true,
+            shipmentId: true,
+          },
+        },
+        items: {
+          include: {
+            item: {
+              select: {
+                vin: true,
+                lotNumber: true,
+                auctionCity: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!invoice) {
+      return NextResponse.json(
+        { message: 'Invoice not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ invoice }, { status: 200 });
+  } catch (error) {
+    console.error('Error fetching invoice:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+type UpdateInvoicePayload = {
+  status?: InvoiceStatus;
+  paidDate?: string | null;
+  wireTransferDetails?: string | null;
+  dueDate?: string | null;
+};
+
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  try {
+    const { id } = await params;
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (session.user?.role !== 'admin') {
+      return NextResponse.json(
+        { message: 'Forbidden: Only admins can update invoices' },
+        { status: 403 }
+      );
+    }
+
+    const data = (await request.json()) as UpdateInvoicePayload;
+    const { status, paidDate, wireTransferDetails, dueDate } = data;
+
+    const updateData: Prisma.ContainerInvoiceUpdateInput = {};
+
+    if (status) {
+      updateData.status = status;
+    }
+
+    let dueDateValue: Date | undefined;
+    if (dueDate) {
+      dueDateValue = new Date(dueDate);
+      updateData.dueDate = dueDateValue;
+    }
+
+    if (paidDate) {
+      updateData.paidDate = new Date(paidDate);
+    }
+
+    if (wireTransferDetails !== undefined) {
+      updateData.wireTransferDetails = wireTransferDetails ?? null;
+    }
+
+    // Check if overdue
+    if (dueDateValue) {
+      updateData.overdue = dueDateValue < new Date() && status !== 'PAID';
+    } else {
+      // Check existing due date
+      const invoice = await prisma.containerInvoice.findUnique({
+        where: { id },
+        select: { dueDate: true, status: true },
+      });
+      if (invoice?.dueDate) {
+        updateData.overdue = new Date(invoice.dueDate) < new Date() && (status ?? invoice.status) !== 'PAID';
+      }
+    }
+
+    // Get invoice first to get containerId
+    const existingInvoice = await prisma.containerInvoice.findUnique({
+      where: { id },
+      select: { containerId: true },
+    });
+
+    if (!existingInvoice) {
+      return NextResponse.json(
+        { message: 'Invoice not found' },
+        { status: 404 }
+      );
+    }
+
+    // Get container to check for shipmentId
+    const container = await prisma.container.findUnique({
+      where: { id: existingInvoice.containerId },
+      select: { shipmentId: true },
+    });
+
+    const invoice = await prisma.containerInvoice.update({
+      where: { id },
+      data: updateData,
+      include: {
+        container: {
+          select: {
+            containerNumber: true,
+            shipmentId: true,
+          },
+        },
+        items: {
+          include: {
+            item: {
+              select: {
+                vin: true,
+                lotNumber: true,
+                auctionCity: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Update shipment payment status if invoice is paid
+    if (status === 'PAID' && container?.shipmentId) {
+      await prisma.shipment.update({
+        where: { id: container.shipmentId },
+        data: { paymentStatus: 'COMPLETED' },
+      });
+    }
+
+    return NextResponse.json(
+      {
+        message: 'Invoice updated successfully',
+        invoice,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Error updating invoice:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+

@@ -1,0 +1,8 @@
+nohup: ignoring input
+
+> jacxi-shipping@0.1.0 dev
+> RUN_CUSTOM_SERVER=1 NODE_ENV=development tsx server.ts
+
+⚠ Slow filesystem detected. The benchmark took 450ms. If /workspaces/Jacxi_Shipping/.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+> Ready on http://0.0.0.0:3000

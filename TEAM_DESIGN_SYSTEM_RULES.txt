@@ -1,0 +1,77 @@
+JACXI SHIPPING TEAM DESIGN RULES
+
+Use this file as the short working guide for designers and developers. These are the rules to follow when creating or updating UI.
+
+1. Core visual direction
+- Use a clean enterprise light theme.
+- Keep the app background soft gray: #F9FAFB.
+- Keep panels, cards, tables, and forms white: #FFFFFF.
+- Use gold #D4AF37 for primary emphasis only.
+
+2. Color rules
+- Primary actions and key highlights use gold.
+- Neutral text uses #1C1C1E and #5F6368.
+- Success uses green, warning uses amber, error uses red, info uses blue.
+- Do not introduce random one-off colors when a token already exists.
+
+3. Typography rules
+- Prefer the shared sans stack built from Inter and Urbanist.
+- Keep page titles semibold and clearly separated from body copy.
+- Use uppercase micro-labels for stats, metadata, and small section labels.
+- Keep body text neutral, readable, and not overly dense.
+
+4. Spacing rules
+- Work from the 4px spacing scale.
+- Standard content padding should usually land between 16px and 24px.
+- Standard gaps should usually be 8px, 12px, 16px, or 24px.
+- Large sections should breathe with 32px to 64px spacing.
+
+5. Shape and surface rules
+- Prefer rounded corners in the 12px to 16px range for panels and controls.
+- Keep borders subtle with the shared border token.
+- Use soft shadows for hierarchy, not heavy decorative effects.
+- Hover states may lift slightly, but resting states should stay calm.
+
+6. Component rules
+- Reuse components from src/components/design-system before creating new UI primitives.
+- Use Button variants and sizes instead of page-specific button styling.
+- Use FormField, StatusBadge, PageHeader, StatsCard, Modal, Skeleton, and related shared components where applicable.
+- Keep tables and dashboard content inside the shared dashboard surface and panel patterns.
+
+7. Layout rules
+- Public sections use the shared Section padding pattern.
+- Dashboard pages should use DashboardSurface and DashboardPanel patterns.
+- Layouts must stack cleanly on mobile and keep actions reachable.
+- Preserve minimum 44x44 touch targets on mobile.
+
+8. Interaction rules
+- Use subtle motion with the shared easing and duration patterns.
+- Focus states must remain visible and use the gold focus treatment.
+- Buttons can lift slightly on hover and compress slightly on press.
+- Avoid dramatic animation unless the interaction truly needs it.
+
+9. Accessibility rules
+- Do not rely on color alone to communicate status.
+- Keep text contrast strong on all white surfaces.
+- Preserve labels, helper text, and semantic feedback for forms.
+- Support keyboard navigation and visible focus states.
+
+10. Implementation rules
+- Prefer design tokens and CSS variables over hard-coded values.
+- If a token and a component disagree, align the token instead of patching around it.
+- Keep documentation updated when token values change.
+- Before inventing a new pattern, check whether the design system already covers it.
+
+Current core tokens
+- Background: #F9FAFB
+- Panel: #FFFFFF
+- Border: #E5E7EB
+- Text primary: #1C1C1E
+- Text secondary: #5F6368
+- Accent gold: #D4AF37
+- Success: #10B981
+- Warning: #F59E0B
+- Error: #EF4444
+- Info: #3B82F6
+
+End of file.

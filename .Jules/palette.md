@@ -1,0 +1,3 @@
+## 2024-09-24 - FormField Component A11y and Validation State
+**Learning:** Reusable custom form field wrappers in this app were rendering helper text correctly visually but failing to programmatically associate that text with the underlying `TextField` input, hiding errors and guidance from screen reader users. Also, error states were not coloring labels consistently with native MUI inputs.
+**Action:** When creating custom wrappers around native or MUI inputs, always generate and assign unique IDs to external helper text and wire them up using `aria-describedby` (safely concatenating with consumer-provided ARIA attributes). Ensure label colors reflect error states matching the input.

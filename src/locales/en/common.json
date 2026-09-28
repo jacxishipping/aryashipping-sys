@@ -1,0 +1,143 @@
+{
+  "navigation": {
+    "home": "Home",
+    "services": "Services",
+    "process": "Process",
+    "tracking": "Tracking",
+    "testimonials": "Testimonials",
+    "about": "About",
+    "contact": "Contact",
+    "blog": "Blog"
+  },
+  "hero": {
+    "title": "Reliable Vehicle Shipping from USA & Canada to Afghanistan",
+    "subtitle": "Professional, secure, and affordable vehicle transportation services",
+    "cta": "Get Free Quote",
+    "track": "Track Shipment"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive vehicle shipping solutions",
+    "doorToDoor": {
+      "title": "Door-to-Door Service",
+      "description": "Complete pickup and delivery service"
+    },
+    "container": {
+      "title": "Container Shipping",
+      "description": "Secure container transportation"
+    },
+    "rollOnRollOff": {
+      "title": "Roll-on/Roll-off",
+      "description": "Direct vehicle loading service"
+    },
+    "insurance": {
+      "title": "Full Insurance Coverage",
+      "description": "Comprehensive protection for your vehicle"
+    }
+  },
+  "process": {
+    "title": "How It Works",
+    "subtitle": "Simple 5-step process",
+    "step1": {
+      "title": "Get Quote",
+      "description": "Request a free quote online"
+    },
+    "step2": {
+      "title": "Book Service",
+      "description": "Confirm your booking"
+    },
+    "step3": {
+      "title": "Vehicle Pickup",
+      "description": "We collect your vehicle"
+    },
+    "step4": {
+      "title": "Shipping",
+      "description": "Secure transportation"
+    },
+    "step5": {
+      "title": "Delivery",
+      "description": "Safe delivery to destination"
+    }
+  },
+  "tracking": {
+    "title": "Track Your Shipment",
+    "subtitle": "Real-time tracking information",
+    "trackingNumber": "Tracking Number",
+    "trackButton": "Track Shipment",
+    "status": "Status",
+    "location": "Location",
+    "estimatedDelivery": "Estimated Delivery"
+  },
+  "testimonials": {
+    "title": "What Our Customers Say",
+    "subtitle": "Trusted by thousands of satisfied customers"
+  },
+  "about": {
+    "title": "About JACXI Shipping",
+    "subtitle": "Your trusted partner in vehicle transportation",
+    "mission": "Our Mission",
+    "vision": "Our Vision",
+    "values": "Our Values"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with our team",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "message": "Message",
+    "sendButton": "Send Message"
+  },
+  "quote": {
+    "title": "Get Free Quote",
+    "subtitle": "Quick and accurate pricing",
+    "vehicleType": "Vehicle Type",
+    "origin": "Origin",
+    "destination": "Destination",
+    "submitButton": "Get Quote"
+  },
+  "footer": {
+    "company": "JACXI Shipping",
+    "description": "Professional vehicle shipping services from the USA and Canada to Afghanistan through Mersin or UAE",
+    "quickLinks": "Quick Links",
+    "services": "Services",
+    "contact": "Contact",
+    "followUs": "Follow Us"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "signInSubtitle": "Welcome back! Please sign in to your account",
+    "signUpSubtitle": "Create your account to get started",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "signingIn": "Signing In...",
+    "creatingAccount": "Creating Account...",
+    "signInWithGoogle": "Sign in with Google",
+    "signUpWithGoogle": "Sign up with Google",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "or": "Or",
+    "registrationSuccess": "Registration Successful!",
+    "registrationSuccessMessage": "Your account has been created successfully. Redirecting to sign in..."
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "view": "View",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous",
+    "readMore": "Read More",
+    "learnMore": "Learn More"
+  }
+}

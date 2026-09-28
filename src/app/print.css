@@ -1,0 +1,232 @@
+/* Print-Friendly Styles */
+@media print {
+  /* Hide non-essential elements */
+  .no-print,
+  nav,
+  aside,
+  header,
+  footer,
+  button,
+  .MuiTab-root,
+  .MuiTabs-root,
+  [role="navigation"],
+  [aria-label="breadcrumb"] {
+    display: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  /* Body and root */
+  body {
+    background: white !important;
+    color: black !important;
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+
+  * {
+    background: white !important;
+    color: black !important;
+    border-color: #ccc !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Headers */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    font-weight: bold;
+    color: black !important;
+  }
+
+  h1 { font-size: 24pt; margin-bottom: 0.5cm; }
+  h2 { font-size: 18pt; margin-bottom: 0.4cm; }
+  h3 { font-size: 14pt; margin-bottom: 0.3cm; }
+
+  /* Tables */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    page-break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1px solid #ccc !important;
+    padding: 8px;
+    text-align: left;
+  }
+
+  th {
+    background: #f5f5f5 !important;
+    font-weight: bold;
+  }
+
+  /* Links */
+  a {
+    text-decoration: underline;
+    color: black !important;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    color: #666 !important;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Cards and panels */
+  .MuiPaper-root,
+  .MuiCard-root,
+  [class*="panel"],
+  [class*="card"] {
+    border: 1px solid #ccc !important;
+    margin-bottom: 0.5cm;
+    page-break-inside: avoid;
+  }
+
+  /* Progress bars - show as text */
+  [class*="progress"] {
+    border: 1px solid #ccc !important;
+  }
+
+  /* Chips and badges */
+  .MuiChip-root,
+  [class*="badge"],
+  [class*="chip"] {
+    border: 1px solid #ccc !important;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  /* Grid layouts */
+  [class*="grid"] {
+    display: block !important;
+  }
+
+  [class*="grid"] > * {
+    margin-bottom: 0.3cm;
+    page-break-inside: avoid;
+  }
+
+  /* Stats cards */
+  [class*="stat"] {
+    border: 1px solid #ccc !important;
+    padding: 10px;
+    margin-bottom: 0.3cm;
+  }
+
+  /* Avoid page breaks */
+  .avoid-break,
+  .no-break {
+    page-break-inside: avoid;
+  }
+
+  /* Force page breaks */
+  .page-break {
+    page-break-before: always;
+  }
+
+  /* Print header - add company name/logo area */
+  body:before {
+    content: "Container Details Report";
+    display: block;
+    font-size: 20pt;
+    font-weight: bold;
+    margin-bottom: 0.5cm;
+    padding-bottom: 0.3cm;
+    border-bottom: 2px solid #ccc;
+  }
+
+  /* Print footer - add page numbers */
+  @page {
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+    }
+  }
+
+  /* Optimize space */
+  .MuiBox-root {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Tabs content - show all */
+  [role="tabpanel"] {
+    display: block !important;
+  }
+
+  /* Timeline items */
+  [class*="timeline"] {
+    border-left: 2px solid #ccc !important;
+    padding-left: 10px;
+  }
+
+  /* Remove animations and transitions */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Ensure content is visible */
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Fix for MUI components */
+  .MuiContainer-root {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .MuiPaper-root {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Financial sections */
+  [class*="financial"],
+  [class*="expense"],
+  [class*="invoice"] {
+    page-break-inside: avoid;
+  }
+
+  /* Print date/time */
+  body:after {
+    content: "Printed on: " attr(data-print-date);
+    display: block;
+    margin-top: 1cm;
+    padding-top: 0.3cm;
+    border-top: 1px solid #ccc;
+    font-size: 9pt;
+    color: #666 !important;
+  }
+}
+
+/* Print utility classes */
+.print-only {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block !important;
+  }
+}

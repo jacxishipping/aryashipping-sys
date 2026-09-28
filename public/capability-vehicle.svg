@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <defs>
+    <linearGradient id="light-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#FAFAFA" />
+      <stop offset="100%" stop-color="#E5E7EB" />
+    </linearGradient>
+    <linearGradient id="gold-flow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4AF37" stop-opacity="0" />
+      <stop offset="50%" stop-color="#B8860B" stop-opacity="1" />
+      <stop offset="100%" stop-color="#D4AF37" stop-opacity="0" />
+    </linearGradient>
+    <filter id="soft-shadow">
+      <feDropShadow dx="0" dy="20" stdDeviation="25" flood-color="#000" flood-opacity="0.05" />
+    </filter>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/>
+      <feColorMatrix type="matrix" values="1 0 0 0 0, 0 1 0 0 0, 0 0 1 0 0, 0 0 0 0.02 0" />
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#light-bg)" />
+  <rect width="100%" height="100%" style="mix-blend-mode: multiply; pointer-events: none;" filter="url(#noise)" />
+
+  <!-- Typography in background -->
+  <text x="50" y="200" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="280" fill="#000000" opacity="0.02" letter-spacing="-5">DYNAMICS</text>
+  <text x="700" y="900" font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="280" fill="#000000" opacity="0.02" letter-spacing="-5">MOVEMENT</text>
+
+  <g opacity="0.4">
+    <ellipse cx="800" cy="500" rx="700" ry="250" fill="none" stroke="#D4AF37" stroke-width="1"/>
+    <ellipse cx="800" cy="500" rx="600" ry="200" fill="none" stroke="#D1D5DB" stroke-width="1"/>
+    <ellipse cx="800" cy="500" rx="500" ry="150" fill="none" stroke="#D1D5DB" stroke-width="1"/>
+  </g>
+
+  <!-- Abstract Road / Light Trails -->
+  <g transform="translate(800, 500) rotate(15)" stroke-linecap="round">
+    <path d="M -1200,100 C -400,-200 400,-200 1200,100" fill="none" stroke="url(#gold-flow)" stroke-width="6" filter="url(#soft-shadow)">
+      <animate attributeName="stroke-dasharray" values="0 2500; 1000 1500; 0 2500" dur="8s" repeatCount="indefinite" />
+      <animate attributeName="stroke-dashoffset" values="0; -2500" dur="8s" repeatCount="indefinite" />
+    </path>
+    <path d="M -1200,120 C -400,-180 400,-180 1200,120" fill="none" stroke="#111827" stroke-width="2" opacity="0.1" />
+    <path d="M -1200,80 C -400,-220 400,-220 1200,80" fill="none" stroke="#D4AF37" stroke-width="2" opacity="0.5" />
+    <path d="M -1200,180 C -400,-120 400,-120 1200,180" fill="none" stroke="#000000" stroke-width="0.5" opacity="0.1" />
+    
+    <!-- Pulse particles -->
+    <circle cx="0" cy="0" r="8" fill="#111827" filter="url(#soft-shadow)">
+       <animateMotion path="M -1200,100 C -400,-200 400,-200 1200,100" dur="3s" repeatCount="indefinite" />
+    </circle>
+    <circle cx="0" cy="0" r="5" fill="#D4AF37">
+       <animateMotion path="M -1200,120 C -400,-180 400,-180 1200,120" dur="4.5s" repeatCount="indefinite" />
+    </circle>
+  </g>
+
+  <!-- Intricate Tech Accents -->
+  <g stroke="#D4AF37" stroke-width="1.5" opacity="0.7">
+    <circle cx="150" cy="850" r="30" fill="none" stroke-dasharray="4 6"/>
+    <circle cx="150" cy="850" r="15" fill="none" />
+    <line x1="150" y1="800" x2="150" y2="900" />
+    <line x1="100" y1="850" x2="200" y2="850" />
+  </g>
+</svg>

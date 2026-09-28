@@ -1,0 +1,20 @@
+## 2024-05-24 - N+1 Issue in Aggregation Loops
+**Learning:** Found an N+1 query issue in `src/app/api/ledger/payment/route.ts` where the code iterated over shipments and repeatedly used `await prisma.ledgerEntry.groupBy()` to calculate shipment debt within the loop. This can exponentially slow down processing for bulk payments.
+**Action:** When aggregating database relations inside a loop, always extract the aggregation to a single `groupBy` query *before* the loop using an `in` filter (e.g., `where: { id: { in: ids } }`), map the results into a lookup dictionary, and use O(1) loop checks.
+
+## 2024-05-25 - Redundant Aggregations on the Same Table
+**Learning:** Found multiple instances where the codebase performed separate `prisma.aggregate` queries to calculate sums for different categories (e.g., DEBIT vs CREDIT totals) on the same table within a `Promise.all`. While parallelized, this still requires multiple database roundtrips for operations that can be combined.
+**Action:** Consolidate separate `prisma.aggregate` queries that group by a specific field into a single `prisma.groupBy` query with an `in` filter (e.g., `where: { type: { in: ['DEBIT', 'CREDIT'] } }`) to calculate all totals in a single database roundtrip.
+## 2026-03-30 - O(N) Transaction Loops into Single bulk updateMany
+**Learning:** Found an instance in `src/app/api/containers/[id]/shipments/route.ts` where assigning multiple shipments to a container was implemented using `prisma.$transaction(shipmentIds.map(...prisma.shipment.update(...)))`. This creates N sequential update queries within the transaction, causing unnecessary database roundtrips.
+**Action:** When performing identical updates on multiple records by ID, replace the `prisma.$transaction` mapping loop with a single `prisma.shipment.updateMany({ where: { id: { in: shipmentIds } }, data: { ... } })` query to optimize database performance and reduce latency.
+## 2024-05-24 - Avoiding In-Memory Micro-Optimizations vs Real Bottlenecks
+**Learning:** Refactoring chained `.reduce()` loops on relatively small datasets (like aging invoices in an API route) yields unmeasurable performance gains and can easily introduce business logic regressions if not fully understood (e.g., mapping `total` instead of `amount`). N+1 database queries, such as executing `await prisma.ledgerEntry.create` and `await prisma.shipment.update` sequentially within a loop, are the actual critical performance bottlenecks.
+**Action:** When acting as Bolt, aggressively target N+1 database patterns first. Utilize Prisma's `createMany`, `updateMany`, and `$transaction` to compress `O(2N)` network-bound queries into a single transaction. Skip pure JS array iteration micro-optimizations entirely unless operating on proven massive datasets.
+## 2026-04-04 - Array Iteration Performance
+**Learning:** Relying on chained array operations like `.filter` or `.reduce` inside an external loop (such as `.map` mapping over months) leads to highly inefficient O(N*M) or O(N²) time complexity, which severely impacts analytics endpoints processing thousands of rows.
+**Action:** Always refactor nested iteration patterns by looping through the dataset exactly once (O(N)) to populate an in-memory `Map` or `Record` dictionary, allowing subsequent lookups or mappings to be an efficient O(1) operation.
+
+## 2025-04-06 - Parallelize Independent Database Queries in React Server Components
+**Learning:** In Next.js Server Components that fetch data for dashboards (e.g., `src/app/dashboard/finance/page.tsx`), making sequential database queries (using `await` one after the other) causes total request latency to be the sum of all query times. Since these queries are independent (e.g., fetching a summary and counting active users), executing them sequentially is an anti-pattern.
+**Action:** When a Server Component requires multiple datasets that do not depend on each other, always group the Prisma queries into a single `Promise.all()` call to fetch them concurrently, reducing latency to the time of the single longest query.

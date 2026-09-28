@@ -1,0 +1,112 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+// This endpoint can be called by a cron job to sync container tracking statuses
+// Note: In the new architecture, tracking is done at the container level
+export async function POST(request: NextRequest) {
+  try {
+    // Optional: Add authentication for cron jobs
+    const authHeader = request.headers.get('authorization');
+    const cronSecret = process.env.CRON_SECRET || 'your-secret-key';
+    
+    if (authHeader !== `Bearer ${cronSecret}`) {
+      return NextResponse.json(
+        { message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Get all containers that are in transit and have auto-tracking enabled
+    const containersToSync = await prisma.container.findMany({
+      where: {
+        status: {
+          in: ['IN_TRANSIT', 'LOADED'],
+        },
+        autoTrackingEnabled: true,
+      },
+      select: {
+        id: true,
+        containerNumber: true,
+        status: true,
+        estimatedArrival: true,
+        lastLocationUpdate: true,
+      },
+    });
+
+    const results = {
+      total: containersToSync.length,
+      updated: 0,
+      errors: 0,
+      details: [] as Array<{
+        containerId: string;
+        containerNumber: string;
+        trackingNumber: string | null;
+        oldStatus?: string;
+        newStatus?: string;
+        success?: boolean;
+        error?: string;
+      }>,
+    };
+
+    // Process each container
+    for (const container of containersToSync) {
+      try {
+        // Skip if no tracking number
+        if (!container.trackingNumber) {
+          continue;
+        }
+
+        // Call tracking API (if you have one)
+        // For now, just update the last location update time
+        await prisma.container.update({
+          where: { id: container.id },
+          data: {
+            lastLocationUpdate: new Date(),
+          },
+        });
+
+        // Create tracking event
+        await prisma.containerTrackingEvent.create({
+          data: {
+            containerId: container.id,
+            status: container.status,
+            description: 'Automatic tracking sync',
+            eventDate: new Date(),
+            source: 'cron',
+          },
+        });
+
+        results.updated++;
+        results.details.push({
+          containerId: container.id,
+          containerNumber: container.containerNumber,
+          trackingNumber: container.trackingNumber,
+          success: true,
+        });
+      } catch (error) {
+        console.error(`Error processing container ${container.id}:`, error);
+        results.errors++;
+        results.details.push({
+          containerId: container.id,
+          containerNumber: container.containerNumber,
+          trackingNumber: container.trackingNumber,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+
+    return NextResponse.json({
+      message: 'Container tracking sync completed',
+      results,
+    }, { status: 200 });
+  } catch (error) {
+    console.error('Error syncing container tracking:', error);
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+

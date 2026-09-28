@@ -1,0 +1,2 @@
+ALTER TABLE "Shipment"
+ADD COLUMN IF NOT EXISTS "companyShippingFare" DOUBLE PRECISION;

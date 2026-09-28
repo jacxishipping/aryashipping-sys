@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Override these with your actual database URLs
+        - jacxi_DATABASE_URL=${jacxi_DATABASE_URL}
+        - jacxi_POSTGRES_URL=${jacxi_POSTGRES_URL}
+        - jacxi_PRISMA_DATABASE_URL=${jacxi_PRISMA_DATABASE_URL}
+    ports:
+      - "3000:3000"
+    environment:
+      # Database connection (runtime) - REQUIRED: Set these in your .env file
+      - jacxi_DATABASE_URL=${jacxi_DATABASE_URL}
+      - jacxi_POSTGRES_URL=${jacxi_POSTGRES_URL}
+      - jacxi_PRISMA_DATABASE_URL=${jacxi_PRISMA_DATABASE_URL}
+      
+      # NextAuth configuration - REQUIRED: Set these in your .env file
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
+      
+      # Optional: Email service
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      
+      # Optional: App URL
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      
+      # Optional: Cron job security
+      - CRON_SECRET=${CRON_SECRET}
+      - TRACKING_WEBHOOK_SECRET=${TRACKING_WEBHOOK_SECRET}
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

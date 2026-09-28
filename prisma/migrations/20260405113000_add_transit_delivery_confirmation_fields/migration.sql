@@ -1,0 +1,6 @@
+ALTER TABLE "Transit"
+ADD COLUMN IF NOT EXISTS "deliveryReceiverName" TEXT,
+ADD COLUMN IF NOT EXISTS "deliveryProofUrl" TEXT,
+ADD COLUMN IF NOT EXISTS "deliveryProofName" TEXT,
+ADD COLUMN IF NOT EXISTS "deliveryProofType" TEXT,
+ADD COLUMN IF NOT EXISTS "deliveryNotes" TEXT;

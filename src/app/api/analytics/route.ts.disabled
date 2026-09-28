@@ -1,0 +1,230 @@
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import { auth } from '@/lib/auth';
+
+const prisma = new PrismaClient();
+
+const ACTIVE_SHIPMENT_STATUSES = [
+	'PENDING',
+	'QUOTE_REQUESTED',
+	'QUOTE_APPROVED',
+	'PICKUP_SCHEDULED',
+	'PICKUP_COMPLETED',
+	'IN_TRANSIT',
+	'AT_PORT',
+	'LOADED_ON_VESSEL',
+	'IN_TRANSIT_OCEAN',
+	'ARRIVED_AT_DESTINATION',
+	'CUSTOMS_CLEARANCE',
+	'OUT_FOR_DELIVERY',
+	'ON_HOLD',
+] as const;
+
+const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+const getLastMonths = (count: number) => {
+	const months: Array<{ key: string; label: string; year: number; month: number }> = [];
+	const now = new Date();
+	for (let index = count - 1; index >= 0; index -= 1) {
+		const date = new Date(now.getFullYear(), now.getMonth() - index, 1);
+		const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+		const label = `${MONTH_LABELS[date.getMonth()]} ${String(date.getFullYear()).slice(-2)}`;
+		months.push({ key, label, year: date.getFullYear(), month: date.getMonth() });
+	}
+	return months;
+};
+
+const formatCurrency = (value: number) => {
+	return Number.isFinite(value) ? Number(value.toFixed(2)) : 0;
+};
+
+export async function GET() {
+	try {
+		const session = await auth();
+		if (!session?.user?.id) {
+			return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+		}
+
+		if (session.user.role !== 'admin') {
+			return NextResponse.json({ message: 'Forbidden: admin access required' }, { status: 403 });
+		}
+
+		const [shipments, invoices, containers, adminCount] = await Promise.all([
+			prisma.shipment.findMany({
+				select: {
+					id: true,
+					status: true,
+					createdAt: true,
+					userId: true,
+					price: true,
+					paymentStatus: true,
+				},
+			}),
+			prisma.containerInvoice.findMany({
+				select: {
+					id: true,
+					invoiceNumber: true,
+					status: true,
+					amount: true,
+					date: true,
+					createdAt: true,
+					container: {
+						select: {
+							shipments: {
+								select: {
+									userId: true,
+								},
+							},
+						},
+					},
+				},
+			}),
+			prisma.container.findMany({
+				select: {
+					id: true,
+					status: true,
+					createdAt: true,
+				},
+			}),
+			prisma.user.count({ where: { role: 'admin' } }),
+		]);
+
+		const months = getLastMonths(6);
+		const monthKey = (date: Date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+
+		const totalShipments = shipments.length;
+		const activeShipments = shipments.filter((shipment) => ACTIVE_SHIPMENT_STATUSES.includes(shipment.status as typeof ACTIVE_SHIPMENT_STATUSES[number])).length;
+		const totalRevenue = invoices
+			.filter((invoice) => invoice.status === 'PAID')
+			.reduce((acc, invoice) => acc + invoice.amount, 0);
+
+		const shipmentsByStatusMap = new Map<string, number>();
+		shipments.forEach((shipment) => {
+			const current = shipmentsByStatusMap.get(shipment.status) ?? 0;
+			shipmentsByStatusMap.set(shipment.status, current + 1);
+		});
+
+		const shipmentsByStatus = Array.from(shipmentsByStatusMap.entries())
+			.map(([status, count]) => ({ status, count }))
+			.sort((a, b) => b.count - a.count);
+
+		const shipmentsByMonth = months.map((month) => {
+			const count = shipments.filter((shipment) => monthKey(shipment.createdAt) === month.key).length;
+			return { month: month.label, count };
+		});
+
+		const revenueByMonth = months.map((month) => {
+			const total = invoices
+				.filter((invoice) => invoice.status === "PAID" && monthKey(invoice.createdAt) === month.key)
+				.reduce((acc, invoice) => acc + invoice.amount, 0);
+			return { month: month.label, totalUSD: formatCurrency(total) };
+		});
+
+		const invoiceStatusMap = new Map<string, { count: number; totalUSD: number }>();
+		invoices.forEach((invoice) => {
+			const current = invoiceStatusMap.get(invoice.status) ?? { count: 0, totalUSD: 0 };
+			current.count += 1;
+			current.totalUSD += invoice.amount;
+			invoiceStatusMap.set(invoice.status, current);
+		});
+
+		const invoiceStatusDistribution = Array.from(invoiceStatusMap.entries()).map(([status, value]) => ({
+			status,
+			count: value.count,
+			totalUSD: formatCurrency(value.totalUSD),
+		}));
+
+		const overdueInvoices = invoices
+			.filter((invoice) => {
+				return invoice.status === 'OVERDUE';
+			})
+			.slice(0, 8)
+			.map((invoice) => ({
+				id: invoice.id,
+				invoiceNumber: invoice.invoiceNumber,
+				status: invoice.status,
+				totalUSD: formatCurrency(invoice.amount),
+				date: invoice.date,
+			}));
+
+		const topCustomerMap = new Map<
+			string,
+			{ shipmentCount: number; revenue: number; lastShipmentDate: Date | null }
+		>();
+
+		shipments.forEach((shipment) => {
+			const entry = topCustomerMap.get(shipment.userId) ?? {
+				shipmentCount: 0,
+				revenue: 0,
+				lastShipmentDate: null,
+			};
+			entry.shipmentCount += 1;
+			entry.lastShipmentDate = entry.lastShipmentDate && entry.lastShipmentDate > shipment.createdAt ? entry.lastShipmentDate : shipment.createdAt;
+			topCustomerMap.set(shipment.userId, entry);
+		});
+
+		invoices.forEach((invoice) => {
+			const userId = invoice.container?.shipments?.[0]?.userId;
+			if (!userId) return;
+			const entry = topCustomerMap.get(userId) ?? {
+				shipmentCount: 0,
+				revenue: 0,
+				lastShipmentDate: null,
+			};
+			entry.revenue += invoice.status === "PAID" ? invoice.amount : 0;
+			topCustomerMap.set(userId, entry);
+		});
+
+		const topCustomerIds = Array.from(topCustomerMap.keys()).slice(0, 10);
+		const topCustomerDetails = await prisma.user.findMany({
+			where: { id: { in: topCustomerIds } },
+			select: {
+				id: true,
+				name: true,
+				email: true,
+			},
+		});
+
+		const topCustomers = topCustomerDetails
+			.map((user) => {
+				const entry = topCustomerMap.get(user.id);
+				return {
+					userId: user.id,
+					name: user.name ?? 'Unnamed User',
+					email: user.email,
+					shipmentCount: entry?.shipmentCount ?? 0,
+					revenue: formatCurrency(entry?.revenue ?? 0),
+					lastShipmentAt: entry?.lastShipmentDate ?? null,
+				};
+			})
+			.sort((a, b) => b.revenue - a.revenue || b.shipmentCount - a.shipmentCount)
+			.slice(0, 5);
+
+		const containersActive = containers.filter((container) => container.status?.toUpperCase() === 'ACTIVE').length;
+
+		const response = {
+			summary: {
+				totalShipments,
+				activeShipments,
+				adminUsers: adminCount,
+				totalRevenue: formatCurrency(totalRevenue),
+				overdueInvoices: overdueInvoices.length,
+				activeContainers: containersActive,
+			},
+			shipmentsByStatus,
+			shipmentsByMonth,
+			revenueByMonth,
+			invoiceStatusDistribution,
+			outstandingInvoices: overdueInvoices,
+			topCustomers,
+			lastUpdated: new Date().toISOString(),
+		};
+
+		return NextResponse.json(response, { status: 200 });
+	} catch (error) {
+		console.error('Error fetching analytics:', error);
+		return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+	}
+}
+
+
