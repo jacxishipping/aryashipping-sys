@@ -15,7 +15,7 @@ import {
 import { AlertTriangle, ArrowLeft, Building2, CheckCircle2, DollarSign, Eye, GitCompareArrows, Landmark, Pencil, Plus, ReceiptText, Trash2, Truck, Upload } from 'lucide-react';
 import PermissionRoute from "@/components/auth/PermissionRoute";
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, StatsCard, toast, TableSkeleton, PageHeader, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
+import { Breadcrumbs, Button, Select, StatsCard, toast, TableSkeleton, PageHeader, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { normalizeShippingRateConfig, type AuctionRateEntry, type ShippingRateCalculatorConfig } from '@/lib/shipping-rate-calculator';
 
@@ -1424,20 +1424,20 @@ export default function CompanyLedgerDetailPage() {
                   setPriceListPreview(null);
                 }}
               />
-              <TextField
-                select
+              <Select
                 size="small"
                 label="Import Mode"
                 value={priceListForm.mode}
-                onChange={(event) => {
-                  setPriceListForm((prev) => ({ ...prev, mode: event.target.value as PriceListImportMode }));
+                onChange={(value) => {
+                  setPriceListForm((prev) => ({ ...prev, mode: String(value) as PriceListImportMode }));
                   setPriceListPreview(null);
                 }}
-              >
-                <MenuItem value="merge">Merge/update</MenuItem>
-                <MenuItem value="replace">Replace all</MenuItem>
-                <MenuItem value="add_new">Add new only</MenuItem>
-              </TextField>
+                options={[
+                  { value: 'merge', label: 'Merge/update' },
+                  { value: 'replace', label: 'Replace all' },
+                  { value: 'add_new', label: 'Add new only' },
+                ]}
+              />
             </Box>
 
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1, alignItems: { xs: 'stretch', sm: 'center' } }}>
@@ -1905,10 +1905,7 @@ export default function CompanyLedgerDetailPage() {
         >
             <TextField label="Description" value={formData.description} onChange={(event) => setFormData((prev) => ({ ...prev, description: event.target.value }))} required />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-              <TextField select label="Type" value={formData.type} onChange={(event) => setFormData((prev) => ({ ...prev, type: event.target.value }))}>
-                <MenuItem value="DEBIT">DEBIT (Payment to Company)</MenuItem>
-                <MenuItem value="CREDIT">CREDIT (Company Charge/Expense)</MenuItem>
-              </TextField>
+              <Select label="Type" value={formData.type} onChange={(value) => setFormData((prev) => ({ ...prev, type: String(value) }))} options={[{ value: 'DEBIT', label: 'DEBIT (Payment to Company)' }, { value: 'CREDIT', label: 'CREDIT (Company Charge/Expense)' }]} />
               <TextField label="Amount" type="number" inputProps={{ min: 0.01, step: 0.01 }} value={formData.amount} onChange={(event) => setFormData((prev) => ({ ...prev, amount: event.target.value }))} />
             </Box>
             <TextField label="Transaction Date" type="date" InputLabelProps={{ shrink: true }} value={formData.transactionDate} onChange={(event) => setFormData((prev) => ({ ...prev, transactionDate: event.target.value }))} />
@@ -2164,10 +2161,7 @@ export default function CompanyLedgerDetailPage() {
         >
             <TextField label="Description" value={editForm.description} onChange={(event) => setEditForm((prev) => ({ ...prev, description: event.target.value }))} required />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-              <TextField select label="Type" value={editForm.type} onChange={(event) => setEditForm((prev) => ({ ...prev, type: event.target.value }))}>
-                <MenuItem value="DEBIT">DEBIT</MenuItem>
-                <MenuItem value="CREDIT">CREDIT</MenuItem>
-              </TextField>
+              <Select label="Type" value={editForm.type} onChange={(value) => setEditForm((prev) => ({ ...prev, type: String(value) }))} options={[{ value: 'DEBIT', label: 'DEBIT' }, { value: 'CREDIT', label: 'CREDIT' }]} />
               <TextField label="Amount" type="number" inputProps={{ min: 0.01, step: 0.01 }} value={editForm.amount} onChange={(event) => setEditForm((prev) => ({ ...prev, amount: event.target.value }))} />
             </Box>
             <TextField label="Transaction Date" type="date" InputLabelProps={{ shrink: true }} value={editForm.transactionDate} onChange={(event) => setEditForm((prev) => ({ ...prev, transactionDate: event.target.value }))} />

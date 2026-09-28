@@ -11,7 +11,7 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Skeleton, SkeletonTable, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Select, Skeleton, SkeletonTable, toast } from '@/components/design-system';
 import { PortalActivityList } from '@/components/partner-portals/PortalActivityList';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
@@ -518,10 +518,7 @@ export default function PortalMembersPage() {
               <TextField label="Phone" value={inviteForm.phone} onChange={(event) => setInviteForm((prev) => ({ ...prev, phone: event.target.value }))} />
               <TextField label="City" value={inviteForm.city} onChange={(event) => setInviteForm((prev) => ({ ...prev, city: event.target.value }))} />
               <TextField label="Country" value={inviteForm.country} onChange={(event) => setInviteForm((prev) => ({ ...prev, country: event.target.value }))} />
-              <TextField select label="Portal Role" value={inviteForm.membershipRole} onChange={(event) => setInviteForm((prev) => ({ ...prev, membershipRole: event.target.value }))}>
-                <MenuItem value="ADMIN">ADMIN</MenuItem>
-                <MenuItem value="STAFF">STAFF</MenuItem>
-              </TextField>
+              <Select label="Portal Role" value={inviteForm.membershipRole} onChange={(value) => setInviteForm((prev) => ({ ...prev, membershipRole: String(value) }))} options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]} />
             </Box>
           </Modal>
         </Box>

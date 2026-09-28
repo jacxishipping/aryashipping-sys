@@ -9,7 +9,6 @@ import {
   Checkbox,
   CircularProgress,
   IconButton,
-  MenuItem,
   Tab,
   Tabs,
   TextField,
@@ -28,7 +27,7 @@ import {
 } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
+import { Breadcrumbs, Button, Select, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, Modal, ConfirmDialog, Tooltip } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import AddShipmentExpenseModal from '@/components/shipments/AddShipmentExpenseModal';
 import AddTransitExpenseModal from '@/components/transits/AddTransitExpenseModal';
@@ -950,16 +949,12 @@ export default function TransitDetailPage() {
           }
         >
           <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
-            <TextField
-              select
+            <Select
               label="Status"
               value={editForm.status}
-              onChange={(e) => setEditForm(prev => ({ ...prev, status: e.target.value }))}
-            >
-              {STATUS_OPTIONS.map(s => (
-                <MenuItem key={s} value={s}>{statusLabels[s] || s}</MenuItem>
-              ))}
-            </TextField>
+              onChange={(value) => setEditForm(prev => ({ ...prev, status: String(value) }))}
+              options={STATUS_OPTIONS.map(s => ({ value: s, label: statusLabels[s] || s }))}
+            />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <TextField label="Dispatch Date" type="date" InputLabelProps={{ shrink: true }} value={editForm.dispatchDate} onChange={(e) => setEditForm(prev => ({ ...prev, dispatchDate: e.target.value }))} />
               <TextField label="Est. Delivery" type="date" InputLabelProps={{ shrink: true }} value={editForm.estimatedDelivery} onChange={(e) => setEditForm(prev => ({ ...prev, estimatedDelivery: e.target.value }))} />
@@ -983,20 +978,16 @@ export default function TransitDetailPage() {
           }
         >
           <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
-            <TextField
-              select
+            <Select
               label="Transit Company"
               value={eventForm.companyId}
-              onChange={(e) => setEventForm(prev => ({ ...prev, companyId: e.target.value }))}
+              onChange={(value) => setEventForm(prev => ({ ...prev, companyId: String(value) }))}
               required
-            >
-              <MenuItem value="">Select a company...</MenuItem>
-              {transitCompanies.map((company) => (
-                <MenuItem key={company.id} value={company.id}>
-                  {company.name}{company.code ? ` (${company.code})` : ''}
-                </MenuItem>
-              ))}
-            </TextField>
+              options={[
+                { value: '', label: 'Select a company...' },
+                ...transitCompanies.map((company) => ({ value: company.id, label: `${company.name}${company.code ? ` (${company.code})` : ''}` })),
+              ]}
+            />
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
               <TextField label="From" value={eventForm.origin} onChange={(e) => setEventForm(prev => ({ ...prev, origin: e.target.value }))} required placeholder="e.g. Herat" />
               <TextField label="To" value={eventForm.destination} onChange={(e) => setEventForm(prev => ({ ...prev, destination: e.target.value }))} required placeholder="e.g. Kabul" />

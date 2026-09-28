@@ -8,7 +8,6 @@ import {
   Autocomplete,
   Box,
   CircularProgress,
-  MenuItem,
   Tab,
   Tabs,
   TextField,
@@ -17,7 +16,7 @@ import {
 import { ArrowLeft, DollarSign, History, Package, Pencil, Plus, Trash2, Truck, User } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Breadcrumbs, Button, EmptyState, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, StatusBadge, Modal, ConfirmDialog } from '@/components/design-system';
+import { Breadcrumbs, Button, EmptyState, StatsCard, TableSkeleton, toast, CopyButton, PageHeader, MilestoneStepper, Select, StatusBadge, Modal, ConfirmDialog } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DISPATCH_STATUS_COLORS, DISPATCH_STATUS_OPTIONS, getDispatchStatusLabel, isDispatchClosed } from '@/lib/dispatch-workflow';
 import DispatchExpenseModal, { type EditableDispatchExpense } from '@/components/dispatches/DispatchExpenseModal';
@@ -878,9 +877,7 @@ export default function DispatchDetailPage() {
             </>
           }
         >
-          <TextField select label="Status" value={editForm.status} onChange={(event) => setEditForm((prev) => ({ ...prev, status: event.target.value }))}>
-            {DISPATCH_STATUS_OPTIONS.map((status) => <MenuItem key={status} value={status}>{getDispatchStatusLabel(status)}</MenuItem>)}
-          </TextField>
+          <Select label="Status" value={editForm.status} onChange={(value) => setEditForm((prev) => ({ ...prev, status: String(value) }))} options={DISPATCH_STATUS_OPTIONS.map((status) => ({ value: status, label: getDispatchStatusLabel(status) }))} />
           <TextField label="Dispatch Date" type="date" InputLabelProps={{ shrink: true }} value={editForm.dispatchDate} onChange={(event) => setEditForm((prev) => ({ ...prev, dispatchDate: event.target.value }))} />
           <TextField label="Estimated Arrival" type="date" InputLabelProps={{ shrink: true }} value={editForm.estimatedArrival} onChange={(event) => setEditForm((prev) => ({ ...prev, estimatedArrival: event.target.value }))} />
           <TextField label="Actual Arrival" type="date" InputLabelProps={{ shrink: true }} value={editForm.actualArrival} onChange={(event) => setEditForm((prev) => ({ ...prev, actualArrival: event.target.value }))} />

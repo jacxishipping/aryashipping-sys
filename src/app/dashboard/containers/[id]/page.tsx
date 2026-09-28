@@ -18,7 +18,6 @@ import {
 	Divider,
 	Typography,
 	TextField,
-	MenuItem,
 	Checkbox,
 	CircularProgress,
 } from '@mui/material';
@@ -67,6 +66,7 @@ import {
 	StatusBadge,
 	Modal,
 	ConfirmDialog,
+	Select,
 	type MilestoneStep
 } from '@/components/design-system';
 import { DataTable } from '@/components/ui/DataTable';
@@ -1222,21 +1222,17 @@ export default function ContainerDetailPage() {
 										</Box>
 										{isAdmin && (
 											<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-												<Box sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Assigned Company</Box>
-												<TextField
-													select
+												<Select
 													size="small"
+													label="Assigned Company"
 													value={selectedCompanyId}
-													onChange={(e) => setSelectedCompanyId(e.target.value)}
+													onChange={(value) => setSelectedCompanyId(String(value))}
 													disabled={updating}
-												>
-													<MenuItem value="">Select a company...</MenuItem>
-													{companies.map((company) => (
-														<MenuItem key={company.id} value={company.id}>
-															{company.name}{company.code ? ` (${company.code})` : ''}
-														</MenuItem>
-													))}
-												</TextField>
+													options={[
+														{ value: '', label: 'Select a company...' },
+														...companies.map((company) => ({ value: company.id, label: `${company.name}${company.code ? ` (${company.code})` : ''}` })),
+													]}
+												/>
 												<Button
 													variant="outline"
 													size="sm"

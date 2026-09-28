@@ -16,7 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Select, toast } from '@/components/design-system';
 import { PortalActivityList } from '@/components/partner-portals/PortalActivityList';
 import PortalBrandingSettingsPanel from '@/components/partner-portals/PortalBrandingSettingsPanel';
 import { DataTable, type Column } from '@/components/ui/DataTable';
@@ -955,10 +955,7 @@ export default function PartnerPortalDetailPage() {
                 getOptionLabel={(option) => option.name ? `${option.name} (${option.email})` : option.email}
                 renderInput={(params) => <TextField {...params} label="Search users" placeholder="Search users by name or email" />}
               />
-              <TextField select label="Portal Role" value={memberRole} onChange={(event) => setMemberRole(event.target.value)}>
-                <MenuItem value="ADMIN">ADMIN</MenuItem>
-                <MenuItem value="STAFF">STAFF</MenuItem>
-              </TextField>
+              <Select label="Portal Role" value={memberRole} onChange={(value) => setMemberRole(String(value))} options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]} />
             </Modal>
 
             <Modal
@@ -996,10 +993,7 @@ export default function PartnerPortalDetailPage() {
                 <TextField label="Phone" value={inviteForm.phone} onChange={(event) => setInviteForm((prev) => ({ ...prev, phone: event.target.value }))} />
                 <TextField label="City" value={inviteForm.city} onChange={(event) => setInviteForm((prev) => ({ ...prev, city: event.target.value }))} />
                 <TextField label="Country" value={inviteForm.country} onChange={(event) => setInviteForm((prev) => ({ ...prev, country: event.target.value }))} />
-                <TextField select label="Portal Role" value={inviteForm.membershipRole} onChange={(event) => setInviteForm((prev) => ({ ...prev, membershipRole: event.target.value }))}>
-                  <MenuItem value="ADMIN">ADMIN</MenuItem>
-                  <MenuItem value="STAFF">STAFF</MenuItem>
-                </TextField>
+                <Select label="Portal Role" value={inviteForm.membershipRole} onChange={(value) => setInviteForm((prev) => ({ ...prev, membershipRole: String(value) }))} options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]} />
               </Box>
             </Modal>
 

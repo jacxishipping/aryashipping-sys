@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Building2, DollarSign, Pencil, Plus, ReceiptText } from 'lucide-react';
-import { Box, MenuItem, TextField } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 import { formatMoney } from '@/lib/format';
 import type { Shipment } from '@/components/shipments/shipment-detail-types';
 
@@ -253,18 +253,13 @@ export default function ShipmentCompanyLedgerTab({
         </div>
         {companies.length > 1 && (
           <Box sx={{ maxWidth: 360, mb: 2 }}>
-            <TextField
-              select
-              fullWidth
+            <Select
               size="small"
               label="Company ledger"
               value={company.id}
-              onChange={(event) => setSelectedCompanyId(event.target.value)}
-            >
-              {companies.map((candidate) => (
-                <MenuItem key={candidate.id} value={candidate.id}>{candidate.source}: {candidate.name}</MenuItem>
-              ))}
-            </TextField>
+              onChange={(value) => setSelectedCompanyId(String(value))}
+              options={companies.map((candidate) => ({ value: candidate.id, label: `${candidate.source}: ${candidate.name}` }))}
+            />
           </Box>
         )}
         {companyEntries.length === 0 ? (
@@ -356,15 +351,15 @@ export default function ShipmentCompanyLedgerTab({
         <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
           <TextField label="Description" value={editForm.description} onChange={(event) => setEditForm((current) => ({ ...current, description: event.target.value }))} required />
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            <TextField
-              select
+            <Select
               label="Type"
               value={editType}
-              onChange={(event) => setEditType(event.target.value as 'DEBIT' | 'CREDIT')}
-            >
-              <MenuItem value="DEBIT">Payment</MenuItem>
-              <MenuItem value="CREDIT">Charge</MenuItem>
-            </TextField>
+              onChange={(value) => setEditType(String(value) as 'DEBIT' | 'CREDIT')}
+              options={[
+                { value: 'DEBIT', label: 'Payment' },
+                { value: 'CREDIT', label: 'Charge' },
+              ]}
+            />
             <TextField label="Amount" type="number" inputProps={{ min: 0.01, step: 0.01 }} value={editForm.amount} onChange={(event) => setEditForm((current) => ({ ...current, amount: event.target.value }))} required />
           </Box>
           <TextField label="Transaction Date" type="date" InputLabelProps={{ shrink: true }} value={editForm.transactionDate} onChange={(event) => setEditForm((current) => ({ ...current, transactionDate: event.target.value }))} />

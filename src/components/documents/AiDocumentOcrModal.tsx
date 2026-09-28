@@ -23,10 +23,9 @@ import {
   Typography,
   Chip,
   TextField,
-  MenuItem,
   CircularProgress
 } from '@mui/material';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, Select, toast } from '@/components/design-system';
 
 export interface ExtractedDocumentData {
   vin?: string;
@@ -466,18 +465,13 @@ export function AiDocumentOcrModal({
                 value={formData.lotNumber}
                 onChange={(e) => setFormData({ ...formData, lotNumber: e.target.value })}
               />
-              <TextField
+              <Select
                 label="Auction / Source"
                 size="small"
-                select
-                fullWidth
                 value={formData.auctionName}
-                onChange={(e) => setFormData({ ...formData, auctionName: e.target.value as any })}
-              >
-                {['Copart', 'IAAI', 'Impact', 'Manheim', 'Other'].map((name) => (
-                  <MenuItem key={name} value={name}>{name}</MenuItem>
-                ))}
-              </TextField>
+                onChange={(value) => setFormData({ ...formData, auctionName: String(value) as any })}
+                options={['Copart', 'IAAI', 'Impact', 'Manheim', 'Other'].map((name) => ({ value: name, label: name }))}
+              />
               <TextField
                 label="Purchase Price ($ USD)"
                 size="small"
@@ -492,18 +486,13 @@ export function AiDocumentOcrModal({
                 value={formData.titleStatus}
                 onChange={(e) => setFormData({ ...formData, titleStatus: e.target.value })}
               />
-              <TextField
+              <Select
                 label="Document Category"
                 size="small"
-                select
-                fullWidth
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              >
-                {['INVOICE', 'BILL_OF_LADING', 'TITLE', 'CUSTOMS', 'INSURANCE', 'OTHER'].map((c) => (
-                  <MenuItem key={c} value={c}>{c.replace(/_/g, ' ')}</MenuItem>
-                ))}
-              </TextField>
+                onChange={(value) => setFormData({ ...formData, category: String(value) })}
+                options={['INVOICE', 'BILL_OF_LADING', 'TITLE', 'CUSTOMS', 'INSURANCE', 'OTHER'].map((c) => ({ value: c, label: c.replace(/_/g, ' ') }))}
+              />
             </div>
           </Box>
         )}

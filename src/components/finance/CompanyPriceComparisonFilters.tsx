@@ -6,11 +6,10 @@ import {
   Checkbox,
   Chip,
   FormControlLabel,
-  MenuItem,
   TextField,
 } from '@mui/material';
 import { Check, Search, X } from 'lucide-react';
-import { Button, Tooltip } from '@/components/design-system';
+import { Button, Select, Tooltip } from '@/components/design-system';
 import {
   DEFAULT_SHIPPING_RATE_CONFIG,
   US_STATES,
@@ -230,18 +229,18 @@ export default function CompanyPriceComparisonFilters({
             <>
             <FilterSection title="Search & Scope">
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(4, 1fr)' }, gap: 1.5 }}>
-                <TextField
-                  select
+                <Select
                   size="small"
                   label="Company Type"
                   value={filters.typeFilter}
-                  onChange={(event) => onFilterChange('typeFilter', event.target.value as ComparisonFiltersState['typeFilter'])}
-                >
-                  <MenuItem value="ALL">All Types</MenuItem>
-                  <MenuItem value="SHIPPING">Shipping</MenuItem>
-                  <MenuItem value="DISPATCH">Dispatch</MenuItem>
-                  <MenuItem value="TRANSIT">Transit</MenuItem>
-                </TextField>
+                  onChange={(value) => onFilterChange('typeFilter', String(value) as ComparisonFiltersState['typeFilter'])}
+                  options={[
+                    { value: 'ALL', label: 'All Types' },
+                    { value: 'SHIPPING', label: 'Shipping' },
+                    { value: 'DISPATCH', label: 'Dispatch' },
+                    { value: 'TRANSIT', label: 'Transit' },
+                  ]}
+                />
                 <TextField
                   size="small"
                   label="Search"
@@ -252,91 +251,73 @@ export default function CompanyPriceComparisonFilters({
                     startAdornment: <Search className="w-4 h-4 mr-2 text-[var(--text-secondary)]" />,
                   }}
                 />
-                <TextField
-                  select
+                <Select
                   size="small"
                   label="State Filter"
                   value={filters.stateFilter}
-                  onChange={(event) => onFilterChange('stateFilter', event.target.value)}
-                >
-                  <MenuItem value="">All States</MenuItem>
-                  {US_STATES.map((state) => (
-                    <MenuItem key={state.code} value={state.code}>
-                      {state.code} — {state.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  select
+                  onChange={(value) => onFilterChange('stateFilter', String(value))}
+                  options={[
+                    { value: '', label: 'All States' },
+                    ...US_STATES.map((state) => ({ value: state.code, label: `${state.code} — ${state.name}` })),
+                  ]}
+                />
+                <Select
                   size="small"
                   label="Destination"
                   value={filters.destinationFilter}
-                  onChange={(event) => onFilterChange('destinationFilter', event.target.value)}
-                >
-                  <MenuItem value="">All Destinations</MenuItem>
-                  {destinationOptions.map((destination) => (
-                    <MenuItem key={destination} value={destination}>
-                      {destination}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  onChange={(value) => onFilterChange('destinationFilter', String(value))}
+                  options={[
+                    { value: '', label: 'All Destinations' },
+                    ...destinationOptions.map((destination) => ({ value: destination, label: destination })),
+                  ]}
+                />
               </Box>
             </FilterSection>
 
             <FilterSection title="Analysis">
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(4, 1fr)' }, gap: 1.5 }}>
-                <TextField
-                  select
+                <Select
                   size="small"
                   label="Vehicle Type"
                   value={filters.vehicleTypeId}
-                  onChange={(event) => onFilterChange('vehicleTypeId', event.target.value)}
-                >
-                  {vehicleTypes.map((type: VehicleRateMultiplier) => (
-                    <MenuItem key={type.id} value={type.id}>
-                      {type.label} ({type.multiplier}x)
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  select
+                  onChange={(value) => onFilterChange('vehicleTypeId', String(value))}
+                  options={vehicleTypes.map((type: VehicleRateMultiplier) => ({ value: type.id, label: `${type.label} (${type.multiplier}x)` }))}
+                />
+                <Select
                   size="small"
                   label="Reference Company"
                   value={filters.referenceCompanyId}
-                  onChange={(event) => onFilterChange('referenceCompanyId', event.target.value)}
-                >
-                  <MenuItem value="">No reference</MenuItem>
-                  {visibleCompanies.map((company) => (
-                    <MenuItem key={company.id} value={company.id}>
-                      {company.name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-                <TextField
-                  select
+                  onChange={(value) => onFilterChange('referenceCompanyId', String(value))}
+                  options={[
+                    { value: '', label: 'No reference' },
+                    ...visibleCompanies.map((company) => ({ value: company.id, label: company.name })),
+                  ]}
+                />
+                <Select
                   size="small"
                   label="Display"
                   value={filters.displayMode}
-                  onChange={(event) => onFilterChange('displayMode', event.target.value as ComparisonDisplayMode)}
+                  onChange={(value) => onFilterChange('displayMode', String(value) as ComparisonDisplayMode)}
                   disabled={!filters.referenceCompanyId}
-                >
-                  <MenuItem value="absolute">Absolute prices</MenuItem>
-                  <MenuItem value="delta">Delta vs reference</MenuItem>
-                </TextField>
-                <TextField
-                  select
+                  options={[
+                    { value: 'absolute', label: 'Absolute prices' },
+                    { value: 'delta', label: 'Delta vs reference' },
+                  ]}
+                />
+                <Select
                   size="small"
                   label="Sort By"
                   value={filters.sortBy}
-                  onChange={(event) => onFilterChange('sortBy', event.target.value as ComparisonSortKey)}
-                >
-                  <MenuItem value="spread-desc">Largest spread first</MenuItem>
-                  <MenuItem value="spread-asc">Smallest spread first</MenuItem>
-                  <MenuItem value="label-asc">Name A → Z</MenuItem>
-                  <MenuItem value="label-desc">Name Z → A</MenuItem>
-                  <MenuItem value="coverage-desc">Best coverage first</MenuItem>
-                  <MenuItem value="coverage-asc">Lowest coverage first</MenuItem>
-                </TextField>
+                  onChange={(value) => onFilterChange('sortBy', String(value) as ComparisonSortKey)}
+                  options={[
+                    { value: 'spread-desc', label: 'Largest spread first' },
+                    { value: 'spread-asc', label: 'Smallest spread first' },
+                    { value: 'label-asc', label: 'Name A → Z' },
+                    { value: 'label-desc', label: 'Name Z → A' },
+                    { value: 'coverage-desc', label: 'Best coverage first' },
+                    { value: 'coverage-asc', label: 'Lowest coverage first' },
+                  ]}
+                />
               </Box>
             </FilterSection>
 

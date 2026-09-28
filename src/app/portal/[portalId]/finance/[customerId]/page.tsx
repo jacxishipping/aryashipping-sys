@@ -14,9 +14,9 @@ import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
-import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography } from '@mui/material';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
-import { Button, EmptyState, PageHeader, PaymentStatusBadge, Skeleton, SkeletonTable, toast } from '@/components/design-system';
+import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, Skeleton, SkeletonTable, toast } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalInfo = {
@@ -660,19 +660,11 @@ export default function PortalCustomerFinanceDetailPage() {
                     </Box>
                     <TextField label="Description" value={ledgerForm.description} onChange={(event) => setLedgerForm((current) => ({ ...current, description: event.target.value }))} />
                     <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' } }}>
-                      <TextField select label="Type" value={ledgerForm.type} onChange={(event) => setLedgerForm((current) => ({ ...current, type: event.target.value as 'DEBIT' | 'CREDIT' }))}>
-                        <MenuItem value="DEBIT">Debit</MenuItem>
-                        <MenuItem value="CREDIT">Credit</MenuItem>
-                      </TextField>
+                      <Select label="Type" value={ledgerForm.type} onChange={(value) => setLedgerForm((current) => ({ ...current, type: String(value) as 'DEBIT' | 'CREDIT' }))} options={[{ value: 'DEBIT', label: 'Debit' }, { value: 'CREDIT', label: 'Credit' }]} />
                       <TextField label="Amount" type="number" value={ledgerForm.amount} onChange={(event) => setLedgerForm((current) => ({ ...current, amount: event.target.value }))} />
                       <TextField label="Date" type="date" value={ledgerForm.transactionDate} onChange={(event) => setLedgerForm((current) => ({ ...current, transactionDate: event.target.value }))} InputLabelProps={{ shrink: true }} />
                     </Box>
-                    <TextField select label="Portal Shipment" value={ledgerForm.shipmentId} onChange={(event) => setLedgerForm((current) => ({ ...current, shipmentId: event.target.value }))}>
-                      <MenuItem value="">Customer-level entry</MenuItem>
-                      {data.shipments.map((shipment) => (
-                        <MenuItem key={shipment.id} value={shipment.id}>{shipment.reference}</MenuItem>
-                      ))}
-                    </TextField>
+                    <Select label="Portal Shipment" value={ledgerForm.shipmentId} onChange={(value) => setLedgerForm((current) => ({ ...current, shipmentId: String(value) }))} options={[{ value: '', label: 'Customer-level entry' }, ...data.shipments.map((shipment) => ({ value: shipment.id, label: shipment.reference }))]} />
                     <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
                       <TextField label="Payment Method" value={ledgerForm.paymentMethod} onChange={(event) => setLedgerForm((current) => ({ ...current, paymentMethod: event.target.value }))} placeholder="Optional" />
                       <TextField label="Reference" value={ledgerForm.reference} onChange={(event) => setLedgerForm((current) => ({ ...current, reference: event.target.value }))} placeholder="Optional" />
@@ -694,20 +686,9 @@ export default function PortalCustomerFinanceDetailPage() {
                     <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' } }}>
                       <TextField label="Amount" type="number" value={paymentForm.amount} onChange={(event) => setPaymentForm((current) => ({ ...current, amount: event.target.value }))} />
                       <TextField label="Date" type="date" value={paymentForm.paymentDate} onChange={(event) => setPaymentForm((current) => ({ ...current, paymentDate: event.target.value }))} InputLabelProps={{ shrink: true }} />
-                      <TextField select label="Method" value={paymentForm.paymentMethod} onChange={(event) => setPaymentForm((current) => ({ ...current, paymentMethod: event.target.value }))}>
-                        <MenuItem value="BANK_TRANSFER">Bank Transfer</MenuItem>
-                        <MenuItem value="CASH">Cash</MenuItem>
-                        <MenuItem value="CHECK">Check</MenuItem>
-                        <MenuItem value="CREDIT_CARD">Credit Card</MenuItem>
-                        <MenuItem value="WIRE">Wire</MenuItem>
-                      </TextField>
+                      <Select label="Method" value={paymentForm.paymentMethod} onChange={(value) => setPaymentForm((current) => ({ ...current, paymentMethod: String(value) }))} options={[{ value: 'BANK_TRANSFER', label: 'Bank Transfer' }, { value: 'CASH', label: 'Cash' }, { value: 'CHECK', label: 'Check' }, { value: 'CREDIT_CARD', label: 'Credit Card' }, { value: 'WIRE', label: 'Wire' }]} />
                     </Box>
-                    <TextField select label="Portal Shipment" value={paymentForm.shipmentId} onChange={(event) => setPaymentForm((current) => ({ ...current, shipmentId: event.target.value }))}>
-                      <MenuItem value="">Customer-level payment</MenuItem>
-                      {data.shipments.map((shipment) => (
-                        <MenuItem key={shipment.id} value={shipment.id}>{shipment.reference}</MenuItem>
-                      ))}
-                    </TextField>
+                    <Select label="Portal Shipment" value={paymentForm.shipmentId} onChange={(value) => setPaymentForm((current) => ({ ...current, shipmentId: String(value) }))} options={[{ value: '', label: 'Customer-level payment' }, ...data.shipments.map((shipment) => ({ value: shipment.id, label: shipment.reference }))]} />
                     <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
                       <TextField label="Reference" value={paymentForm.reference} onChange={(event) => setPaymentForm((current) => ({ ...current, reference: event.target.value }))} placeholder="Receipt, wire ref, check number" />
                       <TextField label="Notes" value={paymentForm.notes} onChange={(event) => setPaymentForm((current) => ({ ...current, notes: event.target.value }))} placeholder="Optional" />

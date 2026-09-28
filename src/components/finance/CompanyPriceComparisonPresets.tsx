@@ -4,11 +4,10 @@ import { useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
-  MenuItem,
   TextField,
 } from '@mui/material';
 import { Bookmark, BookmarkPlus, Pencil, Trash2 } from 'lucide-react';
-import { Button, Modal, Tooltip, toast } from '@/components/design-system';
+import { Button, Modal, Select, Tooltip, toast } from '@/components/design-system';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 import {
   deleteComparisonPreset,
@@ -119,20 +118,16 @@ export default function CompanyPriceComparisonPresets({
           </Box>
         ) : (
           <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1fr) auto' }, gap: 1, alignItems: 'center' }}>
-            <TextField
-              select
+            <Select
               size="small"
               label="Saved preset"
               value={selectedPresetId}
-              onChange={(event) => setSelectedPresetId(event.target.value)}
-            >
-              <MenuItem value="">Select a preset</MenuItem>
-              {presets.map((preset) => (
-                <MenuItem key={preset.id} value={preset.id}>
-                  {preset.name}
-                </MenuItem>
-              ))}
-            </TextField>
+              onChange={(value) => setSelectedPresetId(String(value))}
+              options={[
+                { value: '', label: 'Select a preset' },
+                ...presets.map((preset) => ({ value: preset.id, label: preset.name })),
+              ]}
+            />
             <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap' }}>
               <Button variant="primary" size="sm" onClick={handleApplyPreset} disabled={!selectedPresetId}>
                 Load

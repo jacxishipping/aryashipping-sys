@@ -11,7 +11,7 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Box, MenuItem, TextField, Typography } from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, PageHeader, Skeleton, SkeletonParagraph, SkeletonTable, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, PageHeader, Select, Skeleton, SkeletonParagraph, SkeletonTable, toast } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalCustomer = {
@@ -434,17 +434,18 @@ export default function PortalShipmentsPage() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                 />
-                <TextField
-                  select
-                  label="Ready filter"
-                  value={readinessFilter}
-                  onChange={(event) => setReadinessFilter(event.target.value as 'all' | 'ready' | 'not-ready')}
-                  sx={{ maxWidth: 240 }}
-                >
-                  <MenuItem value="all">All shipments</MenuItem>
-                  <MenuItem value="ready">Ready only</MenuItem>
-                  <MenuItem value="not-ready">Not ready only</MenuItem>
-                </TextField>
+                <Box sx={{ maxWidth: 240 }}>
+                  <Select
+                    label="Ready filter"
+                    value={readinessFilter}
+                    onChange={(value) => setReadinessFilter(String(value) as 'all' | 'ready' | 'not-ready')}
+                    options={[
+                      { value: 'all', label: 'All shipments' },
+                      { value: 'ready', label: 'Ready only' },
+                      { value: 'not-ready', label: 'Not ready only' },
+                    ]}
+                  />
+                </Box>
 
                 <Box
                   sx={{
@@ -465,33 +466,33 @@ export default function PortalShipmentsPage() {
                     </Typography>
                   </Box>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                    <TextField
-                      select
-                      size="small"
-                      label="Action"
-                      value={bulkAction}
-                      onChange={(event) => setBulkAction(event.target.value as 'LINK_CUSTOMER' | 'SET_NOTES' | '')}
-                      sx={{ minWidth: 200 }}
-                    >
-                      <MenuItem value="">Choose action...</MenuItem>
-                      <MenuItem value="LINK_CUSTOMER">Link / unlink customer</MenuItem>
-                      <MenuItem value="SET_NOTES">Set notes</MenuItem>
-                    </TextField>
+                    <Box sx={{ minWidth: 200 }}>
+                      <Select
+                        size="small"
+                        label="Action"
+                        value={bulkAction}
+                        onChange={(value) => setBulkAction(String(value) as 'LINK_CUSTOMER' | 'SET_NOTES' | '')}
+                        options={[
+                          { value: '', label: 'Choose action...' },
+                          { value: 'LINK_CUSTOMER', label: 'Link / unlink customer' },
+                          { value: 'SET_NOTES', label: 'Set notes' },
+                        ]}
+                      />
+                    </Box>
 
                     {bulkAction === 'LINK_CUSTOMER' ? (
-                      <TextField
-                        select
-                        size="small"
-                        label="Customer"
-                        value={bulkCustomerId}
-                        onChange={(event) => setBulkCustomerId(event.target.value)}
-                        sx={{ minWidth: 220 }}
-                      >
-                        <MenuItem value="">Unassigned (unlink all)</MenuItem>
-                        {customers.map((customer) => (
-                          <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>
-                        ))}
-                      </TextField>
+                      <Box sx={{ minWidth: 220 }}>
+                        <Select
+                          size="small"
+                          label="Customer"
+                          value={bulkCustomerId}
+                          onChange={(value) => setBulkCustomerId(String(value))}
+                          options={[
+                            { value: '', label: 'Unassigned (unlink all)' },
+                            ...customers.map((customer) => ({ value: customer.id, label: customer.name })),
+                          ]}
+                        />
+                      </Box>
                     ) : null}
 
                     {bulkAction === 'SET_NOTES' ? (

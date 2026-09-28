@@ -5,12 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
   Box,
-  MenuItem,
   TextField,
   Typography,
 } from '@mui/material';
 import { AlertTriangle, Bot, Clock, Filter, RefreshCcw, Search as SearchIcon, ShieldCheck, XCircle } from 'lucide-react';
-import { PageHeader, Button, EmptyState, LoadingState, StatsCard, StatusBadge, Modal, toast } from '@/components/design-system';
+import { PageHeader, Button, EmptyState, LoadingState, Select, StatsCard, StatusBadge, Modal, toast } from '@/components/design-system';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { hasPermission } from '@/lib/rbac';
@@ -304,32 +303,28 @@ export default function AiLogsPage() {
         </Box>
 
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 2, mb: 3 }}>
-          <TextField
+          <Select
             size="small"
             label="Feature"
-            select
             value={feature}
-            onChange={(event) => setFeature(event.target.value)}
-          >
-            <MenuItem value="">All</MenuItem>
-            {featureOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                {formatFeatureLabel(option)}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
+            onChange={(value) => setFeature(String(value))}
+            options={[
+              { value: '', label: 'All' },
+              ...featureOptions.map((option) => ({ value: option, label: formatFeatureLabel(option) })),
+            ]}
+          />
+          <Select
             size="small"
             label="Entity Type"
-            select
             value={entityType}
-            onChange={(event) => setEntityType(event.target.value)}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="SHIPMENT">Shipment</MenuItem>
-            <MenuItem value="CONTAINER">Container</MenuItem>
-            <MenuItem value="DOCUMENT">Document</MenuItem>
-          </TextField>
+            onChange={(value) => setEntityType(String(value))}
+            options={[
+              { value: '', label: 'All' },
+              { value: 'SHIPMENT', label: 'Shipment' },
+              { value: 'CONTAINER', label: 'Container' },
+              { value: 'DOCUMENT', label: 'Document' },
+            ]}
+          />
           <TextField
             size="small"
             label="Entity ID"

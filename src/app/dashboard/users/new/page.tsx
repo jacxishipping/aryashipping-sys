@@ -22,12 +22,11 @@ import {
 	InputAdornment,
 	IconButton,
 	Button as MuiButton,
-	MenuItem,
 	Stepper,
 	Step,
 	StepLabel,
 } from '@mui/material';
-import { Breadcrumbs, PageHeader, Button, toast, FormPageSkeleton } from '@/components/design-system';
+import { Breadcrumbs, PageHeader, Button, Select, toast, FormPageSkeleton } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { hasPermission } from '@/lib/rbac';
 
@@ -236,29 +235,35 @@ export default function CreateUserPage() {
 								</Box>
 								{/* Role */}
 								<Box sx={{ gridColumn: '1 / -1' }}>
-									<Typography component="label" htmlFor="role" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Role</Typography>
 									{accountType === 'customer' ? (
-										<TextField
-											id="role"
-											name="role"
-											fullWidth
-											value="Customer"
-											disabled
-											InputProps={{ startAdornment: (<InputAdornment position="start"><BadgeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-											sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-										/>
+										<>
+											<Typography component="label" htmlFor="role" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Role</Typography>
+											<TextField
+												id="role"
+												name="role"
+												fullWidth
+												value="Customer"
+												disabled
+												InputProps={{ startAdornment: (<InputAdornment position="start"><BadgeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
+												sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
+											/>
+										</>
 									) : (
-										<TextField
-											id="role" name="role" select fullWidth value={formData.role} onChange={handleChange} required
-											InputProps={{ startAdornment: (<InputAdornment position="start"><BadgeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-											sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-										>
-											<MenuItem value="admin">Admin</MenuItem>
-											<MenuItem value="manager">Manager</MenuItem>
-											<MenuItem value="finance">Finance</MenuItem>
-											<MenuItem value="operations">Operations</MenuItem>
-											<MenuItem value="customer_service">Customer Service</MenuItem>
-										</TextField>
+										<Select
+											id="role"
+											label="Role"
+											value={formData.role}
+											onChange={(value) => setFormData({ ...formData, role: String(value) })}
+											required
+											leftIcon={<BadgeIcon sx={{ fontSize: 20 }} />}
+											options={[
+												{ value: 'admin', label: 'Admin' },
+												{ value: 'manager', label: 'Manager' },
+												{ value: 'finance', label: 'Finance' },
+												{ value: 'operations', label: 'Operations' },
+												{ value: 'customer_service', label: 'Customer Service' },
+											]}
+										/>
 									)}
 								</Box>
 							</Box>

@@ -10,9 +10,9 @@ import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, TextField, Typography } from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, EmptyState, PageHeader, PaymentStatusBadge, toast } from '@/components/design-system';
+import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, toast } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalInfo = {
@@ -444,30 +444,28 @@ export default function PortalFinancePage() {
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                   />
-                  <TextField
-                    select
+                  <Select
                     label="Customer"
                     value={customerFilter}
-                    onChange={(event) => setCustomerFilter(event.target.value)}
-                  >
-                    <MenuItem value="all">All customers</MenuItem>
-                    {data.customers.map((customer) => (
-                      <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>
-                    ))}
-                  </TextField>
-                  <TextField
-                    select
+                    onChange={(value) => setCustomerFilter(String(value))}
+                    options={[
+                      { value: 'all', label: 'All customers' },
+                      ...data.customers.map((customer) => ({ value: customer.id, label: customer.name })),
+                    ]}
+                  />
+                  <Select
                     label="Status"
                     value={statusFilter}
-                    onChange={(event) => setStatusFilter(event.target.value)}
-                  >
-                    <MenuItem value="all">All statuses</MenuItem>
-                    <MenuItem value="PENDING">Pending</MenuItem>
-                    <MenuItem value="SENT">Sent</MenuItem>
-                    <MenuItem value="PAID">Paid</MenuItem>
-                    <MenuItem value="OVERDUE">Overdue</MenuItem>
-                    <MenuItem value="DRAFT">Draft</MenuItem>
-                  </TextField>
+                    onChange={(value) => setStatusFilter(String(value))}
+                    options={[
+                      { value: 'all', label: 'All statuses' },
+                      { value: 'PENDING', label: 'Pending' },
+                      { value: 'SENT', label: 'Sent' },
+                      { value: 'PAID', label: 'Paid' },
+                      { value: 'OVERDUE', label: 'Overdue' },
+                      { value: 'DRAFT', label: 'Draft' },
+                    ]}
+                  />
                 </Box>
 
                 {filteredInvoices.length === 0 ? (

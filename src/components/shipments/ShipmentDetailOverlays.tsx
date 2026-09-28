@@ -1,8 +1,8 @@
 'use client';
 
 import { Eye, EyeOff } from 'lucide-react';
-import { Box, MenuItem, TextField } from '@mui/material';
-import { Button, Modal } from '@/components/design-system';
+import { Box, TextField } from '@mui/material';
+import { Button, Modal, Select } from '@/components/design-system';
 import AddShipmentExpenseModal from '@/components/shipments/AddShipmentExpenseModal';
 import PhotoLightbox from '@/components/shipments/PhotoLightbox';
 import type {
@@ -125,22 +125,15 @@ export default function ShipmentDetailOverlays({
           }
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              select
-              fullWidth
+            <Select
               label="Dispatch"
               value={dispatchIdToAssign}
-              onChange={(event) => onDispatchIdChange(event.target.value)}
+              onChange={(value) => onDispatchIdChange(String(value))}
               helperText={loadingDispatches ? 'Loading pending dispatches...' : 'Select a dispatch route for this shipment'}
               size="small"
               disabled={loadingDispatches || assigningDispatch}
-            >
-              {availableDispatches.map((dispatch) => (
-                <MenuItem key={dispatch.id} value={dispatch.id}>
-                  {dispatch.referenceNumber} - {dispatch.company.name} ({dispatch.origin} → {dispatch.destination})
-                </MenuItem>
-              ))}
-            </TextField>
+              options={availableDispatches.map((dispatch) => ({ value: dispatch.id, label: `${dispatch.referenceNumber} - ${dispatch.company.name} (${dispatch.origin} → ${dispatch.destination})` }))}
+            />
             {!loadingDispatches && availableDispatches.length === 0 && (
               <p className="mt-3 text-sm text-[var(--text-secondary)]">No pending dispatches are available.</p>
             )}
@@ -173,23 +166,15 @@ export default function ShipmentDetailOverlays({
           }
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              select
-              fullWidth
+            <Select
               label="Transit"
               value={transitIdToAssign}
-              onChange={(event) => onTransitIdChange(event.target.value)}
+              onChange={(value) => onTransitIdChange(String(value))}
               helperText={loadingTransits ? 'Loading open transits...' : 'Select the transit this shipment will travel on'}
               size="small"
               disabled={loadingTransits || assigningTransit}
-            >
-              {availableTransits.map((transit) => (
-                <MenuItem key={transit.id} value={transit.id}>
-                  {transit.referenceNumber}
-                  {transit.currentCompany ? ` - ${transit.currentCompany.name}` : ''} ({transit.origin} → {transit.destination})
-                </MenuItem>
-              ))}
-            </TextField>
+              options={availableTransits.map((transit) => ({ value: transit.id, label: `${transit.referenceNumber}${transit.currentCompany ? ` - ${transit.currentCompany.name}` : ''} (${transit.origin} → ${transit.destination})` }))}
+            />
             {!loadingTransits && availableTransits.length === 0 && (
               <p className="mt-3 text-sm text-[var(--text-secondary)]">No open transits are available. Create one from the Transits page first.</p>
             )}

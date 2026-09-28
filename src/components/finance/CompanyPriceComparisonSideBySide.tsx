@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { Box, MenuItem, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 import { ArrowLeftRight, GitCompareArrows, Trophy } from 'lucide-react';
-import { EmptyState } from '@/components/design-system';
+import { EmptyState, Select } from '@/components/design-system';
 import type { CompanyPriceSnapshot, ComparisonSortKey } from '@/lib/company-price-comparison';
 import {
   buildSideBySideRows,
@@ -218,42 +218,30 @@ export default function CompanyPriceComparisonSideBySide({
   return (
     <Box sx={{ display: 'grid', gap: 2 }}>
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 1.5 }}>
-        <TextField
-          select
+        <Select
           size="small"
           label="Left company"
           value={leftCompanyId}
-          onChange={(event) => onLeftCompanyChange(event.target.value)}
-        >
-          {companies.map((company) => (
-            <MenuItem key={company.id} value={company.id} disabled={company.id === rightCompanyId}>
-              {company.name}
-            </MenuItem>
-          ))}
-        </TextField>
-        <TextField
-          select
+          onChange={(value) => onLeftCompanyChange(String(value))}
+          options={companies.map((company) => ({ value: company.id, label: company.name, disabled: company.id === rightCompanyId }))}
+        />
+        <Select
           size="small"
           label="Compare"
           value={rateType}
-          onChange={(event) => onRateTypeChange(event.target.value as SideBySideRateType)}
-        >
-          <MenuItem value="state">State rates</MenuItem>
-          <MenuItem value="lane">Branch / city lanes</MenuItem>
-        </TextField>
-        <TextField
-          select
+          onChange={(value) => onRateTypeChange(String(value) as SideBySideRateType)}
+          options={[
+            { value: 'state', label: 'State rates' },
+            { value: 'lane', label: 'Branch / city lanes' },
+          ]}
+        />
+        <Select
           size="small"
           label="Right company"
           value={rightCompanyId}
-          onChange={(event) => onRightCompanyChange(event.target.value)}
-        >
-          {companies.map((company) => (
-            <MenuItem key={company.id} value={company.id} disabled={company.id === leftCompanyId}>
-              {company.name}
-            </MenuItem>
-          ))}
-        </TextField>
+          onChange={(value) => onRightCompanyChange(String(value))}
+          options={companies.map((company) => ({ value: company.id, label: company.name, disabled: company.id === leftCompanyId }))}
+        />
       </Box>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 80px 1fr' }, gap: 1.5, alignItems: 'stretch' }}>
