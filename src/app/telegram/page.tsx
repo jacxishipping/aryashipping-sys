@@ -17,7 +17,7 @@ export default function TelegramAliasPage() {
             justifyContent: 'center',
           }}
         >
-          <CircularProgress sx={{ color: '#D4AF37' }} />
+          <CircularProgress sx={{ color: 'var(--accent-gold)' }} />
         </Box>
       }
     >
