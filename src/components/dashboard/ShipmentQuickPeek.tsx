@@ -71,8 +71,8 @@ const SHIPMENT_STEPS: MilestoneStep[] = [
   { id: 'ON_HAND', label: 'On Hand' },
   { id: 'DISPATCHING', label: 'Dispatching' },
   { id: 'IN_TRANSIT', label: 'In Transit' },
-  { id: 'AT_PORT', label: 'At Port' },
-  { id: 'CUSTOMS', label: 'Customs' },
+  { id: 'RELEASED', label: 'Released' },
+  { id: 'IN_TRANSIT_TO_DESTINATION', label: 'To Destination' },
   { id: 'DELIVERED', label: 'Delivered' },
 ];
 
@@ -200,6 +200,7 @@ export default function ShipmentQuickPeek({
             <MilestoneStepper
               steps={SHIPMENT_STEPS}
               currentStepId={shipment.status}
+              status={shipment.status === 'DELIVERED' ? 'completed' : 'default'}
               orientation="horizontal"
             />
           </Box>

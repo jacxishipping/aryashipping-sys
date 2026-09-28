@@ -1041,8 +1041,10 @@ export default function ContainerDetailPage() {
 								{ id: 'ARRIVED_PORT', label: 'Arrived Port' },
 								{ id: 'CUSTOMS_CLEARANCE', label: 'Customs' },
 								{ id: 'RELEASED', label: 'Released' },
+								{ id: 'CLOSED', label: 'Closed' },
 							]}
 							currentStepId={container.status}
+							status={container.status === 'CLOSED' ? 'completed' : 'default'}
 							orientation="horizontal"
 						/>
 					</Box>

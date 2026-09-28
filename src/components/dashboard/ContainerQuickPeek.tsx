@@ -64,12 +64,14 @@ interface ContainerDetail {
 }
 
 const CONTAINER_STEPS: MilestoneStep[] = [
-  { id: 'PENDING', label: 'Pending' },
+  { id: 'CREATED', label: 'Created' },
+  { id: 'WAITING_FOR_LOADING', label: 'Waiting' },
   { id: 'LOADED', label: 'Loaded' },
   { id: 'IN_TRANSIT', label: 'In Transit' },
-  { id: 'CUSTOMS', label: 'Customs' },
-  { id: 'ARRIVED', label: 'Arrived' },
-  { id: 'DELIVERED', label: 'Delivered' },
+  { id: 'ARRIVED_PORT', label: 'Arrived Port' },
+  { id: 'CUSTOMS_CLEARANCE', label: 'Customs' },
+  { id: 'RELEASED', label: 'Released' },
+  { id: 'CLOSED', label: 'Closed' },
 ];
 
 export default function ContainerQuickPeek({
@@ -176,6 +178,7 @@ export default function ContainerQuickPeek({
             <MilestoneStepper
               steps={CONTAINER_STEPS}
               currentStepId={container.status}
+              status={container.status === 'CLOSED' ? 'completed' : 'default'}
               orientation="horizontal"
             />
           </Box>
