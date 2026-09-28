@@ -14,6 +14,7 @@ import QuickCalculatorButton from '@/components/dashboard/QuickCalculatorButton'
 import OnboardingTour from '@/components/onboarding/OnboardingTour';
 import { getEffectiveAiProviderSettings, isAiProviderConfigured } from '@/lib/ai/provider-settings';
 import { DashboardPageSkeleton, PageHeader } from '@/components/design-system';
+import { normalizeDashboardSections } from '@/lib/dashboard-sections';
 
 // Force dynamic rendering (requires database connection)
 export const dynamic = 'force-dynamic';
@@ -568,6 +569,10 @@ export default async function DashboardPage() {
     const kpiDataPromise = getDashboardKpiData(session?.user?.id, options);
     const workDataPromise = getDashboardWorkData(session?.user?.id, options);
     const aiEnabled = isAiProviderConfigured(await getEffectiveAiProviderSettings());
+    const userSettings = (session?.user?.id
+        ? await prisma.userSettings.findUnique({ where: { userId: session.user.id } })
+        : null) as unknown as { dashboardSections?: unknown } | null;
+    const sections = normalizeDashboardSections(userSettings?.dashboardSections);
 
     async function KpiSection() {
         const data = await kpiDataPromise;
@@ -586,21 +591,25 @@ export default async function DashboardPage() {
         return (
             <>
                 {/* Compact KPIs */}
-                <DashboardKpiGrid
-                    activeShipmentsCount={data.activeShipmentsCount}
-                    activeContainersCount={data.activeContainersCount}
-                    pendingRevenue={formatMoney(data.pendingRevenue)}
-                    shipmentTrend={data.shipmentTrend}
-                    canManageDispatches={data.canManageDispatches}
-                    activeDispatchesCount={data.activeDispatchesCount}
-                />
+                {sections.kpis && (
+                    <DashboardKpiGrid
+                        activeShipmentsCount={data.activeShipmentsCount}
+                        activeContainersCount={data.activeContainersCount}
+                        pendingRevenue={formatMoney(data.pendingRevenue)}
+                        shipmentTrend={data.shipmentTrend}
+                        canManageDispatches={data.canManageDispatches}
+                        activeDispatchesCount={data.activeDispatchesCount}
+                    />
+                )}
 
                 {/* Interactive Operations Pipeline & Movement Analytics */}
-                <DashboardOperationsChart
-                    trends={data.shipmentTrends}
-                    containerUtilization={data.containerUtilization}
-                    shipmentStats={data.shipmentStats}
-                />
+                {sections.operationsChart && (
+                    <DashboardOperationsChart
+                        trends={data.shipmentTrends}
+                        containerUtilization={data.containerUtilization}
+                        shipmentStats={data.shipmentStats}
+                    />
+                )}
             </>
         );
     }
@@ -641,23 +650,27 @@ export default async function DashboardPage() {
         return (
             <>
                 {/* Light Priority Work */}
-                <DashboardTodayWork
-                    role={role}
-                    workItems={data.todayWork.workItems}
-                    overdueInvoicesCount={kpiData.overdueInvoicesCount}
-                    pendingInvoicesCount={kpiData.pendingInvoicesCount}
-                    failedAiJobsCount={kpiData.failedAiJobsCount}
-                    recentActivity={data.todayWork.recentActivity}
-                />
+                {sections.todayWork && (
+                    <DashboardTodayWork
+                        role={role}
+                        workItems={data.todayWork.workItems}
+                        overdueInvoicesCount={kpiData.overdueInvoicesCount}
+                        pendingInvoicesCount={kpiData.pendingInvoicesCount}
+                        failedAiJobsCount={kpiData.failedAiJobsCount}
+                        recentActivity={data.todayWork.recentActivity}
+                    />
+                )}
 
                 {/* Remaining sections are accessible here — trends, calculator, pipeline, AI */}
-                <DashboardMore
-                    aiEnabled={aiEnabled}
-                    aiBriefPayload={aiBriefPayload}
-                    canManageDispatches={kpiData.canManageDispatches}
-                    shipmentStats={kpiData.shipmentStats}
-                    activeDispatchesCount={kpiData.activeDispatchesCount}
-                />
+                {sections.moreTools && (
+                    <DashboardMore
+                        aiEnabled={aiEnabled}
+                        aiBriefPayload={aiBriefPayload}
+                        canManageDispatches={kpiData.canManageDispatches}
+                        shipmentStats={kpiData.shipmentStats}
+                        activeDispatchesCount={kpiData.activeDispatchesCount}
+                    />
+                )}
             </>
         );
     }
@@ -671,7 +684,7 @@ export default async function DashboardPage() {
                     description="Operations at a glance."
                     actions={
                       <>
-                        <QuickCalculatorButton />
+                        {sections.calculatorShortcut && <QuickCalculatorButton />}
                         <OnboardingTour autoStart={true} />
                       </>
                     }

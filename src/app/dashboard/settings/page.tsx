@@ -56,6 +56,12 @@ import {
   US_STATES,
   type ShippingRateCalculatorConfig,
 } from '@/lib/shipping-rate-calculator';
+import {
+  DASHBOARD_SECTIONS,
+  DEFAULT_DASHBOARD_SECTIONS,
+  normalizeDashboardSections,
+  type DashboardSectionVisibility,
+} from '@/lib/dashboard-sections';
 
 const DEFAULT_SETTINGS = {
   theme: 'light',
@@ -69,6 +75,7 @@ const DEFAULT_SETTINGS = {
   twoFactorEnabled: false,
   language: 'en',
   calculatorConfig: DEFAULT_SHIPPING_RATE_CONFIG,
+  dashboardSections: DEFAULT_DASHBOARD_SECTIONS,
 };
 
 const baseSettingsTabSlugs = ['profile', 'preferences', 'notifications', 'security'];
@@ -107,6 +114,7 @@ type UserSettingsData = {
   twoFactorEnabled: boolean;
   language: string;
   calculatorConfig: ShippingRateCalculatorConfig;
+  dashboardSections: DashboardSectionVisibility;
   createdAt: string;
   updatedAt: string;
 };
@@ -449,6 +457,7 @@ export default function SettingsPage() {
             twoFactorEnabled: values.twoFactorEnabled,
             language: values.language,
             calculatorConfig,
+            dashboardSections: normalizeDashboardSections(values.dashboardSections),
           });
           setRateConfig(calculatorConfig);
         }
@@ -568,6 +577,7 @@ export default function SettingsPage() {
         sidebarDensity: settingsForm.sidebarDensity,
         animationsEnabled: settingsForm.animationsEnabled,
         language: settingsForm.language,
+        dashboardSections: settingsForm.dashboardSections,
       },
       'Preferences saved'
     );
@@ -1317,6 +1327,65 @@ export default function SettingsPage() {
                     { value: 'fr', label: 'French' },
                   ]}
                 />
+              </div>
+
+              {/* Dashboard Section Visibility */}
+              <div>
+                <label className="block text-sm font-semibold text-[var(--text-primary)] mb-1">
+                  Dashboard Sections
+                </label>
+                <p className="text-xs text-[var(--text-secondary)] mb-2.5">
+                  Optional sections stay hidden until you turn them on. Core sections stay visible unless you turn them off.
+                </p>
+                <Box sx={{ display: 'grid', gap: 1.5 }}>
+                  {DASHBOARD_SECTIONS.map((section) => {
+                    const visible = settingsForm.dashboardSections[section.id];
+                    return (
+                      <Box
+                        key={section.id}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: 2,
+                          p: 1.5,
+                          borderRadius: 2,
+                          border: '1px solid var(--border)',
+                          bgcolor: 'var(--panel)',
+                        }}
+                      >
+                        <Box>
+                          <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {section.title}
+                            {!section.defaultVisible && (
+                              <Typography component="span" sx={{ ml: 1, fontSize: '0.68rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-secondary)' }}>
+                                Optional
+                              </Typography>
+                            )}
+                          </Typography>
+                          <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', mt: 0.25 }}>
+                            {section.description}
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                            {visible ? 'Shown' : 'Hidden'}
+                          </Typography>
+                          <Switch
+                            checked={visible}
+                            onChange={(event) =>
+                              setSettingsForm((prev) => ({
+                                ...prev,
+                                dashboardSections: { ...prev.dashboardSections, [section.id]: event.target.checked },
+                              }))
+                            }
+                            disabled={savingPreferences}
+                          />
+                        </Box>
+                      </Box>
+                    );
+                  })}
+                </Box>
               </div>
 
               <div className="flex justify-end pt-2">

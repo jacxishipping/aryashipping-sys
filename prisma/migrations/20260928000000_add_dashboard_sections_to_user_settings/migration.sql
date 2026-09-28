@@ -1,0 +1,2 @@
+ALTER TABLE "UserSettings"
+ADD COLUMN IF NOT EXISTS "dashboardSections" JSONB NOT NULL DEFAULT '{}';

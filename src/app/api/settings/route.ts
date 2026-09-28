@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { normalizeShippingRateConfig } from '@/lib/shipping-rate-calculator';
+import { normalizeDashboardSections } from '@/lib/dashboard-sections';
 import { createSystemAuditLog } from '@/lib/system-audit';
 
 const DEFAULT_SETTINGS = {
@@ -17,6 +18,7 @@ const DEFAULT_SETTINGS = {
 	twoFactorEnabled: false,
 	language: 'en',
 	calculatorConfig: normalizeShippingRateConfig(null),
+	dashboardSections: {},
 };
 
 const sanitizeBoolean = (value: unknown) => {
@@ -58,6 +60,9 @@ export async function GET() {
 			settings: {
 				...settings,
 				calculatorConfig: normalizeShippingRateConfig(settings.calculatorConfig),
+				dashboardSections: normalizeDashboardSections(
+					(settings as { dashboardSections?: unknown }).dashboardSections,
+				),
 			},
 		}, { status: 200 });
 	} catch (error) {
@@ -95,6 +100,9 @@ export async function PUT(request: NextRequest) {
 		if (language) updates.language = language;
 		if (payload.calculatorConfig !== undefined) {
 			updates.calculatorConfig = normalizeShippingRateConfig(payload.calculatorConfig) as unknown as Prisma.InputJsonValue;
+		}
+		if (payload.dashboardSections !== undefined) {
+			updates.dashboardSections = normalizeDashboardSections(payload.dashboardSections) as unknown as Prisma.InputJsonValue;
 		}
 		if (animationsEnabled !== undefined) updates.animationsEnabled = animationsEnabled;
 		if (notifyShipmentEmail !== undefined) updates.notifyShipmentEmail = notifyShipmentEmail;
