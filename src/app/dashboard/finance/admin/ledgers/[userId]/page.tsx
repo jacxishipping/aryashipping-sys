@@ -741,7 +741,7 @@ export default function UserLedgerManagementPage() {
                   <>
                     <Alert
                       severity={formData.type === 'DEBIT' ? 'info' : 'success'}
-                      sx={{ fontSize: '0.9rem', fontWeight: 500 }}
+                      className="text-[0.9rem] font-medium"
                     >
                       Current Balance: {currentBalanceLabel}. {enteredAmount > 0 ? `After this transaction, ${projectedBalanceLabel}.` : 'Enter an amount to preview the new balance.'}
                     </Alert>
