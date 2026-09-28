@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Edit, LocalShipping, CreditCard, LocationOn, CalendarToday } from '@mui/icons-material';
 import { PanelRightOpen, QrCode } from 'lucide-react';
-import { Box, Typography, LinearProgress, Chip } from '@mui/material';
+import { Box, Typography, LinearProgress } from '@mui/material';
 import { StatusBadge, Button } from '@/components/design-system';
 
 interface ShipmentRowProps {
@@ -105,17 +105,10 @@ export default function ShipmentRow({
 				showIcon
 			/>
 			{yardReceived && (
-				<Chip
+				<StatusBadge
+					status="SUCCESS"
 					label={yardReceivedAt ? `Yard Received ${new Date(yardReceivedAt).toLocaleDateString()}` : 'Yard Received'}
-					size="small"
-					sx={{
-						height: 24,
-						fontSize: '0.7rem',
-						fontWeight: 700,
-						bgcolor: 'rgba(34, 197, 94, 0.12)',
-						color: 'rgb(21, 128, 61)',
-						border: '1px solid rgba(34, 197, 94, 0.28)',
-					}}
+					size="sm"
 				/>
 			)}
 			{paymentStatus && (

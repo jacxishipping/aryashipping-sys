@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { Box, Chip, TextField, Typography } from '@mui/material';
+import { StatusBadge } from '@/components/design-system';
 import { ArrowRight, BadgeDollarSign, MapPin, Search, ShipWheel, Truck, Warehouse } from 'lucide-react';
 import type { UnifiedShipmentTimelineItem } from '@/lib/shipment-timeline';
 
@@ -152,15 +153,11 @@ export default function UnifiedShipmentTimeline({ items, onOpenCompanyLedgerEntr
                               border: `1px solid ${sourceStyle.border}`,
                             }}
                           />
-                          <Chip
+                          <StatusBadge
+                            status="DEFAULT"
                             label={filterLabels[item.category]}
-                            size="small"
-                            variant="outlined"
-                            sx={{
-                              height: 22,
-                              fontSize: '0.68rem',
-                              fontWeight: 700,
-                            }}
+                            variant="outline"
+                            size="sm"
                           />
                         </div>
                         <Typography sx={{ mt: 1, color: 'var(--text-secondary)', fontSize: '0.875rem' }}>

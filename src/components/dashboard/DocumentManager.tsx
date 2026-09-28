@@ -16,7 +16,6 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Divider,
-  Chip,
   TextField,
 } from '@mui/material';
 import { 
@@ -28,7 +27,7 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Modal, FormField, Select } from '@/components/design-system';
+import { Modal, FormField, Select, StatusBadge } from '@/components/design-system';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 
@@ -374,17 +373,16 @@ export function DocumentManager({
                         <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
                             {doc.name}
                         </Typography>
-                        <Chip 
-                            label={doc.category.replace('_', ' ')} 
-                            size="small" 
-                            sx={{ fontSize: '0.65rem', height: 20 }} 
+                        <StatusBadge
+                            status="DEFAULT"
+                            label={doc.category.replace('_', ' ')}
+                            size="sm"
                         />
                         {doc.isPublic === false ? (
-                          <Chip
+                          <StatusBadge
+                            status="WARNING"
                             label="Company Only"
-                            size="small"
-                            color="warning"
-                            sx={{ fontSize: '0.65rem', height: 20 }}
+                            size="sm"
                           />
                         ) : null}
                     </Box>
@@ -579,10 +577,10 @@ export function DocumentManager({
               </Typography>
               <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1 }}>
                 {review.extractionMethod && (
-                  <Chip size="small" label={`Extraction: ${review.extractionMethod}`} />
+                  <StatusBadge status="DEFAULT" label={`Extraction: ${review.extractionMethod}`} size="sm" />
                 )}
                 {review.ocrAttempted && (
-                  <Chip size="small" color="warning" label="OCR attempted" />
+                  <StatusBadge status="WARNING" label="OCR attempted" size="sm" />
                 )}
               </Box>
               <Typography variant="body2" sx={{ color: 'var(--text-secondary)', mb: 1.5 }}>

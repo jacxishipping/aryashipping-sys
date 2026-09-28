@@ -15,7 +15,7 @@ import {
   FilterList,
   Payment,
 } from '@mui/icons-material';
-import {  Box, Typography, TextField, Chip } from '@mui/material';
+import {  Box, Typography, TextField } from '@mui/material';
 import { Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Select } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
@@ -126,44 +126,29 @@ export default function AdminLedgersPage() {
   const getBalanceChip = (balance: number) => {
     if (balance > 0) {
       return (
-        <Chip
+        <StatusBadge
+          status="ERROR"
           label={formatCurrency(balance)}
-          size="small"
+          size="sm"
           icon={<TrendingUpIcon />}
-          sx={{
-            backgroundColor: 'rgba(var(--error-rgb), 0.1)',
-            color: 'var(--error)',
-            fontWeight: 600,
-            fontSize: '0.8rem',
-          }}
         />
       );
     }
     if (balance < 0) {
       return (
-        <Chip
+        <StatusBadge
+          status="SUCCESS"
           label={formatCurrency(Math.abs(balance))}
-          size="small"
+          size="sm"
           icon={<TrendingDownIcon />}
-          sx={{
-            backgroundColor: 'rgba(var(--success-rgb), 0.1)',
-            color: 'var(--success)',
-            fontWeight: 600,
-            fontSize: '0.8rem',
-          }}
         />
       );
     }
     return (
-      <Chip
+      <StatusBadge
+        status="DEFAULT"
         label={formatCurrency(0)}
-        size="small"
-        sx={{
-          backgroundColor: 'rgba(var(--text-secondary-rgb), 0.1)',
-          color: 'var(--text-secondary)',
-          fontWeight: 600,
-          fontSize: '0.8rem',
-        }}
+        size="sm"
       />
     );
   };

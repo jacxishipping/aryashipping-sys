@@ -6,10 +6,9 @@ import {
 	Box,
 	InputAdornment,
 	Typography,
-	Chip,
 } from '@mui/material';
 import { AlertTriangle, FileText, Upload } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, Modal, Select, StatusBadge, toast } from '@/components/design-system';
 
 interface AddInvoiceModalProps {
 	open: boolean;
@@ -275,10 +274,10 @@ export default function AddInvoiceModal({
 							<Box sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
 								<Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap' }}>
 									{invoiceSource.extractionMethod && (
-										<Chip size="small" label={`Extraction: ${invoiceSource.extractionMethod}`} />
+										<StatusBadge status="DEFAULT" label={`Extraction: ${invoiceSource.extractionMethod}`} size="sm" />
 									)}
 									{invoiceSource.ocrAttempted && (
-										<Chip size="small" color="warning" label="OCR attempted" />
+										<StatusBadge status="WARNING" label="OCR attempted" size="sm" />
 									)}
 								</Box>
 								<Typography sx={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>

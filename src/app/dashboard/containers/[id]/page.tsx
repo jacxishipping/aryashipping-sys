@@ -16,7 +16,6 @@ import {
 	TableRow,
 	LinearProgress,
 	Divider,
-	Chip,
 	Typography,
 	TextField,
 	MenuItem,
@@ -1520,18 +1519,16 @@ export default function ContainerDetailPage() {
 													<TableCell>
 														<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
 															{(shipment as any).paymentMode && (
-																<Chip 
-																	label={(shipment as any).paymentMode} 
-																	size="small"
-																	color={(shipment as any).paymentMode === 'CASH' ? 'success' : 'warning'}
-																	sx={{ fontSize: '0.7rem', width: 'fit-content' }}
+																<StatusBadge
+																	status={(shipment as any).paymentMode === 'CASH' ? 'SUCCESS' : 'WARNING'}
+																	label={(shipment as any).paymentMode}
+																	size="sm"
 																/>
 															)}
-															<Chip 
-																label={(shipment as any).paymentStatus || 'PENDING'} 
-																size="small"
-																color={(shipment as any).paymentStatus === 'COMPLETED' ? 'success' : 'default'}
-																sx={{ fontSize: '0.7rem', width: 'fit-content' }}
+															<StatusBadge
+																status={(shipment as any).paymentStatus === 'COMPLETED' ? 'SUCCESS' : 'PENDING'}
+																label={(shipment as any).paymentStatus || 'PENDING'}
+																size="sm"
 															/>
 														</Box>
 													</TableCell>
@@ -1849,10 +1846,10 @@ export default function ContainerDetailPage() {
 														</Box>
 													</TableCell>
 													<TableCell>
-														<Chip
+														<StatusBadge
+															status={damage.damageType === 'WE_PAY' ? 'WARNING' : 'ERROR'}
 															label={damage.damageType === 'WE_PAY' ? 'We Pay' : 'Company Pays'}
-															size="small"
-															color={damage.damageType === 'WE_PAY' ? 'warning' : 'error'}
+															size="sm"
 														/>
 													</TableCell>
 													<TableCell sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

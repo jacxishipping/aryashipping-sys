@@ -20,8 +20,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Chip
+  Paper
 } from '@mui/material';
 import { 
   ArrowLeft, 
@@ -36,7 +35,7 @@ import {
 } from 'lucide-react';
 import { Search } from '@mui/icons-material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select } from '@/components/design-system';
+import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select, StatusBadge } from '@/components/design-system';
 import AdminRoute from '@/components/auth/AdminRoute';
 
 interface User {
@@ -621,11 +620,10 @@ export default function RecordPaymentPage() {
                             <Box sx={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                               {shipment.trackingNumber}
                             </Box>
-                            <Chip 
-                              label={shipment.paymentStatus} 
-                              size="small" 
-                              color={shipment.paymentStatus === 'FAILED' ? 'error' : 'warning'}
-                              sx={{ fontSize: '0.7rem' }}
+                            <StatusBadge
+                              status={shipment.paymentStatus === 'FAILED' ? 'ERROR' : 'WARNING'}
+                              label={shipment.paymentStatus}
+                              size="sm"
                             />
                           </Box>
                           <Box sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
@@ -928,11 +926,9 @@ export default function RecordPaymentPage() {
                               {formatCurrency(allocation.amountToPay)}
                             </TableCell>
                             <TableCell align="right">
-                              <Chip 
-                                label={allocation.amountToPay >= allocation.amountDue ? 'PAID' : 'PARTIAL'}
-                                size="small"
-                                color={allocation.amountToPay >= allocation.amountDue ? 'success' : 'warning'}
-                                sx={{ fontSize: '0.7rem', fontWeight: 600 }}
+                              <StatusBadge
+                                status={allocation.amountToPay >= allocation.amountDue ? 'PAID' : 'PARTIAL'}
+                                size="sm"
                               />
                             </TableCell>
                           </TableRow>

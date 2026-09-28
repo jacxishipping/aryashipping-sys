@@ -15,7 +15,7 @@ import {
   ShieldCheck,
   AlertCircle
 } from 'lucide-react';
-import { Box, Typography, Chip, Tooltip, CircularProgress } from '@mui/material';
+import { Box, Typography, Tooltip, CircularProgress } from '@mui/material';
 import { Button, toast } from '@/components/design-system';
 import { detectOceanCarrier } from '@/lib/services/ocean-carriers/carrier-detector';
 import { type OceanCarrierSyncSnapshot } from '@/lib/services/ocean-carriers/types';

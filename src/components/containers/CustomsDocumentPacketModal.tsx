@@ -17,7 +17,6 @@ import {
   Box,
   Typography,
   TextField,
-  Chip,
   Table,
   TableBody,
   TableCell,
@@ -25,7 +24,7 @@ import {
   TableHead,
   TableRow
 } from '@mui/material';
-import { Button, Modal, toast } from '@/components/design-system';
+import { Button, Modal, StatusBadge, toast } from '@/components/design-system';
 import { 
   generateCustomsPacketPDF, 
   downloadCustomsPacketPDF, 
@@ -227,11 +226,10 @@ export function CustomsDocumentPacketModal({
                       {s.lotNumber ? `${s.lotNumber} (${s.auctionName || 'Auction'})` : 'N/A'}
                     </TableCell>
                     <TableCell sx={{ fontSize: '0.75rem' }}>
-                      <Chip
-                        size="small"
+                      <StatusBadge
+                        status={s.hasTitle ? 'SUCCESS' : 'WARNING'}
                         label={s.titleStatus || (s.hasTitle ? 'Title Present' : 'Pending')}
-                        sx={{ fontSize: '0.7rem', height: 20 }}
-                        color={s.hasTitle ? 'success' : 'warning'}
+                        size="sm"
                       />
                     </TableCell>
                     <TableCell align="right" sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--success-dark)' }}>

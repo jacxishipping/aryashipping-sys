@@ -28,7 +28,6 @@ import {
   Typography,
   TextField,
   IconButton,
-  Chip,
 } from '@mui/material';
 import { Alert, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Modal, ConfirmDialog, Select } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -421,16 +420,11 @@ export default function UserLedgerManagementPage() {
       align: 'center' as const,
       width: '10%',
       render: (_, row) => (
-        <Chip
+        <StatusBadge
+          status={row.type === 'DEBIT' ? 'ERROR' : 'SUCCESS'}
           label={row.type}
-          size="small"
+          size="sm"
           icon={row.type === 'DEBIT' ? <TrendingUpIcon /> : <TrendingDownIcon />}
-          sx={{
-            backgroundColor: row.type === 'DEBIT' ? 'rgba(var(--error-rgb), 0.1)' : 'rgba(var(--success-rgb), 0.1)',
-            color: row.type === 'DEBIT' ? 'var(--error)' : 'var(--success)',
-            fontWeight: 600,
-            fontSize: '0.75rem',
-          }}
         />
       )
     },

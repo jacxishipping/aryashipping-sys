@@ -21,7 +21,7 @@ export const dynamic = 'force-dynamic';
 // Helper for currency if not available
 const formatDateKey = (date: Date) => {
     const normalized = new Date(date);
-    normalized.setHours(var(--text-primary-rgb), 0);
+    normalized.setHours(0, 0, 0, 0);
     return normalized.toISOString().slice(0, 10);
 };
 
@@ -116,7 +116,7 @@ async function getDashboardKpiData(
     const today = new Date();
     const startDate = new Date(today);
     startDate.setDate(startDate.getDate() - (trendDays - 1));
-    startDate.setHours(var(--text-primary-rgb), 0);
+    startDate.setHours(0, 0, 0, 0);
 
     const {
         effectiveUserId,

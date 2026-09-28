@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Box, Chip, List, ListItem, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
+import { StatusBadge, StatusFilterPills } from '@/components/design-system';
 import { 
   ArrowRight,
   BadgeDollarSign,
@@ -405,20 +406,10 @@ export function ActivityLog({ logs }: ActivityLogProps) {
     }
 
     return (
-      <Chip
+      <StatusBadge
+        status={variant === 'old' ? 'ERROR' : 'SUCCESS'}
         label={value}
-        size="small"
-        sx={{
-          height: 24,
-          fontSize: '0.72rem',
-          fontWeight: 600,
-          bgcolor: variant === 'old' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(34, 197, 94, 0.08)',
-          color: variant === 'old' ? 'rgb(248, 113, 113)' : 'rgb(74, 222, 128)',
-          border: variant === 'old' ? '1px solid rgba(248, 113, 113, 0.18)' : '1px solid rgba(74, 222, 128, 0.18)',
-          '& .MuiChip-label': {
-            px: 1.2,
-          },
-        }}
+        size="sm"
       />
     );
   };
@@ -430,23 +421,16 @@ export function ActivityLog({ logs }: ActivityLogProps) {
       </Typography>
 
       {availableCategories.length > 1 && (
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
-          {availableCategories.map((category) => (
-            <Chip
-              key={category}
-              clickable
-              label={`${categoryLabels[category]}${category === 'all' ? ` (${logs.length})` : ` (${logs.filter((log) => getActionCategory(log.action) === category).length})`}`}
-              color={selectedCategory === category ? 'primary' : 'default'}
-              onClick={() => setSelectedCategory(category)}
-              variant={selectedCategory === category ? 'filled' : 'outlined'}
-              sx={{
-                fontWeight: 600,
-                bgcolor: selectedCategory === category ? 'rgba(var(--accent-gold-rgb), 0.14)' : 'transparent',
-                color: selectedCategory === category ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                borderColor: selectedCategory === category ? 'rgba(var(--accent-gold-rgb), 0.28)' : 'var(--border)',
-              }}
-            />
-          ))}
+        <Box sx={{ mb: 2 }}>
+          <StatusFilterPills
+            options={availableCategories.map((category) => ({
+              value: category,
+              label: categoryLabels[category],
+              count: category === 'all' ? logs.length : logs.filter((log) => getActionCategory(log.action) === category).length,
+            }))}
+            selectedValue={selectedCategory}
+            onSelect={(value) => setSelectedCategory(value as ActivityCategory)}
+          />
         </Box>
       )}
 
@@ -467,22 +451,15 @@ export function ActivityLog({ logs }: ActivityLogProps) {
         }}
       />
 
-      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
-        {(['all', 'today', '7d', '30d'] as ActivityDateRange[]).map((range) => (
-          <Chip
-            key={range}
-            clickable
-            label={getDateRangeLabel(range)}
-            onClick={() => setSelectedDateRange(range)}
-            variant={selectedDateRange === range ? 'filled' : 'outlined'}
-            sx={{
-              fontWeight: 600,
-              bgcolor: selectedDateRange === range ? 'rgba(59, 130, 246, 0.14)' : 'transparent',
-              color: selectedDateRange === range ? 'rgb(96, 165, 250)' : 'var(--text-secondary)',
-              borderColor: selectedDateRange === range ? 'rgba(96, 165, 250, 0.28)' : 'var(--border)',
-            }}
-          />
-        ))}
+      <Box sx={{ mb: 2 }}>
+        <StatusFilterPills
+          options={(['all', 'today', '7d', '30d'] as ActivityDateRange[]).map((range) => ({
+            value: range,
+            label: getDateRangeLabel(range),
+          }))}
+          selectedValue={selectedDateRange}
+          onSelect={(value) => setSelectedDateRange(value as ActivityDateRange)}
+        />
       </Box>
       
       {filteredLogs.length === 0 ? (
