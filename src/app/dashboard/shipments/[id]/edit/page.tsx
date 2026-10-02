@@ -50,7 +50,7 @@ function sxToStyle(sx?: any): React.CSSProperties {
   return style;
 }
 
-function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: React.HTMLAttributes<HTMLElement> & { component?: any; sx?: any; [key: string]: any }) {
   return (
     <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
       {children}
@@ -58,7 +58,7 @@ function Box({ children, className = '', component: Component = 'div', sx, style
   );
 }
 
-function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: any) {
+function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: React.HTMLAttributes<HTMLElement> & { component?: any; variant?: string; color?: string; noWrap?: boolean; sx?: any; [key: string]: any }) {
   const variantClass = variant === 'caption' ? 'text-xs text-[var(--text-secondary)]' : variant === 'subtitle2' ? 'text-sm font-semibold' : variant === 'body2' ? 'text-sm' : '';
   return (
     <Component className={`${variantClass} ${noWrap ? 'truncate' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }} {...props}>

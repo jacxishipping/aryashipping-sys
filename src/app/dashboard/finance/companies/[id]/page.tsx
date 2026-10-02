@@ -35,7 +35,7 @@ function sxToStyle(sx?: any): React.CSSProperties {
   return style;
 }
 
-function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: React.HTMLAttributes<HTMLElement> & { component?: any; sx?: any; [key: string]: any }) {
   return (
     <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
       {children}
