@@ -9,6 +9,17 @@ import { ArrowLeft } from 'lucide-react';
 import { Button, Breadcrumbs, PageHeader, toast, LoadingState } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 
+function Box({ children, className = '', sx, style, ...props }: React.HTMLAttributes<HTMLDivElement> & { sx?: any; [key: string]: any }) {
+	const sxStyle: any = {};
+	if (sx?.px != null) { sxStyle.paddingLeft = typeof sx.px === 'number' ? `${sx.px * 8}px` : sx.px; sxStyle.paddingRight = sxStyle.paddingLeft; }
+	if (sx?.pt != null) sxStyle.paddingTop = typeof sx.pt === 'number' ? `${sx.pt * 8}px` : sx.pt;
+	return (
+		<div className={className} style={{ ...sxStyle, ...style }} {...props}>
+			{children}
+		</div>
+	);
+}
+
 type ContainerItem = {
 	id: string;
 	vin: string;

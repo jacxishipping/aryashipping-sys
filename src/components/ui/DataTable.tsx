@@ -6,6 +6,25 @@ import { cn } from '@/lib/utils';
 import { EmptyState } from '@/components/design-system';
 import { useTheme } from '@/hooks/useTheme';
 
+function Checkbox({ checked, indeterminate, onChange, disabled, className = '', ...props }: { checked?: boolean; indeterminate?: boolean; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; disabled?: boolean; className?: string; [key: string]: any }) {
+	const ref = useRef<HTMLInputElement>(null);
+	useEffect(() => {
+		if (ref.current) ref.current.indeterminate = Boolean(indeterminate) && !checked;
+	}, [indeterminate, checked]);
+	return (
+		<input
+			ref={ref}
+			type="checkbox"
+			checked={Boolean(checked)}
+			onChange={onChange}
+			disabled={disabled}
+			className={className}
+			style={{ width: 16, height: 16, accentColor: 'var(--accent-gold)', cursor: disabled ? 'not-allowed' : 'pointer' }}
+			{...props}
+		/>
+	);
+}
+
 export interface Column<T> {
   key: string;
   header: string;

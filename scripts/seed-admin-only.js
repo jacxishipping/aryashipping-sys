@@ -5,7 +5,11 @@ for (const line of fs.readFileSync('.env', 'utf8').split(/\r?\n/)) {
   const idx = line.indexOf('=');
   if (idx === -1) continue;
   const key = line.slice(0, idx).trim();
-  const value = line.slice(idx + 1).trim();
+  let value = line.slice(idx + 1).trim();
+  // Strip surrounding single/double quotes (Prisma CLI does this, manual parse must too)
+  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+    value = value.slice(1, -1);
+  }
   process.env[key] = value;
 }
 

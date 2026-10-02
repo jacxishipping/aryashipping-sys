@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Eye, Pencil, Plus, Search, Trash2, Truck, Layers } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
@@ -9,6 +10,26 @@ import { PageHeader, Button, StatsCard, toast, CopyButton, StatusFilterPills, St
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 import { DISPATCH_STATUS_OPTIONS, DISPATCH_STATUS_LABELS } from '@/lib/dispatch-workflow';
+
+function sxToStyle(sx?: any): React.CSSProperties {
+	if (!sx) return {};
+	const style: any = {};
+	for (const [key, val] of Object.entries(sx)) {
+		if (key === 'bgcolor') style.backgroundColor = val;
+		else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+		else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+		else style[key] = val;
+	}
+	return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: React.HTMLAttributes<HTMLElement> & { component?: any; sx?: any; [key: string]: any }) {
+	return (
+		<Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+			{children}
+		</Component>
+	);
+}
 
 interface Company {
   id: string;

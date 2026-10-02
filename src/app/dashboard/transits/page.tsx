@@ -10,6 +10,26 @@ import { PageHeader, Button, StatsCard, toast, CopyButton, StatusFilterPills, St
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 
+function sxToStyle(sx?: any): React.CSSProperties {
+	if (!sx) return {};
+	const style: any = {};
+	for (const [key, val] of Object.entries(sx)) {
+		if (key === 'bgcolor') style.backgroundColor = val;
+		else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+		else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+		else style[key] = val;
+	}
+	return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: React.HTMLAttributes<HTMLElement> & { component?: any; sx?: any; [key: string]: any }) {
+	return (
+		<Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+			{children}
+		</Component>
+	);
+}
+
 interface Company {
   id: string;
   name: string;

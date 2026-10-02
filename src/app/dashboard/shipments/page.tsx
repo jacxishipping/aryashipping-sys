@@ -21,6 +21,35 @@ import { QrCode, Eye, Trash2, PanelRightOpen, Plus } from 'lucide-react';
 import { BarcodeScannerModal } from '@/components/ui/BarcodeScannerModal';
 import { sanitizeTrackNumber } from '@/lib/tracking-sanitize';
 
+function sxToStyle(sx?: any): React.CSSProperties {
+	if (!sx) return {};
+	const style: any = {};
+	for (const [key, val] of Object.entries(sx)) {
+		if (key.startsWith('&') || key.startsWith('@')) continue;
+		if (typeof val === 'object' && val !== null) {
+			const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+			if (resolved !== undefined) style[key] = resolved;
+			continue;
+		}
+		if (key === 'bgcolor') style.backgroundColor = val;
+		else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+		else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+		else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+		else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+		else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+		else style[key] = val;
+	}
+	return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: React.HTMLAttributes<HTMLElement> & { component?: any; sx?: any; [key: string]: any }) {
+	return (
+		<Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+			{children}
+		</Component>
+	);
+}
+
 export default function ShipmentsListPage() {
 	const router = useRouter();
 	const { data: session } = useSession();
