@@ -1,14 +1,7 @@
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import VpnKeyOutlinedIcon from '@mui/icons-material/VpnKeyOutlined';
-import LoginOutlinedIcon from '@mui/icons-material/LoginOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
-import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
-import { Box, Typography } from '@mui/material';
+import { ExternalLink, Key, LogIn, Package, Wallet, Shield, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/design-system';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
@@ -62,197 +55,200 @@ export default async function PortalPublicLandingPage(
     {
       title: 'Shipment Visibility',
       description: 'Track assigned vehicles, milestones, and attached public documents in one branded workspace.',
-      icon: <Inventory2OutlinedIcon sx={{ fontSize: 22 }} />,
+      icon: <Package className="w-5 h-5" />,
     },
     {
       title: 'Portal Finance',
       description: 'Review invoices, unbilled amounts, and portal-only customer balances without touching the main finance ledger.',
-      icon: <AccountBalanceWalletOutlinedIcon sx={{ fontSize: 22 }} />,
+      icon: <Wallet className="w-5 h-5" />,
     },
     {
       title: 'Private Access',
       description: 'Customers and portal staff sign in with their own access path while data stays scoped to the right account.',
-      icon: <ShieldOutlinedIcon sx={{ fontSize: 22 }} />,
+      icon: <Shield className="w-5 h-5" />,
     },
   ];
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        color: 'var(--text-primary)',
+    <div
+      className="min-h-screen text-[var(--text-primary)]"
+      style={{
         background: `radial-gradient(circle at top left, rgba(${brand.accentRgb},0.28), transparent 28%), radial-gradient(circle at 85% 18%, rgba(${brand.accentRgb},0.16), transparent 24%), linear-gradient(180deg, #f8fafc 0%, #eef2f7 48%, #ffffff 100%)`,
       }}
     >
-      <Box sx={{ maxWidth: 1240, mx: 'auto', px: { xs: 2, sm: 3, lg: 5 }, py: { xs: 3, md: 4 } }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap', mb: { xs: 4, md: 6 } }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.4 }}>
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-10 py-6 md:py-8">
+        <div className="flex items-center justify-between gap-4 flex-wrap mb-8 md:mb-12">
+          <div className="flex items-center gap-3.5">
             {brand.logoUrl ? (
-              <Box component="img" src={brand.logoUrl} alt={`${brand.companyLabel} logo`} sx={{ width: 54, height: 54, borderRadius: 3, objectFit: 'cover', bgcolor: 'rgba(255,255,255,0.96)', border: '1px solid rgba(15,23,42,0.08)', boxShadow: '0 14px 28px rgba(15,23,42,0.08)' }} />
+              <img src={brand.logoUrl} alt={`${brand.companyLabel} logo`} className="w-[54px] h-[54px] rounded-2xl object-cover bg-white/95 border border-slate-900/10 shadow-lg" />
             ) : (
-              <Box sx={{ width: 54, height: 54, borderRadius: 3, display: 'grid', placeItems: 'center', fontWeight: 800, color: '#fff', background: brand.accentColor, boxShadow: `0 18px 30px rgba(${brand.accentRgb},0.28)` }}>
+              <div
+                className="w-[54px] h-[54px] rounded-2xl grid place-items-center font-bold text-white shadow-lg"
+                style={{ background: brand.accentColor, boxShadow: `0 18px 30px rgba(${brand.accentRgb},0.28)` }}
+              >
                 {brand.companyLabel.slice(0, 1).toUpperCase()}
-              </Box>
+              </div>
             )}
-            <Box>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+            <div>
+              <p className="text-xs uppercase tracking-widest text-[var(--text-secondary)]">
                 Portal Website
-              </Typography>
-              <Typography sx={{ fontSize: { xs: '1rem', md: '1.12rem' }, fontWeight: 800 }}>
+              </p>
+              <h2 className="text-base md:text-lg font-bold text-[var(--text-primary)]">
                 {brand.companyLabel}
-              </Typography>
-            </Box>
-          </Box>
+              </h2>
+            </div>
+          </div>
 
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             {session?.user ? (
-              <Link href={workspaceHref} style={{ textDecoration: 'none' }}>
-                <Button variant="primary" size="sm">
+              <Link href={workspaceHref}>
+                <Button variant="primary" size="sm" icon={<ArrowRight className="w-4 h-4" />} iconPosition="end">
                   Open Portal
-                  <ArrowForwardOutlinedIcon sx={{ fontSize: 16 }} />
                 </Button>
               </Link>
             ) : (
               <>
-                <Link href={customerLoginHref} style={{ textDecoration: 'none' }}>
-                  <Button variant="primary" size="sm">
+                <Link href={customerLoginHref}>
+                  <Button variant="primary" size="sm" icon={<Key className="w-4 h-4" />}>
                     Customer Login
-                    <VpnKeyOutlinedIcon sx={{ fontSize: 16 }} />
                   </Button>
                 </Link>
-                <Link href={staffLoginHref} style={{ textDecoration: 'none' }}>
-                  <Button variant="outline" size="sm">
+                <Link href={staffLoginHref}>
+                  <Button variant="outline" size="sm" icon={<LogIn className="w-4 h-4" />}>
                     Staff Sign In
-                    <LoginOutlinedIcon sx={{ fontSize: 16 }} />
                   </Button>
                 </Link>
               </>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
 
-        <Box sx={{ display: 'grid', gap: 3.5, gridTemplateColumns: { xs: '1fr', xl: '1.15fr 0.85fr' }, alignItems: 'stretch' }}>
-          <Box
-            sx={{
-              position: 'relative',
-              overflow: 'hidden',
-              borderRadius: 6,
-              border: '1px solid rgba(255,255,255,0.68)',
-              background: 'linear-gradient(145deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72))',
-              boxShadow: '0 28px 80px rgba(15,23,42,0.12)',
-              p: { xs: 3, md: 5 },
-            }}
+        <div className="grid gap-8 grid-cols-1 xl:grid-cols-[1.15fr_0.85fr] items-stretch">
+          <div
+            className="relative overflow-hidden rounded-3xl border border-white/70 bg-gradient-to-br from-white/90 to-white/70 shadow-2xl p-6 md:p-10"
           >
-            <Box sx={{ position: 'absolute', inset: 'auto -8% -30% auto', width: 280, height: 280, borderRadius: '50%', background: `radial-gradient(circle, rgba(${brand.accentRgb},0.30), rgba(${brand.accentRgb},0.02) 65%, transparent 72%)` }} />
-            <Box sx={{ position: 'relative', display: 'grid', gap: 2.25 }}>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                <Box sx={{ px: 1.4, py: 0.7, borderRadius: 999, bgcolor: `rgba(${brand.accentRgb},0.12)`, color: brand.accentColor, fontSize: '0.76rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            <div
+              className="absolute -right-8 -bottom-16 w-72 h-72 rounded-full pointer-events-none"
+              style={{ background: `radial-gradient(circle, rgba(${brand.accentRgb},0.30), rgba(${brand.accentRgb},0.02) 65%, transparent 72%)` }}
+            />
+            <div className="relative grid gap-5">
+              <div className="flex gap-2 flex-wrap">
+                <span
+                  className="px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider"
+                  style={{ backgroundColor: `rgba(${brand.accentRgb},0.12)`, color: brand.accentColor }}
+                >
                   Branded Customer Portal
-                </Box>
-                <Box sx={{ px: 1.4, py: 0.7, borderRadius: 999, bgcolor: portal.isActive ? 'rgba(34,197,94,0.14)' : 'rgba(245,158,11,0.16)', color: portal.isActive ? '#166534' : '#92400e', fontSize: '0.76rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                </span>
+                <span
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                    portal.isActive ? 'bg-emerald-500/15 text-emerald-800' : 'bg-amber-500/15 text-amber-800'
+                  }`}
+                >
                   {portal.isActive ? 'Portal Active' : 'Portal Preview'}
-                </Box>
-              </Box>
+                </span>
+              </div>
 
-              <Typography sx={{ fontSize: { xs: '2.4rem', md: '4.1rem' }, lineHeight: 0.94, fontWeight: 900, letterSpacing: '-0.06em', maxWidth: 760 }}>
+              <h1 className="text-3xl md:text-5xl font-black tracking-tight leading-none text-slate-900 max-w-[760px]">
                 {brand.companyLabel} customer access, shipment updates, and portal-only finance in one place.
-              </Typography>
+              </h1>
 
-              <Typography sx={{ fontSize: { xs: '1rem', md: '1.12rem' }, color: 'var(--text-secondary)', maxWidth: 720, lineHeight: 1.75 }}>
+              <p className="text-sm md:text-base text-slate-600 max-w-[720px] leading-relaxed">
                 This portal gives your downstream customers and internal portal staff a dedicated entry point with branded access, shipment visibility, invoice history, and customer-scoped finance records.
-              </Typography>
+              </p>
 
-              <Box sx={{ display: 'flex', gap: 1.2, flexWrap: 'wrap', pt: 1 }}>
+              <div className="flex gap-3 flex-wrap pt-2">
                 {session?.user ? (
-                  <Link href={workspaceHref} style={{ textDecoration: 'none' }}>
-                    <Button variant="primary" size="lg">
+                  <Link href={workspaceHref}>
+                    <Button variant="primary" size="lg" icon={<ArrowRight className="w-4 h-4" />} iconPosition="end">
                       Continue To Portal
-                      <ArrowForwardOutlinedIcon sx={{ fontSize: 18 }} />
                     </Button>
                   </Link>
                 ) : (
                   <>
-                    <Link href={customerLoginHref} style={{ textDecoration: 'none' }}>
-                      <Button variant="primary" size="lg">
+                    <Link href={customerLoginHref}>
+                      <Button variant="primary" size="lg" icon={<Key className="w-4 h-4" />}>
                         Login With Code
-                        <VpnKeyOutlinedIcon sx={{ fontSize: 18 }} />
                       </Button>
                     </Link>
-                    <Link href={staffLoginHref} style={{ textDecoration: 'none' }}>
-                      <Button variant="outline" size="lg">
+                    <Link href={staffLoginHref}>
+                      <Button variant="outline" size="lg" icon={<LogIn className="w-4 h-4" />}>
                         Portal Staff Sign In
-                        <LoginOutlinedIcon sx={{ fontSize: 18 }} />
                       </Button>
                     </Link>
                   </>
                 )}
-              </Box>
+              </div>
 
-              <Box sx={{ display: 'grid', gap: 1.2, gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, minmax(0, 1fr))' }, pt: 2 }}>
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-3 pt-4">
                 {activeFeatures.map((feature) => (
-                  <Box key={feature.title} sx={{ borderRadius: 3.5, border: '1px solid rgba(15,23,42,0.08)', bgcolor: 'rgba(255,255,255,0.72)', p: 2.1, display: 'grid', gap: 1 }}>
-                    <Box sx={{ width: 42, height: 42, borderRadius: 2.5, display: 'grid', placeItems: 'center', bgcolor: `rgba(${brand.accentRgb},0.12)`, color: brand.accentColor }}>
+                  <div key={feature.title} className="rounded-2xl border border-slate-900/10 bg-white/70 p-4 grid gap-2">
+                    <div
+                      className="w-10 h-10 rounded-xl grid place-items-center"
+                      style={{ backgroundColor: `rgba(${brand.accentRgb},0.12)`, color: brand.accentColor }}
+                    >
                       {feature.icon}
-                    </Box>
-                    <Typography sx={{ fontSize: '1rem', fontWeight: 800 }}>{feature.title}</Typography>
-                    <Typography sx={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>{feature.description}</Typography>
-                  </Box>
+                    </div>
+                    <h3 className="font-bold text-sm text-slate-900">{feature.title}</h3>
+                    <p className="text-xs text-slate-600 leading-relaxed">{feature.description}</p>
+                  </div>
                 ))}
-              </Box>
-            </Box>
-          </Box>
+              </div>
+            </div>
+          </div>
 
-          <Box sx={{ display: 'grid', gap: 2.5 }}>
-            <Box sx={{ borderRadius: 5, background: '#0f172a', color: '#e2e8f0', p: { xs: 3, md: 4 }, boxShadow: '0 24px 60px rgba(15,23,42,0.24)', display: 'grid', gap: 2 }}>
-              <Typography sx={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.16em', color: 'rgba(226,232,240,0.68)' }}>
+          <div className="grid gap-6">
+            <div className="rounded-3xl bg-slate-900 text-slate-100 p-6 md:p-8 shadow-2xl grid gap-4">
+              <p className="text-xs uppercase tracking-widest text-slate-400">
                 Access Flow
-              </Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800, lineHeight: 1.15 }}>
+              </p>
+              <h2 className="text-xl md:text-2xl font-bold leading-tight">
                 A portal entry page that feels like a standalone site.
-              </Typography>
-              <Box sx={{ display: 'grid', gap: 1.15 }}>
+              </h2>
+              <div className="grid gap-3">
                 {[
                   'Customers sign in with an 8-character login code and land inside their own scoped workspace.',
                   'Portal staff can use their existing staff sign-in path with the same branded destination.',
                   'Custom domains open this public page first, then route into the private workspace after login.',
                 ].map((item) => (
-                  <Box key={item} sx={{ display: 'flex', gap: 1.1, alignItems: 'flex-start' }}>
-                    <Box sx={{ width: 9, height: 9, borderRadius: '50%', bgcolor: brand.accentColor, mt: 0.75, flexShrink: 0 }} />
-                    <Typography sx={{ color: 'rgba(226,232,240,0.88)', lineHeight: 1.7 }}>{item}</Typography>
-                  </Box>
+                  <div key={item} className="flex gap-3 items-start">
+                    <div
+                      className="w-2 h-2 rounded-full mt-2 shrink-0"
+                      style={{ backgroundColor: brand.accentColor }}
+                    />
+                    <p className="text-xs md:text-sm text-slate-300 leading-relaxed">{item}</p>
+                  </div>
                 ))}
-              </Box>
-            </Box>
+              </div>
+            </div>
 
-            <Box sx={{ borderRadius: 5, border: '1px solid rgba(15,23,42,0.08)', background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(14px)', p: { xs: 3, md: 4 }, display: 'grid', gap: 1.5 }}>
-              <Typography sx={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.16em', color: 'var(--text-secondary)' }}>
+            <div className="rounded-3xl border border-slate-900/10 bg-white/80 backdrop-blur-md p-6 md:p-8 grid gap-3 shadow-lg">
+              <p className="text-xs uppercase tracking-widest text-[var(--text-secondary)]">
                 Portal Address
-              </Typography>
-              <Typography sx={{ fontSize: '1.18rem', fontWeight: 800 }}>
+              </p>
+              <h3 className="text-base md:text-lg font-bold text-[var(--text-primary)]">
                 {usingCustomDomain ? requestHost : portal.customDomain || publicHref}
-              </Typography>
-              <Typography sx={{ color: 'var(--text-secondary)', lineHeight: 1.75 }}>
+              </h3>
+              <p className="text-xs md:text-sm text-[var(--text-secondary)] leading-relaxed">
                 {portal.customDomainVerifiedAt
                   ? 'This portal already has a verified public hostname and can be shared as a standalone partner website.'
                   : 'This preview path is available now, and a verified custom domain will point here automatically once DNS is live.'}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                <Link href={publicHref} style={{ textDecoration: 'none' }}>
-                  <Button variant="outline" size="sm">
+              </p>
+              <div className="flex gap-2 flex-wrap pt-1">
+                <Link href={publicHref}>
+                  <Button variant="outline" size="sm" icon={<ExternalLink className="w-3.5 h-3.5" />} iconPosition="end">
                     Open Public Page
-                    <OpenInNewOutlinedIcon sx={{ fontSize: 16 }} />
                   </Button>
                 </Link>
                 {!session?.user ? (
-                  <Link href={customerLoginHref} style={{ textDecoration: 'none' }}>
+                  <Link href={customerLoginHref}>
                     <Button variant="primary" size="sm">Start Login</Button>
                   </Link>
                 ) : null}
-              </Box>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

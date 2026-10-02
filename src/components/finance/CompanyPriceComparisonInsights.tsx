@@ -1,6 +1,5 @@
 'use client';
 
-import { Box } from '@mui/material';
 import { Trophy, TrendingUp } from 'lucide-react';
 import type { CompanyPriceSnapshot, CompanyScorecard, ComparisonInsight } from '@/lib/company-price-comparison';
 
@@ -21,21 +20,13 @@ export default function CompanyPriceComparisonInsights({
   const maxSpread = insights.maxSpread || 1;
 
   return (
-    <Box sx={{ display: 'grid', gap: 1.5, mb: 2, gridTemplateColumns: { xs: '1fr', lg: 'minmax(0, 1.4fr) minmax(0, 1fr)' } }}>
-      <Box
-        sx={{
-          p: 1.5,
-          borderRadius: 2,
-          border: '1px solid var(--border)',
-          background: 'var(--panel)',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1.25 }}>
-          <Trophy className="w-4 h-4" style={{ color: 'var(--accent-gold)' }} />
-          <Box sx={{ fontWeight: 700 }}>Company Scorecard</Box>
-        </Box>
-        <Box sx={{ display: 'grid', gap: 1 }}>
+    <div className="grid gap-3 mb-4 grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+      <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <Trophy className="w-4 h-4 text-[var(--accent-gold)]" />
+          <span className="font-bold text-sm text-[var(--text-primary)]">Company Scorecard</span>
+        </div>
+        <div className="grid gap-2">
           {scorecards.map((scorecard, index) => {
             const company = visibleCompanies.find((item) => item.id === scorecard.companyId);
             if (!company) return null;
@@ -44,141 +35,112 @@ export default function CompanyPriceComparisonInsights({
             const winPercent = Math.round((scorecard.wins / maxWins) * 100);
 
             return (
-              <Box
+              <div
                 key={scorecard.companyId}
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: { xs: '1fr', sm: 'minmax(0, 1fr) auto auto auto' },
-                  gap: 1.5,
-                  alignItems: 'center',
-                  p: 1.25,
-                  borderRadius: 1.5,
-                  border: isLeader ? '1px solid rgba(34, 197, 94, 0.35)' : '1px solid var(--border)',
-                  background: isLeader ? 'rgba(34, 197, 94, 0.06)' : 'var(--background)',
-                  transition: 'transform 0.15s ease',
-                  '&:hover': { transform: 'translateY(-1px)' },
-                }}
+                className={`grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto] gap-3 items-center p-3 rounded-lg border transition-all ${
+                  isLeader
+                    ? 'border-emerald-500/35 bg-emerald-500/5'
+                    : 'border-[var(--border)] bg-[var(--background)]'
+                }`}
               >
-                <Box sx={{ minWidth: 0 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-                    <Box
-                      sx={{
-                        width: 22,
-                        height: 22,
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '0.68rem',
-                        fontWeight: 700,
-                        bgcolor: isLeader ? 'rgba(34, 197, 94, 0.15)' : 'rgba(var(--text-secondary-rgb), 0.1)',
-                        color: isLeader ? 'rgb(22, 163, 74)' : 'var(--text-secondary)',
-                      }}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <div
+                      className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                        isLeader
+                          ? 'bg-emerald-500/15 text-emerald-600'
+                          : 'bg-[var(--text-secondary)]/10 text-[var(--text-secondary)]'
+                      }`}
                     >
                       {index + 1}
-                    </Box>
-                    <Box sx={{ minWidth: 0 }}>
-                      <Box sx={{ fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    </div>
+                    <div className="min-w-0">
+                      <div className="font-bold text-sm text-[var(--text-primary)] truncate">
                         {company.name}
                         {isLeader && (
-                          <Box component="span" sx={{ ml: 0.75, fontSize: '0.65rem', color: 'rgb(22, 163, 74)', fontWeight: 700 }}>
+                          <span className="ml-2 text-[10px] text-emerald-600 font-bold uppercase">
                             LEADER
-                          </Box>
+                          </span>
                         )}
-                      </Box>
-                      <Box sx={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{company.destinationLabel}</Box>
-                    </Box>
-                  </Box>
-                  <Box sx={{ mt: 0.75, height: 4, borderRadius: 999, bgcolor: 'rgba(var(--border-rgb), 0.35)', overflow: 'hidden' }}>
-                    <Box
-                      sx={{
-                        width: `${winPercent}%`,
-                        height: '100%',
-                        borderRadius: 999,
-                        background: isLeader
-                          ? 'linear-gradient(90deg, rgb(22, 163, 74), rgb(34, 197, 94))'
-                          : 'linear-gradient(90deg, rgba(var(--accent-gold-rgb), 0.5), var(--accent-gold))',
-                      }}
+                      </div>
+                      <div className="text-xs text-[var(--text-secondary)]">{company.destinationLabel}</div>
+                    </div>
+                  </div>
+                  <div className="mt-2 h-1 rounded-full bg-[rgba(var(--border-rgb),0.35)] overflow-hidden">
+                    <div
+                      style={{ width: `${winPercent}%` }}
+                      className={`h-full rounded-full ${
+                        isLeader
+                          ? 'bg-gradient-to-r from-emerald-600 to-emerald-500'
+                          : 'bg-gradient-to-r from-[rgba(var(--accent-gold-rgb),0.5)] to-[var(--accent-gold)]'
+                      }`}
                     />
-                  </Box>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Box sx={{ fontSize: '0.68rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Wins</Box>
-                  <Box sx={{ fontWeight: 700, color: isLeader ? 'rgb(22, 163, 74)' : 'var(--text-primary)' }}>{scorecard.wins}</Box>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Box sx={{ fontSize: '0.68rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Coverage</Box>
-                  <Box sx={{ fontWeight: 700 }}>{scorecard.coveragePercent}%</Box>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Box sx={{ fontSize: '0.68rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>Avg Rate</Box>
-                  <Box sx={{ fontWeight: 700 }}>{scorecard.averageRate ? formatCurrency(scorecard.averageRate) : '—'}</Box>
-                </Box>
-              </Box>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-[var(--text-secondary)] uppercase">Wins</div>
+                  <div className={`font-bold text-sm ${isLeader ? 'text-emerald-600' : 'text-[var(--text-primary)]'}`}>{scorecard.wins}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-[var(--text-secondary)] uppercase">Coverage</div>
+                  <div className="font-bold text-sm text-[var(--text-primary)]">{scorecard.coveragePercent}%</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[10px] text-[var(--text-secondary)] uppercase">Avg Rate</div>
+                  <div className="font-bold text-sm text-[var(--text-primary)]">{scorecard.averageRate ? formatCurrency(scorecard.averageRate) : '—'}</div>
+                </div>
+              </div>
             );
           })}
-        </Box>
-      </Box>
+        </div>
+      </div>
 
-      <Box
-        sx={{
-          p: 1.5,
-          borderRadius: 2,
-          border: '1px solid var(--border)',
-          background: 'var(--panel)',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.06)',
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, mb: 1.25 }}>
-          <TrendingUp className="w-4 h-4" style={{ color: 'rgb(220, 38, 38)' }} />
-          <Box sx={{ fontWeight: 700 }}>Biggest Price Gaps</Box>
-        </Box>
+      <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-sm">
+        <div className="flex items-center gap-2 mb-3">
+          <TrendingUp className="w-4 h-4 text-red-600" />
+          <span className="font-bold text-sm text-[var(--text-primary)]">Biggest Price Gaps</span>
+        </div>
         {insights.topSpreads.length > 0 ? (
-          <Box sx={{ display: 'grid', gap: 0.5 }}>
+          <div className="grid gap-1">
             {insights.topSpreads.map((row, index) => {
               const spreadPercent = row.spread ? Math.round((row.spread / maxSpread) * 100) : 0;
 
               return (
-                <Box
+                <div
                   key={row.key}
-                  sx={{
-                    py: 0.85,
-                    borderBottom: index < insights.topSpreads.length - 1 ? '1px solid var(--border)' : 'none',
-                  }}
+                  className={`py-2 ${
+                    index < insights.topSpreads.length - 1 ? 'border-b border-[var(--border)]' : ''
+                  }`}
                 >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, mb: 0.5 }}>
-                    <Box sx={{ minWidth: 0 }}>
-                      <Box sx={{ fontWeight: 600, fontSize: '0.84rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  <div className="flex justify-between gap-2 mb-1">
+                    <div className="min-w-0">
+                      <div className="font-semibold text-xs text-[var(--text-primary)] truncate">
                         {row.label}
-                      </Box>
-                      <Box sx={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+                      </div>
+                      <div className="text-[10px] text-[var(--text-secondary)]">
                         {row.coverageCount}/{visibleCompanies.length} companies priced
-                      </Box>
-                    </Box>
-                    <Box sx={{ fontWeight: 700, color: 'rgb(220, 38, 38)', whiteSpace: 'nowrap' }}>
+                      </div>
+                    </div>
+                    <div className="font-bold text-xs text-red-600 whitespace-nowrap">
                       {row.spread ? formatCurrency(row.spread) : '—'}
-                    </Box>
-                  </Box>
-                  <Box sx={{ height: 4, borderRadius: 999, bgcolor: 'rgba(var(--border-rgb), 0.35)', overflow: 'hidden' }}>
-                    <Box
-                      sx={{
-                        width: `${spreadPercent}%`,
-                        height: '100%',
-                        borderRadius: 999,
-                        background: 'linear-gradient(90deg, rgba(220, 38, 38, 0.45), rgb(220, 38, 38))',
-                      }}
+                    </div>
+                  </div>
+                  <div className="h-1 rounded-full bg-[rgba(var(--border-rgb),0.35)] overflow-hidden">
+                    <div
+                      style={{ width: `${spreadPercent}%` }}
+                      className="h-full rounded-full bg-gradient-to-r from-red-500/50 to-red-600"
                     />
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               );
             })}
-          </Box>
+          </div>
         ) : (
-          <Box sx={{ color: 'var(--text-secondary)', fontSize: '0.84rem', py: 2, textAlign: 'center' }}>
+          <div className="text-[var(--text-secondary)] text-xs py-6 text-center">
             No price differences in the current view.
-          </Box>
+          </div>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }

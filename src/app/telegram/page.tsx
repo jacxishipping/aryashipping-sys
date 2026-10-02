@@ -1,5 +1,4 @@
 import { Suspense } from 'react';
-import { CircularProgress, Box } from '@mui/material';
 import { TelegramAppClient } from '@/components/telegram/TelegramAppClient';
 
 export const dynamic = 'force-dynamic';
@@ -8,17 +7,9 @@ export default function TelegramAliasPage() {
   return (
     <Suspense
       fallback={
-        <Box
-          sx={{
-            minHeight: '100vh',
-            bgcolor: '#0a0d14',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <CircularProgress sx={{ color: 'var(--accent-gold)' }} />
-        </Box>
+        <div className="min-h-screen bg-[#0a0d14] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-2 border-[var(--accent-gold)] border-t-transparent animate-spin" />
+        </div>
       }
     >
       <TelegramAppClient />

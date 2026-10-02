@@ -1,7 +1,6 @@
 'use client';
 
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
-import { Box, Typography } from '@mui/material';
+import { Users } from 'lucide-react';
 import { EmptyState } from '@/components/design-system';
 import { formatRelativeTime } from '@/lib/relative-time';
 
@@ -23,19 +22,19 @@ type PortalActivityListProps = {
 
 export function PortalActivityList({ activities, emptyTitle, emptyDescription }: PortalActivityListProps) {
   if (activities.length === 0) {
-    return <EmptyState icon={<PeopleOutlineIcon />} title={emptyTitle} description={emptyDescription} />;
+    return <EmptyState icon={<Users className="w-10 h-10" />} title={emptyTitle} description={emptyDescription} />;
   }
 
   return (
-    <Box sx={{ display: 'grid', gap: 1.5 }}>
+    <div className="grid gap-3">
       {activities.map((activity) => (
-        <Box key={activity.id} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2, display: 'grid', gap: 0.5 }}>
-          <Typography sx={{ fontWeight: 600 }}>{activity.summary}</Typography>
-          <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+        <div key={activity.id} className="border border-[var(--border)] rounded-xl p-4 grid gap-1 bg-[var(--panel)]">
+          <div className="font-semibold text-sm text-[var(--text-primary)]">{activity.summary}</div>
+          <div className="text-xs text-[var(--text-secondary)]">
             {formatRelativeTime(activity.performedAt)} • {new Date(activity.performedAt).toLocaleString()} • {activity.actor.name || activity.actor.email || 'Unknown actor'}
-          </Typography>
-        </Box>
+          </div>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 }

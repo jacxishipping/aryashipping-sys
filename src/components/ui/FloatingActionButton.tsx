@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Ship, Package, FileText, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Fab, Zoom, Box } from '@mui/material';
 import Tooltip from '@/components/design-system/Tooltip';
 
 interface QuickAction {
@@ -55,26 +54,35 @@ export function FloatingActionButton() {
       )}
 
       {/* Quick Actions */}
-      <Box
-        sx={{
-          position: 'fixed',
-          right: { xs: 16, lg: 32 },
-          bottom: { xs: 80, lg: 32 },
-          zIndex: 1300,
-          display: 'flex',
-          flexDirection: 'column-reverse',
-          gap: 2,
-          alignItems: 'flex-end',
-        }}
-      >
-        {quickActions.map((action, index) => (
-          <Zoom
-            key={action.href}
-            in={open}
-            timeout={200 + index * 50}
-            style={{ transitionDelay: open ? `${index * 50}ms` : '0ms' }}
-          >
-            <div className="flex items-center gap-3 justify-end">
+      <div className="fixed right-4 lg:right-8 bottom-20 lg:bottom-8 z-50 flex flex-col-reverse gap-3 items-end">
+        {/* Main FAB */}
+        <button
+          onClick={() => setOpen(!open)}
+          className={cn(
+            'w-14 h-14 rounded-full shadow-2xl transition-all duration-200',
+            'flex items-center justify-center text-white',
+            'hover:scale-105 active:scale-95',
+            'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--accent-gold)]'
+          )}
+          style={{
+            backgroundColor: open ? 'var(--error)' : 'var(--accent-gold)',
+          }}
+          aria-label={open ? 'Close quick actions' : 'Open quick actions'}
+        >
+          {open ? (
+            <X className="w-6 h-6 transition-transform duration-200" />
+          ) : (
+            <Plus className="w-6 h-6 transition-transform duration-200" />
+          )}
+        </button>
+
+        {open &&
+          quickActions.map((action, index) => (
+            <div
+              key={action.href}
+              className="flex items-center gap-3 justify-end animate-fade-in-up"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
               <Tooltip title={action.label} placement="left">
                 <button
                   onClick={() => handleAction(action.href)}
@@ -91,33 +99,8 @@ export function FloatingActionButton() {
                 </button>
               </Tooltip>
             </div>
-          </Zoom>
-        ))}
-
-        {/* Main FAB */}
-        <Fab
-          onClick={() => setOpen(!open)}
-          sx={{
-            bgcolor: open ? 'var(--error)' : 'var(--accent-gold)',
-            color: 'white',
-            width: 56,
-            height: 56,
-            '&:hover': {
-              bgcolor: open ? 'var(--error)' : '#C99B2F',
-              transform: 'scale(1.05)',
-            },
-            transition: 'all 0.2s ease',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-          }}
-          aria-label={open ? 'Close quick actions' : 'Open quick actions'}
-        >
-          {open ? (
-            <X className="w-6 h-6 transition-transform duration-200 rotate-0" />
-          ) : (
-            <Plus className="w-6 h-6 transition-transform duration-200 rotate-0" />
-          )}
-        </Fab>
-      </Box>
+          ))}
+      </div>
     </>
   );
 }

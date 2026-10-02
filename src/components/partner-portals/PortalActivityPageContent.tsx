@@ -3,9 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Box, TextField } from '@mui/material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, PageHeader, Select, toast } from '@/components/design-system';
+import { Button, FormField, PageHeader, Select, toast } from '@/components/design-system';
 import { PortalActivityList, type PortalActivityItem } from '@/components/partner-portals/PortalActivityList';
 
 type PortalInfo = {
@@ -88,14 +87,14 @@ export default function PortalActivityPageContent({ mode }: PortalActivityPageCo
       />
 
       <DashboardPanel noHeaderBorder>
-        <Box sx={{ display: 'grid', gap: 2 }}>
-          <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: '220px minmax(0, 1fr)' } }}>
+        <div className="grid gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)] gap-3">
             <Select label="Action" value={actionFilter} onChange={(value) => setActionFilter(String(value))} options={[{ value: 'ALL', label: 'All actions' }, { value: 'CREATE', label: 'Create' }, { value: 'UPDATE', label: 'Update' }, { value: 'DELETE', label: 'Delete' }]} />
-            <TextField label="Actor" placeholder="Filter by actor name or email" value={actorFilter} onChange={(event) => setActorFilter(event.target.value)} />
-          </Box>
+            <FormField label="Actor" placeholder="Filter by actor name or email" value={actorFilter} onChange={(event) => setActorFilter(event.target.value)} />
+          </div>
 
           {loading ? (
-            <Box sx={{ color: 'var(--text-secondary)' }}>Loading portal activity...</Box>
+            <div className="text-sm text-[var(--text-secondary)]">Loading portal activity...</div>
           ) : (
             <PortalActivityList
               activities={activities}
@@ -103,7 +102,7 @@ export default function PortalActivityPageContent({ mode }: PortalActivityPageCo
               emptyDescription="Try a different action or actor filter."
             />
           )}
-        </Box>
+        </div>
       </DashboardPanel>
     </DashboardSurface>
   );

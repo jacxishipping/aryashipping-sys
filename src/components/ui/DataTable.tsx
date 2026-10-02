@@ -3,7 +3,6 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { ArrowUpDown, ArrowUp, ArrowDown, Trash2, Download, Edit, Columns, Eye, Search, AlignJustify, ListFilter, X, LayoutGrid, Table as TableIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Checkbox } from '@mui/material';
 import { EmptyState } from '@/components/design-system';
 import { useTheme } from '@/hooks/useTheme';
 

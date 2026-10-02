@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Add, ChevronLeft, ChevronRight, Inventory2 } from '@mui/icons-material';
-import { Box, Typography } from '@mui/material';
+import { ChevronLeft, ChevronRight, Package, Plus } from 'lucide-react';
 import ShipmentRow from '@/components/dashboard/ShipmentRow';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { Button, EmptyState, SkeletonTable, toast } from '@/components/design-system';
@@ -112,28 +111,12 @@ export default function ShipmentsResultsPanel({
 	return (
 		<DashboardPanel
 			title={
-				<Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+				<div className="inline-flex items-center gap-2">
 					<span>Results</span>
-					<Box
-						component="span"
-						sx={{
-							display: 'inline-flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-							px: 1,
-							py: 0.25,
-							borderRadius: '999px',
-							bgcolor: 'rgba(var(--accent-gold-rgb), 0.12)',
-							color: 'var(--accent-gold)',
-							border: '1px solid rgba(var(--accent-gold-rgb), 0.25)',
-							fontSize: '0.72rem',
-							fontWeight: 700,
-							lineHeight: 1.2,
-						}}
-					>
+					<span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] border border-[rgba(var(--accent-gold-rgb),0.25)] text-xs font-bold leading-tight">
 						{shipments.length}
-					</Box>
-				</Box>
+					</span>
+				</div>
 			}
 			description={
 				shipments.length
@@ -144,25 +127,25 @@ export default function ShipmentsResultsPanel({
 			className="overflow-hidden"
 			bodyClassName="overflow-hidden"
 			actions={
-				<Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+				<div className="flex items-center gap-2">
 					{canUseBulkMode ? (
 						<Button variant="outline" size="sm" onClick={onToggleBulkMode}>
 							{showBulkTable ? 'Card view' : 'Bulk mode'}
 						</Button>
 					) : null}
-				</Box>
+				</div>
 			}
 		>
 			{loading ? (
 				<SkeletonTable rows={5} columns={6} />
 			) : shipments.length === 0 ? (
 				<EmptyState
-					icon={<Inventory2 />}
+					icon={<Package className="h-10 w-10" />}
 					title="No shipments found"
 					description={searchQuery ? 'Try adjusting your search filters' : 'Get started by creating your first shipment'}
 					action={
 						canManageShipments ? (
-							<Button href="/dashboard/shipments/new" variant="primary" icon={<Add />} iconPosition="start">
+							<Button href="/dashboard/shipments/new" variant="primary" icon={<Plus className="h-4 w-4" />} iconPosition="start">
 								Create shipment
 							</Button>
 						) : undefined
@@ -171,7 +154,7 @@ export default function ShipmentsResultsPanel({
 			) : (
 				<>
 					{showBulkTable ? (
-						<Box sx={{ display: { xs: 'none', md: 'block' } }}>
+						<div className="hidden md:block">
 							<DataTable
 								data={shipmentTableRows}
 								columns={shipmentColumns}
@@ -194,19 +177,10 @@ export default function ShipmentsResultsPanel({
 								currentPage={currentPage}
 								totalPages={totalPages}
 							/>
-						</Box>
+						</div>
 					) : null}
 
-					<Box
-						sx={{
-							display: showBulkTable ? { xs: 'flex', md: 'none' } : 'flex',
-							flexDirection: 'column',
-							gap: { xs: 1, sm: 1.15, md: 1.25 },
-							minWidth: 0,
-							width: '100%',
-							overflow: 'hidden',
-						}}
-					>
+					<div className={`flex flex-col gap-2 min-w-0 w-full overflow-hidden ${showBulkTable ? 'md:hidden' : ''}`}>
 						{shipments.map((shipment, index) => (
 							<ShipmentRow
 								key={shipment.id}
@@ -219,7 +193,7 @@ export default function ShipmentsResultsPanel({
 								onOpenQR={onOpenQR}
 							/>
 						))}
-					</Box>
+					</div>
 
 					{/* Floating Batch Actions HUD */}
 					<BatchActionsHUD
@@ -248,56 +222,35 @@ export default function ShipmentsResultsPanel({
 					)}
 
 					{totalPages > 1 && (
-						<Box
-							sx={{
-								mt: 2,
-								display: 'flex',
-								flexDirection: { xs: 'column', sm: 'row' },
-								alignItems: 'center',
-								justifyContent: 'space-between',
-								gap: 1,
-								width: '100%',
-							}}
-						>
+						<div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 w-full">
 							<Button
 								variant="outline"
 								size="sm"
-								icon={<ChevronLeft sx={{ fontSize: { xs: 12, sm: 14 } }} />}
+								icon={<ChevronLeft className="h-4 w-4" />}
 								iconPosition="start"
 								onClick={onPreviousPage}
 								disabled={currentPage === 1}
-								sx={{ width: { xs: '100%', sm: 'auto' }, minHeight: '40px', borderRadius: '999px' }}
+								className="w-full sm:w-auto"
 							>
 								Previous
 							</Button>
-							<Box
-								sx={{
-									display: 'inline-flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									px: 1.25,
-									py: 0.5,
-									borderRadius: '999px',
-									bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)',
-									border: '1px solid rgba(var(--accent-gold-rgb), 0.2)',
-								}}
-							>
-								<Typography sx={{ fontSize: { xs: '0.7rem', sm: '0.72rem', md: '0.75rem' }, color: 'var(--accent-gold)', fontWeight: 700 }}>
+							<div className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-[rgba(var(--accent-gold-rgb),0.08)] border border-[rgba(var(--accent-gold-rgb),0.2)]">
+								<span className="text-xs text-[var(--accent-gold)] font-bold">
 									Page {currentPage} of {totalPages}
-								</Typography>
-							</Box>
+								</span>
+							</div>
 							<Button
 								variant="outline"
 								size="sm"
-								icon={<ChevronRight sx={{ fontSize: { xs: 12, sm: 14 } }} />}
+								icon={<ChevronRight className="h-4 w-4" />}
 								iconPosition="end"
 								onClick={onNextPage}
 								disabled={currentPage === totalPages}
-								sx={{ width: { xs: '100%', sm: 'auto' }, minHeight: '40px', borderRadius: '999px' }}
+								className="w-full sm:w-auto"
 							>
 								Next
 							</Button>
-						</Box>
+						</div>
 					)}
 				</>
 			)}

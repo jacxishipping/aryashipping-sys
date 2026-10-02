@@ -1,16 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { IconButton, Box } from '@mui/material';
-import { LightMode, DarkMode } from '@mui/icons-material';
+import { Moon, Sun } from 'lucide-react';
 import Tooltip from './Tooltip';
-
-/**
- * Theme Toggle Component
- * 
- * Switch between light and dark modes.
- * Persists preference in localStorage.
- */
 
 export type Theme = 'light' | 'dark' | 'system';
 
@@ -66,36 +58,23 @@ export function ThemeToggle() {
   // Don't render until mounted to avoid hydration mismatch
   if (!mounted) {
     return (
-      <Box sx={{ width: 40, height: 40 }} />
+      <div className="w-10 h-10" />
     );
   }
 
   return (
     <Tooltip title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
-      <IconButton
+      <button
         onClick={toggleTheme}
         aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-        sx={{
-          color: 'var(--text-secondary)',
-          minWidth: { xs: 44, sm: 0 },
-          minHeight: { xs: 44, sm: 0 },
-          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-          '&:hover': {
-            color: 'var(--accent-gold)',
-            bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)',
-            transform: 'rotate(20deg)',
-          },
-          '&:active': {
-            transform: 'rotate(20deg) scale(0.95)',
-          },
-        }}
+        className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--accent-gold)] hover:bg-[rgba(var(--accent-gold-rgb),0.1)] transition-all min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center focus:outline-none"
       >
         {theme === 'light' ? (
-          <LightMode sx={{ fontSize: 20 }} />
+          <Sun className="w-5 h-5 transition-transform hover:rotate-45" />
         ) : (
-          <DarkMode sx={{ fontSize: 20 }} />
+          <Moon className="w-5 h-5 transition-transform hover:rotate-12" />
         )}
-      </IconButton>
+      </button>
     </Tooltip>
   );
 }

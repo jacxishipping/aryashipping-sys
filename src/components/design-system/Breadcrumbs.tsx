@@ -2,8 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Box, Typography } from '@mui/material';
-import { ChevronRight, Home } from '@mui/icons-material';
+import { ChevronRight, Home } from 'lucide-react';
 
 /**
  * Breadcrumbs Component
@@ -38,7 +37,7 @@ function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
   const breadcrumbs: BreadcrumbItem[] = [];
 
   let path = '';
-  segments.forEach((segment, index) => {
+  segments.forEach((segment) => {
     path += `/${segment}`;
     
     // Skip dynamic route segments like [id]
@@ -78,50 +77,21 @@ export default function Breadcrumbs({
   }
 
   return (
-    <Box
-      component="nav"
+    <nav
       aria-label="breadcrumb"
-      className={className}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 0.5,
-        py: 1.5,
-        px: 0.5,
-        flexWrap: 'wrap',
-      }}
+      className={`flex items-center gap-1 py-1.5 px-0.5 flex-wrap ${className || ''}`}
     >
       {/* Home link */}
       {showHome && (
         <>
-          <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 0.5,
-                px: 1,
-                py: 0.5,
-                borderRadius: 1.5,
-                transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                '&:hover': {
-                  bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)',
-                },
-              }}
-            >
-              <Home sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-              <Typography
-                sx={{
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  color: 'var(--text-secondary)',
-                }}
-              >
-                {homeLabel}
-              </Typography>
-            </Box>
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-1.5 px-2 py-1 rounded-lg text-[var(--text-secondary)] hover:bg-[rgba(var(--accent-gold-rgb),0.1)] hover:text-[var(--accent-gold)] transition-colors no-underline text-sm font-medium"
+          >
+            <Home className="w-4 h-4 text-[var(--text-secondary)]" />
+            <span>{homeLabel}</span>
           </Link>
-          <ChevronRight sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
+          <ChevronRight className="w-4 h-4 text-[var(--text-secondary)]" />
         </>
       )}
 
@@ -131,49 +101,28 @@ export default function Breadcrumbs({
         const itemKey = item.href ?? `${item.label}-${index}`;
 
         return (
-          <Box key={itemKey} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+          <div key={itemKey} className="flex items-center gap-1">
             {isLast || !item.href ? (
               // Last item - not clickable
-              <Typography
-                sx={{
-                  fontSize: '0.875rem',
-                  fontWeight: 600,
-                  color: 'var(--text-primary)',
-                  px: 1,
-                  py: 0.5,
-                }}
-              >
+              <span className="text-sm font-semibold text-[var(--text-primary)] px-2 py-1">
                 {item.label}
-              </Typography>
+              </span>
             ) : (
               // Clickable breadcrumb
               <>
-                <Link href={item.href} style={{ textDecoration: 'none' }}>
-                  <Typography
-                    sx={{
-                      fontSize: '0.875rem',
-                      fontWeight: 500,
-                      color: 'var(--text-secondary)',
-                      px: 1,
-                      py: 0.5,
-                      borderRadius: 1.5,
-                      transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-                      '&:hover': {
-                        bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)',
-                        color: 'var(--accent-gold)',
-                      },
-                    }}
-                  >
-                    {item.label}
-                  </Typography>
+                <Link
+                  href={item.href}
+                  className="text-sm font-medium text-[var(--text-secondary)] px-2 py-1 rounded-lg transition-colors hover:bg-[rgba(var(--accent-gold-rgb),0.1)] hover:text-[var(--accent-gold)] no-underline"
+                >
+                  {item.label}
                 </Link>
-                <ChevronRight sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
+                <ChevronRight className="w-4 h-4 text-[var(--text-secondary)]" />
               </>
             )}
-          </Box>
+          </div>
         );
       })}
-    </Box>
+    </nav>
   );
 }
 
@@ -188,57 +137,30 @@ export function BreadcrumbsCompact({ className }: { className?: string }) {
   const parentPage = breadcrumbs[breadcrumbs.length - 2];
 
   return (
-    <Box
-      component="nav"
+    <nav
       aria-label="breadcrumb"
-      className={className}
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 0.5,
-        py: 1,
-      }}
+      className={`flex items-center gap-1 py-1 ${className || ''}`}
     >
       {parentPage && (
         <>
           {parentPage.href ? (
-            <Link href={parentPage.href} style={{ textDecoration: 'none' }}>
-              <Typography
-                sx={{
-                  fontSize: '0.8125rem',
-                  fontWeight: 500,
-                  color: 'var(--text-secondary)',
-                  '&:hover': {
-                    color: 'var(--accent-gold)',
-                  },
-                }}
-              >
-                {parentPage.label}
-              </Typography>
-            </Link>
-          ) : (
-            <Typography
-              sx={{
-                fontSize: '0.8125rem',
-                fontWeight: 500,
-                color: 'var(--text-secondary)',
-              }}
+            <Link
+              href={parentPage.href}
+              className="text-xs font-medium text-[var(--text-secondary)] hover:text-[var(--accent-gold)] no-underline"
             >
               {parentPage.label}
-            </Typography>
+            </Link>
+          ) : (
+            <span className="text-xs font-medium text-[var(--text-secondary)]">
+              {parentPage.label}
+            </span>
           )}
-          <ChevronRight sx={{ fontSize: 14, color: 'var(--text-secondary)' }} />
+          <ChevronRight className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
         </>
       )}
-      <Typography
-        sx={{
-          fontSize: '0.8125rem',
-          fontWeight: 600,
-          color: 'var(--text-primary)',
-        }}
-      >
+      <span className="text-xs font-semibold text-[var(--text-primary)]">
         {currentPage.label}
-      </Typography>
-    </Box>
+      </span>
+    </nav>
   );
 }

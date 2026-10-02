@@ -18,14 +18,7 @@ import {
   ArrowRight,
   RefreshCw
 } from 'lucide-react';
-import {
-  Box,
-  Typography,
-  Chip,
-  TextField,
-  CircularProgress
-} from '@mui/material';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, FormField, Modal, Select, toast } from '@/components/design-system';
 
 export interface ExtractedDocumentData {
   vin?: string;
@@ -268,34 +261,25 @@ export function AiDocumentOcrModal({
       open={open}
       onClose={onClose}
       title={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Box
-            sx={{
-              p: 1,
-              borderRadius: 2,
-              bgcolor: 'rgba(var(--accent-gold-rgb), 0.15)',
-              color: 'var(--accent-gold)',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 rounded-lg bg-[rgba(var(--accent-gold-rgb),0.15)] text-[var(--accent-gold)] flex items-center">
             <Sparkles className="w-5 h-5" />
-          </Box>
-          <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+          </div>
+          <span className="text-base font-bold text-[var(--text-primary)]">
             AI Document OCR & Auto-Intake
-          </Typography>
-        </Box>
+          </span>
+        </div>
       }
       description="Auto-extract VIN, specs, weights & consignee from Copart, IAAI, Manheim, BOL or Title"
       size="md"
       actions={
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1.5, width: '100%', flexWrap: 'wrap' }}>
+        <div className="flex justify-between items-center gap-2 w-full flex-wrap">
           <Button variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>
 
           {extractedData && (
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
+            <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -313,189 +297,136 @@ export function AiDocumentOcrModal({
               >
                 1-Click Create Shipment
               </Button>
-            </Box>
+            </div>
           )}
-        </Box>
+        </div>
       }
     >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".pdf,.png,.jpg,.jpeg,.webp"
-          className="hidden"
-          onChange={(e) => {
-            if (e.target.files && e.target.files[0]) {
-              handleFileSelect(e.target.files[0]);
-            }
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".pdf,.png,.jpg,.jpeg,.webp"
+        className="hidden"
+        onChange={(e) => {
+          if (e.target.files && e.target.files[0]) {
+            handleFileSelect(e.target.files[0]);
+          }
+        }}
+      />
+
+      {!file && (
+        <div
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDragging(true);
           }}
-        />
+          onDragLeave={() => setIsDragging(false)}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
+            isDragging
+              ? 'border-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.05)]'
+              : 'border-[var(--border)] bg-[var(--background)] hover:border-[var(--accent-gold)] hover:bg-[rgba(var(--accent-gold-rgb),0.02)]'
+          }`}
+        >
+          <div className="w-14 h-14 rounded-full bg-[rgba(var(--accent-gold-rgb),0.1)] text-[var(--accent-gold)] flex items-center justify-center mx-auto mb-3">
+            <UploadCloud className="w-7 h-7" />
+          </div>
+          <p className="font-bold text-sm text-[var(--text-primary)] mb-1">
+            Click to upload or drag & drop shipping documents
+          </p>
+          <p className="text-xs text-[var(--text-secondary)] max-w-md mx-auto">
+            Supported: Copart Sales Receipts, IAAI Invoices, Manheim Gate Passes, Carrier Bills of Lading, Dock Receipts, Certificate of Titles (PDF, PNG, JPG up to 20MB)
+          </p>
+        </div>
+      )}
 
-        {!file && (
-          <Box
-            onDragOver={(e) => {
-              e.preventDefault();
-              setIsDragging(true);
-            }}
-            onDragLeave={() => setIsDragging(false)}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            sx={{
-              border: '2px dashed',
-              borderColor: isDragging ? 'var(--accent-gold)' : 'var(--border)',
-              borderRadius: 3,
-              p: 5,
-              textAlign: 'center',
-              cursor: 'pointer',
-              bgcolor: isDragging ? 'rgba(var(--accent-gold-rgb), 0.05)' : 'var(--background)',
-              transition: 'all 0.2s ease',
-              '&:hover': {
-                borderColor: 'var(--accent-gold)',
-                bgcolor: 'rgba(var(--accent-gold-rgb), 0.02)',
-              },
-            }}
-          >
-            <Box
-              sx={{
-                width: 56,
-                height: 56,
-                borderRadius: '50%',
-                bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)',
-                color: 'var(--accent-gold)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mx: 'auto',
-                mb: 2,
-              }}
-            >
-              <UploadCloud className="w-7 h-7" />
-            </Box>
-            <Typography sx={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)', mb: 0.5 }}>
-              Click to upload or drag & drop shipping documents
-            </Typography>
-            <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', maxW: '400px', mx: 'auto' }}>
-              Supported: Copart Sales Receipts, IAAI Invoices, Manheim Gate Passes, Carrier Bills of Lading, Dock Receipts, Certificate of Titles (PDF, PNG, JPG up to 20MB)
-            </Typography>
-          </Box>
-        )}
+      {isProcessing && (
+        <div className="py-12 text-center">
+          <Loader2 className="w-9 h-9 text-[var(--accent-gold)] animate-spin mx-auto mb-3" />
+          <p className="font-bold text-sm text-[var(--text-primary)]">
+            Analyzing Document with Multimodal OCR...
+          </p>
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
+            Extracting 17-digit VIN, vehicle year/make/model, buyer specs, and pricing
+          </p>
+        </div>
+      )}
 
-        {isProcessing && (
-          <Box sx={{ py: 6, textAlign: 'center' }}>
-            <CircularProgress size={36} sx={{ color: 'var(--accent-gold)', mb: 2 }} />
-            <Typography sx={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
-              Analyzing Document with Multimodal OCR...
-            </Typography>
-            <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', mt: 0.5 }}>
-              Extracting 17-digit VIN, vehicle year/make/model, buyer specs, and pricing
-            </Typography>
-          </Box>
-        )}
-
-        {file && !isProcessing && extractedData && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-            {/* Success Banner */}
-            <Box
-              sx={{
-                p: 2,
-                borderRadius: 2,
-                bgcolor: 'rgba(34, 197, 94, 0.08)',
-                border: '1px solid rgba(34, 197, 94, 0.3)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
-                <Box>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    AI Extraction Successful: {file.name}
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                    {extractedData.confidenceNotes || 'All primary fields extracted. Please review below.'}
-                  </Typography>
-                </Box>
-              </Box>
-              <Button size="sm" variant="ghost" onClick={resetModal} className="text-xs">
-                <RefreshCw className="w-3.5 h-3.5 mr-1" />
-                Scan Another
-              </Button>
-            </Box>
-
-            {/* Extracted Fields Form */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <TextField
-                label="VIN (17 Characters)"
-                size="small"
-                fullWidth
-                value={formData.vin}
-                onChange={(e) => setFormData({ ...formData, vin: e.target.value.toUpperCase() })}
-                slotProps={{
-                  input: {
-                    style: { fontFamily: 'monospace', fontWeight: 700 },
-                  },
-                }}
-              />
-              <TextField
-                label="Vehicle Year"
-                size="small"
-                fullWidth
-                type="number"
-                value={formData.year}
-                onChange={(e) => setFormData({ ...formData, year: e.target.value })}
-              />
-              <TextField
-                label="Vehicle Make"
-                size="small"
-                fullWidth
-                value={formData.make}
-                onChange={(e) => setFormData({ ...formData, make: e.target.value })}
-              />
-              <TextField
-                label="Vehicle Model"
-                size="small"
-                fullWidth
-                value={formData.model}
-                onChange={(e) => setFormData({ ...formData, model: e.target.value })}
-              />
-              <TextField
-                label="Lot / Stock #"
-                size="small"
-                fullWidth
-                value={formData.lotNumber}
-                onChange={(e) => setFormData({ ...formData, lotNumber: e.target.value })}
-              />
-              <Select
-                label="Auction / Source"
-                size="small"
-                value={formData.auctionName}
-                onChange={(value) => setFormData({ ...formData, auctionName: String(value) as any })}
-                options={['Copart', 'IAAI', 'Impact', 'Manheim', 'Other'].map((name) => ({ value: name, label: name }))}
-              />
-              <TextField
-                label="Purchase Price ($ USD)"
-                size="small"
-                fullWidth
-                value={formData.purchasePrice}
-                onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
-              />
-              <TextField
-                label="Title Document Status"
-                size="small"
-                fullWidth
-                value={formData.titleStatus}
-                onChange={(e) => setFormData({ ...formData, titleStatus: e.target.value })}
-              />
-              <Select
-                label="Document Category"
-                size="small"
-                value={formData.category}
-                onChange={(value) => setFormData({ ...formData, category: String(value) })}
-                options={['INVOICE', 'BILL_OF_LADING', 'TITLE', 'CUSTOMS', 'INSURANCE', 'OTHER'].map((c) => ({ value: c, label: c.replace(/_/g, ' ') }))}
-              />
+      {file && !isProcessing && extractedData && (
+        <div className="flex flex-col gap-3">
+          {/* Success Banner */}
+          <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+              <div>
+                <div className="text-xs font-bold text-[var(--text-primary)]">
+                  AI Extraction Successful: {file.name}
+                </div>
+                <div className="text-[11px] text-[var(--text-secondary)]">
+                  {extractedData.confidenceNotes || 'All primary fields extracted. Please review below.'}
+                </div>
+              </div>
             </div>
-          </Box>
-        )}
+            <Button size="sm" variant="ghost" onClick={resetModal} className="text-xs">
+              <RefreshCw className="w-3.5 h-3.5 mr-1" />
+              Scan Another
+            </Button>
+          </div>
+
+          {/* Extracted Fields Form */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <FormField
+              label="VIN (17 Characters)"
+              value={formData.vin}
+              onChange={(e) => setFormData({ ...formData, vin: e.target.value.toUpperCase() })}
+            />
+            <FormField
+              label="Vehicle Year"
+              type="number"
+              value={formData.year}
+              onChange={(e) => setFormData({ ...formData, year: e.target.value })}
+            />
+            <FormField
+              label="Vehicle Make"
+              value={formData.make}
+              onChange={(e) => setFormData({ ...formData, make: e.target.value })}
+            />
+            <FormField
+              label="Vehicle Model"
+              value={formData.model}
+              onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+            />
+            <FormField
+              label="Lot / Stock #"
+              value={formData.lotNumber}
+              onChange={(e) => setFormData({ ...formData, lotNumber: e.target.value })}
+            />
+            <Select
+              label="Auction / Source"
+              value={formData.auctionName}
+              onChange={(value) => setFormData({ ...formData, auctionName: String(value) as any })}
+              options={['Copart', 'IAAI', 'Impact', 'Manheim', 'Other'].map((name) => ({ value: name, label: name }))}
+            />
+            <FormField
+              label="Purchase Price ($ USD)"
+              value={formData.purchasePrice}
+              onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
+            />
+            <FormField
+              label="Title Document Status"
+              value={formData.titleStatus}
+              onChange={(e) => setFormData({ ...formData, titleStatus: e.target.value })}
+            />
+            <Select
+              label="Document Category"
+              value={formData.category}
+              onChange={(value) => setFormData({ ...formData, category: String(value) })}
+              options={['INVOICE', 'BILL_OF_LADING', 'TITLE', 'CUSTOMS', 'INSURANCE', 'OTHER'].map((c) => ({ value: c, label: c.replace(/_/g, ' ') }))}
+            />
+          </div>
+        </div>
+      )}
     </Modal>
   );
 }

@@ -19,9 +19,8 @@ import { CheckCircle2,
   Truck,
   X,
 } from 'lucide-react';
-import { Box, CircularProgress, TextField } from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Alert, Button, Modal, toast } from '@/components/design-system';
+import { Alert, Button, FormField, Modal, toast } from '@/components/design-system';
 import { cn } from '@/lib/utils';
 import { formatMoney as formatSnapshotMoney } from '@/lib/format';
 import { ShipmentProfitabilityCard } from '@/components/dashboard/ShipmentProfitabilityCard';
@@ -964,7 +963,7 @@ export default function ShipmentFinancialsTab({
           </>
         }
       >
-        <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
+        <div className="grid gap-3 pt-2">
           {editingInvoiceNumber ? (
             <Alert severity="info">
               This expense is linked to Invoice <strong>{editingInvoiceNumber}</strong>. Description, notes, and receipt
@@ -976,27 +975,27 @@ export default function ShipmentFinancialsTab({
             </Alert>
           )}
 
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            <TextField
+          <div className="grid grid-cols-2 gap-3">
+            <FormField
               label="Amount (Read-only)"
               value={editingExpense ? `$${editingExpense.amount.toFixed(2)}` : ''}
               disabled
             />
-            <TextField
+            <FormField
               label="Date (Read-only)"
               value={editingExpense ? new Date(editingExpense.transactionDate).toLocaleDateString() : ''}
               disabled
             />
-          </Box>
+          </div>
 
-          <TextField
+          <FormField
             label="Description *"
             value={editDescription}
             onChange={(event) => setEditDescription(event.target.value)}
             required
           />
 
-          <TextField
+          <FormField
             label="Notes"
             rows={2}
             multiline
@@ -1005,10 +1004,10 @@ export default function ShipmentFinancialsTab({
           />
 
           {/* Receipt Attachment in Edit Modal */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Box sx={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+          <div className="flex flex-col gap-1.5">
+            <div className="text-xs font-semibold text-[var(--text-secondary)]">
               Receipt / Invoice Document
-            </Box>
+            </div>
             <input
               type="file"
               ref={editFileInputRef}
@@ -1020,18 +1019,8 @@ export default function ShipmentFinancialsTab({
               }}
             />
             {editReceiptUrl ? (
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  p: 1.25,
-                  border: '1px solid rgba(var(--accent-gold-rgb), 0.35)',
-                  borderRadius: 1.5,
-                  backgroundColor: 'rgba(var(--accent-gold-rgb), 0.08)',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+              <div className="flex items-center justify-between p-2 rounded-lg border border-[rgba(var(--accent-gold-rgb),0.35)] bg-[rgba(var(--accent-gold-rgb),0.08)]">
+                <div className="flex items-center gap-1.5 min-w-0">
                   <Paperclip className="w-4 h-4 text-[var(--accent-gold)] shrink-0" />
                   <a
                     href={editReceiptUrl}
@@ -1041,7 +1030,7 @@ export default function ShipmentFinancialsTab({
                   >
                     {editReceiptName || 'View Attached Receipt'}
                   </a>
-                </Box>
+                </div>
                 <button
                   type="button"
                   onClick={() => {
@@ -1053,21 +1042,21 @@ export default function ShipmentFinancialsTab({
                 >
                   <X className="w-4 h-4" />
                 </button>
-              </Box>
+              </div>
             ) : (
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                disabled={uploadingEditReceipt}
-                icon={uploadingEditReceipt ? <CircularProgress size={14} color="inherit" /> : <Paperclip className="w-4 h-4" />}
+                loading={uploadingEditReceipt}
+                icon={<Paperclip className="w-4 h-4" />}
                 onClick={() => editFileInputRef.current?.click()}
               >
                 {uploadingEditReceipt ? 'Uploading Receipt...' : 'Attach Receipt (PDF or Image)'}
               </Button>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       </Modal>
     </>
   );

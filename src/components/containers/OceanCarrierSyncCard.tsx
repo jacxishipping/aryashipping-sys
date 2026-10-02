@@ -6,19 +6,9 @@ import {
   RefreshCw,
   ExternalLink,
   CheckCircle2,
-  Clock,
-  Radio,
-  Navigation,
-  Anchor,
-  Globe,
-  Waves,
-  ShieldCheck,
-  AlertCircle
 } from 'lucide-react';
-import { Box, Typography, CircularProgress } from '@mui/material';
 import { Button, toast } from '@/components/design-system';
 import { detectOceanCarrier } from '@/lib/services/ocean-carriers/carrier-detector';
-import { type OceanCarrierSyncSnapshot } from '@/lib/services/ocean-carriers/types';
 
 interface OceanCarrierSyncCardProps {
   containerId: string;

@@ -2,16 +2,17 @@
 import { formatMoney as formatCurrency } from '@/lib/format';
 
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
-import { Box, Typography } from '@mui/material';
+import {
+  FileText,
+  Package,
+  User,
+  MapPin,
+  Truck,
+  Wallet,
+  Clock,
+} from 'lucide-react';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import { Button, EmptyState, PageHeader, PaymentStatusBadge, toast } from '@/components/design-system';
 
@@ -194,7 +195,7 @@ export default function PortalShipmentDetailPage() {
     return (
       <DashboardSurface>
         <DashboardPanel title="Shipment Detail">
-          <Box sx={{ color: 'var(--text-secondary)' }}>Loading shipment detail...</Box>
+          <div className="text-sm text-[var(--text-secondary)]">Loading shipment detail...</div>
         </DashboardPanel>
       </DashboardSurface>
     );
@@ -204,7 +205,7 @@ export default function PortalShipmentDetailPage() {
     return (
       <DashboardSurface>
         <DashboardPanel title="Shipment Detail">
-          <EmptyState icon={<Inventory2OutlinedIcon />} title="Shipment unavailable" description="This assigned shipment could not be loaded." />
+          <EmptyState icon={<Package className="w-8 h-8 text-[var(--text-secondary)]" />} title="Shipment unavailable" description="This assigned shipment could not be loaded." />
         </DashboardPanel>
       </DashboardSurface>
     );
@@ -229,280 +230,295 @@ export default function PortalShipmentDetailPage() {
           { label: 'Progress', value: `${data.customerTracking.progressPercent}%`, helper: noteSourceLabel },
         ]}
         actions={
-          <Link href={`/portal/${portalId}/shipments`} style={{ textDecoration: 'none' }}>
+          <Link href={`/portal/${portalId}/shipments`} className="no-underline">
             <Button variant="outline" size="sm">Back to Shipments</Button>
           </Link>
         }
       />
-        <DashboardGrid className="grid-cols-1 gap-4 lg:grid-cols-3">
-          <Box className="lg:col-span-2" sx={{ display: 'grid', gap: 2 }}>
-            <DashboardPanel title="Shipment Overview" description={data.customerTracking.summary}>
-              <Box sx={{ display: 'grid', gap: 2 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
-                  <Typography sx={{ fontWeight: 700 }}>{data.customerTracking.currentStageLabel}</Typography>
-                  <Typography sx={{ color: 'var(--text-secondary)' }}>Status: {shipment.status}</Typography>
-                </Box>
-                <Box sx={{ height: 8, borderRadius: 999, bgcolor: 'var(--border)', overflow: 'hidden' }}>
-                  <Box sx={{ height: '100%', width: `${data.customerTracking.progressPercent}%`, bgcolor: 'var(--accent-gold)' }} />
-                </Box>
-                <Box sx={{ display: 'grid', gap: 1.5 }}>
-                  {data.customerTracking.milestones.map((milestone) => (
-                    <Box key={milestone.key} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2, bgcolor: 'var(--panel)' }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
-                        <Typography sx={{ fontWeight: 600 }}>{milestone.label}</Typography>
-                        <Typography sx={{ color: milestone.state === 'complete' ? 'var(--success)' : milestone.state === 'current' ? 'var(--accent-gold)' : 'var(--text-secondary)', textTransform: 'capitalize' }}>
-                          {milestone.state}
-                        </Typography>
-                      </Box>
-                      <Typography sx={{ color: 'var(--text-secondary)', mt: 0.5 }}>{milestone.description}</Typography>
-                      {milestone.timestamp ? (
-                        <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem', mt: 1 }}>
-                          {new Date(milestone.timestamp).toLocaleString()}
-                        </Typography>
-                      ) : null}
-                    </Box>
-                  ))}
-                </Box>
-              </Box>
-            </DashboardPanel>
-
-            <DashboardPanel title="Status History" description="Customer-facing movement updates">
-              {data.history.length === 0 ? (
-                <EmptyState icon={<Inventory2OutlinedIcon />} title="No status history" description="No movement updates are available yet." />
-              ) : (
-                <Box sx={{ display: 'grid', gap: 1.5 }}>
-                  {data.history.map((item) => (
-                    <Box key={item.id} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2 }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
-                        <Typography sx={{ fontWeight: 600 }}>{item.title}</Typography>
-                        <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{new Date(item.occurredAt).toLocaleString()}</Typography>
-                      </Box>
-                      <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem', mt: 0.5 }}>{item.source}</Typography>
-                      {item.location ? <Typography sx={{ mt: 1 }}>Location: {item.location}</Typography> : null}
-                      {item.description ? <Typography sx={{ color: 'var(--text-secondary)', mt: 0.5 }}>{item.description}</Typography> : null}
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </DashboardPanel>
-
-            {shipment.dispatch?.events && shipment.dispatch.events.length > 0 ? (
-              <DashboardPanel title="Dispatch Events" description="Internal dispatch movement updates">
-                <Box sx={{ display: 'grid', gap: 1.5 }}>
-                  {shipment.dispatch.events.map((event) => (
-                    <Box key={event.id} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2 }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
-                        <Typography sx={{ fontWeight: 600 }}>{event.status}</Typography>
-                        <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{new Date(event.eventDate).toLocaleString()}</Typography>
-                      </Box>
-                      {event.location ? <Typography sx={{ mt: 0.5 }}><LocationOnOutlinedIcon sx={{ fontSize: 14, mr: 0.5, color: 'var(--text-secondary)' }}/>{event.location}</Typography> : null}
-                      {event.description ? <Typography sx={{ color: 'var(--text-secondary)', mt: 0.5 }}>{event.description}</Typography> : null}
-                    </Box>
-                  ))}
-                </Box>
-              </DashboardPanel>
-            ) : null}
-
-            {shipment.container?.trackingEvents && shipment.container.trackingEvents.length > 0 ? (
-              <DashboardPanel title="Container Tracking" description="Container-level tracking events">
-                <Box sx={{ display: 'grid', gap: 1.5 }}>
-                  {shipment.container.trackingEvents.map((event) => (
-                    <Box key={event.id} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2, display: 'flex', gap: 2, alignItems: 'flex-start' }}>
-                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 48 }}>
-                        <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: event.completed ? 'var(--success)' : 'var(--accent-gold)' }} />
-                        <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)', mt: 0.5, textTransform: 'uppercase' }}>
-                          {event.completed ? 'Done' : 'Pending'}
-                        </Typography>
-                      </Box>
-                      <Box sx={{ flex: 1 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
-                          <Typography sx={{ fontWeight: 600 }}>{event.status}</Typography>
-                          <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>{new Date(event.eventDate).toLocaleString()}</Typography>
-                        </Box>
-                        {event.location ? <Typography sx={{ mt: 0.5 }}><LocationOnOutlinedIcon sx={{ fontSize: 14, mr: 0.5, color: 'var(--text-secondary)' }}/>{event.location}</Typography> : null}
-                        {event.description ? <Typography sx={{ color: 'var(--text-secondary)', mt: 0.5 }}>{event.description}</Typography> : null}
-                      </Box>
-                    </Box>
-                  ))}
-                </Box>
-              </DashboardPanel>
-            ) : null}
-
-            <DashboardPanel title="Documents" description="Public shipment documents shared to the portal">
-              {shipment.documents.length === 0 ? (
-                <EmptyState icon={<DescriptionOutlinedIcon />} title="No public documents" description="No public documents have been shared for this shipment yet." />
-              ) : (
-                <Box sx={{ display: 'grid', gap: 1.5 }}>
-                  {shipment.documents.map((document) => (
-                    <Box key={document.id} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2, display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center' }}>
-                      <Box>
-                        <Typography sx={{ fontWeight: 600 }}>{document.name}</Typography>
-                        <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                          {document.category} • {document.description || 'Shared file'}
-                        </Typography>
-                      </Box>
-                      <a href={document.fileUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                        <Button variant="outline" size="sm">Open</Button>
-                      </a>
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </DashboardPanel>
-          </Box>
-
-          <Box sx={{ display: 'grid', gap: 2 }}>
-            <DashboardPanel title="Vehicle Info">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
-                {(shipment.vehiclePhotos.length > 0 || shipment.arrivalPhotos.length > 0) ? (
-                  <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
-                    {shipment.vehiclePhotos.slice(0, 3).map((photoUrl, index) => (
-                      <a key={`vehicle-${index}`} href={photoUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                        <Box component="img" src={photoUrl} alt={`Vehicle photo ${index + 1}`} sx={{ width: 80, height: 80, borderRadius: 2, border: '1px solid var(--border)', objectFit: 'cover' }} />
-                      </a>
-                    ))}
-                    {shipment.arrivalPhotos.slice(0, 2).map((photoUrl, index) => (
-                      <a key={`arrival-${index}`} href={photoUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                        <Box component="img" src={photoUrl} alt={`Arrival photo ${index + 1}`} sx={{ width: 80, height: 80, borderRadius: 2, border: '1px solid var(--border)', objectFit: 'cover' }} />
-                      </a>
-                    ))}
-                  </Box>
-                ) : null}
-                <Typography><strong>VIN:</strong> {shipment.vehicleVIN || '—'}</Typography>
-                <Typography><strong>Color:</strong> {shipment.vehicleColor || '—'}</Typography>
-                <Typography><strong>Lot:</strong> {shipment.lotNumber || '—'}</Typography>
-                <Typography><strong>Auction:</strong> {shipment.auctionName || '—'}</Typography>
-                <Typography><strong>Has Key:</strong> {shipment.hasKey == null ? '—' : shipment.hasKey ? 'Yes' : 'No'}</Typography>
-                <Typography><strong>Has Title:</strong> {shipment.hasTitle == null ? '—' : shipment.hasTitle ? 'Yes' : 'No'}</Typography>
-              </Box>
-            </DashboardPanel>
-
-            <DashboardPanel title="Portal Customer">
-              {data.assignment.partnerCustomer ? (
-                <Box sx={{ display: 'grid', gap: 1 }}>
-                  <Typography sx={{ fontWeight: 700 }}>{data.assignment.partnerCustomer.name}</Typography>
-                  <Typography>{data.assignment.partnerCustomer.email || 'No email'}</Typography>
-                  <Typography>{data.assignment.partnerCustomer.phone || 'No phone'}</Typography>
-                  <Typography sx={{ color: 'var(--text-secondary)' }}>{[data.assignment.partnerCustomer.city, data.assignment.partnerCustomer.country].filter(Boolean).join(', ') || 'No location'}</Typography>
-                </Box>
-              ) : (
-                <Box sx={{ display: 'grid', gap: 1.5, alignItems: 'center' }}>
-                  <EmptyState icon={<PersonOutlineIcon />} title="No linked portal customer" description="This shipment has not been linked to one of your portal customers yet." />
-                  <Link href={`/portal/${portalId}/customers`} style={{ textDecoration: 'none' }}>
-                    <Button variant="outline" size="sm">Link a Customer</Button>
-                  </Link>
-                </Box>
-              )}
-            </DashboardPanel>
-
-            <DashboardPanel title="Portal Readiness">
-              <Box sx={{ display: 'grid', gap: 1 }}>
-                <Typography sx={{ fontWeight: 700, color: isReadyForPartnerHandling ? 'var(--success)' : 'var(--warning-dark)' }}>
-                  {isReadyForPartnerHandling ? 'Ready for partner handling' : 'Waiting for customer link'}
-                </Typography>
-                <Typography sx={{ color: 'var(--text-secondary)' }}>
-                  {data.portal.requireCustomerLinkForReady === false
-                    ? 'This portal allows shipments to be treated as ready even before a portal customer is linked.'
-                    : 'This portal requires a linked portal customer before staff should treat the shipment as ready.'}
-                </Typography>
-                {data.assignment.notes ? (
-                  <Box sx={{ display: 'grid', gap: 0.5 }}>
-                    <Typography sx={{ fontWeight: 700 }}>{noteSourceLabel}</Typography>
-                    <Typography><strong>Assignment Notes:</strong> {data.assignment.notes}</Typography>
-                  </Box>
-                ) : data.portal.defaultShipmentNotes ? (
-                  <Box sx={{ display: 'grid', gap: 0.5 }}>
-                    <Typography sx={{ fontWeight: 700, color: 'var(--info-dark)' }}>Portal default is available</Typography>
-                    <Typography><strong>Default Portal Notes:</strong> {data.portal.defaultShipmentNotes}</Typography>
-                  </Box>
-                ) : null}
-              </Box>
-            </DashboardPanel>
-
-            <DashboardPanel title="Portal Finance">
-              <Box sx={{ display: 'grid', gap: 1.25 }}>
-                <Typography sx={{ fontWeight: 700 }}>Portal-only status</Typography>
-                <PaymentStatusBadge status={data.portalFinance.status} />
-                <Typography><strong>Portal Balance:</strong> {formatCurrency(data.portalFinance.balance)}</Typography>
-                <Typography><strong>Portal Debits:</strong> {formatCurrency(data.portalFinance.debitAmount)}</Typography>
-                <Typography><strong>Portal Payments:</strong> {formatCurrency(data.portalFinance.paidAmount)}</Typography>
-                <Typography sx={{ color: 'var(--text-secondary)' }}>
-                  {data.portalFinance.paymentRecordCount} payment record(s) and {data.portalFinance.ledgerEntryCount} ledger entry/entries exist only in the portal and do not change the main shipment payment state.
-                </Typography>
-                {data.portalFinance.recentPayments.length > 0 ? (
-                  <Box sx={{ display: 'grid', gap: 0.75, pt: 0.75 }}>
-                    <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Recent Portal Payments</Typography>
-                    {data.portalFinance.recentPayments.slice(0, 3).map((payment) => (
-                      <Box key={payment.id} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.25, bgcolor: 'rgba(var(--success-rgb),0.05)' }}>
-                        <Typography sx={{ fontWeight: 700 }}>{formatCurrency(payment.amount)}</Typography>
-                        <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{new Date(payment.paymentDate).toLocaleDateString()} • {payment.paymentMethod}</Typography>
-                        {payment.reference ? <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Ref: {payment.reference}</Typography> : null}
-                      </Box>
-                    ))}
-                  </Box>
-                ) : null}
-              </Box>
-            </DashboardPanel>
-
-            <DashboardPanel title="Route Snapshot">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
-                {shipment.dispatch ? (
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.04)' }}>
-                    <Typography sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                      <LocalShippingOutlinedIcon sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-                      Dispatch: {shipment.dispatch.referenceNumber}
-                    </Typography>
-                    <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                      {shipment.dispatch.origin} → {shipment.dispatch.destination}
-                    </Typography>
-                    {shipment.dispatch.dispatchDate ? (
-                      <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
-                        <ScheduleOutlinedIcon sx={{ fontSize: 12, mr: 0.5 }} />
-                        Dispatched: {new Date(shipment.dispatch.dispatchDate).toLocaleString()}
-                      </Typography>
+      <DashboardGrid className="grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="lg:col-span-2 grid gap-4">
+          <DashboardPanel title="Shipment Overview" description={data.customerTracking.summary}>
+            <div className="grid gap-4">
+              <div className="flex justify-between flex-wrap gap-2">
+                <span className="font-bold text-[var(--text-primary)]">{data.customerTracking.currentStageLabel}</span>
+                <span className="text-sm text-[var(--text-secondary)]">Status: {shipment.status}</span>
+              </div>
+              <div className="h-2 rounded-full bg-[var(--border)] overflow-hidden">
+                <div className="h-full bg-[var(--accent-gold)]" style={{ width: `${data.customerTracking.progressPercent}%` }} />
+              </div>
+              <div className="grid gap-3">
+                {data.customerTracking.milestones.map((milestone) => (
+                  <div key={milestone.key} className="border border-[var(--border)] rounded-xl p-4 bg-[var(--panel)]">
+                    <div className="flex justify-between gap-2 flex-wrap">
+                      <span className="font-semibold text-sm text-[var(--text-primary)]">{milestone.label}</span>
+                      <span className={`text-xs capitalize font-bold ${milestone.state === 'complete' ? 'text-[var(--success)]' : milestone.state === 'current' ? 'text-[var(--accent-gold)]' : 'text-[var(--text-secondary)]'}`}>
+                        {milestone.state}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">{milestone.description}</p>
+                    {milestone.timestamp ? (
+                      <p className="text-xs text-[var(--text-secondary)] mt-2">
+                        {new Date(milestone.timestamp).toLocaleString()}
+                      </p>
                     ) : null}
-                  </Box>
-                ) : null}
-                {shipment.container ? (
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.5, bgcolor: 'rgba(var(--accent-rgb),0.05)' }}>
-                    <Typography sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                      <Inventory2OutlinedIcon sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-                      Container: {shipment.container.containerNumber}
-                    </Typography>
-                    {shipment.container.vesselName ? <Typography sx={{ fontSize: '0.85rem' }}>Vessel: {shipment.container.vesselName} ({shipment.container.voyageNumber || '—'})</Typography> : null}
-                    {shipment.container.trackingNumber ? <Typography sx={{ fontSize: '0.85rem' }}>Tracking: {shipment.container.trackingNumber}</Typography> : null}
-                    {shipment.container.currentLocation ? <Typography sx={{ fontSize: '0.85rem' }}><LocationOnOutlinedIcon sx={{ fontSize: 14, mr: 0.5, color: 'var(--text-secondary)' }}/>{shipment.container.currentLocation}</Typography> : null}
-                    {shipment.container.estimatedArrival ? <Typography sx={{ fontSize: '0.85rem' }}>ETA: {new Date(shipment.container.estimatedArrival).toLocaleDateString()}</Typography> : null}
-                    {shipment.container.actualArrival ? <Typography sx={{ fontSize: '0.85rem' }}>Arrived: {new Date(shipment.container.actualArrival).toLocaleDateString()}</Typography> : null}
-                  </Box>
-                ) : null}
-                {shipment.transit ? (
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.5, bgcolor: 'rgba(var(--text-primary-rgb),0.03)' }}>
-                    <Typography sx={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                      <AccountBalanceWalletOutlinedIcon sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-                      Final Transit
-                    </Typography>
-                    <Typography sx={{ fontSize: '0.85rem' }}>{shipment.transit.origin} → {shipment.transit.destination}</Typography>
-                    {shipment.transit.estimatedDelivery ? <Typography sx={{ fontSize: '0.85rem' }}>Estimated Delivery: {new Date(shipment.transit.estimatedDelivery).toLocaleDateString()}</Typography> : null}
-                    {shipment.transit.actualDelivery ? <Typography sx={{ fontSize: '0.85rem', color: 'var(--success)' }}>Delivered: {new Date(shipment.transit.actualDelivery).toLocaleDateString()}</Typography> : null}
-                  </Box>
-                ) : null}
-              </Box>
-            </DashboardPanel>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DashboardPanel>
 
-            {(shipment.vehiclePhotos.length > 0 || shipment.arrivalPhotos.length > 0) ? (
-              <DashboardPanel title="Photos">
-                <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))' }}>
-                  {[...shipment.vehiclePhotos, ...shipment.arrivalPhotos].slice(0, 8).map((photoUrl, index) => (
-                    <a key={`${photoUrl}-${index}`} href={photoUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                      <Box component="img" src={photoUrl} alt={`Shipment photo ${index + 1}`} sx={{ width: '100%', height: 120, borderRadius: 2, border: '1px solid var(--border)', objectFit: 'cover' }} />
+          <DashboardPanel title="Status History" description="Customer-facing movement updates">
+            {data.history.length === 0 ? (
+              <EmptyState icon={<Package className="w-8 h-8 text-[var(--text-secondary)]" />} title="No status history" description="No movement updates are available yet." />
+            ) : (
+              <div className="grid gap-3">
+                {data.history.map((item) => (
+                  <div key={item.id} className="border border-[var(--border)] rounded-xl p-4">
+                    <div className="flex justify-between gap-2 flex-wrap">
+                      <span className="font-semibold text-sm text-[var(--text-primary)]">{item.title}</span>
+                      <span className="text-xs text-[var(--text-secondary)]">{new Date(item.occurredAt).toLocaleString()}</span>
+                    </div>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">{item.source}</p>
+                    {item.location ? <p className="text-xs text-[var(--text-primary)] mt-2">Location: {item.location}</p> : null}
+                    {item.description ? <p className="text-xs text-[var(--text-secondary)] mt-1">{item.description}</p> : null}
+                  </div>
+                ))}
+              </div>
+            )}
+          </DashboardPanel>
+
+          {shipment.dispatch?.events && shipment.dispatch.events.length > 0 ? (
+            <DashboardPanel title="Dispatch Events" description="Internal dispatch movement updates">
+              <div className="grid gap-3">
+                {shipment.dispatch.events.map((event) => (
+                  <div key={event.id} className="border border-[var(--border)] rounded-xl p-4">
+                    <div className="flex justify-between gap-2 flex-wrap">
+                      <span className="font-semibold text-sm text-[var(--text-primary)]">{event.status}</span>
+                      <span className="text-xs text-[var(--text-secondary)]">{new Date(event.eventDate).toLocaleString()}</span>
+                    </div>
+                    {event.location ? (
+                      <p className="text-xs text-[var(--text-primary)] mt-1 flex items-center gap-1">
+                        <MapPin className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                        {event.location}
+                      </p>
+                    ) : null}
+                    {event.description ? <p className="text-xs text-[var(--text-secondary)] mt-1">{event.description}</p> : null}
+                  </div>
+                ))}
+              </div>
+            </DashboardPanel>
+          ) : null}
+
+          {shipment.container?.trackingEvents && shipment.container.trackingEvents.length > 0 ? (
+            <DashboardPanel title="Container Tracking" description="Container-level tracking events">
+              <div className="grid gap-3">
+                {shipment.container.trackingEvents.map((event) => (
+                  <div key={event.id} className="border border-[var(--border)] rounded-xl p-4 flex gap-3 items-start">
+                    <div className="flex flex-col items-center min-w-[48px]">
+                      <div className={`w-2.5 h-2.5 rounded-full ${event.completed ? 'bg-[var(--success)]' : 'bg-[var(--accent-gold)]'}`} />
+                      <span className="text-[10px] text-[var(--text-secondary)] mt-1 uppercase">
+                        {event.completed ? 'Done' : 'Pending'}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex justify-between gap-2 flex-wrap">
+                        <span className="font-semibold text-sm text-[var(--text-primary)]">{event.status}</span>
+                        <span className="text-xs text-[var(--text-secondary)]">{new Date(event.eventDate).toLocaleString()}</span>
+                      </div>
+                      {event.location ? (
+                        <p className="text-xs text-[var(--text-primary)] mt-1 flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+                          {event.location}
+                        </p>
+                      ) : null}
+                      {event.description ? <p className="text-xs text-[var(--text-secondary)] mt-1">{event.description}</p> : null}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </DashboardPanel>
+          ) : null}
+
+          <DashboardPanel title="Documents" description="Public shipment documents shared to the portal">
+            {shipment.documents.length === 0 ? (
+              <EmptyState icon={<FileText className="w-8 h-8 text-[var(--text-secondary)]" />} title="No public documents" description="No public documents have been shared for this shipment yet." />
+            ) : (
+              <div className="grid gap-3">
+                {shipment.documents.map((document) => (
+                  <div key={document.id} className="border border-[var(--border)] rounded-xl p-4 flex justify-between gap-4 items-center">
+                    <div>
+                      <div className="font-semibold text-sm text-[var(--text-primary)]">{document.name}</div>
+                      <div className="text-xs text-[var(--text-secondary)]">
+                        {document.category} • {document.description || 'Shared file'}
+                      </div>
+                    </div>
+                    <a href={document.fileUrl} target="_blank" rel="noreferrer" className="no-underline">
+                      <Button variant="outline" size="sm">Open</Button>
+                    </a>
+                  </div>
+                ))}
+              </div>
+            )}
+          </DashboardPanel>
+        </div>
+
+        <div className="grid gap-4">
+          <DashboardPanel title="Vehicle Info">
+            <div className="grid gap-3 text-sm">
+              {(shipment.vehiclePhotos.length > 0 || shipment.arrivalPhotos.length > 0) ? (
+                <div className="flex gap-2 flex-wrap">
+                  {shipment.vehiclePhotos.slice(0, 3).map((photoUrl, index) => (
+                    <a key={`vehicle-${index}`} href={photoUrl} target="_blank" rel="noreferrer">
+                      <img src={photoUrl} alt={`Vehicle photo ${index + 1}`} className="w-20 h-20 rounded-lg border border-[var(--border)] object-cover" />
                     </a>
                   ))}
-                </Box>
-              </DashboardPanel>
-            ) : null}
-          </Box>
-        </DashboardGrid>
+                  {shipment.arrivalPhotos.slice(0, 2).map((photoUrl, index) => (
+                    <a key={`arrival-${index}`} href={photoUrl} target="_blank" rel="noreferrer">
+                      <img src={photoUrl} alt={`Arrival photo ${index + 1}`} className="w-20 h-20 rounded-lg border border-[var(--border)] object-cover" />
+                    </a>
+                  ))}
+                </div>
+              ) : null}
+              <div><strong>VIN:</strong> {shipment.vehicleVIN || '—'}</div>
+              <div><strong>Color:</strong> {shipment.vehicleColor || '—'}</div>
+              <div><strong>Lot:</strong> {shipment.lotNumber || '—'}</div>
+              <div><strong>Auction:</strong> {shipment.auctionName || '—'}</div>
+              <div><strong>Has Key:</strong> {shipment.hasKey == null ? '—' : shipment.hasKey ? 'Yes' : 'No'}</div>
+              <div><strong>Has Title:</strong> {shipment.hasTitle == null ? '—' : shipment.hasTitle ? 'Yes' : 'No'}</div>
+            </div>
+          </DashboardPanel>
+
+          <DashboardPanel title="Portal Customer">
+            {data.assignment.partnerCustomer ? (
+              <div className="grid gap-2 text-sm">
+                <div className="font-bold text-base text-[var(--text-primary)]">{data.assignment.partnerCustomer.name}</div>
+                <div className="text-[var(--text-secondary)]">{data.assignment.partnerCustomer.email || 'No email'}</div>
+                <div className="text-[var(--text-secondary)]">{data.assignment.partnerCustomer.phone || 'No phone'}</div>
+                <div className="text-xs text-[var(--text-secondary)]">{[data.assignment.partnerCustomer.city, data.assignment.partnerCustomer.country].filter(Boolean).join(', ') || 'No location'}</div>
+              </div>
+            ) : (
+              <div className="grid gap-3 items-center">
+                <EmptyState icon={<User className="w-8 h-8 text-[var(--text-secondary)]" />} title="No linked portal customer" description="This shipment has not been linked to one of your portal customers yet." />
+                <Link href={`/portal/${portalId}/customers`} className="no-underline">
+                  <Button variant="outline" size="sm">Link a Customer</Button>
+                </Link>
+              </div>
+            )}
+          </DashboardPanel>
+
+          <DashboardPanel title="Portal Readiness">
+            <div className="grid gap-2">
+              <div className={`font-bold text-sm ${isReadyForPartnerHandling ? 'text-[var(--success)]' : 'text-[var(--warning)]'}`}>
+                {isReadyForPartnerHandling ? 'Ready for partner handling' : 'Waiting for customer link'}
+              </div>
+              <p className="text-xs text-[var(--text-secondary)]">
+                {data.portal.requireCustomerLinkForReady === false
+                  ? 'This portal allows shipments to be treated as ready even before a portal customer is linked.'
+                  : 'This portal requires a linked portal customer before staff should treat the shipment as ready.'}
+              </p>
+              {data.assignment.notes ? (
+                <div className="grid gap-1 mt-2 text-xs">
+                  <span className="font-bold text-[var(--text-primary)]">{noteSourceLabel}</span>
+                  <span className="text-[var(--text-secondary)]"><strong>Assignment Notes:</strong> {data.assignment.notes}</span>
+                </div>
+              ) : data.portal.defaultShipmentNotes ? (
+                <div className="grid gap-1 mt-2 text-xs">
+                  <span className="font-bold text-[var(--info)]">Portal default is available</span>
+                  <span className="text-[var(--text-secondary)]"><strong>Default Portal Notes:</strong> {data.portal.defaultShipmentNotes}</span>
+                </div>
+              ) : null}
+            </div>
+          </DashboardPanel>
+
+          <DashboardPanel title="Portal Finance">
+            <div className="grid gap-2.5 text-sm">
+              <div className="font-bold text-[var(--text-primary)]">Portal-only status</div>
+              <PaymentStatusBadge status={data.portalFinance.status} />
+              <div><strong>Portal Balance:</strong> {formatCurrency(data.portalFinance.balance)}</div>
+              <div><strong>Portal Debits:</strong> {formatCurrency(data.portalFinance.debitAmount)}</div>
+              <div><strong>Portal Payments:</strong> {formatCurrency(data.portalFinance.paidAmount)}</div>
+              <p className="text-xs text-[var(--text-secondary)]">
+                {data.portalFinance.paymentRecordCount} payment record(s) and {data.portalFinance.ledgerEntryCount} ledger entry/entries exist only in the portal and do not change the main shipment payment state.
+              </p>
+              {data.portalFinance.recentPayments.length > 0 ? (
+                <div className="grid gap-2 pt-2">
+                  <div className="text-xs tracking-wider uppercase text-[var(--text-secondary)]">Recent Portal Payments</div>
+                  {data.portalFinance.recentPayments.slice(0, 3).map((payment) => (
+                    <div key={payment.id} className="border border-[var(--border)] rounded-xl p-3 bg-[rgba(var(--success-rgb),0.05)]">
+                      <div className="font-bold text-sm text-[var(--text-primary)]">{formatCurrency(payment.amount)}</div>
+                      <div className="text-xs text-[var(--text-secondary)]">{new Date(payment.paymentDate).toLocaleDateString()} • {payment.paymentMethod}</div>
+                      {payment.reference ? <div className="text-xs text-[var(--text-secondary)]">Ref: {payment.reference}</div> : null}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </DashboardPanel>
+
+          <DashboardPanel title="Route Snapshot">
+            <div className="grid gap-3">
+              {shipment.dispatch ? (
+                <div className="border border-[var(--border)] rounded-xl p-3 bg-[rgba(var(--brand-primary-rgb),0.04)]">
+                  <div className="font-bold text-sm text-[var(--text-primary)] flex items-center gap-1.5 mb-1">
+                    <Truck className="w-4 h-4 text-[var(--text-secondary)]" />
+                    Dispatch: {shipment.dispatch.referenceNumber}
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    {shipment.dispatch.origin} → {shipment.dispatch.destination}
+                  </div>
+                  {shipment.dispatch.dispatchDate ? (
+                    <div className="text-xs text-[var(--text-secondary)] mt-1 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      Dispatched: {new Date(shipment.dispatch.dispatchDate).toLocaleString()}
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+              {shipment.container ? (
+                <div className="border border-[var(--border)] rounded-xl p-3 bg-[rgba(var(--accent-rgb),0.05)]">
+                  <div className="font-bold text-sm text-[var(--text-primary)] flex items-center gap-1.5 mb-1">
+                    <Package className="w-4 h-4 text-[var(--text-secondary)]" />
+                    Container: {shipment.container.containerNumber}
+                  </div>
+                  {shipment.container.vesselName ? <div className="text-xs text-[var(--text-secondary)]">Vessel: {shipment.container.vesselName} ({shipment.container.voyageNumber || '—'})</div> : null}
+                  {shipment.container.trackingNumber ? <div className="text-xs text-[var(--text-secondary)]">Tracking: {shipment.container.trackingNumber}</div> : null}
+                  {shipment.container.currentLocation ? (
+                    <div className="text-xs text-[var(--text-secondary)] flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3 h-3" />
+                      {shipment.container.currentLocation}
+                    </div>
+                  ) : null}
+                  {shipment.container.estimatedArrival ? <div className="text-xs text-[var(--text-secondary)]">ETA: {new Date(shipment.container.estimatedArrival).toLocaleDateString()}</div> : null}
+                  {shipment.container.actualArrival ? <div className="text-xs text-[var(--text-secondary)]">Arrived: {new Date(shipment.container.actualArrival).toLocaleDateString()}</div> : null}
+                </div>
+              ) : null}
+              {shipment.transit ? (
+                <div className="border border-[var(--border)] rounded-xl p-3 bg-[rgba(var(--text-primary-rgb),0.03)]">
+                  <div className="font-bold text-sm text-[var(--text-primary)] flex items-center gap-1.5 mb-1">
+                    <Wallet className="w-4 h-4 text-[var(--text-secondary)]" />
+                    Final Transit
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)]">{shipment.transit.origin} → {shipment.transit.destination}</div>
+                  {shipment.transit.estimatedDelivery ? <div className="text-xs text-[var(--text-secondary)]">Estimated Delivery: {new Date(shipment.transit.estimatedDelivery).toLocaleDateString()}</div> : null}
+                  {shipment.transit.actualDelivery ? <div className="text-xs text-[var(--success)] font-semibold">Delivered: {new Date(shipment.transit.actualDelivery).toLocaleDateString()}</div> : null}
+                </div>
+              ) : null}
+            </div>
+          </DashboardPanel>
+
+          {(shipment.vehiclePhotos.length > 0 || shipment.arrivalPhotos.length > 0) ? (
+            <DashboardPanel title="Photos">
+              <div className="grid gap-3 grid-cols-[repeat(auto-fill,minmax(120px,1fr))]">
+                {[...shipment.vehiclePhotos, ...shipment.arrivalPhotos].slice(0, 8).map((photoUrl, index) => (
+                  <a key={`${photoUrl}-${index}`} href={photoUrl} target="_blank" rel="noreferrer">
+                    <img src={photoUrl} alt={`Shipment photo ${index + 1}`} className="w-full h-[120px] rounded-lg border border-[var(--border)] object-cover" />
+                  </a>
+                ))}
+              </div>
+            </DashboardPanel>
+          ) : null}
+        </div>
+      </DashboardGrid>
     </DashboardSurface>
   );
 }

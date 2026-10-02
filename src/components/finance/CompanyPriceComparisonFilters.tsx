@@ -1,15 +1,8 @@
 'use client';
 
 import { useMemo, type ReactNode } from 'react';
-import {
-  Box,
-  Checkbox,
-  Chip,
-  FormControlLabel,
-  TextField,
-} from '@mui/material';
 import { Check, Search, X } from 'lucide-react';
-import { Button, Select, Tooltip } from '@/components/design-system';
+import { Button, FormField, Select, Tooltip, Skeleton, SkeletonGroup } from '@/components/design-system';
 import {
   DEFAULT_SHIPPING_RATE_CONFIG,
   US_STATES,
@@ -83,20 +76,12 @@ const vehicleTypes = DEFAULT_SHIPPING_RATE_CONFIG.vehicleTypes;
 
 function FilterSection({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <Box sx={{ display: 'grid', gap: 1.25 }}>
-      <Box
-        sx={{
-          fontSize: '0.68rem',
-          fontWeight: 700,
-          textTransform: 'uppercase',
-          letterSpacing: '0.12em',
-          color: 'var(--text-secondary)',
-        }}
-      >
+    <div className="grid gap-2">
+      <div className="text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)]">
         {title}
-      </Box>
+      </div>
       {children}
-    </Box>
+    </div>
   );
 }
 
@@ -215,20 +200,13 @@ export default function CompanyPriceComparisonFilters({
   }, [filters, onFilterChange, visibleCompanies]);
 
   return (
-    <Box sx={{ display: 'grid', gap: 1.5 }}>
-      <Box
-        sx={{
-          borderRadius: 2,
-          border: '1px solid var(--border)',
-          background: 'var(--panel)',
-          overflow: 'hidden',
-        }}
-      >
-        <Box sx={{ p: 1.5, display: 'grid', gap: 2 }}>
+    <div className="grid gap-3">
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--panel)] overflow-hidden">
+        <div className="p-4 grid gap-4">
           {showFilterFields && (
             <>
             <FilterSection title="Search & Scope">
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(4, 1fr)' }, gap: 1.5 }}>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <Select
                   size="small"
                   label="Company Type"
@@ -241,15 +219,12 @@ export default function CompanyPriceComparisonFilters({
                     { value: 'TRANSIT', label: 'Transit' },
                   ]}
                 />
-                <TextField
-                  size="small"
+                <FormField
                   label="Search"
                   value={filters.search}
                   onChange={(event) => onFilterChange('search', event.target.value)}
                   placeholder="State, lane, branch, or city"
-                  InputProps={{
-                    startAdornment: <Search className="w-4 h-4 mr-2 text-[var(--text-secondary)]" />,
-                  }}
+                  startAdornment={<Search className="w-4 h-4 text-[var(--text-secondary)]" />}
                 />
                 <Select
                   size="small"
@@ -271,11 +246,11 @@ export default function CompanyPriceComparisonFilters({
                     ...destinationOptions.map((destination) => ({ value: destination, label: destination })),
                   ]}
                 />
-              </Box>
+              </div>
             </FilterSection>
 
             <FilterSection title="Analysis">
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(4, 1fr)' }, gap: 1.5 }}>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 <Select
                   size="small"
                   label="Vehicle Type"
@@ -318,52 +293,49 @@ export default function CompanyPriceComparisonFilters({
                     { value: 'coverage-asc', label: 'Lowest coverage first' },
                   ]}
                 />
-              </Box>
+              </div>
             </FilterSection>
 
             <FilterSection title="Thresholds">
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '180px 1fr' }, gap: 1.5, alignItems: 'center' }}>
-                <TextField
-                  size="small"
+              <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-3 items-center">
+                <FormField
                   type="number"
                   label="Min Spread ($)"
                   value={filters.minSpread}
                   onChange={(event) => onFilterChange('minSpread', event.target.value)}
-                  inputProps={{ min: 0, step: 50 }}
+                  min={0}
+                  step={50}
                 />
-                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={filters.differencesOnly}
-                        onChange={(event) => onFilterChange('differencesOnly', event.target.checked)}
-                        size="small"
-                      />
-                    }
-                    label="Only rows with price differences"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={filters.onlyWithPriceLists}
-                        onChange={(event) => onFilterChange('onlyWithPriceLists', event.target.checked)}
-                        size="small"
-                      />
-                    }
-                    label="Only companies with uploaded price lists"
-                  />
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={filters.completeCoverageOnly}
-                        onChange={(event) => onFilterChange('completeCoverageOnly', event.target.checked)}
-                        size="small"
-                      />
-                    }
-                    label="Only rows priced by every selected company"
-                  />
-                </Box>
-              </Box>
+                <div className="flex gap-4 flex-wrap items-center">
+                  <label className="inline-flex items-center gap-2 cursor-pointer text-xs text-[var(--text-primary)]">
+                    <input
+                      type="checkbox"
+                      checked={filters.differencesOnly}
+                      onChange={(event) => onFilterChange('differencesOnly', event.target.checked)}
+                      className="rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)]"
+                    />
+                    <span>Only rows with price differences</span>
+                  </label>
+                  <label className="inline-flex items-center gap-2 cursor-pointer text-xs text-[var(--text-primary)]">
+                    <input
+                      type="checkbox"
+                      checked={filters.onlyWithPriceLists}
+                      onChange={(event) => onFilterChange('onlyWithPriceLists', event.target.checked)}
+                      className="rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)]"
+                    />
+                    <span>Only companies with uploaded price lists</span>
+                  </label>
+                  <label className="inline-flex items-center gap-2 cursor-pointer text-xs text-[var(--text-primary)]">
+                    <input
+                      type="checkbox"
+                      checked={filters.completeCoverageOnly}
+                      onChange={(event) => onFilterChange('completeCoverageOnly', event.target.checked)}
+                      className="rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)]"
+                    />
+                    <span>Only rows priced by every selected company</span>
+                  </label>
+                </div>
+              </div>
             </FilterSection>
             </>
           )}
@@ -372,23 +344,23 @@ export default function CompanyPriceComparisonFilters({
             <FilterSection title={`Companies to Compare (${selectedCompanyIds.length} selected, ${visibleCompanyCount} visible)`}>
               {loading ? (
                 <SkeletonGroup>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  <div className="flex gap-2 flex-wrap">
                     {Array.from({ length: 6 }).map((_, index) => (
                       <Skeleton key={index} variant="rounded" width={120} height={32} />
                     ))}
-                  </Box>
+                  </div>
                 </SkeletonGroup>
               ) : companies.length === 0 ? (
-                <Box sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                <div className="text-sm text-[var(--text-secondary)]">
                   No companies found for this filter.
-                </Box>
+                </div>
               ) : (
                 <>
-                  <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1 }}>
+                  <div className="flex gap-2 flex-wrap mb-2">
                     <Button variant="outline" size="sm" onClick={onSelectAllCompanies}>Select All</Button>
                     <Button variant="outline" size="sm" onClick={onClearCompanySelection}>Clear Selection</Button>
-                  </Box>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
                     {companies.map((company) => {
                       const selected = selectedCompanyIds.includes(company.id);
                       const disabled = filters.onlyWithPriceLists && !company.hasPriceList;
@@ -400,68 +372,51 @@ export default function CompanyPriceComparisonFilters({
                             ? `${company.destinationLabel}${company.activePriceList?.name ? ` • ${company.activePriceList.name}` : ''}${company.activePriceList?.createdAt ? ` • ${new Date(company.activePriceList.createdAt).toLocaleDateString()}` : ''}`
                             : 'No uploaded price list yet'}
                         >
-                          <Box
-                            component="button"
+                          <button
                             type="button"
                             disabled={disabled}
                             onClick={() => onToggleCompany(company.id)}
-                            sx={{
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 0.5,
-                              border: selected ? '1px solid rgba(var(--accent-gold-rgb), 0.55)' : '1px solid var(--border)',
-                              background: selected ? 'rgba(var(--accent-gold-rgb), 0.12)' : 'var(--background)',
-                              color: disabled ? 'var(--text-secondary)' : 'var(--text-primary)',
-                              borderRadius: 9999,
-                              px: 1.25,
-                              py: 0.6,
-                              fontSize: '0.8rem',
-                              fontWeight: selected ? 700 : 500,
-                              cursor: disabled ? 'not-allowed' : 'pointer',
-                              opacity: disabled ? 0.55 : 1,
-                              transition: 'all 0.15s ease',
-                              '&:hover:not(:disabled)': {
-                                borderColor: 'rgba(var(--accent-gold-rgb), 0.45)',
-                                transform: 'translateY(-1px)',
-                              },
-                            }}
+                            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-all ${
+                              selected
+                                ? 'border border-[rgba(var(--accent-gold-rgb),0.55)] bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--text-primary)]'
+                                : 'border border-[var(--border)] bg-[var(--background)] text-[var(--text-secondary)]'
+                            } ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:border-[var(--accent-gold)]'}`}
                           >
-                            {selected && <Check className="w-3.5 h-3.5" style={{ color: 'var(--accent-gold)' }} />}
-                            {company.name}
-                            {!company.hasPriceList ? ' (no list)' : ''}
-                          </Box>
+                            {selected && <Check className="w-3.5 h-3.5 text-[var(--accent-gold)]" />}
+                            <span>{company.name}</span>
+                            {!company.hasPriceList ? <span className="opacity-70 text-[10px]">(no list)</span> : null}
+                          </button>
                         </Tooltip>
                       );
                     })}
-                  </Box>
+                  </div>
                 </>
               )}
             </FilterSection>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {showActiveChips && activeChips.length > 0 && (
-        <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', alignItems: 'center' }}>
-          <Box sx={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 600, mr: 0.25 }}>Active:</Box>
+        <div className="flex gap-2 flex-wrap items-center">
+          <span className="text-xs text-[var(--text-secondary)] font-semibold">Active:</span>
           {activeChips.map((chip) => (
-            <Chip
+            <span
               key={chip.key}
-              size="small"
-              label={chip.label}
-              onDelete={chip.onDelete}
-              deleteIcon={<X className="w-3 h-3" />}
-              sx={{
-                height: 26,
-                fontSize: '0.72rem',
-                bgcolor: 'var(--background)',
-                border: '1px solid var(--border)',
-                '& .MuiChip-deleteIcon': { color: 'var(--text-secondary)' },
-              }}
-            />
+              className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--background)] px-2.5 py-1 text-xs text-[var(--text-secondary)]"
+            >
+              <span>{chip.label}</span>
+              <button
+                type="button"
+                onClick={chip.onDelete}
+                className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
           ))}
-        </Box>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }

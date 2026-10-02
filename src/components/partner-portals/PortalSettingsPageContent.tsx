@@ -3,15 +3,16 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
-import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-import PaletteOutlinedIcon from '@mui/icons-material/PaletteOutlined';
-import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-import VerifiedUserOutlinedIcon from '@mui/icons-material/VerifiedUserOutlined';
-import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
-import AltRouteOutlinedIcon from '@mui/icons-material/AltRouteOutlined';
-import StickyNote2OutlinedIcon from '@mui/icons-material/StickyNote2Outlined';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import { Box, FormControlLabel, Switch, TextField, Typography } from '@mui/material';
+import {
+  Sliders,
+  Palette,
+  Image as ImageIcon,
+  ShieldCheck,
+  Bell,
+  GitFork,
+  FileText,
+  CheckCircle2,
+} from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
 import { Button, EmptyState, PageHeader, toast } from '@/components/design-system';
@@ -44,6 +45,40 @@ type PortalMembership = {
     role: string;
   };
 };
+
+function ToggleSwitch({
+  checked,
+  disabled,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (checked: boolean) => void;
+  label: string;
+}) {
+  return (
+    <label className={`inline-flex items-center gap-3 cursor-pointer select-none ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        disabled={disabled}
+        onClick={() => !disabled && onChange(!checked)}
+        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] ${
+          checked ? 'bg-[var(--brand-primary)]' : 'bg-[rgba(var(--text-primary-rgb),0.2)]'
+        }`}
+      >
+        <span
+          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out ${
+            checked ? 'translate-x-5' : 'translate-x-0'
+          }`}
+        />
+      </button>
+      <span className="text-[0.875rem] font-medium text-[var(--text-primary)]">{label}</span>
+    </label>
+  );
+}
 
 export default function PortalSettingsPageContent() {
   const params = useParams();
@@ -146,25 +181,25 @@ export default function PortalSettingsPageContent() {
           { label: 'Notifications', value: portal?.notifyOnShipmentAssigned ? 'On' : 'Off', helper: 'Shipment assignment alerts' },
         ]}
         actions={
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             <a
               href={portal?.customDomainVerifiedAt && portal?.customDomain ? `https://${portal.customDomain}` : `/portal-site/${portalId}`}
               target={portal?.customDomainVerifiedAt && portal?.customDomain ? '_blank' : undefined}
               rel={portal?.customDomainVerifiedAt && portal?.customDomain ? 'noreferrer' : undefined}
-              style={{ textDecoration: 'none' }}
+              className="no-underline"
             >
               <Button variant="outline" size="sm">Open Public Site</Button>
             </a>
-            <Link href={`/portal/${portalId}/members`} style={{ textDecoration: 'none' }}>
+            <Link href={`/portal/${portalId}/members`} className="no-underline">
               <Button variant="outline" size="sm">Back To Members</Button>
             </Link>
-          </Box>
+          </div>
         }
       />
 
       {loading ? (
         <DashboardPanel title="Loading settings" description="Fetching portal branding and access details.">
-          <Box sx={{ color: 'var(--text-secondary)' }}>Loading portal settings...</Box>
+          <div className="text-[var(--text-secondary)]">Loading portal settings...</div>
         </DashboardPanel>
       ) : (
         <>
@@ -177,135 +212,146 @@ export default function PortalSettingsPageContent() {
             />
 
             <DashboardPanel title="Operational Defaults" description="Use portal-level defaults to shape partner notifications and customer assignment behavior.">
-              <Box sx={{ display: 'grid', gap: 2 }}>
-                <Box sx={{ p: 1.75, borderRadius: 2.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.07)', display: 'grid', gap: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <NotificationsActiveOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Shipment Assignment Alerts</Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+              <div className="grid gap-4">
+                <div className="p-4 rounded-xl bg-[rgba(var(--brand-primary-rgb),0.07)] grid gap-2">
+                  <div className="flex items-center gap-2">
+                    <Bell className="w-5 h-5 text-[var(--text-secondary)]" />
+                    <span className="text-[0.92rem] font-bold text-[var(--text-primary)]">Shipment Assignment Alerts</span>
+                  </div>
+                  <p className="text-[0.82rem] text-[var(--text-secondary)] m-0">
                     Notify portal members when a new shipment is assigned into this workspace.
-                  </Typography>
-                  <FormControlLabel
-                    control={<Switch checked={Boolean(portal?.notifyOnShipmentAssigned)} disabled={!canManageSettings || savingOperationalSettings} onChange={(event) => void handleSaveOperationalSettings({ notifyOnShipmentAssigned: event.target.checked })} />}
+                  </p>
+                  <ToggleSwitch
+                    checked={Boolean(portal?.notifyOnShipmentAssigned)}
+                    disabled={!canManageSettings || savingOperationalSettings}
+                    onChange={(checked) => void handleSaveOperationalSettings({ notifyOnShipmentAssigned: checked })}
                     label={portal?.notifyOnShipmentAssigned ? 'Enabled' : 'Disabled'}
                   />
-                </Box>
+                </div>
 
-                <Box sx={{ p: 1.75, borderRadius: 2.5, bgcolor: 'rgba(var(--accent-rgb),0.08)', display: 'grid', gap: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <AltRouteOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Single-Customer Auto Link</Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                <div className="p-4 rounded-xl bg-[rgba(var(--accent-rgb),0.08)] grid gap-2">
+                  <div className="flex items-center gap-2">
+                    <GitFork className="w-5 h-5 text-[var(--text-secondary)]" />
+                    <span className="text-[0.92rem] font-bold text-[var(--text-primary)]">Single-Customer Auto Link</span>
+                  </div>
+                  <p className="text-[0.82rem] text-[var(--text-secondary)] m-0">
                     When this portal has exactly one customer, automatically link newly assigned shipments to that customer.
-                  </Typography>
-                  <FormControlLabel
-                    control={<Switch checked={Boolean(portal?.autoAssignToSingleCustomer)} disabled={!canManageSettings || savingOperationalSettings} onChange={(event) => void handleSaveOperationalSettings({ autoAssignToSingleCustomer: event.target.checked })} />}
+                  </p>
+                  <ToggleSwitch
+                    checked={Boolean(portal?.autoAssignToSingleCustomer)}
+                    disabled={!canManageSettings || savingOperationalSettings}
+                    onChange={(checked) => void handleSaveOperationalSettings({ autoAssignToSingleCustomer: checked })}
                     label={portal?.autoAssignToSingleCustomer ? 'Enabled' : 'Disabled'}
                   />
-                </Box>
+                </div>
 
-                <Box sx={{ p: 1.75, borderRadius: 2.5, bgcolor: 'rgba(15,23,42,0.05)', display: 'grid', gap: 1.25 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <StickyNote2OutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Default Shipment Notes</Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                <div className="p-4 rounded-xl bg-[rgba(15,23,42,0.05)] grid gap-3">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-[var(--text-secondary)]" />
+                    <span className="text-[0.92rem] font-bold text-[var(--text-primary)]">Default Shipment Notes</span>
+                  </div>
+                  <p className="text-[0.82rem] text-[var(--text-secondary)] m-0">
                     Pre-fill notes when a shipment is newly assigned into this portal and no specific note is provided.
-                  </Typography>
-                  <TextField
-                    multiline
-                    minRows={3}
+                  </p>
+                  <textarea
+                    rows={3}
                     value={defaultShipmentNotesDraft}
                     onChange={(event) => setDefaultShipmentNotesDraft(event.target.value)}
                     placeholder="Example: Confirm customer handoff within 24 hours and keep delivery milestones updated."
                     disabled={!canManageSettings || savingOperationalSettings}
+                    className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--panel)] text-[var(--text-primary)] text-[0.875rem] focus:outline-none focus:border-[var(--brand-primary)] resize-y disabled:opacity-50"
                   />
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Button variant="outline" size="sm" onClick={() => void handleSaveOperationalSettings({ defaultShipmentNotes: defaultShipmentNotesDraft })} disabled={!canManageSettings || savingOperationalSettings}>
+                  <div className="flex justify-end">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => void handleSaveOperationalSettings({ defaultShipmentNotes: defaultShipmentNotesDraft })}
+                      disabled={!canManageSettings || savingOperationalSettings}
+                    >
                       Save Default Notes
                     </Button>
-                  </Box>
-                </Box>
+                  </div>
+                </div>
 
-                <Box sx={{ p: 1.75, borderRadius: 2.5, bgcolor: 'rgba(34,197,94,0.08)', display: 'grid', gap: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <CheckCircleOutlineOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Ready-State Rule</Typography>
-                  </Box>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                <div className="p-4 rounded-xl bg-[rgba(34,197,94,0.08)] grid gap-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-[var(--text-secondary)]" />
+                    <span className="text-[0.92rem] font-bold text-[var(--text-primary)]">Ready-State Rule</span>
+                  </div>
+                  <p className="text-[0.82rem] text-[var(--text-secondary)] m-0">
                     Control whether a shipment must be linked to a portal customer before portal staff can treat it as ready.
-                  </Typography>
-                  <FormControlLabel
-                    control={<Switch checked={Boolean(portal?.requireCustomerLinkForReady)} disabled={!canManageSettings || savingOperationalSettings} onChange={(event) => void handleSaveOperationalSettings({ requireCustomerLinkForReady: event.target.checked })} />}
+                  </p>
+                  <ToggleSwitch
+                    checked={Boolean(portal?.requireCustomerLinkForReady)}
+                    disabled={!canManageSettings || savingOperationalSettings}
+                    onChange={(checked) => void handleSaveOperationalSettings({ requireCustomerLinkForReady: checked })}
                     label={portal?.requireCustomerLinkForReady ? 'Customer link required for ready state' : 'Ready state can exist without a customer link'}
                   />
-                </Box>
-              </Box>
+                </div>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
 
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[1.15fr_0.85fr]">
             <DashboardPanel title="Workspace Guidance" description="What belongs on this page as the portal grows.">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
-                <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
-                  <PaletteOutlinedIcon sx={{ color: 'var(--text-secondary)', mt: 0.3 }} />
-                  <Box>
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Brand identity stays separate</Typography>
-                    <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Logo, label, color, and custom-domain changes now live in settings, not inside the member administration surface.</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
-                  <ImageOutlinedIcon sx={{ color: 'var(--text-secondary)', mt: 0.3 }} />
-                  <Box>
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Logo uploads stay portal-scoped</Typography>
-                    <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Portal admins can upload a logo directly without relying on external links.</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
-                  <VerifiedUserOutlinedIcon sx={{ color: 'var(--text-secondary)', mt: 0.3 }} />
-                  <Box>
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Settings are admin-controlled</Typography>
-                    <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Portal staff can view the current setup, but only admins can change it.</Typography>
-                  </Box>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
-                  <TuneOutlinedIcon sx={{ color: 'var(--text-secondary)', mt: 0.3 }} />
-                  <Box>
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>Future settings have a home now</Typography>
-                    <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>As the portal grows, this page can keep absorbing partner-visible defaults without overloading members or shipment screens.</Typography>
-                  </Box>
-                </Box>
-              </Box>
+              <div className="grid gap-3.5">
+                <div className="flex gap-3 items-start">
+                  <Palette className="w-5 h-5 text-[var(--text-secondary)] mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-[0.92rem] font-bold text-[var(--text-primary)]">Brand identity stays separate</div>
+                    <div className="text-[0.82rem] text-[var(--text-secondary)]">Logo, label, color, and custom-domain changes now live in settings, not inside the member administration surface.</div>
+                  </div>
+                </div>
+                <div className="flex gap-3 items-start">
+                  <ImageIcon className="w-5 h-5 text-[var(--text-secondary)] mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-[0.92rem] font-bold text-[var(--text-primary)]">Logo uploads stay portal-scoped</div>
+                    <div className="text-[0.82rem] text-[var(--text-secondary)]">Portal admins can upload a logo directly without relying on external links.</div>
+                  </div>
+                </div>
+                <div className="flex gap-3 items-start">
+                  <ShieldCheck className="w-5 h-5 text-[var(--text-secondary)] mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-[0.92rem] font-bold text-[var(--text-primary)]">Settings are admin-controlled</div>
+                    <div className="text-[0.82rem] text-[var(--text-secondary)]">Portal staff can view the current setup, but only admins can change it.</div>
+                  </div>
+                </div>
+                <div className="flex gap-3 items-start">
+                  <Sliders className="w-5 h-5 text-[var(--text-secondary)] mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-[0.92rem] font-bold text-[var(--text-primary)]">Future settings have a home now</div>
+                    <div className="text-[0.82rem] text-[var(--text-secondary)]">As the portal grows, this page can keep absorbing partner-visible defaults without overloading members or shipment screens.</div>
+                  </div>
+                </div>
+              </div>
             </DashboardPanel>
 
             <DashboardPanel title="Behavior Summary" description="How these settings affect the live partner workflow.">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
-                <Box>
-                  <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Notification policy</Typography>
-                  <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>{portal?.notifyOnShipmentAssigned ? 'Portal members are notified when shipments are assigned.' : 'Shipment assignment notifications are muted for this portal.'}</Typography>
-                </Box>
-                <Box>
-                  <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Customer assignment default</Typography>
-                  <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>{portal?.autoAssignToSingleCustomer ? 'New shipments auto-link when exactly one portal customer exists.' : 'New shipments arrive unlinked and require manual customer selection.'}</Typography>
-                </Box>
-                <Box>
-                  <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Default notes</Typography>
-                  <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>{portal?.defaultShipmentNotes?.trim() ? portal.defaultShipmentNotes : 'No default assignment note is configured.'}</Typography>
-                </Box>
-                <Box>
-                  <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Ready-state rule</Typography>
-                  <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>{portal?.requireCustomerLinkForReady ? 'Shipments stay waiting until a portal customer is linked.' : 'Shipments can be treated as ready even before a portal customer is linked.'}</Typography>
-                </Box>
-              </Box>
+              <div className="grid gap-3.5">
+                <div>
+                  <div className="text-[0.8rem] uppercase tracking-[0.14em] text-[var(--text-secondary)] font-semibold">Notification policy</div>
+                  <div className="text-[0.95rem] font-bold text-[var(--text-primary)]">{portal?.notifyOnShipmentAssigned ? 'Portal members are notified when shipments are assigned.' : 'Shipment assignment notifications are muted for this portal.'}</div>
+                </div>
+                <div>
+                  <div className="text-[0.8rem] uppercase tracking-[0.14em] text-[var(--text-secondary)] font-semibold">Customer assignment default</div>
+                  <div className="text-[0.95rem] font-bold text-[var(--text-primary)]">{portal?.autoAssignToSingleCustomer ? 'New shipments auto-link when exactly one portal customer exists.' : 'New shipments arrive unlinked and require manual customer selection.'}</div>
+                </div>
+                <div>
+                  <div className="text-[0.8rem] uppercase tracking-[0.14em] text-[var(--text-secondary)] font-semibold">Default notes</div>
+                  <div className="text-[0.95rem] font-bold text-[var(--text-primary)]">{portal?.defaultShipmentNotes?.trim() ? portal.defaultShipmentNotes : 'No default assignment note is configured.'}</div>
+                </div>
+                <div>
+                  <div className="text-[0.8rem] uppercase tracking-[0.14em] text-[var(--text-secondary)] font-semibold">Ready-state rule</div>
+                  <div className="text-[0.95rem] font-bold text-[var(--text-primary)]">{portal?.requireCustomerLinkForReady ? 'Shipments stay waiting until a portal customer is linked.' : 'Shipments can be treated as ready even before a portal customer is linked.'}</div>
+                </div>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
 
           {!canManageSettings ? (
             <DashboardPanel>
               <EmptyState
-                icon={<VerifiedUserOutlinedIcon />}
+                icon={<ShieldCheck className="w-10 h-10" />}
                 title="Portal admin access required"
                 description="Only portal admins can save branding and settings changes for this workspace."
               />

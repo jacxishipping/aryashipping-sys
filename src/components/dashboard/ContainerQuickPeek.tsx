@@ -2,19 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Box, Typography, Divider, LinearProgress } from '@mui/material';
 import { 
-  Package, 
   Ship, 
   MapPin, 
   Calendar, 
-  DollarSign, 
   ExternalLink, 
-  FileText, 
   Layers,
-  ArrowRight,
-  ShieldCheck,
-  Receipt
 } from 'lucide-react';
 import { 
   Drawer, 
@@ -25,7 +18,6 @@ import {
   type MilestoneStep,
   Skeleton
 } from '@/components/design-system';
-import { formatMoney as formatCurrency } from '@/lib/format';
 
 interface ContainerQuickPeekProps {
   containerId: string | null;
@@ -124,12 +116,12 @@ export default function ContainerQuickPeek({
       size="lg"
       title={
         container ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <div className="flex items-center gap-2">
             <span className="font-mono font-bold tracking-tight text-base sm:text-lg">
               {container.containerNumber}
             </span>
             <CopyButton value={container.containerNumber} label="Container Number" />
-          </Box>
+          </div>
         ) : (
           'Container Details'
         )
@@ -138,7 +130,7 @@ export default function ContainerQuickPeek({
       badge={container ? <StatusBadge status={container.status} /> : undefined}
       actions={
         container && (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <div className="flex items-center justify-between w-full">
             <Button variant="outline" size="sm" onClick={onClose}>
               Close
             </Button>
@@ -151,170 +143,137 @@ export default function ContainerQuickPeek({
             >
               Open Full View
             </Button>
-          </Box>
+          </div>
         )
       }
     >
       {loading ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div className="flex flex-col gap-4">
           <Skeleton variant="rounded" height={90} />
           <Skeleton variant="rounded" height={120} />
           <Skeleton variant="rounded" height={160} />
-        </Box>
+        </div>
       ) : container ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div className="flex flex-col gap-6">
           {/* Milestone Stepper */}
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              bgcolor: 'var(--background, #F9FAFB)',
-              border: '1px solid var(--border, #E5E7EB)',
-            }}
-          >
-            <Typography variant="caption" sx={{ fontWeight: 700, color: 'var(--text-secondary, #6B7280)', mb: 1.5, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+            <span className="font-bold text-xs text-[var(--text-secondary)] mb-3 block uppercase tracking-wider">
               Milestone Progression
-            </Typography>
+            </span>
             <MilestoneStepper
               steps={CONTAINER_STEPS}
               currentStepId={container.status}
               status={container.status === 'CLOSED' ? 'completed' : 'default'}
               orientation="horizontal"
             />
-          </Box>
+          </div>
 
           {/* Capacity Progress Bar */}
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              bgcolor: 'var(--panel-bg, #FFFFFF)',
-              border: '1px solid var(--border, #E5E7EB)',
-            }}
-          >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary, #6B7280)' }}>
+          <div className="p-4 rounded-xl bg-[var(--panel)] border border-[var(--border)]">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs font-semibold text-[var(--text-secondary)]">
                 Cargo Loading Capacity
-              </Typography>
-              <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary, #111827)' }}>
+              </span>
+              <span className="text-xs font-bold text-[var(--text-primary)]">
                 {container.currentCount} / {container.maxCapacity} ({capacityPercent}%)
-              </Typography>
-            </Box>
-            <LinearProgress
-              variant="determinate"
-              value={capacityPercent}
-              sx={{
-                height: 8,
-                borderRadius: 4,
-                bgcolor: 'var(--background, #F3F4F6)',
-                '& .MuiLinearProgress-bar': {
-                  bgcolor: capacityPercent >= 100 ? 'var(--error, #EF4444)' : 'var(--accent-gold, #D4AF37)',
-                  borderRadius: 4,
-                },
-              }}
-            />
-          </Box>
+              </span>
+            </div>
+            <div className="w-full h-2 rounded-full bg-[rgba(var(--text-primary-rgb),0.08)] overflow-hidden">
+              <div
+                style={{ width: `${capacityPercent}%` }}
+                className={`h-full rounded-full transition-all ${
+                  capacityPercent >= 100 ? 'bg-[var(--error)]' : 'bg-[var(--accent-gold)]'
+                }`}
+              />
+            </div>
+          </div>
 
           {/* Quick Metrics Grid */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                 <Ship className="w-4 h-4 text-amber-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Vessel</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary, #111827)' }} noWrap>
+                <span className="text-xs font-semibold">Vessel</span>
+              </div>
+              <div className="font-bold text-[0.9375rem] text-[var(--text-primary)] truncate">
                 {container.vesselName || 'Unassigned'}
-              </Typography>
-            </Box>
+              </div>
+            </div>
 
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                 <MapPin className="w-4 h-4 text-emerald-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Destination Port</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary, #111827)' }} noWrap>
+                <span className="text-xs font-semibold">Destination Port</span>
+              </div>
+              <div className="font-bold text-[0.9375rem] text-[var(--text-primary)] truncate">
                 {container.destinationPort || 'TBD'}
-              </Typography>
-            </Box>
+              </div>
+            </div>
 
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                 <Calendar className="w-4 h-4 text-blue-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>ETA</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary, #111827)' }} noWrap>
+                <span className="text-xs font-semibold">ETA</span>
+              </div>
+              <div className="font-bold text-[0.9375rem] text-[var(--text-primary)] truncate">
                 {container.estimatedArrival ? new Date(container.estimatedArrival).toLocaleDateString() : 'Pending'}
-              </Typography>
-            </Box>
+              </div>
+            </div>
 
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                 <Layers className="w-4 h-4 text-purple-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Manifest Items</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary, #111827)' }}>
+                <span className="text-xs font-semibold">Manifest Items</span>
+              </div>
+              <div className="font-bold text-[0.9375rem] text-[var(--text-primary)]">
                 {container._count?.shipments ?? container.shipments?.length ?? 0} Vehicles
-              </Typography>
-            </Box>
-          </Box>
+              </div>
+            </div>
+          </div>
 
           {/* Manifest Preview List */}
           {container.shipments && container.shipments.length > 0 && (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary, #111827)' }}>
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-bold text-[var(--text-primary)]">
                   Loaded Cargo Manifest ({container.shipments.length})
-                </Typography>
+                </span>
                 <Link
                   href={`/dashboard/containers/${container.id}?tab=cargo`}
                   onClick={onClose}
-                  style={{ fontSize: '0.75rem', color: 'var(--accent-gold, #D4AF37)', fontWeight: 600, textDecoration: 'none' }}
+                  className="text-xs text-[var(--accent-gold)] font-semibold no-underline hover:underline"
                 >
                   View All &rarr;
                 </Link>
-              </Box>
+              </div>
 
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, maxHeight: 220, overflowY: 'auto' }}>
+              <div className="flex flex-col gap-2 max-h-56 overflow-y-auto">
                 {container.shipments.map((shipment) => (
-                  <Box
+                  <div
                     key={shipment.id}
-                    sx={{
-                      p: 1.5,
-                      borderRadius: 1.5,
-                      border: '1px solid var(--border, #E5E7EB)',
-                      bgcolor: 'var(--background, #F9FAFB)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: 1.5,
-                      '&:hover': {
-                        bgcolor: 'var(--panel, #FFFFFF)',
-                        borderColor: 'var(--accent-gold, #D4AF37)',
-                      },
-                      transition: 'all 150ms ease',
-                    }}
+                    className="p-3 rounded-lg border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--panel)] hover:border-[var(--accent-gold)] flex items-center justify-between gap-3 transition-colors"
                   >
-                    <Box sx={{ minWidth: 0 }}>
-                      <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary, #111827)' }} noWrap>
+                    <div className="min-w-0">
+                      <div className="text-[0.8125rem] font-bold text-[var(--text-primary)] truncate">
                         {[shipment.vehicleYear, shipment.vehicleMake, shipment.vehicleModel].filter(Boolean).join(' ') || 'Vehicle'}
-                      </Typography>
+                      </div>
                       {shipment.vehicleVIN && (
                         <span className="font-mono text-xs text-[var(--text-secondary)] tracking-tight">
                           VIN: {shipment.vehicleVIN}
                         </span>
                       )}
-                    </Box>
+                    </div>
                     <StatusBadge status={shipment.status} size="sm" />
-                  </Box>
+                  </div>
                 ))}
-              </Box>
-            </Box>
+              </div>
+            </div>
           )}
-        </Box>
+        </div>
       ) : (
-        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+        <div className="text-sm text-[var(--text-secondary)] text-center py-8">
           No container selected.
-        </Typography>
+        </div>
       )}
     </Drawer>
   );

@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useMemo, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
-import { Box, Paper, Typography } from '@mui/material';
 import { MapPin, Navigation, Ship, Anchor } from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -203,27 +202,27 @@ export function TrackingMap({ origin, destination, currentLocation, currentCoord
 
   if (loading) {
     return (
-      <Paper variant="outlined" sx={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#f8fafc' }}>
-        <Typography color="textSecondary">Loading Map...</Typography>
-      </Paper>
+      <div className="h-[400px] flex items-center justify-center bg-[var(--panel)] border border-[var(--border)] rounded-xl">
+        <p className="text-sm text-[var(--text-secondary)]">Loading Map...</p>
+      </div>
     );
   }
 
   if (!coords.origin && !coords.destination && !coords.current) {
     return (
-      <Paper variant="outlined" sx={{ height: 400, display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#f8fafc' }}>
-        <Box sx={{ textAlign: 'center', p: 2 }}>
-            <Navigation className="w-10 h-10 text-gray-300 mx-auto mb-2" />
-            <Typography color="textSecondary" sx={{ fontWeight: 500 }}>Location data not available</Typography>
-            <Box sx={{ mt: 2, p: 1, bgcolor: '#f1f5f9', borderRadius: 1, fontSize: '0.75rem', color: 'text.secondary', fontFamily: 'monospace', textAlign: 'left' }}>
-               <div style={{ marginBottom: 4 }}><strong>Debug Info:</strong></div>
-               <div>Origin: {origin || 'N/A'} {coords.origin ? '✅' : '❌'}</div>
-               <div>Dest: {destination || 'N/A'} {coords.destination ? '✅' : '❌'}</div>
-               <div>Curr Loc: {currentLocation || 'N/A'}</div>
-               <div>Curr Coords: {currentCoordinates ? `${currentCoordinates.lat.toFixed(2)}, ${currentCoordinates.lng.toFixed(2)}` : 'N/A'} {coords.current ? '✅' : '❌'}</div>
-            </Box>
-        </Box>
-      </Paper>
+      <div className="h-[400px] flex items-center justify-center bg-[var(--panel)] border border-[var(--border)] rounded-xl">
+        <div className="text-center p-4">
+          <Navigation className="w-10 h-10 text-[var(--text-secondary)] opacity-50 mx-auto mb-2" />
+          <p className="text-sm font-medium text-[var(--text-secondary)]">Location data not available</p>
+          <div className="mt-4 p-3 bg-[var(--background)] border border-[var(--border)] rounded-lg text-xs text-[var(--text-secondary)] font-mono text-left space-y-1">
+            <div className="font-semibold text-[var(--text-primary)]">Debug Info:</div>
+            <div>Origin: {origin || 'N/A'} {coords.origin ? '✅' : '❌'}</div>
+            <div>Dest: {destination || 'N/A'} {coords.destination ? '✅' : '❌'}</div>
+            <div>Curr Loc: {currentLocation || 'N/A'}</div>
+            <div>Curr Coords: {currentCoordinates ? `${currentCoordinates.lat.toFixed(2)}, ${currentCoordinates.lng.toFixed(2)}` : 'N/A'} {coords.current ? '✅' : '❌'}</div>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -243,7 +242,7 @@ export function TrackingMap({ origin, destination, currentLocation, currentCoord
   }
 
   return (
-    <Box sx={{ height: 400, width: '100%', borderRadius: 2, overflow: 'hidden', border: '1px solid var(--border)' }} className={className}>
+    <div className={`h-[400px] w-full rounded-xl overflow-hidden border border-[var(--border)] ${className || ''}`}>
       <MapContainer center={center} zoom={3} style={{ height: '100%', width: '100%' }}>
         {/* CartoDB Voyager Tiles - Cleaner, professional look */}
         <TileLayer
@@ -284,6 +283,6 @@ export function TrackingMap({ origin, destination, currentLocation, currentCoord
           />
         )}
       </MapContainer>
-    </Box>
+    </div>
   );
 }

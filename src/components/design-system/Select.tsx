@@ -31,11 +31,11 @@ export interface SelectProps {
   id?: string;
   label: string;
   value: string | number;
-  onChange: (value: string | number) => void;
-  options: SelectOption[];
+  onChange: (value: any) => void;
+  options: readonly SelectOption[] | readonly { readonly value: string | number; readonly label: string; readonly disabled?: boolean; readonly icon?: ReactNode; }[] | SelectOption[];
   placeholder?: string;
-  helperText?: string;
-  error?: boolean;
+  helperText?: ReactNode;
+  error?: boolean | string;
   required?: boolean;
   disabled?: boolean;
   leftIcon?: ReactNode;
@@ -60,6 +60,8 @@ export default function Select({
 }: SelectProps) {
   const { density } = useTheme();
   const isCompact = density === 'compact';
+  const hasError = Boolean(error);
+  const displayedHelperText = (typeof error === 'string' && error) ? error : helperText;
   const handleChange = (event: SelectChangeEvent<string | number>) => {
     onChange(event.target.value);
   };
@@ -74,7 +76,7 @@ export default function Select({
           display: 'block',
           fontSize: isCompact ? '0.775rem' : '0.875rem',
           fontWeight: 500,
-          color: error ? 'var(--error)' : 'var(--text-primary)',
+          color: hasError ? 'var(--error)' : 'var(--text-primary)',
           mb: isCompact ? 0.35 : 1,
         }}
       >
@@ -90,7 +92,7 @@ export default function Select({
       </Typography>
 
       {/* Select */}
-      <FormControl fullWidth={fullWidth} error={error} disabled={disabled} size={size === 'medium' && isCompact ? 'small' : size}>
+      <FormControl fullWidth={fullWidth} error={hasError} disabled={disabled} size={size === 'medium' && isCompact ? 'small' : size}>
         <MuiSelect
           id={id}
           value={value}
@@ -111,13 +113,13 @@ export default function Select({
             borderRadius: 2,
             color: 'var(--text-primary)',
             '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: error ? 'var(--error)' : 'rgba(var(--border-rgb), 0.9)',
+              borderColor: hasError ? 'var(--error)' : 'rgba(var(--border-rgb), 0.9)',
             },
             '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: error ? 'var(--error)' : 'var(--border)',
+              borderColor: hasError ? 'var(--error)' : 'var(--border)',
             },
             '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: error ? 'var(--error)' : 'var(--accent-gold)',
+              borderColor: hasError ? 'var(--error)' : 'var(--accent-gold)',
               borderWidth: 2,
             },
             '& .MuiSelect-select': {
@@ -149,7 +151,7 @@ export default function Select({
               </Typography>
             </MenuItem>
           )}
-          {options.map((option) => (
+          {options.map((option: any) => (
             <MenuItem
               key={option.value}
               value={option.value}
@@ -184,15 +186,15 @@ export default function Select({
       </FormControl>
 
       {/* Helper Text */}
-      {helperText && (
+      {displayedHelperText && (
         <Typography
           sx={{
             fontSize: '0.75rem',
-            color: error ? 'var(--error)' : 'var(--text-secondary)',
+            color: hasError ? 'var(--error)' : 'var(--text-secondary)',
             mt: 0.5,
           }}
         >
-          {helperText}
+          {displayedHelperText}
         </Typography>
       )}
     </Box>

@@ -1,8 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { Add, Inventory2 } from '@mui/icons-material';
-import { Box } from '@mui/material';
+import { Package, Plus } from 'lucide-react';
 import SmartSearch, { SearchFilters } from '@/components/dashboard/SmartSearch';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { Breadcrumbs, Button } from '@/components/design-system';
@@ -29,17 +27,17 @@ export default function ShipmentsSearchPanel({
 	return (
 		<>
 			{showBreadcrumbs && !hideHeader && (
-				<Box sx={{ mb: 1.5 }}>
+				<div className="mb-3">
 					<Breadcrumbs />
-				</Box>
+				</div>
 			)}
 			<DashboardPanel
 				title={
 					!hideHeader ? (
-						<Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-							<Inventory2 sx={{ fontSize: 18, color: 'var(--accent-gold)' }} />
+						<div className="inline-flex items-center gap-2">
+							<Package className="h-4 w-4 text-[var(--accent-gold)]" />
 							<span>Shipments</span>
-						</Box>
+						</div>
 					) : undefined
 				}
 				description={!hideHeader ? "Search, filter, and manage your shipments" : undefined}
@@ -51,7 +49,7 @@ export default function ShipmentsSearchPanel({
 							href="/dashboard/shipments/new"
 							variant="primary"
 							size="sm"
-							icon={<Add fontSize="small" />}
+							icon={<Plus className="h-4 w-4" />}
 							iconPosition="start"
 						>
 							New shipment
@@ -59,7 +57,7 @@ export default function ShipmentsSearchPanel({
 					) : null
 				}
 			>
-				<Box sx={{ px: { xs: 1, sm: 1.25, md: 1.5 }, py: { xs: 1, sm: 1.25, md: 1.5 } }}>
+				<div className="p-3 sm:p-4">
 					<SmartSearch
 						onSearch={onSearch}
 						onScan={onScan}
@@ -74,7 +72,7 @@ export default function ShipmentsSearchPanel({
 						showDeliveryFilter={showDeliveryFilter}
 						defaultType="shipments"
 					/>
-				</Box>
+				</div>
 			</DashboardPanel>
 		</>
 	);

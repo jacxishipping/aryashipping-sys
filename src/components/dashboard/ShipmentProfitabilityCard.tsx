@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography } from '@mui/material';
 import { Tooltip } from '@/components/design-system';
-import { DollarSign, TrendingUp, TrendingDown, ShieldCheck, AlertTriangle, Truck, Ship, Receipt, Coins } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { formatMoney as formatCurrency } from '@/lib/format';
 
 export interface ShipmentProfitabilityProps {
@@ -29,7 +28,6 @@ export function ShipmentProfitabilityCard({
 
   const isProfitable = netProfit > 0;
   const isHealthyMargin = marginPercent >= 20;
-  const isWarningMargin = isProfitable && marginPercent < 10;
 
   // Percentage shares of revenue for stacked breakdown
   const dispatchShare = billedRevenue > 0 ? Math.min(100, Math.max(0, (dispatchCost / billedRevenue) * 100)) : 0;
@@ -38,62 +36,27 @@ export function ShipmentProfitabilityCard({
   const profitShare = billedRevenue > 0 && isProfitable ? Math.min(100, Math.max(0, (netProfit / billedRevenue) * 100)) : 0;
 
   return (
-    <Box
-      sx={{
-        p: compact ? 2 : 2.5,
-        borderRadius: 2.5,
-        border: '1px solid var(--border)',
-        bgcolor: 'var(--panel)',
-        boxShadow: '0 4px 16px rgba(0, 0, 0, 0.03)',
-      }}
-    >
+    <div className={`${compact ? 'p-4' : 'p-5'} rounded-2xl border border-[var(--border)] bg-[var(--panel)] shadow-sm`}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2, flexWrap: 'wrap', gap: 1 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 28,
-              height: 28,
-              borderRadius: 1.5,
-              bgcolor: 'rgba(var(--accent-gold-rgb), 0.12)',
-              color: 'var(--accent-gold)',
-            }}
-          >
+      <div className="flex justify-between items-center mb-4 flex-wrap gap-2">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)]">
             <DollarSign size={16} />
-          </Box>
-          <Typography sx={{ fontWeight: 700, fontSize: compact ? '0.875rem' : '0.95rem', color: 'var(--text-primary)' }}>
+          </div>
+          <span className={`font-bold ${compact ? 'text-sm' : 'text-[0.95rem]'} text-[var(--text-primary)]`}>
             Shipment Unit Economics & Profitability
-          </Typography>
-        </Box>
+          </span>
+        </div>
 
         {billedRevenue > 0 && (
-          <Box
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 0.5,
-              px: 1.25,
-              py: 0.35,
-              borderRadius: 999,
-              fontSize: '0.75rem',
-              fontWeight: 700,
-              bgcolor: isHealthyMargin
-                ? 'rgba(var(--success-rgb), 0.12)'
+          <div
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${
+              isHealthyMargin
+                ? 'bg-[rgba(var(--success-rgb),0.12)] text-[var(--success-dark)] border-[rgba(var(--success-rgb),0.3)]'
                 : isProfitable
-                ? 'rgba(var(--status-yellow-rgb), 0.12)'
-                : 'rgba(var(--error-rgb), 0.12)',
-              color: isHealthyMargin ? 'var(--success-dark)' : isProfitable ? 'var(--warning-dark)' : 'var(--error-dark)',
-              border: `1px solid ${
-                isHealthyMargin
-                  ? 'rgba(var(--success-rgb), 0.3)'
-                  : isProfitable
-                  ? 'rgba(var(--status-yellow-rgb), 0.3)'
-                  : 'rgba(var(--error-rgb), 0.3)'
-              }`,
-            }}
+                ? 'bg-[rgba(var(--status-yellow-rgb),0.12)] text-[var(--warning-dark)] border-[rgba(var(--status-yellow-rgb),0.3)]'
+                : 'bg-[rgba(var(--error-rgb),0.12)] text-[var(--error-dark)] border-[rgba(var(--error-rgb),0.3)]'
+            }`}
           >
             {isHealthyMargin ? (
               <>
@@ -108,150 +71,173 @@ export function ShipmentProfitabilityCard({
                 <AlertTriangle size={14} /> Negative Spread ({marginPercent.toFixed(1)}%)
               </>
             )}
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
 
       {/* Primary KPI Row */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 1.5, mb: 2.5 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
         {/* Customer Invoiced Revenue */}
-        <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'var(--background)', border: '1px solid var(--border)' }}>
-          <Typography sx={{ fontSize: '0.725rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', tracking: 0.5, mb: 0.25 }}>
+        <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block mb-1">
             Customer Revenue
-          </Typography>
-          <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+          </span>
+          <div className="text-lg font-extrabold text-[var(--text-primary)]">
             {formatCurrency(billedRevenue)}
-          </Typography>
-          <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+          </div>
+          <span className="text-[11px] text-[var(--text-secondary)]">
             Total invoiced & billed charges
-          </Typography>
-        </Box>
+          </span>
+        </div>
 
         {/* Total Cost / Expenses */}
-        <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'var(--background)', border: '1px solid var(--border)' }}>
-          <Typography sx={{ fontSize: '0.725rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', tracking: 0.5, mb: 0.25 }}>
+        <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider block mb-1">
             Direct Expenses
-          </Typography>
-          <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--error-dark)' }}>
+          </span>
+          <div className="text-lg font-extrabold text-[var(--error-dark)]">
             {formatCurrency(totalExpenses)}
-          </Typography>
-          <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+          </div>
+          <span className="text-[11px] text-[var(--text-secondary)]">
             Towing, freight & port fees
-          </Typography>
-        </Box>
+          </span>
+        </div>
 
         {/* Net Profit & Margin */}
-        <Box
-          sx={{
-            p: 1.5,
-            borderRadius: 2,
-            bgcolor: isProfitable ? 'rgba(var(--success-rgb), 0.05)' : 'rgba(var(--error-rgb), 0.05)',
-            border: `1px solid ${isProfitable ? 'rgba(var(--success-rgb), 0.25)' : 'rgba(var(--error-rgb), 0.25)'}`,
-          }}
+        <div
+          className={`p-3.5 rounded-xl border ${
+            isProfitable
+              ? 'bg-[rgba(var(--success-rgb),0.05)] border-[rgba(var(--success-rgb),0.25)]'
+              : 'bg-[rgba(var(--error-rgb),0.05)] border-[rgba(var(--error-rgb),0.25)]'
+          }`}
         >
-          <Typography sx={{ fontSize: '0.725rem', fontWeight: 600, color: isProfitable ? 'var(--success-dark)' : 'var(--error-dark)', textTransform: 'uppercase', tracking: 0.5, mb: 0.25 }}>
+          <span
+            className={`text-[11px] font-semibold uppercase tracking-wider block mb-1 ${
+              isProfitable ? 'text-[var(--success-dark)]' : 'text-[var(--error-dark)]'
+            }`}
+          >
             Net Margin
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-            <Typography sx={{ fontSize: '1.15rem', fontWeight: 800, color: isProfitable ? 'var(--success-dark)' : 'var(--error-dark)' }}>
+          </span>
+          <div className="flex items-baseline gap-2">
+            <span
+              className={`text-lg font-extrabold ${
+                isProfitable ? 'text-[var(--success-dark)]' : 'text-[var(--error-dark)]'
+              }`}
+            >
               {isProfitable ? '+' : ''}{formatCurrency(netProfit)}
-            </Typography>
-            <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: isProfitable ? 'var(--success-dark)' : 'var(--error-dark)' }}>
+            </span>
+            <span
+              className={`text-sm font-bold ${
+                isProfitable ? 'text-[var(--success-dark)]' : 'text-[var(--error-dark)]'
+              }`}
+            >
               ({marginPercent.toFixed(1)}%)
-            </Typography>
-          </Box>
-          <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+            </span>
+          </div>
+          <span className="text-[11px] text-[var(--text-secondary)]">
             {isProfitable ? 'Net profit captured' : 'Operating at an expense loss'}
-          </Typography>
-        </Box>
-      </Box>
+          </span>
+        </div>
+      </div>
 
       {/* Visual Cost & Revenue Distribution Bar */}
       {billedRevenue > 0 && (
-        <Box sx={{ mb: 2 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.75 }}>
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <div className="mb-4">
+          <div className="flex justify-between items-center mb-1.5 text-xs">
+            <span className="font-semibold text-[var(--text-secondary)]">
               Cost Distribution Share
-            </Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+            </span>
+            <span className="text-[var(--text-secondary)]">
               100% of Revenue
-            </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', height: 10, borderRadius: 999, overflow: 'hidden', bgcolor: 'var(--border)', gap: '1px' }}>
+            </span>
+          </div>
+          <div className="flex h-2.5 rounded-full overflow-hidden bg-[var(--border)] gap-[1px]">
             {dispatchShare > 0 && (
               <Tooltip title={`Dispatch / Towing: ${formatCurrency(dispatchCost)} (${dispatchShare.toFixed(1)}%)`}>
-                <Box sx={{ width: `${dispatchShare}%`, bgcolor: 'var(--info)', transition: 'width 0.3s ease' }} />
+                <div
+                  style={{ width: `${dispatchShare}%` }}
+                  className="bg-[var(--info)] transition-all duration-300"
+                />
               </Tooltip>
             )}
             {oceanShare > 0 && (
               <Tooltip title={`Ocean Freight Share: ${formatCurrency(oceanFreightCost)} (${oceanShare.toFixed(1)}%)`}>
-                <Box sx={{ width: `${oceanShare}%`, bgcolor: 'var(--status-violet)', transition: 'width 0.3s ease' }} />
+                <div
+                  style={{ width: `${oceanShare}%` }}
+                  className="bg-[var(--status-violet)] transition-all duration-300"
+                />
               </Tooltip>
             )}
             {otherShare > 0 && (
               <Tooltip title={`Port/Storage/Other: ${formatCurrency(terminalStorageCost + otherExpensesCost)} (${otherShare.toFixed(1)}%)`}>
-                <Box sx={{ width: `${otherShare}%`, bgcolor: 'var(--warning)', transition: 'width 0.3s ease' }} />
+                <div
+                  style={{ width: `${otherShare}%` }}
+                  className="bg-[var(--warning)] transition-all duration-300"
+                />
               </Tooltip>
             )}
             {profitShare > 0 && (
               <Tooltip title={`Net Profit: ${formatCurrency(netProfit)} (${profitShare.toFixed(1)}%)`}>
-                <Box sx={{ width: `${profitShare}%`, bgcolor: '#22c55e', transition: 'width 0.3s ease' }} />
+                <div
+                  style={{ width: `${profitShare}%` }}
+                  className="bg-[#22c55e] transition-all duration-300"
+                />
               </Tooltip>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
 
       {/* Cost Breakdown Details */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr 1fr', sm: 'repeat(4, 1fr)' }, gap: 1.5, pt: 1.5, borderTop: '1px solid var(--border)' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'var(--info)', shrink: 0 }} />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }} noWrap>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-[var(--border)]">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[var(--info)] shrink-0" />
+          <div className="min-w-0">
+            <span className="text-[11px] text-[var(--text-secondary)] block truncate">
               Towing / Dispatch
-            </Typography>
-            <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            </span>
+            <span className="text-xs font-bold text-[var(--text-primary)]">
               {formatCurrency(dispatchCost)}
-            </Typography>
-          </Box>
-        </Box>
+            </span>
+          </div>
+        </div>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'var(--status-violet)', shrink: 0 }} />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }} noWrap>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[var(--status-violet)] shrink-0" />
+          <div className="min-w-0">
+            <span className="text-[11px] text-[var(--text-secondary)] block truncate">
               Ocean Freight
-            </Typography>
-            <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            </span>
+            <span className="text-xs font-bold text-[var(--text-primary)]">
               {formatCurrency(oceanFreightCost)}
-            </Typography>
-          </Box>
-        </Box>
+            </span>
+          </div>
+        </div>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'var(--warning)', shrink: 0 }} />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }} noWrap>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[var(--warning)] shrink-0" />
+          <div className="min-w-0">
+            <span className="text-[11px] text-[var(--text-secondary)] block truncate">
               Storage & Customs
-            </Typography>
-            <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            </span>
+            <span className="text-xs font-bold text-[var(--text-primary)]">
               {formatCurrency(terminalStorageCost)}
-            </Typography>
-          </Box>
-        </Box>
+            </span>
+          </div>
+        </div>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: 'var(--text-secondary)', shrink: 0 }} />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }} noWrap>
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-[var(--text-secondary)] shrink-0" />
+          <div className="min-w-0">
+            <span className="text-[11px] text-[var(--text-secondary)] block truncate">
               Other Expenses
-            </Typography>
-            <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            </span>
+            <span className="text-xs font-bold text-[var(--text-primary)]">
               {formatCurrency(otherExpensesCost)}
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

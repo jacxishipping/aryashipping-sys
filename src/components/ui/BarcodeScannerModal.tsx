@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from 'html5-qrcode';
-import { Camera, Flashlight, SwitchCamera, X, AlertCircle, CheckCircle, RefreshCw, Upload } from 'lucide-react';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Camera, Flashlight, SwitchCamera, CheckCircle, Upload } from 'lucide-react';
 import Modal from '@/components/design-system/Modal';
-import { Alert, Button } from '@/components/design-system';
+import { Alert, Button, IconButton } from '@/components/design-system';
 import { sanitizeTrackNumber } from '@/lib/tracking-sanitize';
 
 interface BarcodeScannerModalProps {
@@ -212,33 +211,19 @@ export function BarcodeScannerModal({
       open={open}
       onClose={onClose}
       title={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <div className="flex items-center gap-2">
           <Camera className="w-5 h-5 text-[var(--accent-gold)]" />
-          <Typography sx={{ fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)' }}>
+          <span className="font-bold text-base text-[var(--text-primary)]">
             {title}
-          </Typography>
-        </Box>
+          </span>
+        </div>
       }
       description={description}
       size="sm"
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="flex flex-col items-center">
         {/* Viewfinder Container */}
-        <Box
-          sx={{
-            position: 'relative',
-            width: '100%',
-            maxWidth: 380,
-            aspectRatio: '4/3',
-            borderRadius: 3,
-            overflow: 'hidden',
-            border: '2px solid var(--border)',
-            bgcolor: '#000',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <div className="relative w-full max-w-[380px] aspect-[4/3] rounded-2xl overflow-hidden border-2 border-[var(--border)] bg-black flex items-center justify-center">
           {/* html5-qrcode element */}
           <div
             id={containerId}
@@ -251,92 +236,53 @@ export function BarcodeScannerModal({
 
           {/* Laser Scan line overlay */}
           {isScanning && !scannedResult && (
-            <Box
-              sx={{
-                position: 'absolute',
+            <div
+              className="absolute left-[12%] right-[12%] h-[2px] bg-[var(--accent-gold)] shadow-[0_0_12px_2px_var(--accent-gold)] pointer-events-none animate-pulse"
+              style={{
                 top: '50%',
-                left: '12%',
-                right: '12%',
-                height: 2,
-                bgcolor: 'var(--accent-gold)',
-                boxShadow: '0 0 12px 2px var(--accent-gold)',
-                animation: 'scanLine 2s ease-in-out infinite alternate',
-                pointerEvents: 'none',
-                '@keyframes scanLine': {
-                  '0%': { transform: 'translateY(-60px)' },
-                  '100%': { transform: 'translateY(60px)' },
-                },
               }}
             />
           )}
 
           {/* Success Overlay */}
           {scannedResult && (
-            <Box
-              sx={{
-                position: 'absolute',
-                inset: 0,
-                bgcolor: 'rgba(0,0,0,0.75)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 1.5,
-                zIndex: 10,
-              }}
-            >
-              <CheckCircle className="w-12 h-12 text-emerald-500 animate-in zoom-in-75 duration-200" />
-              <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem' }}>
+            <div className="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-2 z-10 animate-fade-in-up">
+              <CheckCircle className="w-12 h-12 text-emerald-500" />
+              <p className="text-white font-bold text-base">
                 Captured!
-              </Typography>
-              <Typography sx={{ color: 'var(--accent-gold)', fontFamily: 'monospace', fontWeight: 700 }}>
+              </p>
+              <p className="text-[var(--accent-gold)] font-mono font-bold">
                 {scannedResult}
-              </Typography>
-            </Box>
+              </p>
+            </div>
           )}
 
           {/* Corner Guides */}
           {isScanning && !scannedResult && (
-            <Box sx={{ position: 'absolute', inset: 16, pointerEvents: 'none', border: '1px dashed rgba(255,255,255,0.3)', borderRadius: 2 }} />
+            <div className="absolute inset-4 pointer-events-none border border-dashed border-white/30 rounded-xl" />
           )}
-        </Box>
+        </div>
 
         {/* Camera Controls Bar */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-            maxWidth: 380,
-            mt: 2,
-            px: 1,
-          }}
-        >
+        <div className="flex items-center justify-between w-full max-w-[380px] mt-4 px-1 gap-2">
           {cameras.length > 1 ? (
             <IconButton
               onClick={switchCamera}
-              size="small"
-              sx={{ color: 'var(--text-secondary)', border: '1px solid var(--border)' }}
-              title="Switch camera"
-            >
-              <SwitchCamera className="w-4 h-4" />
-            </IconButton>
-          ) : <Box />}
+              size="sm"
+              variant="outline"
+              ariaLabel="Switch camera"
+              icon={<SwitchCamera className="w-4 h-4" />}
+            />
+          ) : <div />}
 
           {hasTorch && (
             <IconButton
               onClick={toggleTorch}
-              size="small"
-              sx={{
-                color: torchOn ? '#eab308' : 'var(--text-secondary)',
-                border: '1px solid var(--border)',
-                bgcolor: torchOn ? 'rgba(234, 179, 8, 0.15)' : 'transparent',
-              }}
-              title="Toggle flashlight"
-            >
-              <Flashlight className="w-4 h-4" />
-            </IconButton>
+              size="sm"
+              variant={torchOn ? 'primary' : 'outline'}
+              ariaLabel="Toggle flashlight"
+              icon={<Flashlight className="w-4 h-4" />}
+            />
           )}
 
           {/* Hidden file input for scanning saved QR/barcode images */}
@@ -382,15 +328,15 @@ export function BarcodeScannerModal({
           >
             Cancel
           </Button>
-        </Box>
+        </div>
 
         {/* Error Feedback */}
         {error && (
-          <Box sx={{ mt: 2, width: '100%' }}>
+          <div className="mt-4 w-full">
             <Alert severity="error">{error}</Alert>
-          </Box>
+          </div>
         )}
-      </Box>
+      </div>
     </Modal>
   );
 }

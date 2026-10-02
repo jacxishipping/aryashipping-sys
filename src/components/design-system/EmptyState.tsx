@@ -1,6 +1,5 @@
 "use client";
 
-import { Box, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 
 interface EmptyStateProps {
@@ -12,59 +11,19 @@ interface EmptyStateProps {
 
 export default function EmptyState({ icon, title, description, action }: EmptyStateProps) {
 	return (
-		<Box
-			className="animate-fade-in-up"
-			sx={{
-				minHeight: 240,
-				display: 'flex',
-				flexDirection: 'column',
-				alignItems: 'center',
-				justifyContent: 'center',
-				gap: 1.5,
-				textAlign: 'center',
-				py: 4,
-			}}
-		>
-			<Box
-				sx={{
-					width: 72,
-					height: 72,
-					borderRadius: '50%',
-					background: 'rgba(var(--accent-gold-rgb), 0.08)',
-					border: '1px solid rgba(var(--accent-gold-rgb), 0.2)',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					color: 'var(--accent-gold)',
-					opacity: 0.7,
-					'& svg': {
-						fontSize: { xs: 42, sm: 48, md: 56 },
-					},
-				}}
-			>
+		<div className="animate-fade-in-up min-h-[240px] flex flex-col items-center justify-center gap-3 text-center py-8">
+			<div className="w-18 h-18 rounded-full bg-[rgba(var(--accent-gold-rgb),0.08)] border border-[rgba(var(--accent-gold-rgb),0.2)] flex items-center justify-center text-[var(--accent-gold)] opacity-80 text-3xl">
 				{icon}
-			</Box>
-			<Typography
-				sx={{
-					fontSize: { xs: '0.98rem', sm: '1rem', md: '1.05rem' },
-					fontWeight: 600,
-					color: 'var(--text-primary)',
-				}}
-			>
+			</div>
+			<h3 className="text-base font-semibold text-[var(--text-primary)] mt-1">
 				{title}
-			</Typography>
+			</h3>
 			{description && (
-				<Typography
-					sx={{
-						fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
-						color: 'var(--text-secondary)',
-						maxWidth: 400,
-					}}
-				>
+				<p className="text-sm text-[var(--text-secondary)] max-w-md">
 					{description}
-				</Typography>
+				</p>
 			)}
-			{action && <Box sx={{ mt: 1 }}>{action}</Box>}
-		</Box>
+			{action && <div className="mt-2">{action}</div>}
+		</div>
 	);
 }

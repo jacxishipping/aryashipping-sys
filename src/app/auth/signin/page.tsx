@@ -5,51 +5,9 @@ import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { Visibility, VisibilityOff, Email, Lock, ArrowForward, VpnKey } from '@mui/icons-material';
+import { Eye, EyeOff, Mail, Lock, ArrowRight, Key } from 'lucide-react';
 import SiteLogo from '@/components/brand/SiteLogo';
-import { Alert, Button as DSButton } from '@/components/design-system';
-import { Button, 
-	TextField, 
-	InputAdornment, 
-	IconButton, 
-	CircularProgress, 
-	Box, 
-	Typography,
-	Paper
-} from '@mui/material';
-
-const textFieldStyles = {
-	'& .MuiOutlinedInput-root': {
-		bgcolor: 'var(--background)',
-		borderRadius: 3,
-		color: 'var(--text-primary)',
-		'& fieldset': {
-			borderColor: 'rgba(var(--panel-rgb), 0.9)',
-			transition: 'all 200ms ease',
-		},
-		'&:hover fieldset': {
-			borderColor: 'rgba(var(--accent-gold-rgb), 0.22)',
-		},
-		'&.Mui-focused': {
-			boxShadow: '0 0 0 3px rgba(var(--accent-gold-rgb), 0.12)',
-		},
-		'&.Mui-focused fieldset': {
-			borderColor: 'var(--accent-gold)',
-			borderWidth: 2,
-		},
-		'& input': {
-			color: 'var(--text-primary)',
-			'&::placeholder': {
-				color: 'var(--text-secondary)',
-				opacity: 1,
-			},
-			'&:-webkit-autofill': {
-				WebkitBoxShadow: '0 0 0 100px var(--background) inset',
-				WebkitTextFillColor: 'var(--text-primary)',
-			},
-		},
-	},
-} as const;
+import { Alert, Button } from '@/components/design-system';
 
 export default function SignInPage() {
 	const { t } = useTranslation();
@@ -151,311 +109,170 @@ export default function SignInPage() {
 		}
 	};
 
-
 	return (
-		<Box
-			sx={{
-				minHeight: '100vh',
-				bgcolor: 'var(--background)',
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				py: { xs: 6, sm: 10 },
-				px: { xs: 2, sm: 3, lg: 4 },
-				position: 'relative',
-				overflow: 'hidden',
-			}}
-		>
+		<div className="min-h-screen bg-[var(--background)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
 			<motion.div
 				initial={{ opacity: 1 }}
 				animate={{ opacity: 1 }}
 				transition={{ duration: 1.2 }}
-				style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}
+				className="absolute inset-0 pointer-events-none"
 			>
-				<Box
-					sx={{
-						position: 'absolute',
-						inset: 0,
-						background: 'radial-gradient(ellipse 80% 60% at 50% -10%, rgba(var(--accent-gold-rgb), 0.08) 0%, transparent 60%)',
-					}}
-				/>
-				<Box
-					sx={{
-						position: 'absolute',
-						inset: 0,
-						background: 'radial-gradient(ellipse 55% 45% at 100% 100%, rgba(var(--accent-gold-rgb), 0.04) 0%, transparent 70%)',
-					}}
-				/>
+				<div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(var(--accent-gold-rgb),0.08)_0%,transparent_60%)]" />
+				<div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_100%_100%,rgba(var(--accent-gold-rgb),0.04)_0%,transparent_70%)]" />
 			</motion.div>
 
 			{/* Main Content */}
 			<motion.div
-				// Start visible so SSR HTML is never blank; animation only from a small offset
 				initial={{ opacity: 1, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
-				style={{ maxWidth: 448, width: '100%', position: 'relative', zIndex: 10 }}
+				className="max-w-md w-full relative z-10"
 			>
 				{/* Glass Card */}
-				<Paper
-					elevation={0}
-					sx={{
-						position: 'relative',
-						borderRadius: 4,
-						backdropFilter: 'blur(20px)',
-						background: 'rgba(var(--panel-rgb), 0.92)',
-						border: '1px solid rgba(var(--accent-gold-rgb), 0.15)',
-						boxShadow: '0 32px 80px rgba(var(--text-primary-rgb), 0.16), 0 0 0 1px rgba(var(--accent-gold-rgb), 0.08)',
-						p: { xs: 4, sm: 5 },
-						overflow: 'hidden',
-					}}
-				>
-					<Box sx={{ position: 'relative', zIndex: 1 }}>
+				<div className="relative rounded-3xl backdrop-blur-xl bg-[rgba(var(--panel-rgb),0.92)] border border-[rgba(var(--accent-gold-rgb),0.15)] shadow-[0_32px_80px_rgba(0,0,0,0.16)] p-6 sm:p-8 overflow-hidden">
+					<div className="relative z-10">
 						{/* Header */}
-						<Box sx={{ textAlign: 'center', mb: 3 }}>
-							<Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+						<div className="text-center mb-6">
+							<div className="flex justify-center mb-4">
 								<SiteLogo variant="dashboard" className="w-[120px]" priority />
-							</Box>
-							<Typography
-								variant="h3"
-								sx={{
-									fontSize: { xs: '1.875rem', sm: '2.25rem' },
-									fontWeight: 700,
-									background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--accent-gold) 100%)',
-									WebkitBackgroundClip: 'text',
-									WebkitTextFillColor: 'transparent',
-									mb: 1,
-								}}
-							>
+							</div>
+							<h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[var(--text-primary)] to-[var(--accent-gold)] bg-clip-text text-transparent mb-1">
 								{t('auth.signIn')}
-							</Typography>
-							<Typography
-								variant="body1"
-								sx={{
-									color: 'var(--text-secondary)',
-								}}
-							>
+							</h1>
+							<p className="text-sm text-[var(--text-secondary)]">
 								{t('auth.signInSubtitle')}
-							</Typography>
-						</Box>
+							</p>
+						</div>
 
 						{/* Error Message */}
 						{error && (
-							<Box sx={{ mb: 2 }}>
+							<div className="mb-4">
 								<Alert severity="error">{error}</Alert>
-							</Box>
+							</div>
 						)}
 
 						{/* Form */}
-						<Box component="form" onSubmit={handleSubmit} noValidate sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+						<form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
 							{/* Email or Access Code Field */}
-							<Box>
-								<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-									<Typography
-										component="label"
+							<div>
+								<div className="flex justify-between items-center mb-1.5">
+									<label
 										htmlFor="email"
-										sx={{
-											display: 'block',
-											fontSize: '0.875rem',
-											fontWeight: 500,
-											color: 'var(--text-primary)',
-										}}
+										className="block text-xs font-semibold text-[var(--text-primary)]"
 									>
 										{isAccessCode ? '8-Character Access Code' : `${t('auth.email')} or Access Code`}
-									</Typography>
+									</label>
 									{isAccessCode && (
-										<Typography
-											sx={{
-												fontSize: '0.75rem',
-												fontWeight: 600,
-												color: 'var(--accent-gold)',
-												bgcolor: 'rgba(var(--accent-gold-rgb), 0.12)',
-												px: 1,
-												py: 0.25,
-												borderRadius: 1,
-											}}
-										>
+										<span className="text-[11px] font-semibold text-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.12)] px-2 py-0.5 rounded">
 											Access code detected
-										</Typography>
+										</span>
 									)}
-								</Box>
-								<TextField
-									id="email"
-									type="text"
-									fullWidth
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									required
-									placeholder="Enter email or 8-character code (e.g. C24FBSUX)"
-									autoComplete="username"
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												{isAccessCode ? (
-													<VpnKey sx={{ fontSize: 20, color: 'var(--accent-gold)' }} />
-												) : (
-													<Email sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />
-												)}
-											</InputAdornment>
-										),
-									}}
-									sx={{
-										...textFieldStyles,
-										...(isAccessCode && {
-											'& .MuiOutlinedInput-root input': {
-												letterSpacing: '0.18em',
-												fontWeight: 700,
-												color: 'var(--text-primary)',
-											},
-										}),
-									}}
-								/>
-							</Box>
+								</div>
+								<div className="relative">
+									<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-secondary)]">
+										{isAccessCode ? (
+											<Key className="w-4 h-4 text-[var(--accent-gold)]" />
+										) : (
+											<Mail className="w-4 h-4" />
+										)}
+									</div>
+									<input
+										id="email"
+										type="text"
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										required
+										placeholder="Enter email or 8-character code (e.g. C24FBSUX)"
+										autoComplete="username"
+										className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[var(--background)] border border-[rgba(var(--panel-rgb),0.9)] hover:border-[rgba(var(--accent-gold-rgb),0.3)] focus:border-[var(--accent-gold)] focus:ring-2 focus:ring-[rgba(var(--accent-gold-rgb),0.15)] outline-none text-sm text-[var(--text-primary)] transition-all ${
+											isAccessCode ? 'tracking-widest font-bold' : ''
+										}`}
+									/>
+								</div>
+							</div>
 
 							{/* Password Field - Hidden/not required when entering an 8-character access code */}
 							{!isAccessCode && (
-								<Box>
-									<Typography
-										component="label"
+								<div>
+									<label
 										htmlFor="password"
-										sx={{
-											display: 'block',
-											fontSize: '0.875rem',
-											fontWeight: 500,
-											color: 'var(--text-primary)',
-											mb: 1,
-										}}
+										className="block text-xs font-semibold text-[var(--text-primary)] mb-1.5"
 									>
 										{t('auth.password')}
-									</Typography>
-									<TextField
-										id="password"
-										type={showPassword ? 'text' : 'password'}
-										fullWidth
-										value={password}
-										onChange={(e) => setPassword(e.target.value)}
-										placeholder="Enter your password"
-										autoComplete="current-password"
-										InputProps={{
-											startAdornment: (
-												<InputAdornment position="start">
-													<Lock sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />
-												</InputAdornment>
-											),
-											endAdornment: (
-												<InputAdornment position="end">
-													<IconButton
-														onClick={() => setShowPassword(!showPassword)}
-														edge="end"
-														sx={{
-															color: 'var(--accent-gold)',
-															'&:hover': {
-																color: 'var(--accent-gold)',
-															},
-														}}
-													>
-														{showPassword ? (
-															<VisibilityOff sx={{ fontSize: 20 }} />
-														) : (
-															<Visibility sx={{ fontSize: 20 }} />
-														)}
-													</IconButton>
-												</InputAdornment>
-											),
-										}}
-										sx={textFieldStyles}
-									/>
-								</Box>
+									</label>
+									<div className="relative">
+										<div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--text-secondary)]">
+											<Lock className="w-4 h-4" />
+										</div>
+										<input
+											id="password"
+											type={showPassword ? 'text' : 'password'}
+											value={password}
+											onChange={(e) => setPassword(e.target.value)}
+											placeholder="Enter your password"
+											autoComplete="current-password"
+											className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-[var(--background)] border border-[rgba(var(--panel-rgb),0.9)] hover:border-[rgba(var(--accent-gold-rgb),0.3)] focus:border-[var(--accent-gold)] focus:ring-2 focus:ring-[rgba(var(--accent-gold-rgb),0.15)] outline-none text-sm text-[var(--text-primary)] transition-all"
+										/>
+										<button
+											type="button"
+											onClick={() => setShowPassword(!showPassword)}
+											className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors"
+										>
+											{showPassword ? (
+												<EyeOff className="w-4 h-4" />
+											) : (
+												<Eye className="w-4 h-4" />
+											)}
+										</button>
+									</div>
+								</div>
 							)}
 
 							{/* Submit Button */}
 							<Button
 								type="submit"
-								disabled={isLoading}
-								variant="contained"
-								size="large"
-								endIcon={!isLoading && <ArrowForward />}
-								sx={{
-									width: '100%',
-									background: 'linear-gradient(135deg, var(--accent-gold) 0%, #B8960C 100%)',
-									color: 'var(--text-primary)',
-									fontWeight: 600,
-									py: 1.5,
-									fontSize: '1rem',
-									boxShadow: '0 4px 14px rgba(var(--accent-gold-rgb), 0.25)',
-									'&:hover': {
-										background: 'linear-gradient(135deg, var(--accent-gold) 0%, #B8960C 100%)',
-										boxShadow: '0 4px 14px rgba(var(--accent-gold-rgb), 0.35)',
-									},
-									'&:disabled': {
-										background: 'linear-gradient(135deg, rgba(var(--accent-gold-rgb), 0.55) 0%, rgba(184, 150, 12, 0.55) 100%)',
-										color: 'rgba(var(--text-primary-rgb), 0.7)',
-									},
-								}}
+								variant="primary"
+								size="lg"
+								loading={isLoading}
+								fullWidth
+								icon={!isLoading ? <ArrowRight className="w-4 h-4" /> : undefined}
+								iconPosition="end"
 							>
-								{isLoading ? (
-									<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-										<CircularProgress size={20} sx={{ color: 'inherit' }} />
-										<Typography component="span">{t('auth.signingIn')}</Typography>
-									</Box>
-								) : (
-									<Typography component="span">
-										{isAccessCode ? 'Login with Access Code' : t('auth.signIn')}
-									</Typography>
-								)}
+								{isAccessCode ? 'Login with Access Code' : t('auth.signIn')}
 							</Button>
-						</Box>
+						</form>
 
 						{/* Sign Up Link */}
-						<Box sx={{ textAlign: 'center', pt: 2 }}>
-							<Typography variant="body2" sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+						<div className="text-center pt-4">
+							<p className="text-xs text-[var(--text-secondary)]">
 								{t('auth.dontHaveAccount')}{' '}
-								<Typography
-									component="button"
+								<button
+									type="button"
 									onClick={() => router.push('/auth/signup')}
-									sx={{
-										background: 'none',
-										border: 'none',
-										// Gold-800 from the design token scale: passes AA on white panels (gold-500 is too light for text)
-										color: '#8D7A1F',
-										fontWeight: 500,
-										cursor: 'pointer',
-										transition: 'color 0.2s ease',
-										'&:hover': {
-											color: '#6B5C17',
-										},
-									}}
+									className="text-[var(--accent-gold)] hover:underline font-medium transition-colors cursor-pointer"
 								>
 									{t('auth.signUp')}
-								</Typography>
-							</Typography>
-						</Box>
+								</button>
+							</p>
+						</div>
 
 						{/* Short Code Login Link */}
-						<Box sx={{ textAlign: 'center', pt: 2, mt: 2, borderTop: '1px solid var(--border)' }}>
-							<Typography variant="body2" sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)', mb: 1 }}>
+						<div className="text-center pt-4 mt-4 border-t border-[var(--border)]">
+							<p className="text-xs text-[var(--text-secondary)] mb-2">
 								Have a login code?
-							</Typography>
-							<DSButton
+							</p>
+							<Button
 								variant="outline"
 								size="sm"
 								onClick={() => router.push(simpleLoginHref)}
-								sx={{
-									borderColor: 'rgba(var(--accent-gold-rgb), 0.22)',
-									color: 'var(--text-primary)',
-									'&:hover': {
-										borderColor: 'var(--accent-gold)',
-										bgcolor: 'rgba(var(--accent-gold-rgb), 0.06)',
-									},
-								}}
 							>
 								Login with 8-character code
-							</DSButton>
-						</Box>
-					</Box>
-				</Paper>
+							</Button>
+						</div>
+					</div>
+				</div>
 			</motion.div>
-		</Box>
+		</div>
 	);
 }
 

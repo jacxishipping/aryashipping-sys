@@ -3,15 +3,16 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
-import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, MenuItem, TextField, Typography } from '@mui/material';
+import {
+  Package,
+  CheckSquare,
+  CheckCircle2,
+  Truck,
+  User,
+  Eye,
+} from 'lucide-react';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, PageHeader, Select, Skeleton, SkeletonParagraph, SkeletonTable, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, FormField, PageHeader, Select, Skeleton, SkeletonTable, toast } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalCustomer = {
@@ -287,14 +288,17 @@ export default function PortalShipmentsPage() {
       render: (_, row) => {
         const readiness = getPortalReadiness(portal, row);
         return (
-          <Box
-            component="span"
+          <span
             role="status"
             aria-label={readiness.label}
-            sx={{ px: 1.2, py: 0.45, borderRadius: 999, display: 'inline-flex', alignItems: 'center', bgcolor: readiness.tone === 'ready' ? 'rgba(var(--success-rgb),0.12)' : 'rgba(var(--warning-rgb),0.14)', color: readiness.tone === 'ready' ? 'var(--success)' : 'var(--warning)', fontSize: '0.75rem', fontWeight: 700 }}
+            className={`px-3 py-1 rounded-full inline-flex items-center text-xs font-bold ${
+              readiness.tone === 'ready'
+                ? 'bg-[rgba(var(--success-rgb),0.12)] text-[var(--success)]'
+                : 'bg-[rgba(var(--warning-rgb),0.14)] text-[var(--warning)]'
+            }`}
           >
             {readiness.label}
-          </Box>
+          </span>
         );
       },
     },
@@ -304,9 +308,17 @@ export default function PortalShipmentsPage() {
       render: (_, row) => {
         const noteSource = getAssignmentNoteSource(row);
         return (
-          <Box sx={{ px: 1.2, py: 0.45, borderRadius: 999, display: 'inline-flex', alignItems: 'center', bgcolor: noteSource.tone === 'manual' ? 'rgba(var(--brand-primary-rgb),0.12)' : noteSource.tone === 'default' ? 'rgba(var(--info-rgb),0.12)' : 'rgba(var(--text-primary-rgb),0.08)', color: noteSource.tone === 'manual' ? 'var(--brand-primary)' : noteSource.tone === 'default' ? 'var(--info)' : 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 700 }}>
+          <span
+            className={`px-3 py-1 rounded-full inline-flex items-center text-xs font-bold ${
+              noteSource.tone === 'manual'
+                ? 'bg-[rgba(var(--brand-primary-rgb),0.12)] text-[var(--brand-primary)]'
+                : noteSource.tone === 'default'
+                ? 'bg-[rgba(var(--info-rgb),0.12)] text-[var(--info)]'
+                : 'bg-[rgba(var(--text-primary-rgb),0.08)] text-[var(--text-secondary)]'
+            }`}
+          >
             {noteSource.label}
-          </Box>
+          </span>
         );
       },
     },
@@ -314,23 +326,22 @@ export default function PortalShipmentsPage() {
       key: 'assign',
       header: 'Link To Customer',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', minWidth: 280 }}>
-          <TextField
-            select
-            size="small"
-            fullWidth
+        <div className="flex gap-2 items-center min-w-[280px]">
+          <select
+            aria-label="Link to customer"
             value={selectedCustomers[row.shipment.id] || ''}
             onChange={(event) => setSelectedCustomers((prev) => ({ ...prev, [row.shipment.id]: event.target.value }))}
+            className="flex-1 h-9 px-3 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
           >
-            <MenuItem value="">Unassigned</MenuItem>
+            <option value="">Unassigned</option>
             {customers.map((customer) => (
-              <MenuItem key={customer.id} value={customer.id}>{customer.name}</MenuItem>
+              <option key={customer.id} value={customer.id}>{customer.name}</option>
             ))}
-          </TextField>
+          </select>
           <Button variant="outline" size="sm" onClick={() => void handleLinkCustomer(row.shipment.id)} disabled={savingId === row.shipment.id}>
             {savingId === row.shipment.id ? 'Saving...' : 'Save'}
           </Button>
-        </Box>
+        </div>
       ),
     },
     {
@@ -338,14 +349,13 @@ export default function PortalShipmentsPage() {
       header: 'Actions',
       align: 'right',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/portal/${portalId}/shipments/${row.shipment.id}`} style={{ textDecoration: 'none' }}>
-            <Button variant="outline" size="sm">
-              <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+        <div className="flex justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/portal/${portalId}/shipments/${row.shipment.id}`} className="no-underline">
+            <Button variant="outline" size="sm" icon={<Eye className="w-4 h-4" />}>
               View
             </Button>
           </Link>
-        </Box>
+        </div>
       ),
     },
   ], [customers, portal, portalId, savingId, selectedCustomers]);
@@ -361,19 +371,19 @@ export default function PortalShipmentsPage() {
           { label: 'Customers', value: customers.length, helper: 'Available for assignment handoff' },
         ]}
         actions={
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="flex gap-2 items-center flex-wrap">
             {lastRefreshedAt ? (
-              <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }} aria-live="polite">
+              <span className="text-xs text-[var(--text-secondary)]" aria-live="polite">
                 Updated {lastRefreshedAt.toLocaleTimeString()}
-              </Typography>
+              </span>
             ) : null}
             <Button variant="outline" size="sm" onClick={() => void fetchData()} disabled={loading}>
               Refresh
             </Button>
-            <Link href={`/portal/${portalId}/customers`} style={{ textDecoration: 'none' }}>
+            <Link href={`/portal/${portalId}/customers`} className="no-underline">
               <Button variant="outline" size="sm">Open Customers</Button>
             </Link>
-          </Box>
+          </div>
         }
       />
 
@@ -381,60 +391,60 @@ export default function PortalShipmentsPage() {
         <>
           <DashboardGrid className="grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
             {[0, 1, 2, 3, 4].map((index) => (
-              <Box key={index} sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'var(--panel)', display: 'grid', gap: 0.75 }}>
+              <div key={index} className="border border-[var(--border)] rounded-2xl p-4 bg-[var(--panel)] grid gap-2">
                 <Skeleton variant="text" width="60%" height={14} />
                 <Skeleton variant="text" width="35%" height={34} />
-              </Box>
+              </div>
             ))}
           </DashboardGrid>
           <DashboardPanel title="Shipment Workspace" description="Search, review, and link assigned shipments to portal customers.">
-            <Box sx={{ display: 'grid', gap: 2 }}>
+            <div className="grid gap-4">
               <Skeleton variant="rounded" height={56} />
               <Skeleton variant="rounded" height={48} />
               <SkeletonTable rows={6} columns={5} />
-            </Box>
+            </div>
           </DashboardPanel>
         </>
       ) : (
         <>
           <DashboardGrid className="grid-cols-1 gap-3 md:grid-cols-3 xl:grid-cols-5">
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--brand-primary-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Assigned Units</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{filteredAssignments.length}</Typography>
-              <LocalShippingOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--accent-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Customer Linked</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{linkedCount}</Typography>
-              <AssignmentTurnedInOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--text-primary-rgb),0.05)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Needs Handoff</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{unlinkedCount}</Typography>
-              <PersonOutlineOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--warning-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Active Statuses</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{uniqueStatuses}</Typography>
-              <Inventory2OutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--success-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Ready Now</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{readyCount}</Typography>
-              <CheckCircleOutlineOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--brand-primary-rgb),0.08)] grid gap-1">
+              <div className="text-xs tracking-wider uppercase text-[var(--text-secondary)]">Assigned Units</div>
+              <div className="text-2xl font-extrabold text-[var(--text-primary)]">{filteredAssignments.length}</div>
+              <Truck className="w-5 h-5 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--accent-rgb),0.08)] grid gap-1">
+              <div className="text-xs tracking-wider uppercase text-[var(--text-secondary)]">Customer Linked</div>
+              <div className="text-2xl font-extrabold text-[var(--text-primary)]">{linkedCount}</div>
+              <CheckSquare className="w-5 h-5 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--text-primary-rgb),0.05)] grid gap-1">
+              <div className="text-xs tracking-wider uppercase text-[var(--text-secondary)]">Needs Handoff</div>
+              <div className="text-2xl font-extrabold text-[var(--text-primary)]">{unlinkedCount}</div>
+              <User className="w-5 h-5 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--warning-rgb),0.08)] grid gap-1">
+              <div className="text-xs tracking-wider uppercase text-[var(--text-secondary)]">Active Statuses</div>
+              <div className="text-2xl font-extrabold text-[var(--text-primary)]">{uniqueStatuses}</div>
+              <Package className="w-5 h-5 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--success-rgb),0.08)] grid gap-1">
+              <div className="text-xs tracking-wider uppercase text-[var(--text-secondary)]">Ready Now</div>
+              <div className="text-2xl font-extrabold text-[var(--text-primary)]">{readyCount}</div>
+              <CheckCircle2 className="w-5 h-5 text-[var(--text-secondary)]" />
+            </div>
           </DashboardGrid>
 
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[1.35fr_0.9fr]">
             <DashboardPanel title="Shipment Workspace" description="Search, review, and link assigned shipments to portal customers.">
-              <Box sx={{ display: 'grid', gap: 2 }}>
-                <TextField
+              <div className="grid gap-4">
+                <FormField
                   label="Search shipments"
                   placeholder="Search by vehicle, VIN, status, or customer"
                   value={query}
-                  onChange={(event) => setQuery(event.target.value)}
+                  onChange={(value) => setQuery(value)}
                 />
-                <Box sx={{ maxWidth: 240 }}>
+                <div className="max-w-[240px]">
                   <Select
                     label="Ready filter"
                     value={readinessFilter}
@@ -445,28 +455,19 @@ export default function PortalShipmentsPage() {
                       { value: 'not-ready', label: 'Not ready only' },
                     ]}
                   />
-                </Box>
+                </div>
 
-                <Box
-                  sx={{
-                    border: '1px solid var(--border)',
-                    borderRadius: 2.5,
-                    p: 1.75,
-                    bgcolor: 'var(--panel)',
-                    display: 'grid',
-                    gap: 1.25,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1.5, flexWrap: 'wrap' }}>
-                    <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+                <div className="border border-[var(--border)] rounded-2xl p-4 bg-[var(--panel)] grid gap-3">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div className="text-xs font-semibold tracking-wider uppercase text-[var(--text-secondary)]">
                       Bulk actions
-                    </Typography>
-                    <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    </div>
+                    <div className="text-xs text-[var(--text-secondary)]">
                       Select rows in the table below, then apply an action to all of them at once.
-                    </Typography>
-                  </Box>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
-                    <Box sx={{ minWidth: 200 }}>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 flex-wrap items-center">
+                    <div className="min-w-[200px]">
                       <Select
                         size="small"
                         label="Action"
@@ -478,10 +479,10 @@ export default function PortalShipmentsPage() {
                           { value: 'SET_NOTES', label: 'Set notes' },
                         ]}
                       />
-                    </Box>
+                    </div>
 
                     {bulkAction === 'LINK_CUSTOMER' ? (
-                      <Box sx={{ minWidth: 220 }}>
+                      <div className="min-w-[220px]">
                         <Select
                           size="small"
                           label="Customer"
@@ -492,21 +493,21 @@ export default function PortalShipmentsPage() {
                             ...customers.map((customer) => ({ value: customer.id, label: customer.name })),
                           ]}
                         />
-                      </Box>
+                      </div>
                     ) : null}
 
                     {bulkAction === 'SET_NOTES' ? (
-                      <TextField
-                        size="small"
-                        label="Notes"
-                        placeholder="Note to apply to selected shipments"
-                        value={bulkNotes}
-                        onChange={(event) => setBulkNotes(event.target.value)}
-                        sx={{ minWidth: 260, maxWidth: 380 }}
-                      />
+                      <div className="min-w-[260px] max-w-[380px]">
+                        <FormField
+                          label="Notes"
+                          placeholder="Note to apply to selected shipments"
+                          value={bulkNotes}
+                          onChange={(value) => setBulkNotes(value)}
+                        />
+                      </div>
                     ) : null}
-                  </Box>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', alignItems: 'center' }}>
+                  </div>
+                  <div className="flex gap-2 flex-wrap items-center">
                     <Button
                       variant="primary"
                       size="sm"
@@ -524,20 +525,20 @@ export default function PortalShipmentsPage() {
                         : `Apply to ${selectedShipmentIds.length} selected`}
                     </Button>
                     {selectedShipmentIds.length === 0 && !bulkBusy ? (
-                      <Typography sx={{ fontSize: '0.8rem', color: 'var(--warning)', fontWeight: 600 }} role="status">
+                      <div className="text-xs text-[var(--warning)] font-semibold" role="status">
                         Select shipments using the checkboxes in the table to enable this.
-                      </Typography>
+                      </div>
                     ) : null}
-                  </Box>
-                  <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+                  </div>
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Tip: use the checkboxes in the table and the toolbar that appears above it to remove shipments from the portal in bulk. Removing a shipment only unassigns it from this portal — the shipment itself stays untouched in the main system.
-                  </Typography>
-                </Box>
+                  </p>
+                </div>
 
                 {assignments.length === 0 ? (
-                  <EmptyState icon={<Inventory2OutlinedIcon />} title="No assigned shipments" description="Your portal does not have any shipments assigned yet. Ask the internal team to assign shipments to this portal first." />
+                  <EmptyState icon={<Package className="w-8 h-8 text-[var(--text-secondary)]" />} title="No assigned shipments" description="Your portal does not have any shipments assigned yet. Ask the internal team to assign shipments to this portal first." />
                 ) : filteredAssignments.length === 0 ? (
-                  <Box sx={{ color: 'var(--text-secondary)' }}>No shipments matched the current search and ready-state filters.</Box>
+                  <div className="text-sm text-[var(--text-secondary)]">No shipments matched the current search and ready-state filters.</div>
                 ) : (
                   <DataTable
                     data={filteredAssignments}
@@ -567,52 +568,52 @@ export default function PortalShipmentsPage() {
                     }}
                   />
                 )}
-              </Box>
+              </div>
             </DashboardPanel>
 
             <DashboardPanel title="Assignment Board" description="Use customer mapping to turn shared logistics into partner-owned workload.">
-              <Box sx={{ display: 'grid', gap: 2 }}>
-                <Box sx={{ p: 1.75, borderRadius: 2.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.07)' }}>
-                  <Typography sx={{ fontSize: '0.75rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Coverage</Typography>
-                  <Typography sx={{ fontSize: '1.45rem', fontWeight: 800 }}>{assignments.length === 0 ? '0%' : `${Math.round((assignments.filter((assignment) => assignment.partnerCustomer).length / assignments.length) * 100)}%`}</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+              <div className="grid gap-4">
+                <div className="p-4 rounded-xl bg-[rgba(var(--brand-primary-rgb),0.07)]">
+                  <div className="text-xs uppercase tracking-wider text-[var(--text-secondary)]">Coverage</div>
+                  <div className="text-2xl font-extrabold text-[var(--text-primary)]">{assignments.length === 0 ? '0%' : `${Math.round((assignments.filter((assignment) => assignment.partnerCustomer).length / assignments.length) * 100)}%`}</div>
+                  <div className="text-xs text-[var(--text-secondary)]">
                     {assignments.filter((assignment) => assignment.partnerCustomer).length} of {assignments.length} shipments are already linked to portal customers.
-                  </Typography>
-                </Box>
+                  </div>
+                </div>
 
-                <Box sx={{ display: 'grid', gap: 1.25 }}>
-                  <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Top customer destinations</Typography>
+                <div className="grid gap-2">
+                  <div className="text-xs uppercase tracking-wider text-[var(--text-secondary)]">Top customer destinations</div>
                   {topCustomers.length === 0 ? (
-                    <Box sx={{ color: 'var(--text-secondary)' }}>No shipment links have been created yet.</Box>
+                    <div className="text-sm text-[var(--text-secondary)]">No shipment links have been created yet.</div>
                   ) : (
                     topCustomers.map(([name, count]) => (
-                      <Box key={name} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, p: 1.25, borderRadius: 2, bgcolor: 'rgba(var(--text-primary-rgb),0.04)' }}>
-                        <Typography sx={{ fontSize: '0.92rem', fontWeight: 600 }}>{name}</Typography>
-                        <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{count} linked</Typography>
-                      </Box>
+                      <div key={name} className="flex items-center justify-between gap-2 p-3 rounded-lg bg-[rgba(var(--text-primary-rgb),0.04)]">
+                        <span className="text-sm font-semibold text-[var(--text-primary)]">{name}</span>
+                        <span className="text-xs text-[var(--text-secondary)]">{count} linked</span>
+                      </div>
                     ))
                   )}
-                </Box>
+                </div>
 
-                <Box sx={{ display: 'grid', gap: 1.25 }}>
-                  <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Recent portal-visible units</Typography>
+                <div className="grid gap-2">
+                  <div className="text-xs uppercase tracking-wider text-[var(--text-secondary)]">Recent portal-visible units</div>
                   {assignments.slice(0, 4).map((assignment) => (
-                    <Box key={assignment.id} sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.5, display: 'grid', gap: 0.4 }}>
-                      <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>{formatShipmentLabel(assignment.shipment)}</Typography>
-                      <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{formatStatusLabel(assignment.shipment.status)}</Typography>
-                      <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                    <div key={assignment.id} className="border border-[var(--border)] rounded-xl p-3 grid gap-1">
+                      <div className="text-sm font-bold text-[var(--text-primary)]">{formatShipmentLabel(assignment.shipment)}</div>
+                      <div className="text-xs text-[var(--text-secondary)]">{formatStatusLabel(assignment.shipment.status)}</div>
+                      <div className="text-xs text-[var(--text-secondary)]">
                         {assignment.partnerCustomer?.name || 'Awaiting portal customer link'}
-                      </Typography>
-                      <Typography sx={{ fontSize: '0.8rem', color: getAssignmentNoteSource(assignment).tone === 'manual' ? 'var(--brand-primary)' : getAssignmentNoteSource(assignment).tone === 'default' ? 'var(--info)' : 'var(--text-secondary)', fontWeight: 700 }}>
+                      </div>
+                      <div className={`text-xs font-bold ${getAssignmentNoteSource(assignment).tone === 'manual' ? 'text-[var(--brand-primary)]' : getAssignmentNoteSource(assignment).tone === 'default' ? 'text-[var(--info)]' : 'text-[var(--text-secondary)]'}`}>
                         {getAssignmentNoteSource(assignment).label}
-                      </Typography>
-                      <Typography sx={{ fontSize: '0.8rem', color: getPortalReadiness(portal, assignment).tone === 'ready' ? 'var(--success)' : 'var(--warning)', fontWeight: 700 }}>
+                      </div>
+                      <div className={`text-xs font-bold ${getPortalReadiness(portal, assignment).tone === 'ready' ? 'text-[var(--success)]' : 'text-[var(--warning)]'}`}>
                         {getPortalReadiness(portal, assignment).label}
-                      </Typography>
-                    </Box>
+                      </div>
+                    </div>
                   ))}
-                </Box>
-              </Box>
+                </div>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
         </>

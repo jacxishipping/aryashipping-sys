@@ -1,13 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-	TextField,
-	Box,
-	InputAdornment,
-} from '@mui/material';
 import { DollarSign } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, FormField, Modal, Select, toast } from '@/components/design-system';
 
 export interface EditableContainerExpense {
 	id: string;
@@ -133,10 +128,10 @@ export default function AddExpenseModal({
 			onClose={handleClose}
 			size="sm"
 			title={
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<DollarSign style={{ fontSize: 24, color: 'var(--accent-gold)' }} />
-					<span>{isEditing ? 'Edit Container Expense' : 'Add Container Expense'}</span>
-				</Box>
+				<div className="flex items-center gap-2">
+					<DollarSign className="w-5 h-5 text-[var(--accent-gold)]" />
+					<span className="font-bold">{isEditing ? 'Edit Container Expense' : 'Add Container Expense'}</span>
+				</div>
 			}
 			description="Capture a container expense with vendor and invoice details so the ledger stays reconciled."
 			showCloseButton={!loading}
@@ -152,23 +147,24 @@ export default function AddExpenseModal({
 				</>
 			}
 		>
-			<Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-					<Select
-						label="Expense Type"
-						value={formData.type}
-						onChange={(value) => handleChange('type', String(value))}
-						size="small"
-						required
-						options={[
-							...(!expenseTypes.some((type) => type.value === formData.type)
-								? [{ value: formData.type, label: formData.type.replace(/_/g, ' ') }]
-								: []),
-							...expenseTypes,
-						]}
-					/>
+			<form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-4">
+				<Select
+					label="Expense Type"
+					value={formData.type}
+					onChange={(value) => handleChange('type', String(value))}
+					size="small"
+					required
+					options={[
+						...(!expenseTypes.some((type) => type.value === formData.type)
+							? [{ value: formData.type, label: formData.type.replace(/_/g, ' ') }]
+							: []),
+						...expenseTypes,
+					]}
+				/>
 
-					<Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 2 }}>
-						<TextField
+				<div className="grid grid-cols-3 gap-3">
+					<div className="col-span-2">
+						<FormField
 							size="small"
 							label="Amount"
 							type="number"
@@ -176,55 +172,53 @@ export default function AddExpenseModal({
 							onChange={(e) => handleChange('amount', e.target.value)}
 							required
 							inputProps={{ min: 0, step: 0.01 }}
-							InputProps={{
-								startAdornment: <InputAdornment position="start">$</InputAdornment>,
-							}}
+							leftIcon={<span className="text-[var(--text-secondary)]">$</span>}
 						/>
-						<TextField
-							size="small"
-							label="Currency"
-							value={formData.currency}
-							onChange={(e) => handleChange('currency', e.target.value)}
-							disabled
-						/>
-					</Box>
-
-					<TextField
+					</div>
+					<FormField
 						size="small"
-						label="Vendor"
-						value={formData.vendor}
-						onChange={(e) => handleChange('vendor', e.target.value)}
-						placeholder="e.g., Maersk Line, US Customs"
+						label="Currency"
+						value={formData.currency}
+						onChange={(e) => handleChange('currency', e.target.value)}
+						disabled
 					/>
+				</div>
 
-					<TextField
-						size="small"
-						label="Invoice Number"
-						value={formData.invoiceNumber}
-						onChange={(e) => handleChange('invoiceNumber', e.target.value)}
-						placeholder="Vendor's invoice reference"
-					/>
+				<FormField
+					size="small"
+					label="Vendor"
+					value={formData.vendor}
+					onChange={(e) => handleChange('vendor', e.target.value)}
+					placeholder="e.g., Maersk Line, US Customs"
+				/>
 
-					<TextField
-						size="small"
-						label="Date"
-						type="date"
-						value={formData.date}
-						onChange={(e) => handleChange('date', e.target.value)}
-						required
-						InputLabelProps={{ shrink: true }}
-					/>
+				<FormField
+					size="small"
+					label="Invoice Number"
+					value={formData.invoiceNumber}
+					onChange={(e) => handleChange('invoiceNumber', e.target.value)}
+					placeholder="Vendor's invoice reference"
+				/>
 
-					<TextField
-						size="small"
-						label="Notes"
-						value={formData.notes}
-						onChange={(e) => handleChange('notes', e.target.value)}
-						multiline
-						rows={3}
-						placeholder="Additional details..."
-					/>
-			</Box>
+				<FormField
+					size="small"
+					label="Date"
+					type="date"
+					value={formData.date}
+					onChange={(e) => handleChange('date', e.target.value)}
+					required
+				/>
+
+				<FormField
+					size="small"
+					label="Notes"
+					value={formData.notes}
+					onChange={(e) => handleChange('notes', e.target.value)}
+					multiline
+					rows={3}
+					placeholder="Additional details..."
+				/>
+			</form>
 		</Modal>
 	);
 }

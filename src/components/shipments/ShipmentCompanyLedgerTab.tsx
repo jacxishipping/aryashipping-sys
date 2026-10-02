@@ -3,9 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Building2, DollarSign, Pencil, Plus, ReceiptText } from 'lucide-react';
-import { Box, TextField } from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, FormField, Modal, Select, toast } from '@/components/design-system';
 import { formatMoney } from '@/lib/format';
 import type { Shipment } from '@/components/shipments/shipment-detail-types';
 
@@ -252,7 +251,7 @@ export default function ShipmentCompanyLedgerTab({
           <span className="text-[var(--text-secondary)]">Paid {formatMoney(paymentSummary.paid)} of {formatMoney(paymentSummary.charged)}</span>
         </div>
         {companies.length > 1 && (
-          <Box sx={{ maxWidth: 360, mb: 2 }}>
+          <div className="max-w-[360px] mb-4">
             <Select
               size="small"
               label="Company ledger"
@@ -260,7 +259,7 @@ export default function ShipmentCompanyLedgerTab({
               onChange={(value) => setSelectedCompanyId(String(value))}
               options={companies.map((candidate) => ({ value: candidate.id, label: `${candidate.source}: ${candidate.name}` }))}
             />
-          </Box>
+          </div>
         )}
         {companyEntries.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-10 text-center text-[var(--text-secondary)]">
@@ -322,18 +321,18 @@ export default function ShipmentCompanyLedgerTab({
           </>
         }
       >
-        <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
-          <TextField label="Description" value={form.description} onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))} required />
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            <TextField label="Amount" type="number" inputProps={{ min: 0.01, step: 0.01 }} value={form.amount} onChange={(event) => setForm((current) => ({ ...current, amount: event.target.value }))} required />
-            <TextField label="Transaction Date" type="date" InputLabelProps={{ shrink: true }} value={form.transactionDate} onChange={(event) => setForm((current) => ({ ...current, transactionDate: event.target.value }))} />
-          </Box>
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            <TextField label="Category" value={form.category} onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))} />
-            <TextField label="Reference" value={form.reference} onChange={(event) => setForm((current) => ({ ...current, reference: event.target.value }))} />
-          </Box>
-          <TextField label="Notes" rows={3} multiline value={form.notes} onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))} />
-        </Box>
+        <div className="grid gap-3 pt-2">
+          <FormField label="Description" value={form.description} onChange={(e) => setForm((current) => ({ ...current, description: e.target.value }))} required />
+          <div className="grid grid-cols-2 gap-3">
+            <FormField label="Amount" type="number" min={0.01} step={0.01} value={form.amount} onChange={(e) => setForm((current) => ({ ...current, amount: e.target.value }))} required />
+            <FormField label="Transaction Date" type="date" value={form.transactionDate} onChange={(e) => setForm((current) => ({ ...current, transactionDate: e.target.value }))} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <FormField label="Category" value={form.category} onChange={(e) => setForm((current) => ({ ...current, category: e.target.value }))} />
+            <FormField label="Reference" value={form.reference} onChange={(e) => setForm((current) => ({ ...current, reference: e.target.value }))} />
+          </div>
+          <FormField label="Notes" multiline rows={3} value={form.notes} onChange={(e) => setForm((current) => ({ ...current, notes: e.target.value }))} />
+        </div>
       </Modal>
 
       <Modal
@@ -348,9 +347,9 @@ export default function ShipmentCompanyLedgerTab({
           </>
         }
       >
-        <Box sx={{ display: 'grid', gap: 2, pt: 1.5 }}>
-          <TextField label="Description" value={editForm.description} onChange={(event) => setEditForm((current) => ({ ...current, description: event.target.value }))} required />
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+        <div className="grid gap-3 pt-2">
+          <FormField label="Description" value={editForm.description} onChange={(e) => setEditForm((current) => ({ ...current, description: e.target.value }))} required />
+          <div className="grid grid-cols-2 gap-3">
             <Select
               label="Type"
               value={editType}
@@ -360,15 +359,15 @@ export default function ShipmentCompanyLedgerTab({
                 { value: 'CREDIT', label: 'Charge' },
               ]}
             />
-            <TextField label="Amount" type="number" inputProps={{ min: 0.01, step: 0.01 }} value={editForm.amount} onChange={(event) => setEditForm((current) => ({ ...current, amount: event.target.value }))} required />
-          </Box>
-          <TextField label="Transaction Date" type="date" InputLabelProps={{ shrink: true }} value={editForm.transactionDate} onChange={(event) => setEditForm((current) => ({ ...current, transactionDate: event.target.value }))} />
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-            <TextField label="Category" value={editForm.category} onChange={(event) => setEditForm((current) => ({ ...current, category: event.target.value }))} />
-            <TextField label="Reference" value={editForm.reference} onChange={(event) => setEditForm((current) => ({ ...current, reference: event.target.value }))} />
-          </Box>
-          <TextField label="Notes" rows={3} multiline value={editForm.notes} onChange={(event) => setEditForm((current) => ({ ...current, notes: event.target.value }))} />
-        </Box>
+            <FormField label="Amount" type="number" min={0.01} step={0.01} value={editForm.amount} onChange={(e) => setEditForm((current) => ({ ...current, amount: e.target.value }))} required />
+          </div>
+          <FormField label="Transaction Date" type="date" value={editForm.transactionDate} onChange={(e) => setEditForm((current) => ({ ...current, transactionDate: e.target.value }))} />
+          <div className="grid grid-cols-2 gap-3">
+            <FormField label="Category" value={editForm.category} onChange={(e) => setEditForm((current) => ({ ...current, category: e.target.value }))} />
+            <FormField label="Reference" value={editForm.reference} onChange={(e) => setEditForm((current) => ({ ...current, reference: e.target.value }))} />
+          </div>
+          <FormField label="Notes" multiline rows={3} value={editForm.notes} onChange={(e) => setEditForm((current) => ({ ...current, notes: e.target.value }))} />
+        </div>
       </Modal>
     </>
   );

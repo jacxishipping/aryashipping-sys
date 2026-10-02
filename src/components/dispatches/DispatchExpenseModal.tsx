@@ -1,14 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Box,
-  InputAdornment,
-  TextField,
-  Typography,
-} from '@mui/material';
 import { DollarSign, Paperclip, Upload } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, FormField, Modal, Select, toast } from '@/components/design-system';
 import {
   DEFAULT_DISPATCH_EXPENSE_CATEGORY,
   DISPATCH_EXPENSE_CATEGORY_OPTIONS,
@@ -196,10 +190,10 @@ export default function DispatchExpenseModal({
       onClose={resetAndClose}
       size="sm"
       title={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <DollarSign style={{ fontSize: 24, color: 'var(--accent-gold)' }} />
+        <div className="flex items-center gap-2">
+          <DollarSign className="h-5 w-5 text-[var(--accent-gold)]" />
           <span>{isEditing ? 'Edit Dispatch Expense' : 'Add Dispatch Expense'}</span>
-        </Box>
+        </div>
       }
       description="Track dispatch-related costs and attach supporting paperwork when available."
       showCloseButton={!loading && !uploading}
@@ -213,136 +207,132 @@ export default function DispatchExpenseModal({
         </>
       }
     >
-      <Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-            <Select
-              label="Category"
-              value={formData.category}
-              onChange={(value) => handleCategoryChange(value as DispatchExpenseCategory)}
-              size="small"
-              required
-              options={DISPATCH_EXPENSE_CATEGORY_OPTIONS}
-            />
-
-            <Select
-              label="Expense Type"
-              value={formData.type}
-              onChange={(value) => handleChange('type', String(value))}
-              size="small"
-              required
-              options={typeOptions}
-            />
-          </Box>
-
-          <TextField
+      <form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-3 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <Select
+            label="Category"
+            value={formData.category}
+            onChange={(value) => handleCategoryChange(value as DispatchExpenseCategory)}
             size="small"
-            label="Description"
-            value={formData.description}
-            onChange={(e) => handleChange('description', e.target.value)}
             required
-            placeholder="What was this dispatch expense for?"
+            options={DISPATCH_EXPENSE_CATEGORY_OPTIONS}
           />
 
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr' }, gap: 2 }}>
-            <TextField
-              size="small"
+          <Select
+            label="Expense Type"
+            value={formData.type}
+            onChange={(value) => handleChange('type', String(value))}
+            size="small"
+            required
+            options={typeOptions}
+          />
+        </div>
+
+        <FormField
+          label="Description"
+          value={formData.description}
+          onChange={(e) => handleChange('description', e.target.value)}
+          required
+          placeholder="What was this dispatch expense for?"
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="sm:col-span-2">
+            <FormField
               label="Amount"
               type="number"
               value={formData.amount}
               onChange={(e) => handleChange('amount', e.target.value)}
               required
-              inputProps={{ min: 0, step: 0.01 }}
-              InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+              min={0}
+              step={0.01}
+              startAdornment={<span className="text-[var(--text-secondary)]">$</span>}
             />
-            <TextField size="small" label="Currency" value={formData.currency} disabled />
-          </Box>
+          </div>
+          <FormField label="Currency" value={formData.currency} disabled />
+        </div>
 
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-            <TextField size="small" label="Vendor" value={formData.vendor} onChange={(e) => handleChange('vendor', e.target.value)} />
-            <TextField
-              size="small"
-              label="Invoice Number"
-              value={formData.invoiceNumber}
-              onChange={(e) => handleChange('invoiceNumber', e.target.value)}
-              helperText="3-40 chars: letters, numbers, dash, slash, underscore, or period"
-            />
-          </Box>
-
-          <TextField
-            size="small"
-            label="Date"
-            type="date"
-            value={formData.date}
-            onChange={(e) => handleChange('date', e.target.value)}
-            required
-            InputLabelProps={{ shrink: true }}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <FormField label="Vendor" value={formData.vendor} onChange={(e) => handleChange('vendor', e.target.value)} />
+          <FormField
+            label="Invoice Number"
+            value={formData.invoiceNumber}
+            onChange={(e) => handleChange('invoiceNumber', e.target.value)}
+            helperText="3-40 chars: letters, numbers, dash, slash, underscore, or period"
           />
+        </div>
 
-          <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.5, display: 'grid', gap: 1.5 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
-              <Box>
-                <Typography sx={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>Attachment</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                  Upload invoice, receipt, or support file for this expense
-                </Typography>
-              </Box>
-              <Button component="label" variant="outline" size="sm" icon={<Upload className="w-4 h-4" />}>
-                {uploading ? 'Uploading...' : formData.attachmentUrl ? 'Replace file' : 'Upload file'}
-                <input
-                  hidden
-                  type="file"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      void handleAttachmentUpload(file);
-                    }
-                    e.currentTarget.value = '';
-                  }}
-                />
-              </Button>
-            </Box>
-            {formData.attachmentUrl ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
-                  <Paperclip className="w-4 h-4" />
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-primary)' }} noWrap>
-                    {formData.attachmentName || 'Uploaded attachment'}
-                  </Typography>
-                </Box>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <a href={formData.attachmentUrl} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
-                    <Button variant="ghost" size="sm">
-                      Open
-                    </Button>
-                  </a>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        attachmentUrl: '',
-                        attachmentName: '',
-                        attachmentType: '',
-                      }))
-                    }
-                  >
-                    Remove
-                  </Button>
-                </Box>
-              </Box>
-            ) : null}
-          </Box>
+        <FormField
+          label="Date"
+          type="date"
+          value={formData.date}
+          onChange={(e) => handleChange('date', e.target.value)}
+          required
+        />
 
-          <TextField
-            size="small"
-            label="Notes"
-            value={formData.notes}
-            onChange={(e) => handleChange('notes', e.target.value)}
-            multiline
-            rows={3}
-          />
-      </Box>
+        <div className="rounded-lg border border-[var(--border)] p-3 flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <div>
+              <div className="text-sm font-semibold text-[var(--text-primary)]">Attachment</div>
+              <div className="text-xs text-[var(--text-secondary)]">
+                Upload invoice, receipt, or support file for this expense
+              </div>
+            </div>
+            <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--panel)] text-xs font-semibold text-[var(--text-primary)] cursor-pointer hover:bg-[var(--background)]">
+              <Upload className="w-4 h-4" />
+              <span>{uploading ? 'Uploading...' : formData.attachmentUrl ? 'Replace file' : 'Upload file'}</span>
+              <input
+                hidden
+                type="file"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    void handleAttachmentUpload(file);
+                  }
+                  e.currentTarget.value = '';
+                }}
+              />
+            </label>
+          </div>
+          {formData.attachmentUrl ? (
+            <div className="flex items-center justify-between gap-2 flex-wrap pt-2 border-t border-[var(--border)]">
+              <div className="flex items-center gap-1.5 min-w-0">
+                <Paperclip className="w-4 h-4 text-[var(--accent-gold)] shrink-0" />
+                <span className="text-xs text-[var(--text-primary)] truncate">
+                  {formData.attachmentName || 'Uploaded attachment'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <a href={formData.attachmentUrl} target="_blank" rel="noreferrer" className="text-xs font-medium text-[var(--accent-gold)] hover:underline">
+                  Open
+                </a>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      attachmentUrl: '',
+                      attachmentName: '',
+                      attachmentType: '',
+                    }))
+                  }
+                  className="text-xs text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        <FormField
+          label="Notes"
+          value={formData.notes}
+          onChange={(e) => handleChange('notes', e.target.value)}
+          multiline
+          rows={3}
+        />
+      </form>
     </Modal>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography } from '@mui/material';
 import { CheckSquare, X, ChevronDown, Download, QrCode, Trash2, Layers, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/design-system';
 
@@ -39,131 +38,58 @@ export function BulkActionBar({
   if (selectedCount === 0) return null;
 
   return (
-    <Box
-      sx={{
-        position: 'fixed',
-        bottom: 24,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 1000,
-        backgroundColor: 'var(--panel)',
-        border: '1px solid var(--border)',
-        borderTop: '2px solid var(--accent-gold)',
-        borderRadius: 3,
-        boxShadow: '0 16px 40px rgba(0, 0, 0, 0.16)',
-        px: 2.5,
-        py: 1.5,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        maxWidth: '92vw',
-        animation: 'slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-        '@keyframes slideUp': {
-          from: {
-            opacity: 0,
-            transform: 'translateX(-50%) translateY(20px)',
-          },
-          to: {
-            opacity: 1,
-            transform: 'translateX(-50%) translateY(0)',
-          },
-        },
-      }}
-    >
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1000] bg-[var(--panel)] border border-[var(--border)] border-t-2 border-t-[var(--accent-gold)] rounded-2xl shadow-2xl px-5 py-3.5 flex items-center gap-4 max-w-[92vw] animate-in fade-in slide-in-from-bottom-5 duration-200">
       {/* Selection count */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 28,
-            height: 28,
-            borderRadius: 1.5,
-            backgroundColor: 'rgba(var(--accent-gold-rgb), 0.15)',
-            color: 'var(--accent-gold)',
-          }}
-        >
+      <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-[rgba(var(--accent-gold-rgb),0.15)] text-[var(--accent-gold)]">
           <CheckSquare size={16} />
-        </Box>
-        <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>
+        </div>
+        <span className="text-[0.85rem] font-bold text-[var(--text-primary)] whitespace-nowrap">
           {selectedCount} selected
-        </Typography>
-        <Button
-          variant="outline"
-          size="sm"
+        </span>
+        <button
+          type="button"
           onClick={onClearSelection}
-          icon={<X size={12} />}
-          sx={{
-            px: 0.75,
-            py: 0.25,
-            fontSize: '0.7rem',
-            height: 'auto',
-            border: 'none',
-            color: 'var(--text-secondary)',
-          }}
+          className="flex items-center gap-1 px-2 py-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-transparent border-0 cursor-pointer"
         >
-          Deselect
-        </Button>
-      </Box>
+          <X size={12} />
+          <span>Deselect</span>
+        </button>
+      </div>
 
       {/* Divider */}
-      <Box sx={{ width: 1, height: 24, backgroundColor: 'var(--border)' }} />
+      <div className="w-[1px] h-6 bg-[var(--border)]" />
 
       {/* Action Buttons */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+      <div className="flex items-center gap-2 flex-wrap">
         {statusOptions.length > 0 && onBulkStatusChange && (
-          <Box sx={{ position: 'relative' }}>
+          <div className="relative">
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowStatusMenu(!showStatusMenu)}
               icon={<RefreshCw size={14} />}
             >
-              Update Status <ChevronDown size={14} style={{ marginLeft: 4 }} />
+              Update Status <ChevronDown size={14} className="ml-1" />
             </Button>
             {showStatusMenu && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: '100%',
-                  left: 0,
-                  mb: 1,
-                  backgroundColor: 'var(--panel)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 2,
-                  boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
-                  minWidth: 180,
-                  py: 0.75,
-                  zIndex: 1001,
-                }}
-              >
+              <div className="absolute bottom-full left-0 mb-2 bg-[var(--panel)] border border-[var(--border)] rounded-xl shadow-xl min-w-[180px] py-1.5 z-[1001]">
                 {statusOptions.map((opt) => (
-                  <Box
+                  <button
                     key={opt.value}
+                    type="button"
                     onClick={() => {
                       onBulkStatusChange(opt.value);
                       setShowStatusMenu(false);
                     }}
-                    sx={{
-                      px: 2,
-                      py: 1,
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      color: 'var(--text-primary)',
-                      '&:hover': {
-                        backgroundColor: 'var(--background)',
-                        color: 'var(--accent-gold)',
-                      },
-                    }}
+                    className="w-full text-left px-4 py-2 text-xs font-semibold cursor-pointer text-[var(--text-primary)] hover:bg-[var(--background)] hover:text-[var(--accent-gold)] bg-transparent border-0 transition-colors"
                   >
                     {opt.label}
-                  </Box>
+                  </button>
                 ))}
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
         )}
 
         {onBulkAssignContainer && (
@@ -207,12 +133,12 @@ export function BulkActionBar({
             size="sm"
             onClick={onBulkDelete}
             icon={<Trash2 size={14} />}
-            sx={{ color: 'var(--error)', borderColor: 'rgba(239, 68, 68, 0.3)' }}
+            className="text-[var(--error)] border-red-500/30 hover:border-red-500"
           >
             Delete
           </Button>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }

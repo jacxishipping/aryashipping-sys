@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { User, Eye, EyeOff, Copy, Check, Package, Key } from 'lucide-react';
-import { Box, Typography, IconButton, Slide } from '@mui/material';
+import { User, Eye, EyeOff, Copy, Check, Package, Key, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/design-system';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 interface UserData {
   id: string;
@@ -61,146 +57,124 @@ export default function UserCard({
   }, [index]);
 
   return (
-    <Slide in={visible} direction="up" timeout={600}>
-      <Box
-        sx={{
-          p: { xs: 1.5, md: 2 },
-          borderRadius: 2,
-          background: 'var(--panel)',
-          boxShadow: highlighted
-            ? '0 36px 48px rgba(56,189,248,0.12)'
-            : '0 18px 32px rgba(var(--text-primary-rgb), 0.08)',
-          border: highlighted ? '1px solid rgba(56,189,248,0.14)' : 'none',
-          transition: 'transform 200ms ease, box-shadow 200ms ease, border 200ms ease',
-          '&:hover': {
-            transform: 'translateY(-6px)',
-            boxShadow: highlighted
-              ? '0 46px 58px rgba(56,189,248,0.16)'
-              : '0 28px 48px rgba(var(--text-primary-rgb), 0.12)',
-          },
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-          <Box
-            sx={{
-              width: 40,
-              height: 40,
-              borderRadius: '50%',
-              bgcolor: 'rgba(6,182,212,0.06)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+    <div
+      className={`p-4 md:p-5 rounded-2xl bg-[var(--panel)] transition-all duration-200 border ${
+        highlighted
+          ? 'border-sky-400/30 shadow-[0_36px_48px_rgba(56,189,248,0.12)] hover:shadow-[0_46px_58px_rgba(56,189,248,0.16)]'
+          : 'border-[var(--border)] shadow-[0_18px_32px_rgba(0,0,0,0.06)] hover:shadow-[0_28px_48px_rgba(0,0,0,0.1)]'
+      } hover:-translate-y-1 ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center shrink-0">
+          <User className="w-5 h-5 text-[var(--accent-gold)]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-sm text-[var(--text-primary)] truncate">
+            {user.name || 'Unnamed User'}
+          </p>
+          <p className="text-xs text-[var(--text-secondary)] truncate">
+            {formatRole(user.role)}
+          </p>
+        </div>
+        <div>
+          <button
+            type="button"
+            onClick={() => onToggleEmail(user.id)}
+            title="Toggle email visibility"
+            className="p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--background)] transition-colors"
           >
-            <User style={{ width: 20, height: 20, color: 'var(--accent-gold)' }} />
-          </Box>
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }} noWrap>
-              {user.name || 'Unnamed User'}
-            </Typography>
-            <Typography variant="caption" color="text.secondary" noWrap>
-              {formatRole(user.role)}
-            </Typography>
-          </Box>
-          <Box>
-            <IconButton
-              size="small"
-              onClick={() => onToggleEmail(user.id)}
-              title="Toggle email visibility"
-            >
-              {showEmail ? (
-                <EyeOff style={{ width: 16, height: 16 }} />
-              ) : (
-                <Eye style={{ width: 16, height: 16 }} />
-              )}
-            </IconButton>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 90 }}>
-            Email
-          </Typography>
-          <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography sx={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace' }} noWrap>
-              {showEmail ? user.email : maskEmail(user.email)}
-            </Typography>
-            {showEmail && (
-              <IconButton
-                size="small"
-                onClick={() => onCopyEmail(user.email, user.id)}
-                title="Copy email"
-              >
-                {copiedEmail === user.id ? (
-                  <Check style={{ color: 'green', width: 16, height: 16 }} />
-                ) : (
-                  <Copy style={{ color: 'var(--accent-gold)', width: 16, height: 16 }} />
-                )}
-              </IconButton>
+            {showEmail ? (
+              <EyeOff className="w-4 h-4" />
+            ) : (
+              <Eye className="w-4 h-4" />
             )}
-          </Box>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <Typography variant="caption" color="text.secondary" sx={{ minWidth: 90 }}>
-            Shipments
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            <Package style={{ width: 14, height: 14, color: 'var(--text-secondary)' }} />
-            <Typography variant="body2" color="text.primary" fontWeight="600">
-              {user._count?.shipments ?? 0}
-            </Typography>
-          </Box>
-        </Box>
+          </button>
+        </div>
+      </div>
 
-        {user.createdAt && (
-          <Box sx={{ mt: 1, pt: 1, borderTop: '1px solid rgba(255,255,255,0.03)' }}>
-            <Typography variant="caption" color="text.secondary">
-              Joined {new Date(user.createdAt).toLocaleDateString()}
-            </Typography>
-          </Box>
-        )}
+      <div className="flex items-center gap-2 mb-2 text-xs">
+        <span className="text-[var(--text-secondary)] min-w-[70px]">
+          Email
+        </span>
+        <div className="flex-1 flex items-center gap-1.5 min-w-0">
+          <span className="font-mono text-[var(--text-primary)] truncate">
+            {showEmail ? user.email : maskEmail(user.email)}
+          </span>
+          {showEmail && (
+            <button
+              type="button"
+              onClick={() => onCopyEmail(user.email, user.id)}
+              title="Copy email"
+              className="p-1 rounded text-[var(--accent-gold)] hover:bg-[var(--background)] transition-colors"
+            >
+              {copiedEmail === user.id ? (
+                <Check className="w-4 h-4 text-emerald-500" />
+              ) : (
+                <Copy className="w-4 h-4" />
+              )}
+            </button>
+          )}
+        </div>
+      </div>
 
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', mt: 1 }}>
+      <div className="flex items-center gap-2 mb-2 text-xs">
+        <span className="text-[var(--text-secondary)] min-w-[70px]">
+          Shipments
+        </span>
+        <div className="flex items-center gap-1.5">
+          <Package className="w-3.5 h-3.5 text-[var(--text-secondary)]" />
+          <span className="font-semibold text-[var(--text-primary)]">
+            {user._count?.shipments ?? 0}
+          </span>
+        </div>
+      </div>
+
+      {user.createdAt && (
+        <div className="mt-3 pt-2.5 border-t border-[var(--border)]">
+          <p className="text-[11px] text-[var(--text-secondary)]">
+            Joined {new Date(user.createdAt).toLocaleDateString()}
+          </p>
+        </div>
+      )}
+
+      <div className="flex items-center gap-1.5 justify-end mt-3 pt-1">
+        <Button
+          href={`/dashboard/users/${user.id}`}
+          variant="outline"
+          size="sm"
+          icon={<Eye className="w-3.5 h-3.5" />}
+        >
+          View
+        </Button>
+        {onResetPassword && (
           <Button
-            href={`/dashboard/users/${user.id}`}
             variant="outline"
             size="sm"
-            icon={<VisibilityIcon />}
-            sx={{ textTransform: 'none', fontSize: '0.7rem' }}
+            icon={<Key className="w-3.5 h-3.5" />}
+            onClick={() => onResetPassword(user)}
           >
-            View
+            Password
           </Button>
-          {onResetPassword && (
-            <Button
-              variant="outline"
-              size="sm"
-              icon={<Key style={{ width: 14, height: 14 }} />}
-              onClick={() => onResetPassword(user)}
-              sx={{ textTransform: 'none', fontSize: '0.7rem' }}
-            >
-              Password
-            </Button>
-          )}
-          <Button
-            href={`/dashboard/users/${user.id}/edit`}
-            variant="ghost"
-            size="sm"
-            icon={<EditIcon />}
-            sx={{ textTransform: 'none', fontSize: '0.7rem' }}
-          >
-            Edit
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            icon={<DeleteIcon />}
-            onClick={() => onDelete(user.id)}
-            sx={{ color: 'var(--error)' }}
-          >
-            Delete
-          </Button>
-        </Box>
-      </Box>
-    </Slide>
+        )}
+        <Button
+          href={`/dashboard/users/${user.id}/edit`}
+          variant="ghost"
+          size="sm"
+          icon={<Pencil className="w-3.5 h-3.5" />}
+        >
+          Edit
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          icon={<Trash2 className="w-3.5 h-3.5 text-[var(--error)]" />}
+          onClick={() => onDelete(user.id)}
+        >
+          <span className="text-[var(--error)]">Delete</span>
+        </Button>
+      </div>
+    </div>
   );
 }

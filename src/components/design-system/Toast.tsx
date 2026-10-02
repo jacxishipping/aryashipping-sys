@@ -1,7 +1,7 @@
 "use client";
 
 import { Toaster as SonnerToaster, toast as sonnerToast } from 'sonner';
-import { CheckCircle, Warning, Error as ErrorIcon, Info } from '@mui/icons-material';
+import { CheckCircle2, AlertTriangle, AlertCircle, Info } from 'lucide-react';
 
 /**
  * Toast Notification System
@@ -40,7 +40,7 @@ export const toast = {
     sonnerToast.success(message, {
       description: options?.description,
       duration: options?.duration || 4000,
-      icon: <CheckCircle sx={{ fontSize: 20, color: 'var(--success)' }} />,
+      icon: <CheckCircle2 className="w-5 h-5 text-[var(--success)]" />,
     });
   },
 
@@ -48,7 +48,7 @@ export const toast = {
     sonnerToast.error(message, {
       description: options?.description,
       duration: options?.duration || 5000,
-      icon: <ErrorIcon sx={{ fontSize: 20, color: 'var(--error)' }} />,
+      icon: <AlertCircle className="w-5 h-5 text-[var(--error)]" />,
     });
   },
 
@@ -56,7 +56,7 @@ export const toast = {
     sonnerToast.warning(message, {
       description: options?.description,
       duration: options?.duration || 4000,
-      icon: <Warning sx={{ fontSize: 20, color: 'var(--warning)' }} />,
+      icon: <AlertTriangle className="w-5 h-5 text-[var(--warning)]" />,
     });
   },
 
@@ -64,7 +64,7 @@ export const toast = {
     sonnerToast.info(message, {
       description: options?.description,
       duration: options?.duration || 4000,
-      icon: <Info sx={{ fontSize: 20, color: 'var(--info)' }} />,
+      icon: <Info className="w-5 h-5 text-[var(--info)]" />,
     });
   },
 
@@ -105,36 +105,3 @@ export const toast = {
     sonnerToast.dismiss();
   },
 };
-
-// Usage examples (for documentation)
-/**
- * @example
- * // Success toast
- * toast.success('Container created successfully!');
- * 
- * @example
- * // Error toast with description
- * toast.error('Failed to create container', {
- *   description: 'Please check your network connection'
- * });
- * 
- * @example
- * // Loading toast with promise
- * toast.promise(
- *   fetch('/api/containers').then(res => res.json()),
- *   {
- *     loading: 'Creating container...',
- *     success: 'Container created!',
- *     error: 'Failed to create container',
- *   }
- * );
- * 
- * @example
- * // Toast with action button
- * toast.action('Shipment updated', {
- *   action: {
- *     label: 'View',
- *     onClick: () => router.push('/dashboard/shipments/123')
- *   }
- * });
- */

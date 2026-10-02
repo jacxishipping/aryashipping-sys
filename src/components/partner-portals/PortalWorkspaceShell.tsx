@@ -3,16 +3,17 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, usePathname } from 'next/navigation';
-import SpaceDashboardOutlinedIcon from '@mui/icons-material/SpaceDashboardOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-import LayersOutlinedIcon from '@mui/icons-material/LayersOutlined';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
-import { Box, Typography } from '@mui/material';
+import {
+  LayoutDashboard,
+  Package,
+  Users,
+  UserCheck,
+  History,
+  Sliders,
+  Layers,
+  Wallet,
+  ArrowLeft,
+} from 'lucide-react';
 import { Button } from '@/components/design-system';
 import { getPortalBrandIdentity } from '@/lib/partner-portal-branding';
 import { normalizeRequestHost } from '@/lib/partner-portal-domains';
@@ -45,13 +46,13 @@ type PortalWorkspaceShellProps = {
 };
 
 const workspaceNav = [
-  { label: 'Overview', icon: <SpaceDashboardOutlinedIcon fontSize="small" />, suffix: '' },
-  { label: 'Shipments', icon: <Inventory2OutlinedIcon fontSize="small" />, suffix: '/shipments' },
-  { label: 'Customers', icon: <PeopleAltOutlinedIcon fontSize="small" />, suffix: '/customers' },
-  { label: 'Finance', icon: <AccountBalanceWalletOutlinedIcon fontSize="small" />, suffix: '/finance' },
-  { label: 'Members', icon: <GroupOutlinedIcon fontSize="small" />, suffix: '/members' },
-  { label: 'Activity', icon: <HistoryOutlinedIcon fontSize="small" />, suffix: '/activity' },
-  { label: 'Settings', icon: <TuneOutlinedIcon fontSize="small" />, suffix: '/settings' },
+  { label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" />, suffix: '' },
+  { label: 'Shipments', icon: <Package className="w-4 h-4" />, suffix: '/shipments' },
+  { label: 'Customers', icon: <Users className="w-4 h-4" />, suffix: '/customers' },
+  { label: 'Finance', icon: <Wallet className="w-4 h-4" />, suffix: '/finance' },
+  { label: 'Members', icon: <UserCheck className="w-4 h-4" />, suffix: '/members' },
+  { label: 'Activity', icon: <History className="w-4 h-4" />, suffix: '/activity' },
+  { label: 'Settings', icon: <Sliders className="w-4 h-4" />, suffix: '/settings' },
 ];
 
 function isWorkspaceRouteActive(pathname: string, href: string) {
@@ -98,8 +99,6 @@ export default function PortalWorkspaceShell({ children }: PortalWorkspaceShellP
       }
 
       try {
-        // Fetch only this portal so branding renders in one round trip
-        // instead of loading the full portal list and filtering client-side.
         const response = await fetch(`/api/partner-portals/${portalId}`, { cache: 'no-store' });
         const data = await response.json();
 
@@ -173,8 +172,6 @@ export default function PortalWorkspaceShell({ children }: PortalWorkspaceShellP
     ? `${portal.memberships[0].partnerCustomer.name} Customer`
     : portal?.memberships?.[0]?.role || 'Member';
 
-  // Keep the active nav pill visible on mobile by scrolling it into view
-  // whenever the route changes.
   const mobileNavRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -192,239 +189,190 @@ export default function PortalWorkspaceShell({ children }: PortalWorkspaceShellP
   }, [pathname, hasPortalWorkspace]);
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        bgcolor: 'var(--background)',
-        color: 'var(--text-primary)',
-        display: 'flex',
-        flexDirection: 'column',
-        borderTop: `4px solid ${brand.accentColor}`,
-      }}
+    <div
+      style={{ borderTop: `4px solid ${brand.accentColor}` }}
+      className="min-h-screen bg-[var(--background)] text-[var(--text-primary)] flex flex-col"
     >
-      <Box
-        sx={{
-          px: { xs: 2, md: 3, xl: 4 },
-          py: hasPortalWorkspace ? { xs: 1.25, md: 1.5 } : { xs: 2, md: 2.5 },
-          borderBottom: '1px solid var(--border)',
+      <header
+        style={{
           background: hasPortalWorkspace
             ? `linear-gradient(135deg, rgba(${brand.accentRgb}, 0.15), rgba(${brand.accentRgb}, 0.06) 46%, rgba(255,255,255,0.94) 100%)`
             : `linear-gradient(135deg, rgba(${brand.accentRgb}, 0.22), rgba(${brand.accentRgb}, 0.10) 46%, rgba(255,255,255,0.9) 100%)`,
-          backdropFilter: 'blur(18px)',
-          position: 'sticky',
-          top: 0,
-          zIndex: 30,
         }}
+        className={`px-4 md:px-6 xl:px-8 ${
+          hasPortalWorkspace ? 'py-3 md:py-3.5' : 'py-4 md:py-6'
+        } border-b border-[var(--border)] backdrop-blur-md sticky top-0 z-30`}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: { xs: 'flex-start', md: 'center' },
-            justifyContent: 'space-between',
-            gap: hasPortalWorkspace ? 1.5 : 2,
-            flexDirection: { xs: 'column', md: 'row' },
-          }}
-        >
-          <Box sx={{ display: 'grid', gap: hasPortalWorkspace ? 0.35 : 0.5 }}>
-            <Typography sx={{ fontSize: '0.75rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+        <div className={`flex flex-col md:flex-row items-start md:items-center justify-between ${hasPortalWorkspace ? 'gap-3' : 'gap-4'}`}>
+          <div className={`grid ${hasPortalWorkspace ? 'gap-1' : 'gap-1.5'}`}>
+            <span className="text-[0.75rem] tracking-[0.18em] uppercase text-[var(--text-secondary)] font-medium">
               {portalId ? 'Partner Workspace' : 'Partner Portal'}
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flexWrap: 'wrap' }}>
+            </span>
+            <div className="flex items-center gap-3 flex-wrap">
               {portalId ? (
                 brand.logoUrl ? (
-                  <Box component="img" src={brand.logoUrl} alt={`${brand.companyLabel} logo`} sx={{ width: hasPortalWorkspace ? 36 : 44, height: hasPortalWorkspace ? 36 : 44, borderRadius: 2, objectFit: 'cover', bgcolor: 'rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.5)' }} />
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={brand.logoUrl}
+                    alt={`${brand.companyLabel} logo`}
+                    className={`${hasPortalWorkspace ? 'w-9 h-9' : 'w-11 h-11'} rounded-lg object-cover bg-white/85 border border-white/50`}
+                  />
                 ) : (
-                  <Box sx={{ width: hasPortalWorkspace ? 36 : 44, height: hasPortalWorkspace ? 36 : 44, borderRadius: 2, display: 'grid', placeItems: 'center', bgcolor: brand.accentColor, color: '#fff', fontWeight: 800, fontSize: hasPortalWorkspace ? '0.9rem' : '1rem' }}>
+                  <div
+                    style={{ backgroundColor: brand.accentColor }}
+                    className={`${
+                      hasPortalWorkspace ? 'w-9 h-9 text-[0.9rem]' : 'w-11 h-11 text-[1rem]'
+                    } rounded-lg grid place-items-center text-white font-extrabold`}
+                  >
                     {brand.companyLabel.slice(0, 1).toUpperCase()}
-                  </Box>
+                  </div>
                 )
               ) : null}
-              <Box>
-                <Typography sx={{ fontSize: hasPortalWorkspace ? { xs: '1rem', md: '1.2rem' } : { xs: '1.15rem', md: '1.5rem' }, fontWeight: 800, letterSpacing: '-0.02em', lineHeight: 1.1 }}>
+              <div>
+                <h1 className={`${hasPortalWorkspace ? 'text-base md:text-xl' : 'text-lg md:text-2xl'} font-extrabold tracking-tight leading-tight m-0 text-[var(--text-primary)]`}>
                   {portalId ? brand.companyLabel : 'Shared Customer Portal'}
-                </Typography>
+                </h1>
                 {portalId ? (
-                  <Typography sx={{ fontSize: hasPortalWorkspace ? '0.78rem' : '0.82rem', color: 'var(--text-secondary)' }}>
+                  <span className={`${hasPortalWorkspace ? 'text-[0.78rem]' : 'text-[0.82rem]'} text-[var(--text-secondary)]`}>
                     {portal?.name || 'Portal Workspace'}
-                  </Typography>
+                  </span>
                 ) : null}
-              </Box>
-            </Box>
+              </div>
+            </div>
             {hasPortalWorkspace ? (
-              <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.82rem', maxWidth: 780 }}>
+              <p className="text-[var(--text-secondary)] text-[0.82rem] max-w-3xl m-0">
                 Access: {portalAccessLabel}
-              </Typography>
+              </p>
             ) : (
-              <Typography sx={{ color: 'var(--text-secondary)', maxWidth: 780 }}>
+              <p className="text-[var(--text-secondary)] text-sm max-w-3xl m-0">
                 Open a portal workspace to manage assigned shipments, customer handoffs, team members, and partner activity.
-              </Typography>
+              </p>
             )}
-          </Box>
+          </div>
 
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <Link href="/portal" style={{ textDecoration: 'none' }}>
-              <Button variant={pathname === '/portal' ? 'primary' : 'outline'} size="sm">
-                <ArrowBackOutlinedIcon sx={{ fontSize: 16 }} />
+          <div className="flex gap-2 flex-wrap">
+            <Link href="/portal" className="no-underline">
+              <Button
+                variant={pathname === '/portal' ? 'primary' : 'outline'}
+                size="sm"
+                icon={<ArrowLeft className="w-4 h-4" />}
+              >
                 My Portals
               </Button>
             </Link>
             {portalId ? (
-              <Link href={`${portalBaseHref}/shipments` || '/'} style={{ textDecoration: 'none' }}>
+              <Link href={`${portalBaseHref}/shipments` || '/'} className="no-underline">
                 <Button variant="outline" size="sm">Open Shipments</Button>
               </Link>
             ) : null}
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         {portalId ? (
-          <Box
+          <div
             ref={mobileNavRef}
-            sx={{
-              mt: 1.25,
-              display: { xs: 'flex', lg: 'none' },
-              overflowX: 'auto',
-              gap: 1,
-              pb: 0.25,
-              pr: 0.5,
-              '&::-webkit-scrollbar': {
-                display: 'none',
-              },
-              scrollbarWidth: 'none',
-            }}
+            className="mt-3 flex lg:hidden overflow-x-auto gap-2 pb-1 pr-2 no-scrollbar"
+            style={{ scrollbarWidth: 'none' }}
           >
             {navItems.map((item) => {
               const active = isWorkspaceRouteActive(pathname, item.href);
               return (
-                <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }} aria-current={active ? 'page' : undefined}>
-                  <Box
+                <Link key={item.href} href={item.href} className="no-underline" aria-current={active ? 'page' : undefined}>
+                  <div
                     data-nav-active={active ? 'true' : undefined}
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      px: 1.35,
-                      py: 0.95,
-                      borderRadius: 999,
-                      whiteSpace: 'nowrap',
-                      flexShrink: 0,
-                      border: '1px solid',
+                    style={{
                       borderColor: active ? brand.accentColor : 'var(--border)',
-                      bgcolor: active ? `rgba(${brand.accentRgb}, 0.10)` : 'var(--panel)',
+                      backgroundColor: active ? `rgba(${brand.accentRgb}, 0.10)` : 'var(--panel)',
                       color: active ? brand.accentColor : 'var(--text-primary)',
                     }}
+                    className="flex items-center gap-2 px-3 py-2 rounded-full whitespace-nowrap shrink-0 border text-[0.85rem] font-semibold"
                   >
                     {item.icon}
-                    <Typography sx={{ fontSize: '0.85rem', fontWeight: 600 }}>{item.label}</Typography>
-                  </Box>
+                    <span>{item.label}</span>
+                  </div>
                 </Link>
               );
             })}
-          </Box>
+          </div>
         ) : null}
-      </Box>
+      </header>
 
-      <Box sx={{ display: 'flex', flex: 1, minHeight: 0 }}>
+      <div className="flex flex-1 min-h-0">
         {portalId ? (
-          <Box
-            component="aside"
-            sx={{
-              width: 280,
-              borderRight: '1px solid var(--border)',
-              px: 2,
-              py: 2,
-              display: { xs: 'none', lg: 'block' },
-              bgcolor: 'var(--panel)',
-              backdropFilter: 'blur(16px)',
-            }}
-          >
-            <Box
-              sx={{
-                border: '1px solid var(--border)',
-                borderRadius: 3,
-                p: 2,
-                bgcolor: 'var(--panel)',
-                boxShadow: '0 18px 40px rgba(var(--text-primary-rgb),0.08)',
-                display: 'grid',
-                gap: 1.5,
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
-                <Typography sx={{ fontSize: '0.82rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+          <aside className="w-72 border-r border-[var(--border)] p-4 hidden lg:block bg-[var(--panel)] backdrop-blur-md shrink-0">
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[var(--panel)] shadow-sm grid gap-3.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-[0.82rem] tracking-[0.14em] uppercase text-[var(--text-secondary)] font-semibold">
                   Workspace
-                </Typography>
-              </Box>
-              <Box>
-                <Typography sx={{ fontSize: '1.1rem', fontWeight: 800 }}>{brand.companyLabel}</Typography>
-                <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                </span>
+              </div>
+              <div>
+                <div className="text-[1.1rem] font-extrabold text-[var(--text-primary)]">{brand.companyLabel}</div>
+                <div className="text-[0.85rem] text-[var(--text-secondary)]">
                   {portal?.name || 'Partner-facing view of your shared operations'}
-                </Typography>
-              </Box>
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 1 }}>
-                <Box sx={{ p: 1.25, borderRadius: 2, bgcolor: `rgba(${brand.accentRgb}, 0.08)` }}>
-                  <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)' }}>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div
+                  style={{ backgroundColor: `rgba(${brand.accentRgb}, 0.08)` }}
+                  className="p-2.5 rounded-lg"
+                >
+                  <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--text-secondary)] font-medium">
                     Shipments
-                  </Typography>
-                  <Typography sx={{ fontSize: '1.1rem', fontWeight: 700 }}>{portal?._count?.shipmentAssignments || 0}</Typography>
-                </Box>
-                <Box sx={{ p: 1.25, borderRadius: 2, bgcolor: 'rgba(var(--accent-rgb),0.10)' }}>
-                  <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)' }}>
+                  </span>
+                  <div className="text-[1.1rem] font-bold text-[var(--text-primary)]">{portal?._count?.shipmentAssignments || 0}</div>
+                </div>
+                <div className="p-2.5 rounded-lg bg-[rgba(var(--accent-rgb),0.10)]">
+                  <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--text-secondary)] font-medium">
                     Customers
-                  </Typography>
-                  <Typography sx={{ fontSize: '1.1rem', fontWeight: 700 }}>{portal?._count?.customers || 0}</Typography>
-                </Box>
-                <Box sx={{ p: 1.25, borderRadius: 2, bgcolor: `rgba(${brand.accentRgb}, 0.08)` }}>
-                  <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)' }}>
+                  </span>
+                  <div className="text-[1.1rem] font-bold text-[var(--text-primary)]">{portal?._count?.customers || 0}</div>
+                </div>
+                <div
+                  style={{ backgroundColor: `rgba(${brand.accentRgb}, 0.08)` }}
+                  className="p-2.5 rounded-lg col-span-2"
+                >
+                  <span className="text-[0.7rem] uppercase tracking-[0.12em] text-[var(--text-secondary)] font-medium">
                     Access
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, overflowWrap: 'anywhere' }}>{portalAccessLabel}</Typography>
-                </Box>
-              </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, p: 1.25, borderRadius: 2, bgcolor: 'rgba(var(--text-primary-rgb),0.04)' }}>
-                <LayersOutlinedIcon sx={{ fontSize: 18, color: 'var(--text-secondary)' }} />
-                <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                  Finance access: <strong style={{ color: 'var(--text-primary)' }}>Read-only</strong>
-                </Typography>
-              </Box>
-            </Box>
+                  </span>
+                  <div className="text-[0.85rem] font-bold text-[var(--text-primary)] break-words">{portalAccessLabel}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[rgba(var(--text-primary-rgb),0.04)]">
+                <Layers className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+                <span className="text-[0.85rem] text-[var(--text-secondary)]">
+                  Finance access: <strong className="text-[var(--text-primary)]">Read-only</strong>
+                </span>
+              </div>
+            </div>
 
-            <Box component="nav" aria-label="Portal workspace" sx={{ display: 'grid', gap: 1, mt: 2 }}>
+            <nav aria-label="Portal workspace" className="grid gap-2 mt-4">
               {navItems.map((item) => {
                 const active = isWorkspaceRouteActive(pathname, item.href);
                 return (
-                  <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }} aria-current={active ? 'page' : undefined}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1.25,
-                        px: 1.5,
-                        py: 1.35,
-                        borderRadius: 2.5,
-                        border: '1px solid',
+                  <Link key={item.href} href={item.href} className="no-underline" aria-current={active ? 'page' : undefined}>
+                    <div
+                      style={{
                         borderColor: active ? brand.accentColor : 'var(--border)',
-                        bgcolor: active ? `rgba(${brand.accentRgb}, 0.10)` : 'transparent',
+                        backgroundColor: active ? `rgba(${brand.accentRgb}, 0.10)` : 'transparent',
                         color: active ? brand.accentColor : 'var(--text-primary)',
-                        transition: 'all 0.18s ease',
-                        '&:hover': {
-                          borderColor: brand.accentColor,
-                          bgcolor: `rgba(${brand.accentRgb}, 0.08)`,
-                        },
                       }}
+                      className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl border text-[0.92rem] font-semibold transition-all hover:bg-[rgba(var(--brand-primary-rgb),0.06)]"
                     >
                       {item.icon}
-                      <Typography sx={{ fontSize: '0.92rem', fontWeight: 600 }}>{item.label}</Typography>
-                    </Box>
+                      <span>{item.label}</span>
+                    </div>
                   </Link>
                 );
               })}
-            </Box>
-          </Box>
+            </nav>
+          </aside>
         ) : null}
 
-        <Box component="main" sx={{ flex: 1, minWidth: 0, pb: { xs: 4, lg: 5 } }}>
+        <main className="flex-1 min-w-0 pb-8 lg:pb-12">
           {children}
-        </Box>
-      </Box>
-    </Box>
+        </main>
+      </div>
+    </div>
   );
 }

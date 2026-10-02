@@ -1,14 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  IconButton,
-  } from '@mui/material';
 import { Key, Eye, EyeOff, Copy, Sparkles, Check } from 'lucide-react';
-import { Alert, Button, Modal, toast } from '@/components/design-system';
+import { Alert, Button, FormField, Modal, toast } from '@/components/design-system';
 
 interface ResetPasswordModalProps {
   open: boolean;
@@ -113,10 +107,10 @@ export default function ResetPasswordModal({
       onClose={handleClose}
       size="sm"
       title={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Key style={{ fontSize: 22, color: 'var(--accent-gold)' }} />
+        <div className="flex items-center gap-2">
+          <Key className="h-5 w-5 text-[var(--accent-gold)]" />
           <span>Reset Customer Password</span>
-        </Box>
+        </div>
       }
       description={`Assign a new login password for ${userName || userEmail}`}
       showCloseButton={!submitting}
@@ -132,29 +126,28 @@ export default function ResetPasswordModal({
         </>
       }
     >
-      <Box
-        component="form"
+      <form
         id={formId}
         onSubmit={handleSubmit}
-        sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, pt: 1 }}
+        className="flex flex-col gap-3 pt-1"
       >
-        <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--panel)', border: '1px solid var(--border)' }}>
-          <Typography variant="caption" sx={{ color: 'var(--text-secondary)', display: 'block', mb: 0.5 }}>
+        <div className="p-3 rounded-lg bg-[var(--panel)] border border-[var(--border)]">
+          <div className="text-xs text-[var(--text-secondary)] mb-1">
             Target Customer Account
-          </Typography>
-          <Typography sx={{ fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+          </div>
+          <div className="font-semibold text-sm text-[var(--text-primary)]">
             {userName || 'Customer'}
-          </Typography>
-          <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
+          </div>
+          <div className="text-xs text-[var(--text-secondary)] font-mono">
             {userEmail}
-          </Typography>
-        </Box>
+          </div>
+        </div>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600, fontSize: '0.85rem' }}>
+        <div className="flex flex-col gap-1.5">
+          <div className="flex justify-between items-center">
+            <span className="text-xs font-semibold text-[var(--text-primary)]">
               New Password *
-            </Typography>
+            </span>
             <Button
               type="button"
               variant="outline"
@@ -165,49 +158,46 @@ export default function ResetPasswordModal({
             >
               Generate Strong
             </Button>
-          </Box>
+          </div>
 
-          <TextField
-            fullWidth
-            size="small"
+          <FormField
             type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter new password (min. 6 chars)"
             disabled={submitting}
             required
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  {password && (
-                    <IconButton
-                      size="small"
-                      onClick={handleCopy}
-                      title="Copy password"
-                      sx={{ mr: 0.5 }}
-                    >
-                      {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
-                    </IconButton>
-                  )}
-                  <IconButton
-                    size="small"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    title={showPassword ? 'Hide password' : 'Show password'}
+            endAdornment={
+              <div className="flex items-center gap-1">
+                {password && (
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    title="Copy password"
+                    className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                   >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
+                    {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                  className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            }
           />
-        </Box>
+        </div>
 
         {password && (
           <Alert severity="info">
             Remember to copy or share this password with the customer securely. They will use this password alongside their email ({userEmail}) to log in.
           </Alert>
         )}
-      </Box>
+      </form>
     </Modal>
   );
 }

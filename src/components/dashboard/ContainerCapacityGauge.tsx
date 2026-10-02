@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { Box, Typography, LinearProgress } from '@mui/material';
 import { Box as BoxIcon, Car, Scale, ShieldAlert, Sparkles, CheckCircle2 } from 'lucide-react';
 
 export interface ContainerCapacityGaugeProps {
@@ -42,47 +41,23 @@ export function ContainerCapacityGauge({
   const isOptimal = itemCount === spec.maxCars || (itemCount === spec.maxCars - 1 && cbmPercent > 70);
 
   return (
-    <Box
-      sx={{
-        p: 2.5,
-        borderRadius: 2.5,
-        border: '1px solid var(--border)',
-        backgroundColor: 'var(--panel)',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.04)',
-      }}
-    >
+    <div className="p-5 rounded-2xl border border-[var(--border)] bg-[var(--panel)] shadow-sm">
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <BoxIcon size={18} style={{ color: 'var(--accent-gold)' }} />
-          <Typography sx={{ fontWeight: 700, fontSize: '0.92rem', color: 'var(--text-primary)' }}>
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex items-center gap-2">
+          <BoxIcon size={18} className="text-[var(--accent-gold)]" />
+          <span className="font-bold text-[0.92rem] text-[var(--text-primary)]">
             Stowing & Capacity Utilization
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 0.5,
-            px: 1.25,
-            py: 0.4,
-            borderRadius: 999,
-            fontSize: '0.72rem',
-            fontWeight: 700,
-            backgroundColor: isFull
-              ? 'rgba(var(--success-rgb), 0.12)'
+          </span>
+        </div>
+        <div
+          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[0.72rem] font-bold border ${
+            isFull
+              ? 'bg-[rgba(var(--success-rgb),0.12)] text-[var(--success-dark)] border-[rgba(var(--success-rgb),0.3)]'
               : isOptimal
-              ? 'rgba(var(--info-rgb), 0.12)'
-              : 'rgba(var(--status-yellow-rgb), 0.12)',
-            color: isFull ? 'var(--success-dark)' : isOptimal ? 'var(--info-dark)' : 'var(--warning-dark)',
-            border: `1px solid ${
-              isFull
-                ? 'rgba(var(--success-rgb), 0.3)'
-                : isOptimal
-                ? 'rgba(var(--info-rgb), 0.3)'
-                : 'rgba(var(--status-yellow-rgb), 0.3)'
-            }`,
-          }}
+              ? 'bg-[rgba(var(--info-rgb),0.12)] text-[var(--info-dark)] border-[rgba(var(--info-rgb),0.3)]'
+              : 'bg-[rgba(var(--status-yellow-rgb),0.12)] text-[var(--warning-dark)] border-[rgba(var(--status-yellow-rgb),0.3)]'
+          }`}
         >
           {isFull ? (
             <>
@@ -97,104 +72,89 @@ export function ContainerCapacityGauge({
               <ShieldAlert size={12} /> {spec.maxCars - itemCount} Slots Available
             </>
           )}
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Grid of Gauges */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Car Slots */}
-        <Box sx={{ p: 1.5, borderRadius: 2, backgroundColor: 'var(--background)', border: '1px solid var(--border)' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <Car size={15} style={{ color: 'var(--text-secondary)' }} />
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div className="flex justify-between items-center mb-2">
+            <div className="flex items-center gap-1.5">
+              <Car size={15} className="text-[var(--text-secondary)]" />
+              <span className="text-xs font-semibold text-[var(--text-secondary)]">
                 Vehicle Slots
-              </Typography>
-            </Box>
-            <Typography sx={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+              </span>
+            </div>
+            <span className="text-[0.82rem] font-extrabold text-[var(--text-primary)]">
               {itemCount} / {spec.maxCars}
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={carPercent}
-            sx={{
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: 'rgba(var(--text-primary-rgb), 0.08)',
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: carPercent === 100 ? 'var(--success-dark)' : 'var(--accent-gold)',
-                borderRadius: 3,
-              },
-            }}
-          />
-          <Typography sx={{ fontSize: '0.68rem', color: 'var(--text-secondary)', mt: 0.75 }}>
+            </span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-[rgba(var(--text-primary-rgb),0.08)] overflow-hidden">
+            <div
+              style={{ width: `${carPercent}%` }}
+              className={`h-full rounded-full transition-all ${
+                carPercent === 100 ? 'bg-[var(--success-dark)]' : 'bg-[var(--accent-gold)]'
+              }`}
+            />
+          </div>
+          <div className="text-[0.68rem] text-[var(--text-secondary)] mt-2">
             {spec.label} standard limit
-          </Typography>
-        </Box>
+          </div>
+        </div>
 
         {/* CBM Volume */}
-        <Box sx={{ p: 1.5, borderRadius: 2, backgroundColor: 'var(--background)', border: '1px solid var(--border)' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <BoxIcon size={15} style={{ color: 'var(--text-secondary)' }} />
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div className="flex justify-between items-center mb-2">
+            <div className="flex items-center gap-1.5">
+              <BoxIcon size={15} className="text-[var(--text-secondary)]" />
+              <span className="text-xs font-semibold text-[var(--text-secondary)]">
                 Volume (CBM)
-              </Typography>
-            </Box>
-            <Typography sx={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+              </span>
+            </div>
+            <span className="text-[0.82rem] font-extrabold text-[var(--text-primary)]">
               {estimatedCBM.toFixed(1)} / {spec.maxCBM} m³
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={cbmPercent}
-            sx={{
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: 'rgba(var(--text-primary-rgb), 0.08)',
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: cbmPercent > 90 ? 'var(--error)' : 'var(--info-dark)',
-                borderRadius: 3,
-              },
-            }}
-          />
-          <Typography sx={{ fontSize: '0.68rem', color: 'var(--text-secondary)', mt: 0.75 }}>
+            </span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-[rgba(var(--text-primary-rgb),0.08)] overflow-hidden">
+            <div
+              style={{ width: `${cbmPercent}%` }}
+              className={`h-full rounded-full transition-all ${
+                cbmPercent > 90 ? 'bg-[var(--error)]' : 'bg-[var(--info-dark)]'
+              }`}
+            />
+          </div>
+          <div className="text-[0.68rem] text-[var(--text-secondary)] mt-2">
             {cbmPercent}% volumetric occupancy
-          </Typography>
-        </Box>
+          </div>
+        </div>
 
         {/* Payload Weight */}
-        <Box sx={{ p: 1.5, borderRadius: 2, backgroundColor: 'var(--background)', border: '1px solid var(--border)' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
-              <Scale size={15} style={{ color: 'var(--text-secondary)' }} />
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+        <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+          <div className="flex justify-between items-center mb-2">
+            <div className="flex items-center gap-1.5">
+              <Scale size={15} className="text-[var(--text-secondary)]" />
+              <span className="text-xs font-semibold text-[var(--text-secondary)]">
                 Payload Weight
-              </Typography>
-            </Box>
-            <Typography sx={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+              </span>
+            </div>
+            <span className="text-[0.82rem] font-extrabold text-[var(--text-primary)]">
               {(estimatedWeight / 1000).toFixed(1)} / {(spec.maxWeightKg / 1000).toFixed(1)} T
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={weightPercent}
-            sx={{
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: 'rgba(var(--text-primary-rgb), 0.08)',
-              '& .MuiLinearProgress-bar': {
-                backgroundColor: weightPercent > 90 ? 'var(--error)' : '#0d9488',
-                borderRadius: 3,
-              },
-            }}
-          />
-          <Typography sx={{ fontSize: '0.68rem', color: 'var(--text-secondary)', mt: 0.75 }}>
+            </span>
+          </div>
+          <div className="w-full h-1.5 rounded-full bg-[rgba(var(--text-primary-rgb),0.08)] overflow-hidden">
+            <div
+              style={{ width: `${weightPercent}%` }}
+              className={`h-full rounded-full transition-all ${
+                weightPercent > 90 ? 'bg-[var(--error)]' : 'bg-teal-600'
+              }`}
+            />
+          </div>
+          <div className="text-[0.68rem] text-[var(--text-secondary)] mt-2">
             {weightPercent}% max permissible mass
-          </Typography>
-        </Box>
-      </Box>
-    </Box>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

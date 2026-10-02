@@ -4,15 +4,9 @@ import { formatMoney as formatCurrency } from '@/lib/format';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import { Box, TextField, Typography } from '@mui/material';
+import { Wallet, Users, Receipt, AlertTriangle, CircleDollarSign, ExternalLink } from 'lucide-react';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, toast } from '@/components/design-system';
+import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, FormField, toast } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalInfo = {
@@ -196,10 +190,10 @@ export default function PortalFinancePage() {
       key: 'name',
       header: 'Customer',
       render: (_, row) => (
-        <Box sx={{ display: 'grid', gap: 0.4 }}>
-          <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>{row.name}</Typography>
-          <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{row.email || row.phone || 'No direct contact saved'}</Typography>
-        </Box>
+        <div className="grid gap-0.5">
+          <p className="text-sm font-bold text-[var(--text-primary)]">{row.name}</p>
+          <p className="text-xs text-[var(--text-secondary)]">{row.email || row.phone || 'No direct contact saved'}</p>
+        </div>
       ),
     },
     {
@@ -261,9 +255,8 @@ export default function PortalFinancePage() {
       key: 'actions',
       header: 'Details',
       render: (_, row) => (
-        <Link href={`/portal/${portalId}/finance/${row.id}`} style={{ textDecoration: 'none' }}>
-          <Button variant="outline" size="sm">
-            <OpenInNewOutlinedIcon sx={{ fontSize: 16 }} />
+        <Link href={`/portal/${portalId}/finance/${row.id}`}>
+          <Button variant="outline" size="sm" icon={<ExternalLink className="w-3.5 h-3.5" />}>
             Open
           </Button>
         </Link>
@@ -276,10 +269,10 @@ export default function PortalFinancePage() {
       key: 'invoice',
       header: 'Invoice',
       render: (_, row) => (
-        <Box sx={{ display: 'grid', gap: 0.4 }}>
-          <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>{row.invoiceNumber}</Typography>
-          <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Issued {formatDate(row.issueDate)}</Typography>
-        </Box>
+        <div className="grid gap-0.5">
+          <p className="text-sm font-bold text-[var(--text-primary)]">{row.invoiceNumber}</p>
+          <p className="text-xs text-[var(--text-secondary)]">Issued {formatDate(row.issueDate)}</p>
+        </div>
       ),
     },
     {
@@ -312,20 +305,19 @@ export default function PortalFinancePage() {
       header: 'Actions',
       align: 'right',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/portal/${portalId}/shipments/${row.shipmentId}`} style={{ textDecoration: 'none' }}>
-            <Button variant="outline" size="sm">
-              <OpenInNewOutlinedIcon sx={{ fontSize: 16 }} />
+        <div className="flex gap-2 justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/portal/${portalId}/shipments/${row.shipmentId}`}>
+            <Button variant="outline" size="sm" icon={<ExternalLink className="w-3.5 h-3.5" />}>
               Shipment
             </Button>
           </Link>
-          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf`} target="_blank" rel="noreferrer">
             <Button variant="outline" size="sm">View PDF</Button>
           </a>
-          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf?download=1`} style={{ textDecoration: 'none' }}>
+          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf?download=1`}>
             <Button variant="outline" size="sm">Download</Button>
           </a>
-        </Box>
+        </div>
       ),
     },
   ], [portalId]);
@@ -343,13 +335,13 @@ export default function PortalFinancePage() {
         ] : undefined}
         actions={
           <>
-            <a href={exportHref} style={{ textDecoration: 'none' }}>
+            <a href={exportHref}>
               <Button variant="outline" size="sm">Export Portal-Only CSV</Button>
             </a>
-            <Link href={`/portal/${portalId}/customers`} style={{ textDecoration: 'none' }}>
+            <Link href={`/portal/${portalId}/customers`}>
               <Button variant="outline" size="sm">Customers</Button>
             </Link>
-            <Link href={`/portal/${portalId}/shipments`} style={{ textDecoration: 'none' }}>
+            <Link href={`/portal/${portalId}/shipments`}>
               <Button variant="outline" size="sm">Shipments</Button>
             </Link>
           </>
@@ -358,50 +350,50 @@ export default function PortalFinancePage() {
 
       {loading ? (
         <DashboardPanel title="Loading finance" description="Collecting shipment-linked invoice data for this portal.">
-          <Box sx={{ color: 'var(--text-secondary)' }}>Loading portal finance...</Box>
+          <div className="text-[var(--text-secondary)] text-sm py-4">Loading portal finance...</div>
         </DashboardPanel>
       ) : !data ? (
         <DashboardPanel title="Finance unavailable">
-          <EmptyState icon={<AccountBalanceWalletOutlinedIcon />} title="Finance unavailable" description="Portal finance could not be loaded." />
+          <EmptyState icon={<Wallet className="w-12 h-12" />} title="Finance unavailable" description="Portal finance could not be loaded." />
         </DashboardPanel>
       ) : (
         <>
           <DashboardGrid className="grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-7">
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--brand-primary-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Linked Customers</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{data.summary.linkedCustomerCount}</Typography>
-              <GroupsOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--accent-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Invoice Register</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{data.summary.invoiceCount}</Typography>
-              <ReceiptLongOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--warning-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Overdue Exposure</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{formatCurrency(data.summary.overdueAmount)}</Typography>
-              <WarningAmberOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--text-primary-rgb),0.05)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Portal-Only Balance</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{formatCurrency(data.summary.portalBalance)}</Typography>
-              <AccountBalanceWalletOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--warning-rgb),0.12)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Portal-Only Debits</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{formatCurrency(data.summary.portalDebitAmount)}</Typography>
-              <ReceiptLongOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--success-rgb),0.12)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Portal-Only Credits</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{formatCurrency(data.summary.portalCreditAmount)}</Typography>
-              <PaidOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--success-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Portal-Only Payments</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{data.summary.portalPaymentRecordCount}</Typography>
-              <PaidOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--brand-primary-rgb),0.08)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Linked Customers</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{data.summary.linkedCustomerCount}</span>
+              <Users className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--accent-rgb),0.08)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Invoice Register</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{data.summary.invoiceCount}</span>
+              <Receipt className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--warning-rgb),0.08)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Overdue Exposure</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{formatCurrency(data.summary.overdueAmount)}</span>
+              <AlertTriangle className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--text-primary-rgb),0.05)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Portal-Only Balance</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{formatCurrency(data.summary.portalBalance)}</span>
+              <Wallet className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--warning-rgb),0.12)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Portal-Only Debits</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{formatCurrency(data.summary.portalDebitAmount)}</span>
+              <Receipt className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--success-rgb),0.12)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Portal-Only Credits</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{formatCurrency(data.summary.portalCreditAmount)}</span>
+              <CircleDollarSign className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--success-rgb),0.08)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Portal-Only Payments</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{data.summary.portalPaymentRecordCount}</span>
+              <CircleDollarSign className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
           </DashboardGrid>
 
           <DashboardPanel title="Aging Buckets" description="Outstanding invoice exposure grouped by due age across the full portal.">
@@ -413,11 +405,11 @@ export default function PortalFinancePage() {
                 { label: '61-90 Days', bucket: data.aging.days61to90, tone: 'rgba(var(--status-orange-rgb),0.08)' },
                 { label: '90+ Days', bucket: data.aging.days90plus, tone: 'rgba(var(--error-rgb),0.08)' },
               ].map(({ label, bucket, tone }) => (
-                <Box key={label} sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: tone, display: 'grid', gap: 0.65 }}>
-                  <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>{label}</Typography>
-                  <Typography sx={{ fontSize: '1.3rem', fontWeight: 800 }}>{formatCurrency(bucket.amount)}</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{bucket.count} open invoices</Typography>
-                </Box>
+                <div key={label} className="border border-[var(--border)] rounded-2xl p-4 grid gap-1" style={{ backgroundColor: tone }}>
+                  <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">{label}</span>
+                  <span className="text-lg font-bold text-[var(--text-primary)]">{formatCurrency(bucket.amount)}</span>
+                  <span className="text-xs text-[var(--text-secondary)]">{bucket.count} open invoices</span>
+                </div>
               ))}
             </DashboardGrid>
           </DashboardPanel>
@@ -426,7 +418,7 @@ export default function PortalFinancePage() {
             <DashboardPanel title="Customer Accounts" description="Main invoice visibility plus portal-only ledger rollups for customers linked to this portal's assigned shipments.">
               {customerRows.length === 0 ? (
                 <EmptyState
-                  icon={<GroupsOutlinedIcon />}
+                  icon={<Users className="w-12 h-12" />}
                   title="No customer finance yet"
                   description="Link assigned shipments to portal customers first. Their invoice summaries will appear here automatically."
                 />
@@ -436,9 +428,9 @@ export default function PortalFinancePage() {
             </DashboardPanel>
 
             <DashboardPanel title="Invoice Register" description="Read-only invoice visibility for portal-linked customer work.">
-              <Box sx={{ display: 'grid', gap: 2 }}>
-                <Box sx={{ display: 'grid', gap: 1.5, gridTemplateColumns: { xs: '1fr', md: 'minmax(0, 1.2fr) repeat(2, minmax(180px, 0.4fr))' } }}>
-                  <TextField
+              <div className="grid gap-4">
+                <div className="grid gap-3 grid-cols-1 md:grid-cols-[minmax(0,1.2fr)_repeat(2,minmax(180px,0.4fr))]">
+                  <FormField
                     label="Search invoices"
                     placeholder="Invoice, shipment, customer, payment reference"
                     value={query}
@@ -466,14 +458,14 @@ export default function PortalFinancePage() {
                       { value: 'DRAFT', label: 'Draft' },
                     ]}
                   />
-                </Box>
+                </div>
 
                 {filteredInvoices.length === 0 ? (
-                  <EmptyState icon={<ReceiptLongOutlinedIcon />} title="No invoices matched" description="Try a different customer, status, or search term." />
+                  <EmptyState icon={<Receipt className="w-12 h-12" />} title="No invoices matched" description="Try a different customer, status, or search term." />
                 ) : (
                   <DataTable data={filteredInvoices} columns={invoiceColumns} keyField="id" />
                 )}
-              </Box>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
         </>

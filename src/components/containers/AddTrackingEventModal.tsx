@@ -1,14 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import {
-	TextField,
-	Box,
-	Checkbox,
-	FormControlLabel,
-} from '@mui/material';
 import { MapPin } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, FormField, Modal, Select, toast } from '@/components/design-system';
 
 interface AddTrackingEventModalProps {
 	open: boolean;
@@ -140,10 +134,10 @@ export default function AddTrackingEventModal({
 			onClose={handleClose}
 			size="lg"
 			title={
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<MapPin style={{ fontSize: 24, color: 'var(--accent-gold)' }} />
-					<span>Add Tracking Event</span>
-				</Box>
+				<div className="flex items-center gap-2">
+					<MapPin className="w-5 h-5 text-[var(--accent-gold)]" />
+					<span className="font-bold">Add Tracking Event</span>
+				</div>
 			}
 			description="Record a container milestone, update the source, and add coordinates when location precision matters."
 			showCloseButton={!loading}
@@ -159,109 +153,101 @@ export default function AddTrackingEventModal({
 				</>
 			}
 		>
-			<Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+			<form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-4">
+				<Select
+					label="Status/Event Type"
+					value={formData.status}
+					onChange={(value) => handleChange('status', String(value))}
+					size="small"
+					required
+					options={trackingStatuses}
+				/>
+
+				<FormField
+					size="small"
+					label="Location"
+					value={formData.location}
+					onChange={(e) => handleChange('location', e.target.value)}
+					placeholder="e.g., Port of Los Angeles, CA, USA"
+					helperText="City, port, or facility name"
+				/>
+
+				<FormField
+					size="small"
+					label="Vessel Name"
+					value={formData.vesselName}
+					onChange={(e) => handleChange('vesselName', e.target.value)}
+					placeholder="e.g., MSC GULSUN, EVER GIVEN"
+					helperText="Ship or carrier name (optional)"
+				/>
+
+				<FormField
+					size="small"
+					label="Event Date & Time"
+					type="datetime-local"
+					value={formData.eventDate}
+					onChange={(e) => handleChange('eventDate', e.target.value)}
+					required
+				/>
+
+				<div className="grid grid-cols-2 gap-4 items-center">
 					<Select
-						label="Status/Event Type"
-						value={formData.status}
-						onChange={(value) => handleChange('status', String(value))}
+						label="Source"
+						value={formData.source}
+						onChange={(value) => handleChange('source', String(value))}
 						size="small"
-						required
-						options={trackingStatuses}
+						options={sourceOptions}
 					/>
 
-					<TextField
-						size="small"
-						label="Location"
-						value={formData.location}
-						onChange={(e) => handleChange('location', e.target.value)}
-						placeholder="e.g., Port of Los Angeles, CA, USA"
-						helperText="City, port, or facility name"
-					/>
+					<label className="flex items-center gap-2 mt-4 cursor-pointer">
+						<input
+							type="checkbox"
+							checked={formData.completed}
+							onChange={(e) => handleChange('completed', e.target.checked)}
+							className="rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)] w-4 h-4"
+						/>
+						<span className="text-sm font-medium text-[var(--text-primary)]">
+							Mark as Completed
+						</span>
+					</label>
+				</div>
 
-					<TextField
-						size="small"
-						label="Vessel Name"
-						value={formData.vesselName}
-						onChange={(e) => handleChange('vesselName', e.target.value)}
-						placeholder="e.g., MSC GULSUN, EVER GIVEN"
-						helperText="Ship or carrier name (optional)"
-					/>
+				<FormField
+					size="small"
+					label="Description"
+					value={formData.description}
+					onChange={(e) => handleChange('description', e.target.value)}
+					multiline
+					rows={3}
+					placeholder="Additional details about this event..."
+				/>
 
-					<TextField
-						size="small"
-						label="Event Date & Time"
-						type="datetime-local"
-						value={formData.eventDate}
-						onChange={(e) => handleChange('eventDate', e.target.value)}
-						required
-						InputLabelProps={{ shrink: true }}
-					/>
-
-					<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-						<Select
-							label="Source"
-							value={formData.source}
-							onChange={(value) => handleChange('source', String(value))}
+				<div className="border border-[var(--border)] rounded-xl p-3.5 bg-[var(--background)]">
+					<h4 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-3">
+						GPS Coordinates (Optional)
+					</h4>
+					<div className="grid grid-cols-2 gap-3">
+						<FormField
 							size="small"
-							options={sourceOptions}
+							label="Latitude"
+							type="number"
+							value={formData.latitude}
+							onChange={(e) => handleChange('latitude', e.target.value)}
+							placeholder="e.g., 33.7701"
+							inputProps={{ step: 'any' }}
 						/>
-
-						<FormControlLabel
-							control={
-								<Checkbox
-									checked={formData.completed}
-									onChange={(e) => handleChange('completed', e.target.checked)}
-									size="small"
-								/>
-							}
-							label="Mark as Completed"
-							sx={{ mt: 1 }}
+						<FormField
+							size="small"
+							label="Longitude"
+							type="number"
+							value={formData.longitude}
+							onChange={(e) => handleChange('longitude', e.target.value)}
+							placeholder="e.g., -118.1937"
+							inputProps={{ step: 'any' }}
 						/>
-					</Box>
-
-					<TextField
-						size="small"
-						label="Description"
-						value={formData.description}
-						onChange={(e) => handleChange('description', e.target.value)}
-						multiline
-						rows={3}
-						placeholder="Additional details about this event..."
-					/>
-
-					<Box 
-						sx={{ 
-							border: '1px solid var(--border)', 
-							borderRadius: 1, 
-							p: 2, 
-							bgcolor: 'var(--surface)' 
-						}}
-					>
-						<Box sx={{ fontSize: '0.875rem', fontWeight: 600, mb: 1.5 }}>
-							GPS Coordinates (Optional)
-						</Box>
-						<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-							<TextField
-								size="small"
-								label="Latitude"
-								type="number"
-								value={formData.latitude}
-								onChange={(e) => handleChange('latitude', e.target.value)}
-								placeholder="e.g., 33.7701"
-								inputProps={{ step: 'any' }}
-							/>
-							<TextField
-								size="small"
-								label="Longitude"
-								type="number"
-								value={formData.longitude}
-								onChange={(e) => handleChange('longitude', e.target.value)}
-								placeholder="e.g., -118.1937"
-								inputProps={{ step: 'any' }}
-							/>
-						</Box>
-					</Box>
-			</Box>
+					</div>
+				</div>
+			</form>
 		</Modal>
 	);
 }

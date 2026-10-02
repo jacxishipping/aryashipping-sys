@@ -2,20 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Box, Typography, Divider } from '@mui/material';
 import { 
-  Car, 
   Package, 
   Ship, 
-  MapPin, 
-  Calendar, 
   DollarSign, 
   ExternalLink, 
-  FileText, 
   User,
   CreditCard,
-  Truck,
-  CheckCircle2
 } from 'lucide-react';
 import { 
   Drawer, 
@@ -128,33 +121,33 @@ export default function ShipmentQuickPeek({
       size="lg"
       title={
         shipment ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <div className="flex items-center gap-2">
             <span className="font-bold tracking-tight text-base sm:text-lg">
               {vehicleTitle}
             </span>
-          </Box>
+          </div>
         ) : (
           'Shipment Details'
         )
       }
       description={
         shipment?.vehicleVIN ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.25 }}>
+          <div className="flex items-center gap-2 mt-0.5">
             <span className="font-mono text-xs text-[var(--text-secondary)] font-semibold">
               VIN: {shipment.vehicleVIN}
             </span>
             <CopyButton value={shipment.vehicleVIN} label="VIN" />
-          </Box>
+          </div>
         ) : undefined
       }
       badge={shipment ? <StatusBadge status={shipment.status} /> : undefined}
       actions={
         shipment && (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: 1 }}>
+          <div className="flex items-center justify-between w-full gap-2">
             <Button variant="outline" size="sm" onClick={onClose}>
               Close
             </Button>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <div className="flex items-center gap-2">
               <Button
                 href={`/tracking?vin=${encodeURIComponent(shipment.vehicleVIN && shipment.vehicleVIN !== '-' ? shipment.vehicleVIN : shipment.id)}`}
                 variant="outline"
@@ -172,152 +165,135 @@ export default function ShipmentQuickPeek({
               >
                 Open Full View
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         )
       }
     >
       {loading ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div className="flex flex-col gap-4">
           <Skeleton variant="rounded" height={90} />
           <Skeleton variant="rounded" height={120} />
           <Skeleton variant="rounded" height={160} />
-        </Box>
+        </div>
       ) : shipment ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+        <div className="flex flex-col gap-5">
           {/* Milestone Progression */}
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              bgcolor: 'var(--background, #F9FAFB)',
-              border: '1px solid var(--border, #E5E7EB)',
-            }}
-          >
-            <Typography variant="caption" sx={{ fontWeight: 700, color: 'var(--text-secondary, #6B7280)', mb: 1.5, display: 'block', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+            <span className="font-bold text-xs text-[var(--text-secondary)] mb-3 block uppercase tracking-wider">
               Milestone Progression
-            </Typography>
+            </span>
             <MilestoneStepper
               steps={SHIPMENT_STEPS}
               currentStepId={shipment.status}
               status={shipment.status === 'DELIVERED' ? 'completed' : 'default'}
               orientation="horizontal"
             />
-          </Box>
+          </div>
 
           {/* Key Details Cards Grid */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
+          <div className="grid grid-cols-2 gap-3">
             {/* Customer */}
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] mb-1">
                 <User className="w-4 h-4 text-blue-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Customer</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary, #111827)' }} noWrap>
+                <span className="text-xs font-semibold">Customer</span>
+              </div>
+              <div className="font-bold text-sm text-[var(--text-primary)] truncate">
                 {shipment.user?.name || shipment.user?.email || 'Direct / Unassigned'}
-              </Typography>
-            </Box>
+              </div>
+            </div>
 
             {/* Container Assignment */}
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] mb-1">
                 <Package className="w-4 h-4 text-amber-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Container</Typography>
-              </Box>
+                <span className="text-xs font-semibold">Container</span>
+              </div>
               {shipment.container ? (
                 <>
                   <Link
                     href={`/dashboard/containers/${shipment.container.id}`}
                     onClick={onClose}
-                    style={{ textDecoration: 'none' }}
+                    className="no-underline"
                   >
-                    <span className="font-mono font-bold text-sm text-[var(--accent-gold,#D4AF37)] hover:underline block truncate">
+                    <span className="font-mono font-bold text-sm text-[var(--accent-gold)] hover:underline block truncate">
                       {shipment.container.containerNumber}
                     </span>
                   </Link>
                   {shipment.container.destinationPort && (
-                    <Typography sx={{ fontSize: '0.72rem', color: 'var(--text-secondary, #6B7280)', mt: 0.25 }} noWrap>
+                    <div className="text-xs text-[var(--text-secondary)] mt-0.5 truncate">
                       {shipment.container.destinationPort}
-                    </Typography>
+                    </div>
                   )}
                   {shipment.container.estimatedArrival && (
-                    <Typography sx={{ fontSize: '0.68rem', color: 'var(--text-secondary, #6B7280)' }} noWrap>
+                    <div className="text-[11px] text-[var(--text-secondary)] truncate">
                       ETA: {new Date(shipment.container.estimatedArrival).toLocaleDateString()}
-                    </Typography>
+                    </div>
                   )}
                 </>
               ) : (
-                <Typography sx={{ fontWeight: 600, fontSize: '0.875rem', color: 'var(--text-secondary, #6B7280)' }}>
+                <div className="font-semibold text-sm text-[var(--text-secondary)]">
                   Unallocated
-                </Typography>
+                </div>
               )}
-            </Box>
+            </div>
 
             {/* Total Price */}
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] mb-1">
                 <DollarSign className="w-4 h-4 text-emerald-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Total Price</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem', color: 'var(--text-primary, #111827)' }}>
+                <span className="text-xs font-semibold">Total Price</span>
+              </div>
+              <div className="font-bold text-sm text-[var(--text-primary)]">
                 {formatCurrency(shipment.price || 0)}
-              </Typography>
-            </Box>
+              </div>
+            </div>
 
             {/* Payment Status */}
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-1.5 text-[var(--text-secondary)] mb-1">
                 <CreditCard className="w-4 h-4 text-purple-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Payment Status</Typography>
-              </Box>
-              <Box sx={{ mt: 0.25 }}>
+                <span className="text-xs font-semibold">Payment Status</span>
+              </div>
+              <div className="mt-1">
                 <StatusBadge status={shipment.paymentStatus || 'PENDING'} size="sm" />
-              </Box>
-            </Box>
-          </Box>
+              </div>
+            </div>
+          </div>
 
           {/* Vehicle Metadata Box */}
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              bgcolor: 'var(--panel-bg, #FFFFFF)',
-              border: '1px solid var(--border, #E5E7EB)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 1.5,
-            }}
-          >
-            <Typography sx={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--text-secondary, #6B7280)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div className="p-4 rounded-xl bg-[var(--panel)] border border-[var(--border)] flex flex-col gap-3">
+            <span className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">
               Vehicle Specifications
-            </Typography>
+            </span>
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
+            <div className="grid grid-cols-2 gap-3">
               <div>
                 <span className="text-xs text-[var(--text-secondary)] block">Color</span>
-                <span className="text-sm font-semibold text-gray-900">{shipment.vehicleColor || 'Standard'}</span>
+                <span className="text-sm font-semibold text-[var(--text-primary)]">{shipment.vehicleColor || 'Standard'}</span>
               </div>
               <div>
                 <span className="text-xs text-[var(--text-secondary)] block">Lot Number</span>
-                <span className="font-mono text-sm font-semibold text-gray-900">{shipment.lotNumber || 'N/A'}</span>
+                <span className="font-mono text-sm font-semibold text-[var(--text-primary)]">{shipment.lotNumber || 'N/A'}</span>
               </div>
               <div>
                 <span className="text-xs text-[var(--text-secondary)] block">Booking Date</span>
-                <span className="text-sm font-semibold text-gray-900">
+                <span className="text-sm font-semibold text-[var(--text-primary)]">
                   {shipment.createdAt ? new Date(shipment.createdAt).toLocaleDateString() : 'N/A'}
                 </span>
               </div>
               <div>
                 <span className="text-xs text-[var(--text-secondary)] block">Outstanding Balance</span>
-                <span className="text-sm font-semibold text-gray-900">{formatCurrency(remainingBalance)}</span>
+                <span className="text-sm font-semibold text-[var(--text-primary)]">{formatCurrency(remainingBalance)}</span>
               </div>
-            </Box>
-          </Box>
-        </Box>
+            </div>
+          </div>
+        </div>
       ) : (
-        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+        <div className="text-sm text-[var(--text-secondary)] text-center py-8">
           No shipment selected.
-        </Typography>
+        </div>
       )}
     </Drawer>
   );

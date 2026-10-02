@@ -1,14 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import {
-	TextField,
-	Box,
-	InputAdornment,
-	Typography,
-} from '@mui/material';
 import { DollarSign } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { Button, FormField, Modal, Select, toast } from '@/components/design-system';
 
 interface Shipment {
 	id: string;
@@ -140,10 +134,10 @@ export default function AddDamageModal({
 			onClose={handleClose}
 			size="sm"
 			title={
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<DollarSign style={{ width: 20, height: 20, color: 'var(--accent-gold)' }} />
-					<Box component="span" sx={{ fontWeight: 700 }}>Add Damage Record</Box>
-				</Box>
+				<div className="flex items-center gap-2">
+					<DollarSign className="w-5 h-5 text-[var(--accent-gold)]" />
+					<span className="font-bold">Add Damage Record</span>
+				</div>
 			}
 			description="Create a damage adjustment and choose which ledger absorbs the resulting charge."
 			showCloseButton={!loading}
@@ -159,109 +153,77 @@ export default function AddDamageModal({
 				</>
 			}
 		>
-			<Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-					{/* Shipment selector */}
-					<Select
-						label="Shipment"
-						value={formData.shipmentId}
-						onChange={(value) => handleChange('shipmentId', String(value))}
-						size="small"
-						required
-						placeholder="Select a shipment…"
-						options={shipments.map((s) => ({
-							value: s.id,
-							label: `${[s.vehicleMake, s.vehicleModel].filter(Boolean).join(' ') || 'Unknown Vehicle'}${s.vehicleVIN ? ` — ${s.vehicleVIN}` : ''}${s.user ? ` (${s.user.name || s.user.email})` : ''}`,
-						}))}
-					/>
+			<form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-4">
+				{/* Shipment selector */}
+				<Select
+					label="Shipment"
+					value={formData.shipmentId}
+					onChange={(value) => handleChange('shipmentId', String(value))}
+					size="small"
+					required
+					placeholder="Select a shipment…"
+					options={shipments.map((s) => ({
+						value: s.id,
+						label: `${[s.vehicleMake, s.vehicleModel].filter(Boolean).join(' ') || 'Unknown Vehicle'}${s.vehicleVIN ? ` — ${s.vehicleVIN}` : ''}${s.user ? ` (${s.user.name || s.user.email})` : ''}`,
+					}))}
+				/>
 
-					{/* Damage Type */}
-					<Select
-						label="Damage Type"
-						value={formData.damageType}
-						onChange={(value) => handleChange('damageType', String(value))}
-						size="small"
-						required
-						options={damageTypeOptions}
-					/>
+				{/* Damage Type */}
+				<Select
+					label="Damage Type"
+					value={formData.damageType}
+					onChange={(value) => handleChange('damageType', String(value))}
+					size="small"
+					required
+					options={damageTypeOptions}
+				/>
 
-					{/* Damage type explanation */}
-					{selectedDamageType && (
-						<Box
-							sx={{
-								p: 1.5,
-								borderRadius: 1,
-								bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)',
-								border: '1px solid rgba(var(--accent-gold-rgb), 0.2)',
-							}}
-						>
-							<Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-								{selectedDamageType.description}
-							</Typography>
-						</Box>
-					)}
+				{/* Damage type explanation */}
+				{selectedDamageType && (
+					<div className="p-3 rounded-lg bg-[rgba(var(--accent-gold-rgb),0.08)] border border-[rgba(var(--accent-gold-rgb),0.2)]">
+						<p className="text-xs text-[var(--text-secondary)]">
+							{selectedDamageType.description}
+						</p>
+					</div>
+				)}
 
-					{/* Amount */}
-					<TextField
+				{/* Amount */}
+				<FormField
+					size="small"
+					label={formData.damageType === 'COMPANY_PAYS' ? 'Customer Credit Amount (USD)' : 'Amount (USD)'}
+					type="number"
+					value={formData.amount}
+					onChange={(e) => handleChange('amount', e.target.value)}
+					required
+					inputProps={{ min: 0, step: 0.01 }}
+					leftIcon={<span className="text-[var(--text-secondary)]">$</span>}
+				/>
+
+				{formData.damageType === 'COMPANY_PAYS' && (
+					<FormField
 						size="small"
-						label={formData.damageType === 'COMPANY_PAYS' ? 'Customer Credit Amount (USD)' : 'Amount (USD)'}
+						label="Company Charge Amount (USD)"
 						type="number"
-						value={formData.amount}
-						onChange={(e) => handleChange('amount', e.target.value)}
-						required
+						value={formData.companyAmount}
+						onChange={(e) => handleChange('companyAmount', e.target.value)}
 						inputProps={{ min: 0, step: 0.01 }}
-						InputProps={{
-							startAdornment: <InputAdornment position="start">$</InputAdornment>,
-						}}
-						sx={{
-							'& .MuiOutlinedInput-root': {
-								color: 'var(--text-primary)',
-								'& fieldset': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-							},
-							'& .MuiInputLabel-root': { color: 'var(--text-secondary)' },
-						}}
+						helperText="Optional. Leave empty to use the same value as customer credit amount."
+						leftIcon={<span className="text-[var(--text-secondary)]">$</span>}
 					/>
+				)}
 
-					{formData.damageType === 'COMPANY_PAYS' && (
-						<TextField
-							size="small"
-							label="Company Charge Amount (USD)"
-							type="number"
-							value={formData.companyAmount}
-							onChange={(e) => handleChange('companyAmount', e.target.value)}
-							inputProps={{ min: 0, step: 0.01 }}
-							helperText="Optional. Leave empty to use the same value as customer credit amount."
-							InputProps={{
-								startAdornment: <InputAdornment position="start">$</InputAdornment>,
-							}}
-							sx={{
-								'& .MuiOutlinedInput-root': {
-									color: 'var(--text-primary)',
-									'& fieldset': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-								},
-								'& .MuiInputLabel-root': { color: 'var(--text-secondary)' },
-							}}
-						/>
-					)}
-
-					{/* Description */}
-					<TextField
-						size="small"
-						label="Description"
-						value={formData.description}
-						onChange={(e) => handleChange('description', e.target.value)}
-						required
-						multiline
-						rows={3}
-						placeholder="Describe the damage..."
-						sx={{
-							'& .MuiOutlinedInput-root': {
-								color: 'var(--text-primary)',
-								'& fieldset': { borderColor: 'rgba(var(--border-rgb), 0.9)' },
-							},
-							'& .MuiInputLabel-root': { color: 'var(--text-secondary)' },
-						}}
-					/>
-			</Box>
+				{/* Description */}
+				<FormField
+					size="small"
+					label="Description"
+					value={formData.description}
+					onChange={(e) => handleChange('description', e.target.value)}
+					required
+					multiline
+					rows={3}
+					placeholder="Describe the damage..."
+				/>
+			</form>
 		</Modal>
 	);
 }

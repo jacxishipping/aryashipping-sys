@@ -2,13 +2,7 @@
 import { formatMoney as formatCurrency } from '@/lib/format';
 
 import { useEffect, useState } from 'react';
-import { 
-    Box, 
-    Typography,
-    Paper,
-    TextField
-} from '@mui/material';
-import { Button, Select } from '@/components/design-system';
+import { Button, Select, FormField } from '@/components/design-system';
 import { Calculator, MapPin, Truck, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -176,88 +170,50 @@ export default function ShipmentCalculator() {
     };
 
     return (
-        <Paper 
-            elevation={0}
-            sx={{ 
-                p: 0, 
-                borderRadius: 3, 
-                overflow: 'hidden',
-                border: '1px solid var(--border)',
-                background: 'linear-gradient(145deg, var(--panel), var(--background))',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column'
-            }}
-        >
-            <Box sx={{ 
-                p: 3, 
-                borderBottom: '1px solid var(--border)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                backgroundColor: 'var(--panel)'
-            }}>
-                <Box sx={{ 
-                    p: 1.5, 
-                    borderRadius: 2, 
-                    bgcolor: 'var(--accent-gold)', 
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 4px 12px rgba(218, 165, 32, 0.3)'
-                }}>
+        <div className="rounded-2xl overflow-hidden border border-[var(--border)] bg-gradient-to-br from-[var(--panel)] to-[var(--background)] h-full flex flex-col">
+            <div className="p-6 border-b border-[var(--border)] flex items-center gap-4 bg-[var(--panel)]">
+                <div className="p-3 rounded-xl bg-[var(--accent-gold)] text-white flex items-center justify-center shadow-lg shadow-amber-500/20">
                     <Calculator size={24} />
-                </Box>
-                <Box>
-                    <Typography variant="h6" sx={{ fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+                </div>
+                <div>
+                    <h2 className="text-lg font-bold text-[var(--text-primary)] leading-tight m-0">
                         Quick Rate Calculator
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
+                    </h2>
+                    <p className="text-sm text-[var(--text-secondary)] m-0">
                         Instant quote to {config.destinationLabel}
-                    </Typography>
-                </Box>
-            </Box>
+                    </p>
+                </div>
+            </div>
 
-            <Box sx={{ p: 3, flex: 1, display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-                
+            <div className="p-6 flex-1 flex flex-col gap-5">
                 {/* Route Visual */}
-                <Box sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    px: 2,
-                    py: 1.25,
-                    bgcolor: 'var(--background)',
-                    borderRadius: 2,
-                    border: '1px solid var(--border)'
-                }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <Typography variant="caption" sx={{ color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 1 }}>
+                <div className="flex items-center justify-between px-4 py-3 bg-[var(--background)] rounded-xl border border-[var(--border)]">
+                    <div className="flex flex-col">
+                        <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">
                             From
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        </span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
                             <MapPin size={16} className="text-red-500" />
-                            <Typography variant="caption" sx={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                            <span className="text-xs font-semibold text-[var(--text-primary)]">
                                 {origin ? US_STATES.find(s => s.code === origin)?.name : 'Origin (USA)'}
-                            </Typography>
-                        </Box>
-                    </Box>
-                    <ArrowRight size={16} style={{ color: 'var(--text-secondary)' }} />
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-                        <Typography variant="caption" sx={{ color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 1 }}>
+                            </span>
+                        </div>
+                    </div>
+                    <ArrowRight size={16} className="text-[var(--text-secondary)]" />
+                    <div className="flex flex-col items-end">
+                        <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider">
                             To
-                        </Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        </span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
                             <MapPin size={16} className="text-green-500" />
-                            <Typography variant="caption" sx={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                            <span className="text-xs font-semibold text-[var(--text-primary)]">
                                 {config.destinationLabel}
-                            </Typography>
-                        </Box>
-                    </Box>
-                </Box>
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2 }}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Select
                         label="Company Rate Sheet"
                         value={companyId}
@@ -292,7 +248,7 @@ export default function ShipmentCalculator() {
                         onChange={(value) => {
                             setOrigin(String(value));
                             setPickupLocation('');
-                            setEstimatedCost(null); // Reset on change
+                            setEstimatedCost(null);
                             setCalculationTrace(null);
                         }}
                         size="small"
@@ -324,9 +280,8 @@ export default function ShipmentCalculator() {
 
                     {!companyId && (
                         <>
-                            <TextField
+                            <FormField
                                 label="Pickup City"
-                                size="small"
                                 value={pickupCity}
                                 onChange={(event) => {
                                     setPickupCity(event.target.value);
@@ -334,11 +289,9 @@ export default function ShipmentCalculator() {
                                     setCalculationTrace(null);
                                 }}
                                 placeholder="Los Angeles"
-                                sx={{ bgcolor: 'var(--background)' }}
                             />
-                            <TextField
+                            <FormField
                                 label="Auction Branch"
-                                size="small"
                                 value={pickupBranch}
                                 onChange={(event) => {
                                     setPickupBranch(event.target.value);
@@ -346,7 +299,6 @@ export default function ShipmentCalculator() {
                                     setCalculationTrace(null);
                                 }}
                                 placeholder="Los Angeles"
-                                sx={{ bgcolor: 'var(--background)' }}
                             />
                         </>
                     )}
@@ -356,7 +308,7 @@ export default function ShipmentCalculator() {
                         value={vehicleType}
                         onChange={(value) => {
                             setVehicleType(String(value));
-                            setEstimatedCost(null); // Reset on change
+                            setEstimatedCost(null);
                             setCalculationTrace(null);
                         }}
                         size="small"
@@ -365,9 +317,9 @@ export default function ShipmentCalculator() {
                             label: type.label,
                         }))}
                     />
-                </Box>
+                </div>
 
-                <Box sx={{ mt: 'auto', pt: 1 }}>
+                <div className="mt-auto pt-2">
                     <Button 
                         variant="primary" 
                         fullWidth 
@@ -378,18 +330,15 @@ export default function ShipmentCalculator() {
                     >
                         Calculate Rate
                     </Button>
-                    <Typography
-                        variant="caption"
-                        sx={{ display: 'block', textAlign: 'center', mt: 1, color: 'var(--text-secondary)' }}
-                    >
+                    <span className="block text-center text-xs text-[var(--text-secondary)] mt-2">
                         {activeCompanyPriceList
                             ? `Using ${activeCompanyPriceList.name} from ${activeCompanyPriceList.sourceFileName}.`
                             : allCompanyEstimate?.companyCount
                                 ? `Averaging ${allCompanyEstimate.companyCount} active company price list${allCompanyEstimate.companyCount === 1 ? '' : 's'} for ${origin} using ${allCompanyEstimate.matchLevel === 'lane' ? 'matched lanes' : 'state rates'}.`
                                 : 'Rates update daily and include standard handling.'}
                         {!activeCompanyPriceList && config.updatedFromPdfName ? ` Last file: ${config.updatedFromPdfName}.` : ''}
-                    </Typography>
-                </Box>
+                    </span>
+                </div>
 
                 <AnimatePresence>
                     {estimatedCost !== null && (
@@ -398,34 +347,27 @@ export default function ShipmentCalculator() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 10 }}
                         >
-                            <Box sx={{ 
-                                mt: 2, 
-                                p: 2, 
-                                borderRadius: 2, 
-                                bgcolor: 'rgba(var(--accent-gold-rgb), 0.12)', 
-                                border: '1px solid rgba(var(--accent-gold-rgb), 0.6)',
-                                textAlign: 'center'
-                            }}>
-                                <Typography variant="caption" sx={{ color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 1 }}>
+                            <div className="mt-4 p-4 rounded-xl bg-[rgba(var(--accent-gold-rgb),0.12)] border border-[rgba(var(--accent-gold-rgb),0.6)] text-center">
+                                <span className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider block">
                                     Estimated Shipping Cost
-                                </Typography>
-                                <Typography variant="h3" sx={{ fontWeight: 800, color: 'var(--text-primary)', my: 1 }}>
+                                </span>
+                                <div className="text-3xl font-extrabold text-[var(--text-primary)] my-2">
                                     {formatCurrency(estimatedCost)}
-                                </Typography>
-                                <Typography variant="caption" sx={{ display: 'block', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                                </div>
+                                <span className="block text-xs text-[var(--text-secondary)] italic">
                                     *Rates are subject to change. Includes ocean freight & standard handling.
-                                </Typography>
+                                </span>
                                 {calculationTrace && (
-                                    <Typography variant="caption" sx={{ display: 'block', color: 'var(--text-secondary)', mt: 1 }}>
+                                    <span className="block text-[11px] text-[var(--text-secondary)] mt-2">
                                         Source: {calculationTrace.companyName} / {calculationTrace.priceListName} ({calculationTrace.priceListId}) / {calculationTrace.sourceFileName}. Base {formatCurrency(calculationTrace.baseRate)} x {calculationTrace.multiplier}; {calculationTrace.rowSource} / {calculationTrace.rowConfidence}.
                                         {calculationTrace.averagedCompanyCount ? ` ${calculationTrace.averagedCompanyCount} companies, ${calculationTrace.matchedAuctionRows || 0} matched auction rows, ${calculationTrace.matchLevel || 'state'} match.` : ''}
-                                    </Typography>
+                                    </span>
                                 )}
-                            </Box>
+                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>
-            </Box>
-        </Paper>
+            </div>
+        </div>
     );
 }

@@ -2,9 +2,8 @@
 
 import { useRef } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Box, TextField, Typography } from '@mui/material';
 import { DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, FormField, toast } from '@/components/design-system';
 import { getPortalBrandIdentity } from '@/lib/partner-portal-branding';
 import {
   getPortalCustomDomainVerificationHost,
@@ -374,16 +373,16 @@ export default function PortalBrandingSettingsPanel({
       description="Let this portal present a partner identity while still running inside your system."
       footer={canEdit ? 'These settings update the portal shell, workspace headings, preview surfaces, and optional custom-domain routing for this partner.' : 'Portal branding is controlled by portal admins or internal managers.'}
     >
-      <Box sx={{ display: 'grid', gap: 2.5, gridTemplateColumns: compact ? '1fr' : { xs: '1fr', xl: 'minmax(0, 1.15fr) minmax(300px, 0.85fr)' } }}>
-        <Box sx={{ display: 'grid', gap: 2 }}>
-          <TextField
+      <div className={`grid gap-6 ${compact ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-[minmax(0,1.15fr)_minmax(300px,0.85fr)]'}`}>
+        <div className="grid gap-4">
+          <FormField
             label="Company Label"
             placeholder="Partner company name shown in the portal"
             value={form.companyLabel}
             onChange={(event) => setForm((prev) => ({ ...prev, companyLabel: event.target.value }))}
             disabled={!canEdit || saving}
           />
-          <TextField
+          <FormField
             label="Accent Color"
             placeholder="#0f766e"
             helperText="Use a 6-digit hex color. Example: #0f766e"
@@ -391,36 +390,38 @@ export default function PortalBrandingSettingsPanel({
             onChange={(event) => setForm((prev) => ({ ...prev, accentColor: event.target.value }))}
             disabled={!canEdit || saving}
           />
-          <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.05)', display: 'grid', gap: 1.1 }}>
-            <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+          <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--brand-primary-rgb),0.05)] grid gap-3">
+            <span className="text-[11px] tracking-wider uppercase text-[var(--text-secondary)] font-semibold">
               Portal Logo
-            </Typography>
-            <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+            </span>
+            <p className="text-xs text-[var(--text-secondary)]">
               Upload a logo directly here for the portal. A public URL is optional and only needed if you prefer linking an existing image.
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, flexWrap: 'wrap' }}>
+            </p>
+            <div className="flex items-center gap-3 flex-wrap">
               {(pendingLogoPreviewUrl || form.logoUrl) ? (
-                <Box
-                  component="img"
+                <img
                   src={pendingLogoPreviewUrl || form.logoUrl}
                   alt="Portal logo preview"
-                  sx={{ width: 56, height: 56, borderRadius: 2, objectFit: 'cover', border: '1px solid var(--border)', bgcolor: '#fff' }}
+                  className="w-14 h-14 rounded-xl object-cover border border-[var(--border)] bg-white"
                 />
               ) : (
-                <Box sx={{ width: 56, height: 56, borderRadius: 2, display: 'grid', placeItems: 'center', bgcolor: brand.accentColor, color: '#fff', fontSize: '1rem', fontWeight: 800 }}>
+                <div
+                  style={{ backgroundColor: brand.accentColor }}
+                  className="w-14 h-14 rounded-xl flex items-center justify-center text-white text-base font-extrabold"
+                >
                   {brand.companyLabel.slice(0, 1).toUpperCase()}
-                </Box>
+                </div>
               )}
-              <Box sx={{ display: 'grid', gap: 0.35 }}>
-                <Typography sx={{ fontSize: '0.9rem', fontWeight: 700 }}>
+              <div className="grid gap-1">
+                <div className="text-sm font-bold text-[var(--text-primary)]">
                   {pendingLogoFile ? 'Logo ready to upload' : form.logoUrl ? 'Logo configured' : 'No logo uploaded yet'}
-                </Typography>
-                <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+                </div>
+                <div className="text-xs text-[var(--text-secondary)]">
                   {pendingLogoFile ? 'Review the crop preview below, then upload it.' : 'Square logos work best in the portal header and cards.'}
-                </Typography>
-              </Box>
-            </Box>
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2 flex-wrap">
               {canEdit ? (
                 <Button variant="outline" size="sm" onClick={() => logoInputRef.current?.click()} disabled={saving || uploadingLogo}>
                   {pendingLogoFile ? 'Choose Different Logo' : form.logoUrl ? 'Replace Logo' : 'Upload Logo'}
@@ -431,9 +432,9 @@ export default function PortalBrandingSettingsPanel({
                   Remove Logo
                 </Button>
               ) : null}
-            </Box>
-          </Box>
-          <TextField
+            </div>
+          </div>
+          <FormField
             label="Logo URL (Optional)"
             placeholder="https://..."
             helperText="Optional fallback if you want to link an existing public image instead of uploading a file."
@@ -441,7 +442,7 @@ export default function PortalBrandingSettingsPanel({
             onChange={(event) => setForm((prev) => ({ ...prev, logoUrl: event.target.value }))}
             disabled={!canEdit || saving || uploadingLogo}
           />
-          <TextField
+          <FormField
             label="Custom Domain"
             placeholder="portal.partner.com"
             value={form.customDomain}
@@ -449,100 +450,100 @@ export default function PortalBrandingSettingsPanel({
             disabled={!canEdit || saving}
             error={Boolean(domainCheckError)}
             helperText={
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+              <div className="flex flex-col gap-1">
                 <span>Hostname only. No http://, https://, ports, or paths. After saving, point this DNS record to the main app host.</span>
                 {canEdit && form.customDomain && !hasUnsavedDomainChange && (
-                  <span style={{ color: 'var(--error)', fontSize: '0.8rem' }}>
+                  <span className="text-red-500 text-xs">
                     {domainCheckError || 'Domain is available'}
                   </span>
                 )}
-              </Box>
+              </div>
             }
           />
           {canEdit && form.customDomain && !hasUnsavedDomainChange && (
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <div className="flex gap-2 items-center">
               <Button variant="outline" size="sm" onClick={() => void handleCheckDomain()} disabled={checkingDomain || saving}>
                 {checkingDomain ? 'Checking...' : 'Check Availability'}
               </Button>
               {domainCheckError ? (
-                <Typography sx={{ fontSize: '0.82rem', color: 'var(--error)' }}>{domainCheckError}</Typography>
+                <span className="text-xs text-red-500">{domainCheckError}</span>
               ) : null}
-            </Box>
+            </div>
           )}
 
-          <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.05)', display: 'grid', gap: 0.65 }}>
-            <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+          <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--brand-primary-rgb),0.05)] grid gap-2">
+            <span className="text-[11px] tracking-wider uppercase text-[var(--text-secondary)] font-semibold">
               Public Entry Preview
-            </Typography>
-            <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>{publicEntryPreview}</Typography>
-            <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+            </span>
+            <div className="text-sm font-bold text-[var(--text-primary)]">{publicEntryPreview}</div>
+            <p className="text-xs text-[var(--text-secondary)]">
               {form.customDomain
                 ? `After DNS points ${form.customDomain} to ${appHost || 'this app'}, visitors land on the branded portal site at /. They can sign in there and continue into the workspace.`
                 : `Without a custom domain, share /portal-site/${portalId} as the branded entry page. Signed-in members still work inside /portal/${portalId}.`}
-            </Typography>
-            <TextField
+            </p>
+            <FormField
               label="Workspace Route"
               value={workspacePreview}
-              InputProps={{ readOnly: true }}
+              readOnly
               helperText="Use this route when you want to open the actual workspace after sign-in."
             />
-          </Box>
+          </div>
 
           {savedCustomDomain ? (
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.5, bgcolor: 'rgba(15,23,42,0.03)', display: 'grid', gap: 0.85 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-slate-500/5 grid gap-2">
+              <span className="text-[11px] tracking-wider uppercase text-[var(--text-secondary)] font-semibold">
                 Domain Verification
-              </Typography>
-              <Typography sx={{ fontSize: '0.88rem', fontWeight: 700 }}>
+              </span>
+              <div className="text-sm font-bold text-[var(--text-primary)]">
                 {portal?.customDomainVerifiedAt
                   ? `Verified on ${new Date(portal.customDomainVerifiedAt).toLocaleString()}`
                   : 'Verification pending'}
-              </Typography>
+              </div>
               {hasUnsavedDomainChange ? (
-                <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                <p className="text-xs text-[var(--text-secondary)]">
                   Save the custom domain first to generate the correct DNS verification record.
-                </Typography>
+                </p>
               ) : (
                 <>
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.25, bgcolor: 'rgba(var(--brand-primary-rgb),0.04)', display: 'grid', gap: 0.85 }}>
-                    <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+                  <div className="border border-[var(--border)] rounded-xl p-3 bg-[rgba(var(--brand-primary-rgb),0.04)] grid gap-2">
+                    <span className="text-[11px] tracking-wider uppercase text-[var(--text-secondary)] font-semibold">
                       DNS Routing Setup
-                    </Typography>
-                    <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                    </span>
+                    <p className="text-xs text-[var(--text-secondary)]">
                       For a subdomain such as {portal?.customDomain}, create a CNAME that points the hostname to {appHost || 'your main app host'}.
-                    </Typography>
-                    <TextField label="Recommended Record Type" value="CNAME" InputProps={{ readOnly: true }} />
-                    <TextField label="CNAME Target" value={appHost || ''} InputProps={{ readOnly: true }} helperText="Some DNS providers want only the label (for example, portal). Others accept the full hostname." />
-                    <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                    </p>
+                    <FormField label="Recommended Record Type" value="CNAME" readOnly />
+                    <FormField label="CNAME Target" value={appHost || ''} readOnly helperText="Some DNS providers want only the label (for example, portal). Others accept the full hostname." />
+                    <p className="text-xs text-[var(--text-secondary)]">
                       If you want to use the root domain instead of a subdomain, use ALIAS, ANAME, or CNAME flattening to {appHost || 'your main app host'} when your DNS provider supports it. If your provider only supports A records at the root, use the hosting platform's documented A-record target for this app.
-                    </Typography>
-                  </Box>
+                    </p>
+                  </div>
 
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Add this TXT record to prove that you control the domain before it starts routing traffic to the portal.
-                  </Typography>
-                  <TextField label="TXT Host" value={verificationHost || ''} InputProps={{ readOnly: true }} />
-                  <TextField label="TXT Value" value={verificationValue || ''} InputProps={{ readOnly: true }} />
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  </p>
+                  <FormField label="TXT Host" value={verificationHost || ''} readOnly />
+                  <FormField label="TXT Value" value={verificationValue || ''} readOnly />
+                  <p className="text-xs text-[var(--text-secondary)]">
                     Keep the DNS target pointed at {appHost || 'the main app host'} separately. Verification only proves control of the hostname.
-                  </Typography>
+                  </p>
                   {canEdit && !portal?.customDomainVerifiedAt ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <div className="flex justify-end">
                       <Button variant="outline" size="sm" onClick={() => void handleVerifyDomain()} disabled={verifyingDomain || saving}>
                         {verifyingDomain ? 'Verifying...' : 'Verify Domain'}
                       </Button>
-                    </Box>
+                    </div>
                   ) : null}
                   {canEdit && portal?.customDomainVerifiedAt ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <div className="flex justify-end">
                       <Button variant="outline" size="sm" color="error" onClick={() => void handleDisconnectDomain()} disabled={disconnectingDomain || saving}>
                         {disconnectingDomain ? 'Disconnecting...' : 'Disconnect Domain'}
                       </Button>
-                    </Box>
+                    </div>
                   ) : null}
                 </>
               )}
-            </Box>
+            </div>
           ) : null}
 
           <input
@@ -554,92 +555,91 @@ export default function PortalBrandingSettingsPanel({
           />
 
           {pendingLogoPreviewUrl ? (
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, display: 'grid', gap: 1.25, bgcolor: 'rgba(15,23,42,0.03)' }}>
-              <Typography sx={{ fontSize: '0.78rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+            <div className="border border-[var(--border)] rounded-2xl p-4 grid gap-3 bg-slate-500/5">
+              <span className="text-[11px] tracking-wider uppercase text-[var(--text-secondary)] font-semibold">
                 Crop Preview
-              </Typography>
-              <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+              </span>
+              <p className="text-xs text-[var(--text-secondary)]">
                 This is the exact square crop and normalized size that will be uploaded for the portal shell.
-              </Typography>
-              <Box sx={{ width: 160, height: 160, borderRadius: 3, overflow: 'hidden', border: '1px solid var(--border)', bgcolor: '#fff' }}>
-                <Box component="img" src={pendingLogoPreviewUrl} alt="Prepared portal logo preview" sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </Box>
-              <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+              </p>
+              <div className="w-40 h-40 rounded-2xl overflow-hidden border border-[var(--border)] bg-white">
+                <img src={pendingLogoPreviewUrl} alt="Prepared portal logo preview" className="w-full h-full object-cover" />
+              </div>
+              <div className="flex gap-2 flex-wrap">
                 <Button variant="primary" size="sm" onClick={() => void handleUploadPreparedLogo()} disabled={saving || uploadingLogo}>
                   {uploadingLogo ? 'Uploading...' : 'Upload Prepared Logo'}
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleDiscardPreparedLogo} disabled={uploadingLogo}>
                   Discard
                 </Button>
-              </Box>
-            </Box>
+              </div>
+            </div>
           ) : null}
 
           {canEdit ? (
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div className="flex justify-end">
               <Button variant="primary" onClick={() => void handleSave()} disabled={saving || uploadingLogo || Boolean(pendingLogoFile)}>
                 {saving ? 'Saving...' : 'Save Branding'}
               </Button>
-            </Box>
+            </div>
           ) : null}
-        </Box>
+        </div>
 
-        <Box
-          sx={{
-            border: '1px solid var(--border)',
-            borderRadius: 3,
-            overflow: 'hidden',
+        <div
+          style={{
             background: `linear-gradient(145deg, rgba(${brand.accentRgb}, 0.22), rgba(${brand.accentRgb}, 0.08) 42%, rgba(255,255,255,0.94) 100%)`,
-            boxShadow: '0 20px 40px rgba(var(--text-primary-rgb),0.08)',
           }}
+          className="border border-[var(--border)] rounded-2xl overflow-hidden shadow-sm"
         >
-          <Box sx={{ p: 2.5, display: 'grid', gap: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <div className="p-6 grid gap-4">
+            <div className="flex items-center gap-3">
               {brand.logoUrl ? (
-                <Box
-                  component="img"
+                <img
                   src={pendingLogoPreviewUrl || brand.logoUrl}
                   alt={`${brand.companyLabel} logo`}
-                  sx={{ width: 52, height: 52, borderRadius: 2, objectFit: 'cover', border: '1px solid rgba(255,255,255,0.5)', bgcolor: 'rgba(255,255,255,0.88)' }}
+                  className="w-12 h-12 rounded-xl object-cover border border-white/50 bg-white/90"
                 />
               ) : (
-                <Box sx={{ width: 52, height: 52, borderRadius: 2, display: 'grid', placeItems: 'center', bgcolor: brand.accentColor, color: '#fff', fontSize: '1.1rem', fontWeight: 800 }}>
+                <div
+                  style={{ backgroundColor: brand.accentColor }}
+                  className="w-12 h-12 rounded-xl flex items-center justify-center text-white text-lg font-extrabold"
+                >
                   {brand.companyLabel.slice(0, 1).toUpperCase()}
-                </Box>
+                </div>
               )}
-              <Box>
-                <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+              <div>
+                <span className="text-[10px] tracking-widest uppercase text-[var(--text-secondary)] font-bold">
                   Branding Preview
-                </Typography>
-                <Typography sx={{ fontSize: '1.15rem', fontWeight: 800 }}>{brand.companyLabel}</Typography>
-                <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{portal?.name || 'Portal Workspace'}</Typography>
-              </Box>
-            </Box>
+                </span>
+                <div className="text-lg font-extrabold text-[var(--text-primary)]">{brand.companyLabel}</div>
+                <div className="text-xs text-[var(--text-secondary)]">{portal?.name || 'Portal Workspace'}</div>
+              </div>
+            </div>
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 1.25 }}>
-              <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(255,255,255,0.72)' }}>
-                <Typography sx={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--text-secondary)' }}>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-xl bg-white/75 border border-[var(--border)]">
+                <span className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] font-semibold">
                   Partner Label
-                </Typography>
-                <Typography sx={{ fontSize: '0.96rem', fontWeight: 700 }}>{brand.companyLabel}</Typography>
-              </Box>
-              <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'rgba(255,255,255,0.72)' }}>
-                <Typography sx={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--text-secondary)' }}>
+                </span>
+                <div className="text-sm font-bold text-[var(--text-primary)] mt-0.5">{brand.companyLabel}</div>
+              </div>
+              <div className="p-3 rounded-xl bg-white/75 border border-[var(--border)]">
+                <span className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] font-semibold">
                   Accent
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <Box sx={{ width: 18, height: 18, borderRadius: 999, bgcolor: brand.accentColor, border: '1px solid rgba(15,23,42,0.12)' }} />
-                  <Typography sx={{ fontSize: '0.9rem', fontWeight: 700 }}>{brand.accentColor}</Typography>
-                </Box>
-              </Box>
-            </Box>
+                </span>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <div style={{ backgroundColor: brand.accentColor }} className="w-4 h-4 rounded-full border border-black/10" />
+                  <span className="text-sm font-bold text-[var(--text-primary)]">{brand.accentColor}</span>
+                </div>
+              </div>
+            </div>
 
-            <Typography sx={{ fontSize: '0.84rem', color: 'var(--text-secondary)' }}>
+            <p className="text-xs text-[var(--text-secondary)]">
               The portal keeps your main system structure, but adds partner-specific identity in the header, navigation, and workspace cards.
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
+            </p>
+          </div>
+        </div>
+      </div>
     </DashboardPanel>
 
     <ConfirmDialog

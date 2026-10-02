@@ -2,8 +2,7 @@
 
 import React, { useRef } from 'react';
 import QRCode from 'react-qr-code';
-import { Box, Typography } from '@mui/material';
-import { Copy, Download, Printer, QrCode, Check } from 'lucide-react';
+import { Copy, Printer, Check } from 'lucide-react';
 import { Modal, Button, toast } from '@/components/design-system';
 
 export interface QRCodeData {
@@ -168,7 +167,7 @@ export function QRCodeModal({ open, onClose, data }: QRCodeModalProps) {
       description={`Generate & print thermal scan stickers for ${data.type.toLowerCase()} verification`}
       size="md"
       actions={
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', width: '100%' }}>
+        <div className="flex gap-2 justify-end w-full">
           <Button variant="outline" size="sm" onClick={onClose}>
             Close
           </Button>
@@ -188,146 +187,100 @@ export function QRCodeModal({ open, onClose, data }: QRCodeModalProps) {
           >
             Print Yard Label
           </Button>
-        </Box>
+        </div>
       }
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, pt: 1 }}>
+      <div className="flex flex-col gap-4 pt-1">
         {/* Printable Label Preview Card */}
         <div ref={printAreaRef}>
-          <Box
-            sx={{
-              border: '2px dashed var(--border)',
-              borderRadius: 3,
-              p: 3,
-              backgroundColor: '#ffffff',
-              color: '#09090b',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.05)',
-            }}
-          >
+          <div className="border-2 border-dashed border-[var(--border)] rounded-2xl p-6 bg-white text-zinc-950 shadow-sm">
             {/* Header */}
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                borderBottom: '2px solid #09090b',
-                pb: 1.5,
-                mb: 2,
-              }}
-            >
-              <Box>
-                <Typography sx={{ fontWeight: 900, fontSize: '1.2rem', letterSpacing: '0.05em', color: '#09090b' }}>
+            <div className="flex justify-between items-center border-b-2 border-zinc-950 pb-3 mb-4">
+              <div>
+                <div className="font-black text-xl tracking-wider text-zinc-950">
                   JACXI SHIPPING
-                </Typography>
-                <Typography sx={{ fontSize: '0.72rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 600 }}>
+                </div>
+                <div className="text-xs text-zinc-500 uppercase font-semibold">
                   Yard Manifest Verification Tag
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  px: 1.5,
-                  py: 0.5,
-                  backgroundColor: '#09090b',
-                  color: '#ffffff',
-                  borderRadius: 1,
-                  fontSize: '0.75rem',
-                  fontWeight: 800,
-                  letterSpacing: '0.05em',
-                }}
-              >
+                </div>
+              </div>
+              <div className="px-3 py-1 bg-zinc-950 text-white rounded font-extrabold text-xs tracking-wider">
                 {data.type}
-              </Box>
-            </Box>
+              </div>
+            </div>
 
             {/* Code identifier */}
-            <Box sx={{ textAlign: 'center', my: 1.5 }}>
-              <Typography sx={{ fontSize: '0.75rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 700 }}>
+            <div className="text-center my-3">
+              <span className="text-xs text-zinc-500 uppercase font-bold block">
                 {data.type === 'SHIPMENT' ? 'Vehicle VIN' : 'Container Number'}
-              </Typography>
-              <Typography sx={{ fontSize: '1.5rem', fontWeight: 900, letterSpacing: '0.1em', color: '#09090b' }}>
+              </span>
+              <span className="text-2xl font-black tracking-widest text-zinc-950 block mt-0.5">
                 {data.code}
-              </Typography>
-            </Box>
+              </span>
+            </div>
 
             {/* QR Code */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
-              <Box
-                sx={{
-                  p: 2,
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e4e4e7',
-                  borderRadius: 2,
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-                }}
-              >
+            <div className="flex justify-center py-4">
+              <div className="p-4 bg-white border border-zinc-200 rounded-xl shadow-sm">
                 <QRCode
                   value={data.trackingUrl}
                   size={160}
                   style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
                   viewBox={`0 0 256 256`}
                 />
-              </Box>
-            </Box>
+              </div>
+            </div>
 
             {/* Metadata Grid */}
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(2, 1fr)',
-                gap: 1.5,
-                borderTop: '1px solid #e4e4e7',
-                pt: 2,
-                mt: 1,
-              }}
-            >
+            <div className="grid grid-cols-2 gap-3 border-t border-zinc-200 pt-4 mt-2">
               {data.metadata?.customerName && (
-                <Box>
-                  <Typography sx={{ fontSize: '0.68rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 700 }}>
+                <div>
+                  <span className="text-[0.68rem] text-zinc-500 uppercase font-bold block">
                     Consignee / Customer
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: '#09090b' }}>
+                  </span>
+                  <span className="text-sm font-bold text-zinc-950 block">
                     {data.metadata.customerName}
-                  </Typography>
-                </Box>
+                  </span>
+                </div>
               )}
               {data.metadata?.destination && (
-                <Box>
-                  <Typography sx={{ fontSize: '0.68rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 700 }}>
+                <div>
+                  <span className="text-[0.68rem] text-zinc-500 uppercase font-bold block">
                     Destination Port
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: '#09090b' }}>
+                  </span>
+                  <span className="text-sm font-bold text-zinc-950 block">
                     {data.metadata.destination}
-                  </Typography>
-                </Box>
+                  </span>
+                </div>
               )}
               {data.metadata?.bookingNumber && (
-                <Box>
-                  <Typography sx={{ fontSize: '0.68rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 700 }}>
+                <div>
+                  <span className="text-[0.68rem] text-zinc-500 uppercase font-bold block">
                     Booking #
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: '#09090b' }}>
+                  </span>
+                  <span className="text-sm font-bold text-zinc-950 block">
                     {data.metadata.bookingNumber}
-                  </Typography>
-                </Box>
+                  </span>
+                </div>
               )}
               {data.metadata?.vesselName && (
-                <Box>
-                  <Typography sx={{ fontSize: '0.68rem', color: '#71717a', textTransform: 'uppercase', fontWeight: 700 }}>
+                <div>
+                  <span className="text-[0.68rem] text-zinc-500 uppercase font-bold block">
                     Vessel
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: '#09090b' }}>
+                  </span>
+                  <span className="text-sm font-bold text-zinc-950 block">
                     {data.metadata.vesselName}
-                  </Typography>
-                </Box>
+                  </span>
+                </div>
               )}
-            </Box>
+            </div>
 
-            <Typography sx={{ textAlign: 'center', fontSize: '0.7rem', color: '#71717a', mt: 2, wordBreak: 'break-all' }}>
+            <div className="text-center text-[0.7rem] text-zinc-500 mt-4 break-all">
               {data.trackingUrl}
-            </Typography>
-          </Box>
+            </div>
+          </div>
         </div>
-      </Box>
+      </div>
     </Modal>
   );
 }

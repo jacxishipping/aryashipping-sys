@@ -2,19 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Box, Typography, Divider } from '@mui/material';
 import { 
   FileText, 
   Package, 
   User, 
   Calendar, 
-  DollarSign, 
   ExternalLink, 
-  Download,
-  CreditCard,
-  Building2,
-  CheckCircle2,
-  AlertCircle
 } from 'lucide-react';
 import { 
   Drawer, 
@@ -113,12 +106,12 @@ export default function InvoiceQuickPeek({
       size="lg"
       title={
         invoice ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <div className="flex items-center gap-2">
             <span className="font-mono font-bold tracking-tight text-base sm:text-lg">
               {invoice.invoiceNumber}
             </span>
             <CopyButton value={invoice.invoiceNumber} label="Invoice Number" />
-          </Box>
+          </div>
         ) : (
           'Invoice Details'
         )
@@ -131,11 +124,11 @@ export default function InvoiceQuickPeek({
       badge={invoice ? <StatusBadge status={invoice.status} /> : undefined}
       actions={
         invoice && (
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <div className="flex items-center justify-between w-full">
             <Button variant="outline" size="sm" onClick={onClose}>
               Close
             </Button>
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <div className="flex gap-2">
               <Button
                 href={`/dashboard/invoices/${invoice.id}`}
                 onClick={onClose}
@@ -145,145 +138,131 @@ export default function InvoiceQuickPeek({
               >
                 Open Full Invoice
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         )
       }
     >
       {loading ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div className="flex flex-col gap-4">
           <Skeleton variant="rounded" height={90} />
           <Skeleton variant="rounded" height={120} />
           <Skeleton variant="rounded" height={160} />
-        </Box>
+        </div>
       ) : invoice ? (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+        <div className="flex flex-col gap-5">
           {/* Summary Financials Banner */}
-          <Box
-            sx={{
-              p: 2.5,
-              borderRadius: 2,
-              bgcolor: 'var(--background, #F9FAFB)',
-              border: '1px solid var(--border, #E5E7EB)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
+          <div className="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-between">
             <div>
-              <Typography variant="caption" sx={{ fontWeight: 600, color: 'var(--text-secondary, #6B7280)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              <span className="font-semibold text-xs text-[var(--text-secondary)] uppercase tracking-wider block">
                 Total Invoiced Amount
-              </Typography>
-              <Typography sx={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--text-primary, #111827)', mt: 0.25 }}>
+              </span>
+              <div className="font-extrabold text-2xl text-[var(--text-primary)] mt-1">
                 {formatCurrency(invoice.total || 0)}
-              </Typography>
+              </div>
             </div>
             <StatusBadge status={invoice.status} size="md" />
-          </Box>
+          </div>
 
           {/* Key Metadata Cards */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1.5 }}>
+          <div className="grid grid-cols-2 gap-3">
             {/* Customer */}
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                 <User className="w-4 h-4 text-blue-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Billed To</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary, #111827)' }} noWrap>
+                <span className="text-xs font-semibold">Billed To</span>
+              </div>
+              <div className="font-bold text-sm text-[var(--text-primary)] truncate">
                 {invoice.user?.name || invoice.user?.email || 'Client'}
-              </Typography>
-            </Box>
+              </div>
+            </div>
 
             {/* Due Date */}
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+            <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+              <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                 <Calendar className="w-4 h-4 text-amber-600" />
-                <Typography variant="caption" sx={{ fontWeight: 600 }}>Payment Due</Typography>
-              </Box>
-              <Typography sx={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary, #111827)' }} noWrap>
+                <span className="text-xs font-semibold">Payment Due</span>
+              </div>
+              <div className="font-bold text-sm text-[var(--text-primary)] truncate">
                 {invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString() : 'Upon Receipt'}
-              </Typography>
-            </Box>
+              </div>
+            </div>
 
             {/* Linked Container */}
             {invoice.container && (
-              <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+              <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                   <Package className="w-4 h-4 text-emerald-600" />
-                  <Typography variant="caption" sx={{ fontWeight: 600 }}>Container</Typography>
-                </Box>
+                  <span className="text-xs font-semibold">Container</span>
+                </div>
                 <Link
                   href={`/dashboard/containers/${invoice.container.id}`}
                   onClick={onClose}
-                  style={{ textDecoration: 'none' }}
+                  className="font-bold text-sm text-[var(--accent-gold)] font-mono truncate block no-underline hover:underline"
                 >
-                  <Typography sx={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--accent-gold, #D4AF37)', fontFamily: 'monospace' }} noWrap>
-                    {invoice.container.containerNumber}
-                  </Typography>
+                  {invoice.container.containerNumber}
                 </Link>
-              </Box>
+              </div>
             )}
 
             {/* Linked Shipment */}
             {invoice.shipment && (
-              <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'var(--background, #F9FAFB)', border: '1px solid var(--border, #E5E7EB)' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'var(--text-secondary, #6B7280)', mb: 0.5 }}>
+              <div className="p-3.5 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+                <div className="flex items-center gap-2 text-[var(--text-secondary)] mb-1">
                   <FileText className="w-4 h-4 text-purple-600" />
-                  <Typography variant="caption" sx={{ fontWeight: 600 }}>Cargo Vehicle</Typography>
-                </Box>
+                  <span className="text-xs font-semibold">Cargo Vehicle</span>
+                </div>
                 <Link
                   href={`/dashboard/shipments/${invoice.shipment.id}`}
                   onClick={onClose}
-                  style={{ textDecoration: 'none' }}
+                  className="font-bold text-sm text-[var(--accent-gold)] truncate block no-underline hover:underline"
                 >
-                  <Typography sx={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--accent-gold, #D4AF37)' }} noWrap>
-                    {[invoice.shipment.vehicleYear, invoice.shipment.vehicleMake, invoice.shipment.vehicleModel].filter(Boolean).join(' ') || 'Vehicle'}
-                  </Typography>
+                  {[invoice.shipment.vehicleYear, invoice.shipment.vehicleMake, invoice.shipment.vehicleModel].filter(Boolean).join(' ') || 'Vehicle'}
                 </Link>
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
 
           {/* Line Items List */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-            <Typography sx={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary, #111827)' }}>
+          <div className="flex flex-col gap-3">
+            <span className="text-sm font-bold text-[var(--text-primary)]">
               Itemized Line Items ({invoice.items?.length || 0})
-            </Typography>
+            </span>
 
             {invoice.items && invoice.items.length > 0 ? (
-              <Box sx={{ border: '1px solid var(--border, #E5E7EB)', borderRadius: 2, overflow: 'hidden', bgcolor: 'var(--panel-bg, #FFFFFF)' }}>
-                <div className="grid grid-cols-12 bg-[var(--background,#F9FAFB)] px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary,#6B7280)] border-b border-[var(--border,#E5E7EB)]">
+              <div className="border border-[var(--border)] rounded-xl overflow-hidden bg-[var(--panel)]">
+                <div className="grid grid-cols-12 bg-[var(--background)] px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider text-[var(--text-secondary)] border-b border-[var(--border)]">
                   <div className="col-span-7">Description</div>
                   <div className="col-span-2 text-center">Qty</div>
                   <div className="col-span-3 text-right">Amount</div>
                 </div>
-                <div className="divide-y divide-[var(--border,#E5E7EB)] max-h-[220px] overflow-y-auto">
+                <div className="divide-y divide-[var(--border)] max-h-56 overflow-y-auto">
                   {invoice.items.map((item) => (
-                    <div key={item.id} className="grid grid-cols-12 items-center px-3 py-2 text-xs">
-                      <div className="col-span-7 font-medium text-[var(--text-primary,#111827)] truncate">
+                    <div key={item.id} className="grid grid-cols-12 items-center px-3.5 py-2.5 text-xs">
+                      <div className="col-span-7 font-medium text-[var(--text-primary)] truncate">
                         {item.description}
                       </div>
                       <div className="col-span-2 text-center text-[var(--text-secondary)]">
                         {item.quantity}
                       </div>
-                      <div className="col-span-3 text-right font-semibold text-[var(--text-primary,#111827)]">
+                      <div className="col-span-3 text-right font-semibold text-[var(--text-primary)]">
                         {formatCurrency(item.total)}
                       </div>
                     </div>
                   ))}
                 </div>
-              </Box>
+              </div>
             ) : (
-              <Box sx={{ p: 3, border: '1px dashed var(--border, #E5E7EB)', borderRadius: 2, textAlign: 'center', color: 'var(--text-secondary, #6B7280)' }}>
-                <Typography variant="body2">No individual line items specified.</Typography>
-              </Box>
+              <div className="p-4 border border-dashed border-[var(--border)] rounded-xl text-center text-[var(--text-secondary)] text-sm">
+                No individual line items specified.
+              </div>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       ) : (
-        <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 4 }}>
+        <div className="text-sm text-[var(--text-secondary)] text-center py-8">
           No invoice selected.
-        </Typography>
+        </div>
       )}
     </Drawer>
   );

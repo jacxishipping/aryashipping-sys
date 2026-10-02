@@ -1,20 +1,7 @@
 "use client";
 
-import { Box, Typography, IconButton } from '@mui/material';
+import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
 import { ReactNode } from 'react';
-import { 
-  CheckCircle, 
-  Warning, 
-  Error as ErrorIcon, 
-  Info, 
-  Close 
-} from '@mui/icons-material';
-
-/**
- * Alert Component
- * 
- * Display contextual feedback messages with appropriate styling.
- */
 
 export type AlertSeverity = 'success' | 'warning' | 'error' | 'info';
 export type AlertVariant = 'filled' | 'outlined' | 'subtle';
@@ -29,39 +16,9 @@ export interface AlertProps {
   action?: ReactNode;
   className?: string;
   children?: ReactNode;
+  sx?: any;
+  style?: React.CSSProperties;
 }
-
-// Severity configurations
-const severityConfig = {
-  success: {
-    icon: <CheckCircle sx={{ fontSize: 20 }} />,
-    color: 'var(--success)',
-    bgColor: 'rgba(var(--success-rgb), 0.15)',
-    borderColor: 'var(--success)',
-    lightBg: 'var(--success-light)',
-  },
-  warning: {
-    icon: <Warning sx={{ fontSize: 20 }} />,
-    color: 'var(--warning)',
-    bgColor: 'rgba(var(--warning-rgb), 0.15)',
-    borderColor: 'var(--warning)',
-    lightBg: 'var(--warning-light)',
-  },
-  error: {
-    icon: <ErrorIcon sx={{ fontSize: 20 }} />,
-    color: 'var(--error)',
-    bgColor: 'rgba(var(--error-rgb), 0.15)',
-    borderColor: 'var(--error)',
-    lightBg: 'var(--error-light)',
-  },
-  info: {
-    icon: <Info sx={{ fontSize: 20 }} />,
-    color: 'var(--info)',
-    bgColor: 'rgba(var(--info-rgb), 0.15)',
-    borderColor: 'var(--info)',
-    lightBg: 'var(--info-light)',
-  },
-};
 
 export default function Alert({
   severity = 'info',
@@ -71,132 +28,79 @@ export default function Alert({
   icon,
   onClose,
   action,
-  className,
+  className = '',
   children,
+  style,
 }: AlertProps) {
-  const config = severityConfig[severity];
-  const showIcon = icon !== false;
-  const displayIcon = icon || config.icon;
-
-  // Variant styles
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'filled':
-        return {
-          bgcolor: config.color,
-          color: '#FFFFFF',
-          border: 'none',
-        };
-      case 'outlined':
-        return {
-          bgcolor: 'transparent',
-          color: config.color,
-          border: `1px solid ${config.borderColor}`,
-        };
-      case 'subtle':
+  const getDefaultIcon = () => {
+    switch (severity) {
+      case 'success':
+        return <CheckCircle2 className="w-5 h-5 flex-shrink-0 text-[var(--success)]" />;
+      case 'warning':
+        return <AlertTriangle className="w-5 h-5 flex-shrink-0 text-[var(--warning)]" />;
+      case 'error':
+        return <AlertCircle className="w-5 h-5 flex-shrink-0 text-[var(--error)]" />;
+      case 'info':
       default:
-        return {
-          bgcolor: config.bgColor,
-          color: config.color,
-          border: `1px solid ${config.borderColor}`,
-        };
+        return <Info className="w-5 h-5 flex-shrink-0 text-[var(--info)]" />;
     }
   };
 
-  const variantStyles = getVariantStyles();
+  const getVariantClasses = () => {
+    switch (severity) {
+      case 'success':
+        return variant === 'filled'
+          ? 'bg-[var(--success)] text-white'
+          : variant === 'outlined'
+          ? 'bg-transparent border border-[var(--success)] text-[var(--success)]'
+          : 'bg-[rgba(var(--success-rgb),0.12)] border border-[rgba(var(--success-rgb),0.25)] text-[var(--text-primary)]';
+      case 'warning':
+        return variant === 'filled'
+          ? 'bg-[var(--warning)] text-white'
+          : variant === 'outlined'
+          ? 'bg-transparent border border-[var(--warning)] text-[var(--warning)]'
+          : 'bg-[rgba(var(--warning-rgb),0.12)] border border-[rgba(var(--warning-rgb),0.25)] text-[var(--text-primary)]';
+      case 'error':
+        return variant === 'filled'
+          ? 'bg-[var(--error)] text-white'
+          : variant === 'outlined'
+          ? 'bg-transparent border border-[var(--error)] text-[var(--error)]'
+          : 'bg-[rgba(var(--error-rgb),0.12)] border border-[rgba(var(--error-rgb),0.25)] text-[var(--text-primary)]';
+      case 'info':
+      default:
+        return variant === 'filled'
+          ? 'bg-[var(--info)] text-white'
+          : variant === 'outlined'
+          ? 'bg-transparent border border-[var(--info)] text-[var(--info)]'
+          : 'bg-[rgba(var(--info-rgb),0.12)] border border-[rgba(var(--info-rgb),0.25)] text-[var(--text-primary)]';
+    }
+  };
+
+  const showIcon = icon !== false;
+  const displayIcon = icon || getDefaultIcon();
 
   return (
-    <Box
+    <div
       role="alert"
-      className={className}
-      sx={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        gap: 1.5,
-        p: 2,
-        borderRadius: 2,
-        ...variantStyles,
-      }}
+      className={`alert-root flex items-start gap-3 p-4 rounded-xl text-sm ${getVariantClasses()} ${className}`}
+      style={style}
     >
-      {/* Icon */}
-      {showIcon && (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            flexShrink: 0,
-            color: variant === 'filled' ? '#FFFFFF' : config.color,
-          }}
-        >
-          {displayIcon}
-        </Box>
-      )}
-
-      {/* Content */}
-      <Box sx={{ flex: 1, minWidth: 0 }}>
-        {title && (
-          <Typography
-            sx={{
-              fontSize: '0.9375rem',
-              fontWeight: 600,
-              mb: message || children ? 0.5 : 0,
-              color: variant === 'filled' ? '#FFFFFF' : 'var(--text-primary)',
-            }}
-          >
-            {title}
-          </Typography>
-        )}
-        {message && (
-          <Typography
-            sx={{
-              fontSize: '0.875rem',
-              lineHeight: 1.5,
-              color: variant === 'filled' ? 'rgba(255, 255, 255, 0.9)' : 'var(--text-secondary)',
-            }}
-          >
-            {message}
-          </Typography>
-        )}
-        {children && (
-          <Box
-            sx={{
-              fontSize: '0.875rem',
-              lineHeight: 1.5,
-              color: variant === 'filled' ? 'rgba(255, 255, 255, 0.9)' : 'var(--text-secondary)',
-            }}
-          >
-            {children}
-          </Box>
-        )}
-      </Box>
-
-      {/* Action */}
-      {action && (
-        <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-          {action}
-        </Box>
-      )}
-
-      {/* Close Button */}
+      {showIcon && <div className="mt-0.5">{displayIcon}</div>}
+      <div className="flex-1 min-w-0">
+        {title && <h5 className="font-semibold text-sm mb-0.5">{title}</h5>}
+        {message && <div className="text-xs leading-relaxed opacity-95">{message}</div>}
+        {children && <div className="text-xs leading-relaxed opacity-95">{children}</div>}
+      </div>
+      {action && <div className="flex-shrink-0">{action}</div>}
       {onClose && (
-        <IconButton
-          size="small"
+        <button
           onClick={onClose}
-          sx={{
-            color: variant === 'filled' ? 'rgba(255, 255, 255, 0.7)' : config.color,
-            flexShrink: 0,
-            mt: -0.5,
-            mr: -0.5,
-            '&:hover': {
-              bgcolor: variant === 'filled' 
-                ? 'rgba(255, 255, 255, 0.1)' 
-                : 'rgba(0, 0, 0, 0.04)',
-            },
-          }}
+          className="p-1 rounded hover:bg-black/10 transition-colors flex-shrink-0"
+          aria-label="Close alert"
         >
-          <Close sx={{ fontSize: 18 }} />
-        </IconButton>
+          <X className="w-4 h-4" />
+        </button>
       )}
-    </Box>
+    </div>
   );
 }

@@ -1,8 +1,7 @@
 'use client';
 
 import { Eye, EyeOff } from 'lucide-react';
-import { Box, TextField } from '@mui/material';
-import { Button, Modal, Select } from '@/components/design-system';
+import { Button, FormField, Modal, Select } from '@/components/design-system';
 import AddShipmentExpenseModal from '@/components/shipments/AddShipmentExpenseModal';
 import PhotoLightbox from '@/components/shipments/PhotoLightbox';
 import type {
@@ -124,7 +123,7 @@ export default function ShipmentDetailOverlays({
             </>
           }
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div className="flex flex-col gap-3 pt-2">
             <Select
               label="Dispatch"
               value={dispatchIdToAssign}
@@ -135,9 +134,9 @@ export default function ShipmentDetailOverlays({
               options={availableDispatches.map((dispatch) => ({ value: dispatch.id, label: `${dispatch.referenceNumber} - ${dispatch.company.name} (${dispatch.origin} → ${dispatch.destination})` }))}
             />
             {!loadingDispatches && availableDispatches.length === 0 && (
-              <p className="mt-3 text-sm text-[var(--text-secondary)]">No pending dispatches are available.</p>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">No pending dispatches are available.</p>
             )}
-          </Box>
+          </div>
         </Modal>
       )}
 
@@ -165,7 +164,7 @@ export default function ShipmentDetailOverlays({
             </>
           }
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div className="flex flex-col gap-3 pt-2">
             <Select
               label="Transit"
               value={transitIdToAssign}
@@ -176,29 +175,25 @@ export default function ShipmentDetailOverlays({
               options={availableTransits.map((transit) => ({ value: transit.id, label: `${transit.referenceNumber}${transit.currentCompany ? ` - ${transit.currentCompany.name}` : ''} (${transit.origin} → ${transit.destination})` }))}
             />
             {!loadingTransits && availableTransits.length === 0 && (
-              <p className="mt-3 text-sm text-[var(--text-secondary)]">No open transits are available. Create one from the Transits page first.</p>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">No open transits are available. Create one from the Transits page first.</p>
             )}
-            <TextField
-              fullWidth
+            <FormField
               label="Release Token"
               type={showReleaseToken ? 'text' : 'password'}
               value={releaseTokenToAssign}
               onChange={(event) => onReleaseTokenChange(event.target.value)}
               helperText="Auto-filled from this shipment — the token is verified before assigning"
-              size="small"
-              InputProps={{
-                endAdornment: (
-                  <button
-                    type="button"
-                    onClick={onToggleReleaseToken}
-                    style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: 'var(--text-secondary)' }}
-                  >
-                    {showReleaseToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                ),
-              }}
+              endAdornment={
+                <button
+                  type="button"
+                  onClick={onToggleReleaseToken}
+                  className="border-none bg-transparent cursor-pointer text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                >
+                  {showReleaseToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              }
             />
-          </Box>
+          </div>
         </Modal>
       )}
 

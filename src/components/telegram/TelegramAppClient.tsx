@@ -1,27 +1,17 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
+import { Alert, Button } from '@/components/design-system';
 import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Paper,
-  TextField,
-  Typography,
-  IconButton,
-  InputAdornment,
-} from '@mui/material';
-import { Alert } from '@/components/design-system';
-import {
-  VpnKey,
-  HelpOutline,
-  ArrowForward,
-  Close,
-  OpenInNew,
-} from '@mui/icons-material';
+  Key,
+  HelpCircle,
+  ArrowRight,
+  X,
+  ExternalLink,
+  Loader2,
+} from 'lucide-react';
 import SiteLogo from '@/components/brand/SiteLogo';
 
 type TelegramUser = {
@@ -198,258 +188,140 @@ export function TelegramAppClient() {
     <>
       <Script src="https://telegram.org/js/telegram-web-app.js" strategy="beforeInteractive" />
 
-      <Box
-        sx={{
-          minHeight: '100vh',
-          bgcolor: '#0a0d14',
-          color: '#ffffff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          py: 4,
-          px: 2,
-          position: 'relative',
-        }}
-      >
-        <Container maxWidth="xs">
-          <Paper
-            elevation={0}
-            sx={{
-              p: { xs: 3, sm: 4 },
-              borderRadius: 4,
-              bgcolor: 'rgba(18, 24, 38, 0.95)',
-              border: '1px solid rgba(212, 175, 55, 0.2)',
-              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)',
-              backdropFilter: 'blur(20px)',
-              textAlign: 'center',
-            }}
-          >
+      <div className="min-h-screen bg-[#0a0d14] text-white flex items-center justify-center py-8 px-4 relative">
+        <div className="max-w-md w-full">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[rgba(18,24,38,0.95)] border border-[rgba(212,175,55,0.2)] shadow-2xl backdrop-blur-xl text-center">
             {/* Logo */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+            <div className="flex justify-center mb-6">
               <SiteLogo variant="dashboard" className="w-[130px]" priority />
-            </Box>
+            </div>
 
             {isLoading ? (
-              <Box sx={{ py: 6, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2.5 }}>
-                <CircularProgress size={36} sx={{ color: '#D4AF37' }} />
-                <Typography sx={{ color: '#cbd5e1', fontSize: '0.95rem', fontWeight: 500 }}>
+              <div className="py-12 flex flex-col items-center gap-3">
+                <Loader2 className="w-9 h-9 animate-spin text-[#D4AF37]" />
+                <p className="text-slate-300 text-sm font-medium m-0">
                   {statusMessage}
-                </Typography>
-              </Box>
+                </p>
+              </div>
             ) : isTelegramEnvironment ? (
-              <Box component="form" onSubmit={handleLinkAccount}>
-                <Typography
-                  variant="h5"
-                  sx={{
-                    fontWeight: 700,
-                    color: '#ffffff',
-                    mb: 1,
-                    fontSize: '1.25rem',
-                  }}
-                >
+              <form onSubmit={handleLinkAccount}>
+                <h2 className="font-bold text-white mb-2 text-xl m-0">
                   Connect Jacxi Account
-                </Typography>
+                </h2>
 
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: '#94a3b8',
-                    mb: 3,
-                    fontSize: '0.875rem',
-                    lineHeight: 1.5,
-                  }}
-                >
+                <p className="text-slate-400 mb-6 text-sm leading-relaxed m-0">
                   {telegramUser?.firstName ? (
-                    <>Hello <b>{telegramUser.firstName}</b>! </>
+                    <>Hello <b className="text-slate-200">{telegramUser.firstName}</b>! </>
                   ) : null}
                   Enter your 8-digit access code to securely link your Telegram and view your shipments.
-                </Typography>
+                </p>
 
                 {errorMessage && (
-                  <Box sx={{ mb: 2.5 }}>
+                  <div className="mb-5 text-left">
                     <Alert severity="error">{errorMessage}</Alert>
-                  </Box>
+                  </div>
                 )}
 
                 {successMessage && (
-                  <Box sx={{ mb: 2.5 }}>
+                  <div className="mb-5 text-left">
                     <Alert severity="success">{successMessage}</Alert>
-                  </Box>
+                  </div>
                 )}
 
-                <Box sx={{ mb: 2 }}>
-                  <TextField
-                    fullWidth
-                    value={accessCode}
-                    onChange={(e) => setAccessCode(e.target.value.toUpperCase().slice(0, 8))}
-                    placeholder="e.g. 83492019 or JACX1234"
-                    disabled={isSubmittingCode || !!successMessage}
-                    autoComplete="off"
-                    autoFocus
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <VpnKey sx={{ color: '#D4AF37', fontSize: 20 }} />
-                        </InputAdornment>
-                      ),
-                    }}
-                    inputProps={{
-                      style: {
-                        textAlign: 'center',
-                        letterSpacing: '3px',
-                        fontWeight: 700,
-                        fontSize: '1.1rem',
-                        textTransform: 'uppercase',
-                      },
-                    }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        bgcolor: 'rgba(15, 23, 42, 0.8)',
-                        borderRadius: 3,
-                        color: '#ffffff',
-                        '& fieldset': {
-                          borderColor: 'rgba(212, 175, 55, 0.3)',
-                        },
-                        '&:hover fieldset': {
-                          borderColor: 'rgba(212, 175, 55, 0.6)',
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#D4AF37',
-                          borderWidth: 2,
-                        },
-                      },
-                    }}
-                  />
-                </Box>
+                <div className="mb-4">
+                  <div className="relative flex items-center">
+                    <div className="absolute left-3.5 text-[#D4AF37] pointer-events-none">
+                      <Key className="w-5 h-5" />
+                    </div>
+                    <input
+                      value={accessCode}
+                      onChange={(e) => setAccessCode(e.target.value.toUpperCase().slice(0, 8))}
+                      placeholder="e.g. 83492019 or JACX1234"
+                      disabled={isSubmittingCode || !!successMessage}
+                      autoComplete="off"
+                      autoFocus
+                      className="w-full pl-11 pr-4 py-3 bg-[rgba(15,23,42,0.8)] rounded-xl border border-[rgba(212,175,55,0.3)] text-white text-center font-bold text-lg tracking-[3px] uppercase placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] disabled:opacity-50 transition-colors"
+                    />
+                  </div>
+                </div>
 
                 <Button
                   fullWidth
                   type="submit"
                   disabled={isSubmittingCode || accessCode.trim().length !== 8 || !!successMessage}
-                  variant="contained"
-                  endIcon={!isSubmittingCode && <ArrowForward />}
-                  sx={{
-                    py: 1.4,
-                    borderRadius: 3,
-                    background: 'linear-gradient(135deg, #D4AF37 0%, #B8960C 100%)',
-                    color: '#0a0d14',
-                    fontWeight: 700,
-                    fontSize: '0.95rem',
-                    boxShadow: '0 4px 14px rgba(212, 175, 55, 0.25)',
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, #e6be3e 0%, #c49f12 100%)',
-                    },
-                    '&:disabled': {
-                      background: 'rgba(212, 175, 55, 0.2)',
-                      color: 'rgba(255, 255, 255, 0.3)',
-                    },
-                  }}
+                  loading={isSubmittingCode}
+                  variant="primary"
+                  size="md"
+                  icon={!isSubmittingCode ? <ArrowRight className="w-5 h-5" /> : undefined}
+                  iconPosition="end"
                 >
-                  {isSubmittingCode ? (
-                    <CircularProgress size={22} sx={{ color: '#0a0d14' }} />
-                  ) : (
-                    'Connect & Enter Portal'
-                  )}
+                  Connect & Enter Portal
                 </Button>
 
                 {/* Help button */}
-                <Box sx={{ mt: 2.5, textAlign: 'center' }}>
-                  <Button
-                    size="small"
-                    startIcon={<HelpOutline sx={{ fontSize: 16 }} />}
+                <div className="mt-5 text-center">
+                  <button
+                    type="button"
                     onClick={() => setShowCodeHelp(!showCodeHelp)}
-                    sx={{
-                      color: '#94a3b8',
-                      fontSize: '0.8rem',
-                      textTransform: 'none',
-                      '&:hover': { color: '#D4AF37', bgcolor: 'transparent' },
-                    }}
+                    className="inline-flex items-center gap-1.5 text-slate-400 hover:text-[#D4AF37] text-xs bg-transparent border-0 cursor-pointer transition-colors"
                   >
-                    Where can I find my access code?
-                  </Button>
-                </Box>
+                    <HelpCircle className="w-4 h-4" />
+                    <span>Where can I find my access code?</span>
+                  </button>
+                </div>
 
                 {showCodeHelp && (
-                  <Box
-                    sx={{
-                      mt: 2,
-                      p: 2,
-                      borderRadius: 2.5,
-                      bgcolor: 'rgba(30, 41, 59, 0.7)',
-                      border: '1px solid rgba(148, 163, 184, 0.2)',
-                      textAlign: 'left',
-                      position: 'relative',
-                    }}
-                  >
-                    <IconButton
-                      size="small"
+                  <div className="mt-4 p-4 rounded-xl bg-[rgba(30,41,59,0.7)] border border-slate-700/50 text-left relative">
+                    <button
+                      type="button"
                       onClick={() => setShowCodeHelp(false)}
-                      sx={{ position: 'absolute', top: 6, right: 6, color: '#94a3b8' }}
+                      className="absolute top-2 right-2 text-slate-400 hover:text-white bg-transparent border-0 cursor-pointer"
                     >
-                      <Close sx={{ fontSize: 16 }} />
-                    </IconButton>
-                    <Typography sx={{ color: '#D4AF37', fontWeight: 600, fontSize: '0.85rem', mb: 0.5 }}>
+                      <X className="w-4 h-4" />
+                    </button>
+                    <div className="text-[#D4AF37] font-semibold text-xs mb-1">
                       How to get your code:
-                    </Typography>
-                    <Typography sx={{ color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.5 }}>
+                    </div>
+                    <div className="text-slate-300 text-xs leading-relaxed">
                       1. Check your shipment invoice or booking PDF.<br />
                       2. Or log into the web portal at jacxishipping.com &gt; Profile.<br />
-                      3. Your 8-digit code (e.g. <code>83492019</code>) is shown there.
-                    </Typography>
-                  </Box>
+                      3. Your 8-digit code (e.g. <code className="text-[#D4AF37]">83492019</code>) is shown there.
+                    </div>
+                  </div>
                 )}
-              </Box>
+              </form>
             ) : (
-              <Box>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: '#ffffff', mb: 1.5 }}>
+              <div>
+                <h2 className="font-bold text-white mb-3 text-lg m-0">
                   Jacxi Shipping Assistant
-                </Typography>
-                <Typography variant="body2" sx={{ color: '#94a3b8', mb: 3, lineHeight: 1.6 }}>
+                </h2>
+                <p className="text-slate-400 mb-6 text-sm leading-relaxed m-0">
                   This page is the dedicated launchpad for the Jacxi Shipping Telegram Bot and Mini App.
-                </Typography>
+                </p>
 
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    endIcon={<OpenInNew />}
+                <div className="flex flex-col gap-3">
+                  <button
+                    type="button"
                     onClick={() => window.open('https://t.me/jacxishippingbot', '_blank')}
-                    sx={{
-                      py: 1.3,
-                      borderRadius: 3,
-                      bgcolor: '#229ED9',
-                      color: '#ffffff',
-                      fontWeight: 600,
-                      '&:hover': { bgcolor: '#1e8bc0' },
-                    }}
+                    className="w-full py-3 px-4 rounded-xl bg-[#229ED9] hover:bg-[#1e8bc0] text-white font-semibold flex items-center justify-center gap-2 border-0 cursor-pointer transition-colors"
                   >
-                    Open in Telegram Bot
-                  </Button>
+                    <span>Open in Telegram Bot</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </button>
 
-                  <Button
-                    fullWidth
-                    variant="outlined"
+                  <button
+                    type="button"
                     onClick={() => router.push('/auth/signin')}
-                    sx={{
-                      py: 1.3,
-                      borderRadius: 3,
-                      borderColor: 'rgba(212, 175, 55, 0.4)',
-                      color: '#D4AF37',
-                      fontWeight: 600,
-                      '&:hover': {
-                        borderColor: '#D4AF37',
-                        bgcolor: 'rgba(212, 175, 55, 0.08)',
-                      },
-                    }}
+                    className="w-full py-3 px-4 rounded-xl border border-[rgba(212,175,55,0.4)] hover:border-[#D4AF37] hover:bg-[rgba(212,175,55,0.08)] text-[#D4AF37] font-semibold bg-transparent cursor-pointer transition-colors"
                   >
                     Standard Portal Login
-                  </Button>
-                </Box>
-              </Box>
+                  </button>
+                </div>
+              </div>
             )}
-          </Paper>
-        </Container>
-      </Box>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

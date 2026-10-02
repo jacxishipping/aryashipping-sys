@@ -2,9 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Bell, X, Check, Package, Ship, FileText, AlertCircle, RefreshCw } from 'lucide-react';
-import { IconButton, Badge, Box, Typography, Divider } from '@mui/material';
-import { Drawer, EmptyState, toast } from '@/components/design-system';
+import { Bell, X, Check, AlertCircle, RefreshCw } from 'lucide-react';
+import { Drawer, EmptyState, IconButton, toast } from '@/components/design-system';
 
 interface Notification {
   id: string;
@@ -96,7 +95,7 @@ export function NotificationCenter() {
         body: JSON.stringify({ id }),
       });
     } catch (error) {
-        // Revert on error? rarely needed for read status
+        // Revert on error rarely needed for read status
     }
   };
 
@@ -112,7 +111,7 @@ export function NotificationCenter() {
       });
       toast.success('All notifications marked as read');
     } catch (error) {
-        toast.error('Failed to mark all as read');
+      toast.error('Failed to mark all as read');
     }
   };
 
@@ -171,40 +170,26 @@ export function NotificationCenter() {
 
   const getOriginStyles = (notification: Notification) => {
     if (notification.origin === 'system') {
-      return {
-        color: 'var(--info-dark)',
-        backgroundColor: 'rgba(var(--info-rgb), 0.10)',
-        borderColor: 'rgba(var(--info-rgb), 0.18)',
-      };
+      return 'text-[var(--info-dark)] bg-[rgba(var(--info-rgb),0.10)] border-[rgba(var(--info-rgb),0.18)]';
     }
 
-    return {
-      color: 'var(--accent-gold)',
-      backgroundColor: 'rgba(var(--accent-gold-rgb), 0.12)',
-      borderColor: 'rgba(var(--accent-gold-rgb), 0.2)',
-    };
+    return 'text-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.12)] border-[rgba(var(--accent-gold-rgb),0.2)]';
   };
 
   return (
     <>
-      <IconButton
+      <button
         onClick={() => setOpen(true)}
         aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'}
-        sx={{
-          color: 'var(--text-secondary)',
-          p: 1,
-          minWidth: { xs: 44, sm: 0 },
-          minHeight: { xs: 44, sm: 0 },
-          '&:hover': {
-            bgcolor: 'rgba(var(--border-rgb), 0.4)',
-            color: 'var(--text-primary)',
-          },
-        }}
+        className="relative p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(var(--border-rgb),0.4)] transition-colors min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center"
       >
-        <Badge badgeContent={unreadCount} color="error">
-          <Bell className="w-5 h-5" />
-        </Badge>
-      </IconButton>
+        <Bell className="w-5 h-5" />
+        {unreadCount > 0 && (
+          <span className="absolute top-1 right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--error)] px-1 text-[0.65rem] font-bold text-white">
+            {unreadCount > 99 ? '99+' : unreadCount}
+          </span>
+        )}
+      </button>
 
       <Drawer
         anchor="right"
@@ -214,150 +199,105 @@ export function NotificationCenter() {
         title="Notifications"
         description={`${unreadCount} unread`}
         badge={
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <IconButton onClick={fetchNotifications} size="small" title="Refresh">
-              <RefreshCw className="w-4 h-4" />
-            </IconButton>
+          <div className="flex gap-2 items-center">
+            <IconButton
+              icon={<RefreshCw className="w-4 h-4" />}
+              ariaLabel="Refresh"
+              size="sm"
+              variant="ghost"
+              onClick={fetchNotifications}
+            />
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-xs text-[var(--accent-gold)] hover:underline"
+                className="text-xs text-[var(--accent-gold)] hover:underline font-medium"
               >
                 Mark all read
               </button>
             )}
-          </Box>
+          </div>
         }
         contentSx={{ p: 0, gap: 0 }}
       >
-          {loading ? (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                py: 8,
-              }}
-            >
-              <RefreshCw className="w-6 h-6 text-[var(--text-secondary)] animate-spin" />
-            </Box>
-          ) : notifications.length === 0 ? (
-            <EmptyState
-              icon={<Bell className="w-10 h-10" />}
-              title="No notifications yet"
-              description="You're all caught up."
-            />
-          ) : (
-            notifications.map((notification, index) => (
-              <div key={notification.id}>
-                <Box
-                  sx={{
-                    p: 3,
-                    cursor: 'pointer',
-                    bgcolor: notification.read ? 'transparent' : 'rgba(var(--accent-gold-rgb), 0.05)',
-                    '&:hover': {
-                      bgcolor: 'var(--background)',
-                    },
-                    transition: 'background-color 0.2s',
-                  }}
-                  onClick={() => {
-                    markAsRead(notification.id);
-                    if (notification.link) {
-                      setOpen(false);
-                      router.push(notification.link);
-                    }
-                  }}
-                >
-                  <Box sx={{ display: 'flex', gap: 2 }}>
-                    <Box
-                      sx={{
-                        flexShrink: 0,
-                        mt: 0.5,
-                      }}
-                    >
-                      {getNotificationIcon(notification.type)}
-                    </Box>
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'start', justifyContent: 'space-between', gap: 2 }}>
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                            <Typography
-                              sx={{
-                                fontSize: '0.875rem',
-                                fontWeight: notification.read ? 500 : 700,
-                                color: 'var(--text-primary)',
-                              }}
-                            >
-                              {notification.title}
-                            </Typography>
-                            <Box
-                              component="span"
-                              sx={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                borderRadius: 999,
-                                px: 1,
-                                py: 0.25,
-                                fontSize: '0.6875rem',
-                                fontWeight: 700,
-                                letterSpacing: '0.04em',
-                                textTransform: 'uppercase',
-                                border: '1px solid',
-                                ...getOriginStyles(notification),
-                              }}
-                            >
-                              {getOriginLabel(notification)}
-                            </Box>
-                          </Box>
-                        </Box>
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteNotification(notification.id);
-                          }}
-                          sx={{ mt: -1 }}
-                        >
-                          <X className="w-4 h-4 opacity-50 hover:opacity-100" />
-                        </IconButton>
-                      </Box>
-                      <Typography
-                        sx={{
-                          fontSize: '0.8125rem',
-                          color: 'var(--text-secondary)',
-                          mt: 0.5,
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <RefreshCw className="w-6 h-6 text-[var(--text-secondary)] animate-spin" />
+          </div>
+        ) : notifications.length === 0 ? (
+          <EmptyState
+            icon={<Bell className="w-10 h-10" />}
+            title="No notifications yet"
+            description="You're all caught up."
+          />
+        ) : (
+          notifications.map((notification, index) => (
+            <div key={notification.id}>
+              <div
+                className={`p-4 cursor-pointer transition-colors hover:bg-[var(--background)] ${
+                  notification.read ? 'bg-transparent' : 'bg-[rgba(var(--accent-gold-rgb),0.05)]'
+                }`}
+                onClick={() => {
+                  markAsRead(notification.id);
+                  if (notification.link) {
+                    setOpen(false);
+                    router.push(notification.link);
+                  }
+                }}
+              >
+                <div className="flex gap-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {getNotificationIcon(notification.type)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-1.5 mb-1">
+                          <span
+                            className={`text-sm ${
+                              notification.read ? 'font-normal text-[var(--text-primary)]' : 'font-bold text-[var(--text-primary)]'
+                            }`}
+                          >
+                            {notification.title}
+                          </span>
+                          <span
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[0.65rem] font-bold tracking-wider uppercase border ${getOriginStyles(
+                              notification
+                            )}`}
+                          >
+                            {getOriginLabel(notification)}
+                          </span>
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteNotification(notification.id);
                         }}
+                        className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded transition-colors"
+                        aria-label="Delete notification"
                       >
-                        {notification.description}
-                      </Typography>
-                      {getSenderLabel(notification) && (
-                        <Typography
-                          sx={{
-                            fontSize: '0.75rem',
-                            color: 'var(--text-secondary)',
-                            mt: 1,
-                          }}
-                        >
-                          {notification.origin === 'system' ? 'Triggered by ' : 'From '}
-                          {getSenderLabel(notification)}
-                        </Typography>
-                      )}
-                      <Typography
-                        sx={{
-                          fontSize: '0.75rem',
-                          color: 'var(--text-secondary)',
-                          mt: 0.5,
-                        }}
-                      >
-                        {formatTimestamp(notification.createdAt)}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-                {index < notifications.length - 1 && <Divider sx={{ borderColor: 'var(--border)' }} />}
+                        <X className="w-4 h-4 opacity-50 hover:opacity-100" />
+                      </button>
+                    </div>
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">
+                      {notification.description}
+                    </p>
+                    {getSenderLabel(notification) && (
+                      <p className="text-[0.7rem] text-[var(--text-secondary)] mt-1">
+                        {notification.origin === 'system' ? 'Triggered by ' : 'From '}
+                        {getSenderLabel(notification)}
+                      </p>
+                    )}
+                    <p className="text-[0.7rem] text-[var(--text-secondary)] mt-1">
+                      {formatTimestamp(notification.createdAt)}
+                    </p>
+                  </div>
+                </div>
               </div>
-            ))
-          )}
+              {index < notifications.length - 1 && <div className="border-t border-[var(--border)]" />}
+            </div>
+          ))
+        )}
       </Drawer>
     </>
   );

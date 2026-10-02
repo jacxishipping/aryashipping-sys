@@ -1,13 +1,11 @@
 "use client";
 
 import Link from 'next/link';
-import { Add, Search, Inventory2, Description } from '@mui/icons-material';
-import { Box, Typography, Fade } from '@mui/material';
-import type { SvgIconComponent } from '@mui/icons-material';
+import { Plus, Search, Package, FileText, LucideIcon } from 'lucide-react';
 
 const actions = [
 	{
-		icon: Add,
+		icon: Plus,
 		title: 'New Shipment',
 		description: 'Create a new shipping request',
 		href: '/dashboard/shipments/new',
@@ -35,7 +33,7 @@ const actions = [
 		},
 	},
 	{
-		icon: Inventory2,
+		icon: Package,
 		title: 'All Shipments',
 		description: 'View all your shipments',
 		href: '/dashboard/shipments',
@@ -49,7 +47,7 @@ const actions = [
 		},
 	},
 	{
-		icon: Description,
+		icon: FileText,
 		title: 'Documents',
 		description: 'Manage shipping documents',
 		href: '/dashboard/documents',
@@ -70,47 +68,28 @@ type QuickActionsProps = {
 
 export default function QuickActions({ showHeading = false }: QuickActionsProps = {}) {
 	return (
-		<Fade in timeout={600}>
-			<Box>
-				{showHeading && (
-					<Box sx={{ mb: 1 }}>
-					<Typography
-						sx={{
-							fontSize: '0.8rem',
-							textTransform: 'uppercase',
-							letterSpacing: '0.2em',
-							color: 'var(--text-secondary)',
-						}}
-					>
-							Action Center
-						</Typography>
-					<Typography sx={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 600 }}>
-							Start a workflow
-						</Typography>
-					</Box>
-				)}
-				<Box
-					sx={{
-						display: 'grid',
-						gridTemplateColumns: {
-							xs: 'repeat(2, minmax(0, 1fr))',
-							sm: 'repeat(2, minmax(0, 1fr))',
-							md: 'repeat(2, minmax(0, 1fr))',
-						},
-						gap: 1,
-					}}
-				>
-					{actions.map((action) => (
-						<ActionCard key={action.title} {...action} />
-					))}
-				</Box>
-			</Box>
-		</Fade>
+		<div className="animate-in fade-in duration-300">
+			{showHeading && (
+				<div className="mb-2">
+					<span className="text-xs uppercase tracking-[0.2em] text-[var(--text-secondary)] block">
+						Action Center
+					</span>
+					<span className="text-sm font-semibold text-[var(--text-primary)]">
+						Start a workflow
+					</span>
+				</div>
+			)}
+			<div className="grid grid-cols-2 md:grid-cols-2 gap-2">
+				{actions.map((action) => (
+					<ActionCard key={action.title} {...action} />
+				))}
+			</div>
+		</div>
 	);
 }
 
 interface ActionCardProps {
-	icon: SvgIconComponent;
+	icon: LucideIcon;
 	title: string;
 	description: string;
 	href: string;
@@ -126,70 +105,31 @@ interface ActionCardProps {
 
 function ActionCard({ icon: Icon, title, description, href, colorValues }: ActionCardProps) {
 	return (
-		<Link href={href} style={{ textDecoration: 'none' }}>
-			<Box
-				sx={{
-					borderRadius: 2,
-					border: `1px solid ${colorValues.border}`,
-					background: 'var(--panel)',
-					boxShadow: `0 12px 24px rgba(var(--text-primary-rgb), 0.08)`,
-					padding: 1,
-					display: 'flex',
-					flexDirection: 'column',
-					gap: 0.5,
-					minHeight: 92,
-					transition: 'border-color 0.2s ease, transform 0.2s ease',
-					'&:hover': {
-						borderColor: colorValues.borderHover,
-						transform: 'translateY(-2px)',
-					},
+		<Link href={href} className="no-underline">
+			<div
+				style={{
+					borderColor: colorValues.border,
 				}}
+				className="rounded-xl border bg-[var(--panel)] shadow-sm p-2.5 flex flex-col gap-1 min-h-[92px] transition-all hover:-translate-y-0.5 hover:shadow-md"
 			>
-				<Box
-					sx={{
-						display: 'flex',
-						alignItems: 'center',
-						gap: 0.75,
-					}}
-				>
-					<Box
-						sx={{
-							width: 28,
-							height: 28,
-							borderRadius: 1,
-							border: `1px solid ${colorValues.border}`,
-							background: 'rgba(var(--text-secondary-rgb), 0.15)',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
+				<div className="flex items-center gap-2">
+					<div
+						style={{
+							borderColor: colorValues.border,
+							color: colorValues.text,
 						}}
+						className="w-7 h-7 rounded-lg border bg-[rgba(var(--text-secondary-rgb),0.15)] flex items-center justify-center shrink-0"
 					>
-						<Icon sx={{ fontSize: 16, color: colorValues.text }} />
-					</Box>
-					<Typography
-						sx={{
-							fontSize: '0.78rem',
-							fontWeight: 600,
-							color: 'var(--text-primary)',
-							overflow: 'hidden',
-							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap',
-						}}
-					>
+						<Icon className="w-4 h-4" />
+					</div>
+					<span className="text-xs font-semibold text-[var(--text-primary)] truncate">
 						{title}
-					</Typography>
-				</Box>
-				<Typography
-					sx={{
-						fontSize: '0.68rem',
-							color: 'var(--text-secondary)',
-						lineHeight: 1.4,
-						flex: 1,
-					}}
-				>
+					</span>
+				</div>
+				<p className="text-[0.68rem] text-[var(--text-secondary)] leading-tight flex-1 m-0">
 					{description}
-				</Typography>
-			</Box>
+				</p>
+			</div>
 		</Link>
 	);
 }

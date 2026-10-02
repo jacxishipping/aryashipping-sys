@@ -3,14 +3,16 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import AssignmentTurnedInOutlinedIcon from '@mui/icons-material/AssignmentTurnedInOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
-import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import { Box, Typography } from '@mui/material';
+import {
+  LayoutDashboard,
+  Package,
+  CheckSquare,
+  Users,
+  History,
+  UserPlus,
+  Eye,
+  Check,
+} from 'lucide-react';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
 import { Button, EmptyState, PageHeader, Skeleton, SkeletonParagraph, toast } from '@/components/design-system';
 import { formatRelativeTime } from '@/lib/relative-time';
@@ -115,49 +117,36 @@ function MetricCard({
   } as const;
 
   return (
-    <Box
-      sx={{
-        border: '1px solid var(--border)',
-        borderRadius: 3,
-        p: 1.75,
-        background: backgrounds[tone],
-        display: 'grid',
-        gap: 0.85,
-        alignContent: 'start',
-      }}
+    <div
+      style={{ background: backgrounds[tone] }}
+      className="grid gap-2 border border-[var(--border)] rounded-xl p-4 content-start"
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
-        <Typography sx={{ fontSize: '0.78rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[0.78rem] tracking-[0.12em] uppercase text-[var(--text-secondary)] font-medium">
           {label}
-        </Typography>
-        <Box sx={{ color: 'var(--text-secondary)', display: 'inline-flex', flexShrink: 0 }}>{icon}</Box>
-      </Box>
-      <Typography sx={{ fontSize: '1.45rem', fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1.1 }}>{value}</Typography>
-      <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)', overflowWrap: 'anywhere' }}>{helper}</Typography>
-    </Box>
+        </span>
+        <div className="text-[var(--text-secondary)] inline-flex shrink-0">{icon}</div>
+      </div>
+      <div className="text-[1.45rem] font-extrabold tracking-tight leading-tight text-[var(--text-primary)]">
+        {value}
+      </div>
+      <div className="text-[0.82rem] text-[var(--text-secondary)] break-words">
+        {helper}
+      </div>
+    </div>
   );
 }
 
 function MetricCardSkeleton() {
   return (
-    <Box
-      sx={{
-        border: '1px solid var(--border)',
-        borderRadius: 3,
-        p: 1.75,
-        bgcolor: 'var(--panel)',
-        display: 'grid',
-        gap: 0.85,
-        alignContent: 'start',
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1 }}>
+    <div className="grid gap-2 border border-[var(--border)] rounded-xl p-4 bg-[var(--panel)] content-start">
+      <div className="flex items-center justify-between gap-2">
         <Skeleton variant="text" width="55%" height={16} />
         <Skeleton variant="rounded" width={22} height={22} />
-      </Box>
+      </div>
       <Skeleton variant="text" width="35%" height={34} />
       <Skeleton variant="text" width="85%" height={14} />
-    </Box>
+    </div>
   );
 }
 
@@ -213,8 +202,6 @@ export default function PortalOverviewPage() {
           setCanViewActivity(true);
         } else {
           setActivities([]);
-          // Distinguish "no permission" from a real failure so admins are not
-          // shown the admin-only copy when the activity API actually failed.
           const activityError = activityResult.reason as Error & { status?: number };
           if (activityError?.status === 403) {
             setCanViewActivity(false);
@@ -234,7 +221,9 @@ export default function PortalOverviewPage() {
           setLoading(false);
         }
       }
-    };    if (portalId) {
+    };
+
+    if (portalId) {
       void loadOverview();
     }
 
@@ -299,143 +288,121 @@ export default function PortalOverviewPage() {
           </DashboardGrid>
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[1.35fr_1fr]">
             <DashboardPanel title="Operational Snapshot" description="See what is moving through this partner workspace right now.">
-              <Box sx={{ display: 'grid', gap: 1.75 }}>
+              <div className="grid gap-4">
                 {[0, 1, 2, 3].map((index) => (
-                  <Box key={index} sx={{ display: 'grid', gap: 0.65 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div key={index} className="grid gap-1.5">
+                    <div className="flex justify-between items-center">
                       <Skeleton variant="text" width="40%" height={18} />
                       <Skeleton variant="text" width="8%" height={16} />
-                    </Box>
+                    </div>
                     <Skeleton variant="rounded" height={10} />
-                  </Box>
+                  </div>
                 ))}
-              </Box>
+              </div>
             </DashboardPanel>
             <DashboardPanel title="Customer Coverage" description="Track how much of the portal workload is already linked to end customers.">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
+              <div className="grid gap-3">
                 <Skeleton variant="rounded" height={92} />
                 <SkeletonParagraph lines={3} />
-              </Box>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[1.15fr_0.85fr]">
             <DashboardPanel title="Recent Shipment Activity" description="The latest vehicles currently visible in this partner workspace.">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
+              <div className="grid gap-3">
                 {[0, 1, 2].map((index) => (
                   <Skeleton key={index} variant="rounded" height={96} />
                 ))}
-              </Box>
+              </div>
             </DashboardPanel>
             <DashboardPanel title="Team And Activity" description="Who has access to this workspace and what has changed recently.">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
+              <div className="grid gap-3">
                 {[0, 1, 2, 3].map((index) => (
-                  <Box key={index} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-                    <Box sx={{ flex: 1, display: 'grid', gap: 0.5 }}>
+                  <div key={index} className="flex items-center justify-between gap-4">
+                    <div className="flex-1 grid gap-1">
                       <Skeleton variant="text" width="55%" height={16} />
                       <Skeleton variant="text" width="75%" height={13} />
-                    </Box>
+                    </div>
                     <Skeleton variant="rounded" width={64} height={24} />
-                  </Box>
+                  </div>
                 ))}
-              </Box>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
         </>
       ) : assignments.length === 0 && customers.length === 0 && memberships.length === 0 ? (
         <DashboardPanel>
-          <Box sx={{ display: 'grid', gap: 2.5 }}>
+          <div className="grid gap-6">
             <EmptyState
-              icon={<DashboardOutlinedIcon />}
+              icon={<LayoutDashboard className="w-10 h-10" />}
               title="Portal workspace is still empty"
               description="This portal is active, but it does not have shipments, customers, or members loaded yet."
             />
-            <Box
-              sx={{
-                border: '1px solid var(--border)',
-                borderRadius: 2.5,
-                p: 2,
-                bgcolor: 'var(--panel)',
-                display: 'grid',
-                gap: 1.25,
-              }}
-            >
-              <Typography sx={{ fontSize: '0.8rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+            <div className="grid gap-3 border border-[var(--border)] rounded-xl p-4 bg-[var(--panel)]">
+              <span className="text-[0.8rem] tracking-[0.14em] uppercase text-[var(--text-secondary)] font-semibold">
                 Getting started
-              </Typography>
+              </span>
               {[
                 { step: 1, label: 'Invite your team members', href: `/portal/${portalId}/members`, done: memberships.length > 0, description: 'Give teammates their own portal login.' },
                 { step: 2, label: 'Add your portal customers', href: `/portal/${portalId}/customers`, done: customers.length > 0, description: 'Create the downstream customer records shipments roll up under.' },
                 { step: 3, label: 'Link assigned shipments', href: `/portal/${portalId}/shipments`, done: assignments.length > 0, description: 'Map the shipments shared from the main system to your customers.' },
               ].map((item) => (
-                <Box
+                <div
                   key={item.step}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1.5,
-                    p: 1.25,
-                    borderRadius: 2,
-                    border: '1px solid var(--border)',
-                    bgcolor: item.done ? 'rgba(34,197,94,0.06)' : 'transparent',
-                  }}
+                  className={`flex items-center gap-3 p-3 rounded-lg border border-[var(--border)] ${
+                    item.done ? 'bg-[rgba(34,197,94,0.06)]' : 'bg-transparent'
+                  }`}
                 >
-                  <Box
+                  <div
                     aria-hidden
-                    sx={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: '50%',
-                      display: 'grid',
-                      placeItems: 'center',
-                      flexShrink: 0,
-                      bgcolor: item.done ? 'var(--success)' : 'rgba(var(--text-primary-rgb),0.08)',
-                      color: item.done ? '#fff' : 'var(--text-secondary)',
-                      fontWeight: 800,
-                      fontSize: '0.8rem',
-                    }}
+                    className={`w-7 h-7 rounded-full grid place-items-center shrink-0 font-extrabold text-[0.8rem] ${
+                      item.done
+                        ? 'bg-[var(--success)] text-white'
+                        : 'bg-[rgba(var(--text-primary-rgb),0.08)] text-[var(--text-secondary)]'
+                    }`}
                   >
-                    {item.done ? '✓' : item.step}
-                  </Box>
-                  <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>{item.label}</Typography>
-                    <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{item.description}</Typography>
-                  </Box>
-                  <Link href={item.href} style={{ textDecoration: 'none' }}>
+                    {item.done ? <Check className="w-4 h-4" /> : item.step}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[0.92rem] font-bold text-[var(--text-primary)]">{item.label}</div>
+                    <div className="text-[0.8rem] text-[var(--text-secondary)]">{item.description}</div>
+                  </div>
+                  <Link href={item.href} className="no-underline">
                     <Button variant={item.done ? 'outline' : 'primary'} size="sm">
                       {item.done ? 'Review' : 'Start'}
                     </Button>
                   </Link>
-                </Box>
+                </div>
               ))}
-            </Box>
-          </Box>
+            </div>
+          </div>
         </DashboardPanel>
       ) : (
         <>
           <DashboardGrid className="grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard
-              icon={<Inventory2OutlinedIcon fontSize="small" />}
+              icon={<Package className="w-5 h-5" />}
               label="Assigned Shipments"
               value={assignments.length}
               helper="Visible to this partner from the main system"
               tone="brand"
             />
             <MetricCard
-              icon={<AssignmentTurnedInOutlinedIcon fontSize="small" />}
+              icon={<CheckSquare className="w-5 h-5" />}
               label="Linked To Customers"
               value={linkedShipments}
               helper={`${assignments.length - linkedShipments} shipment${assignments.length - linkedShipments === 1 ? '' : 's'} still unlinked`}
               tone="accent"
             />
             <MetricCard
-              icon={<GroupOutlinedIcon fontSize="small" />}
+              icon={<Users className="w-5 h-5" />}
               label="Workspace Members"
               value={memberships.length}
               helper="Shared access inside this portal workspace"
               tone="neutral"
             />
             <MetricCard
-              icon={<PersonAddAltOutlinedIcon fontSize="small" />}
+              icon={<UserPlus className="w-5 h-5" />}
               label="Portal Customers"
               value={customers.length}
               helper="Partner-managed downstream customer records"
@@ -448,30 +415,33 @@ export default function PortalOverviewPage() {
               title="Operational Snapshot"
               description="See what is moving through this partner workspace right now."
               actions={
-                <Link href={`/portal/${portalId}/shipments`} style={{ textDecoration: 'none' }}>
+                <Link href={`/portal/${portalId}/shipments`} className="no-underline">
                   <Button variant="outline" size="sm">View all shipments</Button>
                 </Link>
               }
             >
               {statusBreakdown.length === 0 ? (
-                <Box sx={{ color: 'var(--text-secondary)' }}>No shipment movement has been assigned to this portal yet.</Box>
+                <div className="text-[var(--text-secondary)]">No shipment movement has been assigned to this portal yet.</div>
               ) : (
-                <Box sx={{ display: 'grid', gap: 1.25 }}>
+                <div className="grid gap-3">
                   {statusBreakdown.map(([status, count]) => {
                     const ratio = assignments.length > 0 ? Math.max(8, Math.round((count / assignments.length) * 100)) : 0;
                     return (
-                      <Box key={status} sx={{ display: 'grid', gap: 0.65 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center' }}>
-                          <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{formatStatusLabel(status)}</Typography>
-                          <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{count}</Typography>
-                        </Box>
-                        <Box sx={{ width: '100%', height: 10, borderRadius: 999, bgcolor: 'rgba(var(--text-primary-rgb),0.08)', overflow: 'hidden' }}>
-                          <Box sx={{ width: `${ratio}%`, height: '100%', bgcolor: 'var(--brand-primary)', borderRadius: 999 }} />
-                        </Box>
-                      </Box>
+                      <div key={status} className="grid gap-1.5">
+                        <div className="flex justify-between gap-2 items-center">
+                          <span className="text-[0.9rem] font-semibold text-[var(--text-primary)]">{formatStatusLabel(status)}</span>
+                          <span className="text-[0.82rem] text-[var(--text-secondary)]">{count}</span>
+                        </div>
+                        <div className="w-full h-2.5 rounded-full bg-[rgba(var(--text-primary-rgb),0.08)] overflow-hidden">
+                          <div
+                            className="h-full bg-[var(--brand-primary)] rounded-full transition-all"
+                            style={{ width: `${ratio}%` }}
+                          />
+                        </div>
+                      </div>
                     );
                   })}
-                </Box>
+                </div>
               )}
             </DashboardPanel>
 
@@ -479,33 +449,35 @@ export default function PortalOverviewPage() {
               title="Customer Coverage"
               description="Track how much of the portal workload is already linked to end customers."
               actions={
-                <Link href={`/portal/${portalId}/customers`} style={{ textDecoration: 'none' }}>
+                <Link href={`/portal/${portalId}/customers`} className="no-underline">
                   <Button variant="outline" size="sm">Open customers</Button>
                 </Link>
               }
             >
-              <Box sx={{ display: 'grid', gap: 1.25 }}>
-                <Box sx={{ p: 1.5, borderRadius: 2.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.07)' }}>
-                  <Typography sx={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)' }}>
+              <div className="grid gap-3">
+                <div className="p-3.5 rounded-xl bg-[rgba(var(--brand-primary-rgb),0.07)]">
+                  <span className="text-[0.78rem] uppercase tracking-[0.12em] text-[var(--text-secondary)] font-medium">
                     Assignment coverage
-                  </Typography>
-                  <Typography sx={{ fontSize: '1.5rem', fontWeight: 800 }}>{assignments.length === 0 ? '0%' : `${Math.round((linkedShipments / assignments.length) * 100)}%`}</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  </span>
+                  <div className="text-[1.5rem] font-extrabold text-[var(--text-primary)]">
+                    {assignments.length === 0 ? '0%' : `${Math.round((linkedShipments / assignments.length) * 100)}%`}
+                  </div>
+                  <div className="text-[0.82rem] text-[var(--text-secondary)]">
                     {linkedShipments} of {assignments.length} shipments are already tied to a portal customer.
-                  </Typography>
-                </Box>
+                  </div>
+                </div>
 
                 {customerCoverage.length === 0 ? (
-                  <Box sx={{ color: 'var(--text-secondary)' }}>No portal customer links have been made yet.</Box>
+                  <div className="text-[var(--text-secondary)]">No portal customer links have been made yet.</div>
                 ) : (
                   customerCoverage.map(([name, count]) => (
-                    <Box key={name} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-                      <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{name}</Typography>
-                      <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{count} shipment{count === 1 ? '' : 's'}</Typography>
-                    </Box>
+                    <div key={name} className="flex items-center justify-between gap-2">
+                      <span className="text-[0.9rem] font-semibold text-[var(--text-primary)]">{name}</span>
+                      <span className="text-[0.82rem] text-[var(--text-secondary)]">{count} shipment{count === 1 ? '' : 's'}</span>
+                    </div>
                   ))
                 )}
-              </Box>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
 
@@ -515,40 +487,32 @@ export default function PortalOverviewPage() {
               description="The latest vehicles currently visible in this partner workspace."
             >
               {recentAssignments.length === 0 ? (
-                <Box sx={{ color: 'var(--text-secondary)' }}>No shipments are available to show yet.</Box>
+                <div className="text-[var(--text-secondary)]">No shipments are available to show yet.</div>
               ) : (
-                <Box sx={{ display: 'grid', gap: 1.5 }}>
+                <div className="grid gap-3">
                   {recentAssignments.map((assignment) => (
-                    <Box
+                    <div
                       key={assignment.id}
-                      sx={{
-                        border: '1px solid var(--border)',
-                        borderRadius: 2.5,
-                        p: 1.5,
-                        display: 'grid',
-                        gap: 0.5,
-                        bgcolor: 'var(--panel)',
-                      }}
+                      className="grid gap-1 border border-[var(--border)] rounded-xl p-3.5 bg-[var(--panel)]"
                     >
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                        <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>{formatVehicleLabel(assignment.shipment)}</Typography>
-                        <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{formatStatusLabel(assignment.shipment.status)}</Typography>
-                      </Box>
-                      <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                      <div className="flex justify-between gap-2 items-center flex-wrap">
+                        <span className="text-[0.95rem] font-bold text-[var(--text-primary)]">{formatVehicleLabel(assignment.shipment)}</span>
+                        <span className="text-[0.75rem] text-[var(--text-secondary)]">{formatStatusLabel(assignment.shipment.status)}</span>
+                      </div>
+                      <div className="text-[0.82rem] text-[var(--text-secondary)]">
                         {assignment.partnerCustomer?.name ? `Linked to ${assignment.partnerCustomer.name}` : 'Not linked to a portal customer yet'}
-                      </Typography>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                        <Typography sx={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>{assignment.shipment.serviceType.replaceAll('_', ' ')}</Typography>
-                        <Link href={`/portal/${portalId}/shipments/${assignment.shipment.id}`} style={{ textDecoration: 'none' }}>
-                          <Button variant="outline" size="sm">
-                            <VisibilityOutlinedIcon sx={{ fontSize: 16 }} />
+                      </div>
+                      <div className="flex justify-between gap-2 items-center flex-wrap pt-1">
+                        <span className="text-[0.76rem] text-[var(--text-secondary)]">{assignment.shipment.serviceType.replaceAll('_', ' ')}</span>
+                        <Link href={`/portal/${portalId}/shipments/${assignment.shipment.id}`} className="no-underline">
+                          <Button variant="outline" size="sm" icon={<Eye className="w-4 h-4" />}>
                             View details
                           </Button>
                         </Link>
-                      </Box>
-                    </Box>
+                      </div>
+                    </div>
                   ))}
-                </Box>
+                </div>
               )}
             </DashboardPanel>
 
@@ -556,70 +520,64 @@ export default function PortalOverviewPage() {
               title="Team And Activity"
               description="Who has access to this workspace and what has changed recently."
               actions={
-                <Link href={`/portal/${portalId}/members`} style={{ textDecoration: 'none' }}>
+                <Link href={`/portal/${portalId}/members`} className="no-underline">
                   <Button variant="outline" size="sm">Manage members</Button>
                 </Link>
               }
             >
-              <Box sx={{ display: 'grid', gap: 2 }}>
-                <Box sx={{ display: 'grid', gap: 1.25 }}>
+              <div className="grid gap-4">
+                <div className="grid gap-2.5">
                   {memberships.slice(0, 4).map((membership) => (
-                    <Box key={membership.id} sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center' }}>
-                      <Box>
-                        <Typography sx={{ fontSize: '0.9rem', fontWeight: 600 }}>{membership.user.name || membership.user.email || 'Portal member'}</Typography>
-                        <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{membership.user.email || 'No email'}</Typography>
-                      </Box>
-                      <Box sx={{ px: 1.2, py: 0.45, borderRadius: 999, bgcolor: membership.role === 'ADMIN' ? 'rgba(var(--brand-primary-rgb),0.12)' : 'rgba(var(--text-primary-rgb),0.06)', color: membership.role === 'ADMIN' ? 'var(--brand-primary)' : 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                    <div key={membership.id} className="flex justify-between gap-2 items-center">
+                      <div>
+                        <div className="text-[0.9rem] font-semibold text-[var(--text-primary)]">{membership.user.name || membership.user.email || 'Portal member'}</div>
+                        <div className="text-[0.78rem] text-[var(--text-secondary)]">{membership.user.email || 'No email'}</div>
+                      </div>
+                      <div className={`px-2.5 py-1 rounded-full text-[0.75rem] font-bold whitespace-nowrap ${
+                        membership.role === 'ADMIN'
+                          ? 'bg-[rgba(var(--brand-primary-rgb),0.12)] text-[var(--brand-primary)]'
+                          : 'bg-[rgba(var(--text-primary-rgb),0.06)] text-[var(--text-secondary)]'
+                      }`}>
                         {membership.role}
-                      </Box>
-                    </Box>
+                      </div>
+                    </div>
                   ))}
-                </Box>
+                </div>
 
-                <Box sx={{ borderTop: '1px solid var(--border)', pt: 2, display: 'grid', gap: 1.25 }}>
-                  <Typography sx={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.14em', color: 'var(--text-secondary)' }}>
+                <div className="border-t border-[var(--border)] pt-4 grid gap-2.5">
+                  <span className="text-[0.8rem] uppercase tracking-[0.14em] text-[var(--text-secondary)] font-medium">
                     Recent activity
-                  </Typography>
+                  </span>
                   {!canViewActivity ? (
-                    <Box sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                    <div className="text-[var(--text-secondary)] text-[0.85rem]">
                       Activity is available to portal admins so member changes and login access events stay controlled.
-                    </Box>
+                    </div>
                   ) : partialLoadWarning ? (
-                    <Box
-                      sx={{
-                        border: '1px solid rgba(var(--accent-gold-rgb),0.35)',
-                        borderRadius: 2,
-                        p: 1.25,
-                        bgcolor: 'rgba(var(--accent-gold-rgb),0.08)',
-                        fontSize: '0.85rem',
-                        color: 'var(--text-primary)',
-                      }}
-                    >
+                    <div className="border border-[rgba(var(--accent-gold-rgb),0.35)] rounded-lg p-2.5 bg-[rgba(var(--accent-gold-rgb),0.08)] text-[0.85rem] text-[var(--text-primary)]">
                       {partialLoadWarning}
-                    </Box>
+                    </div>
                   ) : activities.length === 0 ? (
-                    <Box sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>No recent membership activity was recorded for this portal.</Box>
+                    <div className="text-[var(--text-secondary)] text-[0.85rem]">No recent membership activity was recorded for this portal.</div>
                   ) : (
                     activities.map((activity) => (
-                      <Box key={activity.id} sx={{ display: 'grid', gap: 0.25 }}>
-                        <Typography sx={{ fontSize: '0.88rem', fontWeight: 600 }}>{activity.summary}</Typography>
-                        <Typography sx={{ fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
+                      <div key={activity.id} className="grid gap-0.5">
+                        <span className="text-[0.88rem] font-semibold text-[var(--text-primary)]">{activity.summary}</span>
+                        <span className="text-[0.76rem] text-[var(--text-secondary)]">
                           {formatRelativeTime(activity.performedAt)}
-                        </Typography>
-                      </Box>
+                        </span>
+                      </div>
                     ))
                   )}
 
                   {canViewActivity ? (
-                    <Link href={`/portal/${portalId}/activity`} style={{ textDecoration: 'none' }}>
-                      <Button variant="outline" size="sm">
-                        <HistoryOutlinedIcon sx={{ fontSize: 16 }} />
+                    <Link href={`/portal/${portalId}/activity`} className="no-underline mt-1">
+                      <Button variant="outline" size="sm" icon={<History className="w-4 h-4" />}>
                         View all activity
                       </Button>
                     </Link>
                   ) : null}
-                </Box>
-              </Box>
+                </div>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
         </>

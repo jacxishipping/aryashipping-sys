@@ -3,31 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
-  Box, 
-  Typography, 
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Paper,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Divider,
-  TextField,
-} from '@mui/material';
-import { 
   FileText, 
   Upload, 
   Download, 
   Trash2, 
   Image as ImageIcon,
   AlertTriangle,
+  Edit,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { Modal, FormField, Select, StatusBadge } from '@/components/design-system';
+import { Modal, FormField, Select, StatusBadge, Button } from '@/components/design-system';
 import { FileUpload } from '@/components/ui/FileUpload';
 import { useConfirmAction } from '@/components/ui/ConfirmActionProvider';
 
@@ -102,7 +87,6 @@ export function DocumentManager({
 
   const handleFileUpload = async (file: File) => {
     try {
-      // 1. Upload file to blob storage
       const formData = new FormData();
       formData.append('file', file);
 
@@ -158,7 +142,7 @@ export function DocumentManager({
 
     } catch (error: any) {
       console.error('Upload error:', error);
-      throw error; // Re-throw so FileUpload shows error state
+      throw error;
     }
   };
 
@@ -246,7 +230,7 @@ export function DocumentManager({
     try {
       const endpoint = entityType === 'container'
         ? `/api/containers/${entityId}/documents?documentId=${docId}`
-        : `/api/documents/${docId}`; // Assuming shipment docs use this
+        : `/api/documents/${docId}`;
 
       const response = await fetch(endpoint, { method: 'DELETE' });
 
@@ -256,7 +240,7 @@ export function DocumentManager({
       onDocumentsChange?.();
       toast.success('Document deleted');
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error('Failed to delete document');
     }
   };
@@ -322,104 +306,91 @@ export function DocumentManager({
   };
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+    <div>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)] m-0">
           Documents
-        </Typography>
+        </h2>
         {!readOnly && (
           <Button
-            variant="contained"
-            startIcon={<Upload size={18} />}
+            variant="primary"
+            size="sm"
+            icon={<Upload size={16} />}
             onClick={() => setIsUploadOpen(true)}
-            sx={{
-                bgcolor: 'var(--accent-gold)',
-                color: 'var(--background)',
-                '&:hover': { bgcolor: 'var(--accent-gold-hover)' }
-            }}
           >
             Upload
           </Button>
         )}
-      </Box>
+      </div>
 
       {documents.length === 0 ? (
-        <Paper 
-          variant="outlined" 
-          sx={{ 
-            p: 4, 
-            textAlign: 'center', 
-            bgcolor: 'var(--background)',
-            borderStyle: 'dashed' 
-          }}
-        >
+        <div className="p-8 text-center bg-[var(--background)] border border-dashed border-[var(--border)] rounded-xl">
           <FileText className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-2 opacity-50" />
-          <Typography color="textSecondary">
+          <p className="text-[var(--text-secondary)] text-sm m-0">
             No documents attached yet
-          </Typography>
-        </Paper>
+          </p>
+        </div>
       ) : (
-        <List sx={{ bgcolor: 'var(--panel)', borderRadius: 2, border: '1px solid var(--border)' }}>
-          {documents.map((doc, index) => (
-            <div key={doc.id}>
-              <ListItem>
-                <ListItemIcon>
-                  {getIcon(doc.type)}
-                </ListItemIcon>
-                <ListItemText
-                  primaryTypographyProps={{ component: 'div' }}
-                  primary={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
-                            {doc.name}
-                        </Typography>
-                        <StatusBadge
-                            status="DEFAULT"
-                            label={doc.category.replace('_', ' ')}
-                            size="sm"
-                        />
-                        {doc.isPublic === false ? (
-                          <StatusBadge
-                            status="WARNING"
-                            label="Company Only"
-                            size="sm"
-                          />
-                        ) : null}
-                    </Box>
-                  }
-                  secondary={
-                    <Typography variant="caption" color="textSecondary">
-                      {formatSize(doc.size)} • Uploaded by {doc.uploadedBy} • {new Date(doc.createdAt).toLocaleDateString()}
-                    </Typography>
-                  }
-                />
-                <ListItemSecondaryAction>
-                  {!readOnly && entityType === 'shipment' && (
-                    <IconButton edge="end" aria-label="edit status" sx={{ mr: 1 }} onClick={() => handleOpenStatusEditor(doc)}>
-                      <Typography variant="caption" sx={{ fontWeight: 600 }}>
-                        Edit Status
-                      </Typography>
-                    </IconButton>
-                  )}
-                  <IconButton edge="end" aria-label="download" sx={{ mr: 1 }} href={doc.fileUrl} target="_blank">
-                    <Download className="w-4 h-4" />
-                  </IconButton>
-                  {!readOnly && (
-                    <IconButton 
-                        edge="end" 
-                        aria-label="delete" 
-                        color="error"
-                        onClick={() => handleDelete(doc.id)}
-                    >
-                        <Trash2 className="w-4 h-4" />
-                    </IconButton>
-                  )}
-                </ListItemSecondaryAction>
-              </ListItem>
-              {index < documents.length - 1 && <Divider component="li" />}
+        <div className="bg-[var(--panel)] rounded-xl border border-[var(--border)] divide-y divide-[var(--border)] overflow-hidden">
+          {documents.map((doc) => (
+            <div key={doc.id} className="p-4 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="shrink-0">{getIcon(doc.type)}</div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="text-sm font-medium text-[var(--text-primary)] truncate">
+                      {doc.name}
+                    </span>
+                    <StatusBadge
+                      status="DEFAULT"
+                      label={doc.category.replace(/_/g, ' ')}
+                      size="sm"
+                    />
+                    {doc.isPublic === false ? (
+                      <StatusBadge
+                        status="WARNING"
+                        label="Company Only"
+                        size="sm"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="text-xs text-[var(--text-secondary)]">
+                    {formatSize(doc.size)} • Uploaded by {doc.uploadedBy} • {new Date(doc.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                {!readOnly && entityType === 'shipment' && (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenStatusEditor(doc)}
+                    className="p-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--background)] rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
+                  >
+                    Edit Status
+                  </button>
+                )}
+                <a
+                  href={doc.fileUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--background)] rounded-lg transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                </a>
+                {!readOnly && (
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(doc.id)}
+                    className="p-1.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             </div>
           ))}
-        </List>
+        </div>
       )}
 
       {/* Upload Modal */}
@@ -436,85 +407,81 @@ export function DocumentManager({
         disableBackdropClick={true}
         showCloseButton={!isProcessing}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Paper
-              variant="outlined"
-              sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 1,
-                borderRadius: 3,
-                bgcolor: 'var(--background)',
-              }}
+        <div className="flex flex-col gap-4">
+          <div className="p-3.5 flex flex-col gap-1 rounded-xl bg-[var(--background)] border border-[var(--border)]">
+            <span className="text-sm font-bold text-[var(--text-primary)]">
+              Supported formats
+            </span>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed m-0">
+              PDF, JPG, PNG, DOC, DOCX, XLS, and XLSX. Upload one document at a time so the category and extracted details stay accurate.
+            </p>
+          </div>
+          
+          <FormField label="Document Category">
+            <Select
+              label="Category"
+              value={category}
+              onChange={(e) => setCategory(String(e))}
+              disabled={isProcessing}
+              options={[
+                { value: 'INVOICE', label: 'Invoice' },
+                { value: 'BILL_OF_LADING', label: 'Bill of Lading' },
+                { value: 'CUSTOMS', label: 'Customs' },
+                { value: 'INSURANCE', label: 'Insurance' },
+                { value: 'TITLE', label: 'Title' },
+                { value: 'INSPECTION_REPORT', label: 'Inspection Report' },
+                { value: 'EXPORT_DOCUMENT', label: 'Export Document' },
+                { value: 'PACKING_LIST', label: 'Packing List' },
+                { value: 'CONTRACT', label: 'Contract' },
+                { value: 'PHOTO', label: 'Photo' },
+                { value: 'OTHER', label: 'Other' },
+              ]}
+            />
+          </FormField>
+
+          {entityType === 'shipment' && (
+            <div>
+              <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-[var(--text-primary)]">
+                <input
+                  type="checkbox"
+                  checked={isCompanyDocument}
+                  onChange={(event) => setIsCompanyDocument(event.target.checked)}
+                  className="rounded border-[var(--border)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
+                />
+                <span>Company document (hide from customer)</span>
+              </label>
+              <span className="block text-xs text-[var(--text-secondary)] mt-1">
+                Checked documents are visible to internal users only.
+              </span>
+            </div>
+          )}
+
+          <div className="border border-[var(--border)] rounded-xl p-3 bg-[var(--panel)]">
+            <FileUpload 
+              multiple={false}
+              maxFiles={1}
+              uploadHandler={handleFileUpload}
+              onProcessingChange={setIsProcessing}
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 mt-2">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                setIsUploadOpen(false);
+                setIsCompanyDocument(false);
+              }} 
+              disabled={isProcessing}
             >
-              <Typography variant="subtitle2" sx={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-                Supported formats
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                PDF, JPG, PNG, DOC, DOCX, XLS, and XLSX. Upload one document at a time so the category and extracted details stay accurate.
-              </Typography>
-            </Paper>
-            
-            <FormField label="Document Category">
-                <Select
-                    label="Category"
-                    value={category}
-                    onChange={(e) => setCategory(String(e))}
-                    disabled={isProcessing}
-                    options={[
-                        { value: 'INVOICE', label: 'Invoice' },
-                        { value: 'BILL_OF_LADING', label: 'Bill of Lading' },
-                        { value: 'CUSTOMS', label: 'Customs' },
-                        { value: 'INSURANCE', label: 'Insurance' },
-                        { value: 'TITLE', label: 'Title' },
-                        { value: 'INSPECTION_REPORT', label: 'Inspection Report' },
-                        { value: 'EXPORT_DOCUMENT', label: 'Export Document' },
-                        { value: 'PACKING_LIST', label: 'Packing List' },
-                        { value: 'CONTRACT', label: 'Contract' },
-                        { value: 'PHOTO', label: 'Photo' },
-                        { value: 'OTHER', label: 'Other' },
-                    ]}
-                />
-            </FormField>
-
-            {entityType === 'shipment' && (
-              <Box>
-                <FormControlLabel
-                  control={<Checkbox checked={isCompanyDocument} onChange={(event) => setIsCompanyDocument(event.target.checked)} />}
-                  label="Company document (hide from customer)"
-                />
-                <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>
-                  Checked documents are visible to internal users only.
-                </Typography>
-              </Box>
-            )}
-
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'var(--panel)' }}>
-              <FileUpload 
-                multiple={false}
-                maxFiles={1}
-                uploadHandler={handleFileUpload}
-                onProcessingChange={setIsProcessing}
-                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx"
-              />
-            </Box>
-
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
-                <Button 
-                    onClick={() => {
-                      setIsUploadOpen(false);
-                      setIsCompanyDocument(false);
-                    }} 
-                    disabled={isProcessing}
-                    sx={{ color: 'var(--text-secondary)' }}
-                >
-                    {isProcessing ? 'Uploading...' : 'Done'}
-                </Button>
-            </Box>
-        </Box>
+              {isProcessing ? 'Uploading...' : 'Done'}
+            </Button>
+          </div>
+        </div>
       </Modal>
 
+      {/* Edit Status Modal */}
       <Modal
         open={Boolean(statusEditor)}
         onClose={() => !savingStatus && setStatusEditor(null)}
@@ -524,10 +491,10 @@ export function DocumentManager({
         showCloseButton={!savingStatus}
       >
         {statusEditor && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-            <Typography variant="body2" sx={{ color: 'var(--text-secondary)' }}>
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-[var(--text-secondary)] m-0">
               {statusEditor.name}
-            </Typography>
+            </p>
 
             <FormField label="Visibility Status">
               <Select
@@ -550,18 +517,19 @@ export function DocumentManager({
               />
             </FormField>
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-              <Button variant="outlined" onClick={() => setStatusEditor(null)} disabled={savingStatus}>
+            <div className="flex justify-end gap-2 mt-2">
+              <Button variant="outline" onClick={() => setStatusEditor(null)} disabled={savingStatus}>
                 Cancel
               </Button>
-              <Button variant="contained" onClick={handleSaveStatus} disabled={savingStatus}>
-                {savingStatus ? 'Saving...' : 'Save Status'}
+              <Button variant="primary" onClick={handleSaveStatus} disabled={savingStatus} loading={savingStatus}>
+                Save Status
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         )}
       </Modal>
 
+      {/* AI Extraction Review Modal */}
       <Modal
         open={Boolean(review)}
         onClose={() => !savingReview && setReview(null)}
@@ -570,48 +538,37 @@ export function DocumentManager({
         showCloseButton={!savingReview}
       >
         {review && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-            <Paper variant="outlined" sx={{ p: 2, bgcolor: 'var(--background)' }}>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+          <div className="flex flex-col gap-4">
+            <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+              <span className="text-sm font-semibold text-[var(--text-primary)] mb-2 block">
                 AI Summary
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1 }}>
+              </span>
+              <div className="flex gap-2 flex-wrap mb-2">
                 {review.extractionMethod && (
                   <StatusBadge status="DEFAULT" label={`Extraction: ${review.extractionMethod}`} size="sm" />
                 )}
                 {review.ocrAttempted && (
                   <StatusBadge status="WARNING" label="OCR attempted" size="sm" />
                 )}
-              </Box>
-              <Typography variant="body2" sx={{ color: 'var(--text-secondary)', mb: 1.5 }}>
+              </div>
+              <p className="text-sm text-[var(--text-secondary)] mb-2 m-0">
                 {review.summary}
-              </Typography>
-              <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>
+              </p>
+              <div className="text-xs text-[var(--text-secondary)] font-mono bg-[var(--panel)] p-2 rounded border border-[var(--border)] max-h-24 overflow-y-auto">
                 {review.extractedTextPreview}
-              </Typography>
-            </Paper>
+              </div>
+            </div>
 
             {review.failureReason && (
-              <Paper
-                variant="outlined"
-                sx={{
-                  p: 1.5,
-                  display: 'flex',
-                  gap: 1,
-                  alignItems: 'flex-start',
-                  bgcolor: 'rgba(245, 158, 11, 0.08)',
-                  borderColor: 'rgba(245, 158, 11, 0.35)',
-                }}
-              >
-                <AlertTriangle className="w-4 h-4" style={{ color: 'rgb(180, 83, 9)', marginTop: 2 }} />
-                <Typography variant="body2" sx={{ color: 'rgb(146, 64, 14)' }}>
+              <div className="p-3 flex gap-2 items-start bg-amber-500/10 border border-amber-500/30 rounded-xl">
+                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <span className="text-sm text-amber-700">
                   {review.failureReason}
-                </Typography>
-              </Paper>
+                </span>
+              </div>
             )}
 
-            <TextField
-              size="small"
+            <FormField
               label="Document Name"
               value={review.name}
               onChange={(event) => setReview((prev) => (prev ? { ...prev, name: event.target.value } : prev))}
@@ -638,46 +595,48 @@ export function DocumentManager({
               />
             </FormField>
 
-            <TextField
-              size="small"
-              label="Description"
-              value={review.description}
-              onChange={(event) => setReview((prev) => (prev ? { ...prev, description: event.target.value } : prev))}
-              multiline
-              minRows={3}
-            />
+            <div>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+                Description
+              </label>
+              <textarea
+                rows={3}
+                value={review.description}
+                onChange={(event) => setReview((prev) => (prev ? { ...prev, description: event.target.value } : prev))}
+                className="w-full p-2.5 rounded-lg border border-[var(--border)] bg-[var(--panel)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--brand-primary)]"
+              />
+            </div>
 
             {entityType === 'shipment' && (
               <>
-                <TextField
-                  size="small"
+                <FormField
                   label="Tags"
                   value={reviewTags}
                   onChange={(event) => setReviewTags(event.target.value)}
                   helperText="Comma-separated tags"
                 />
-                <Box>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={review.isCompanyDocument}
-                        onChange={(event) =>
-                          setReview((prev) => (prev ? { ...prev, isCompanyDocument: event.target.checked } : prev))
-                        }
-                      />
-                    }
-                    label="Company document (hide from customer)"
-                  />
-                  <Typography variant="caption" sx={{ color: 'var(--text-secondary)' }}>
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-[var(--text-primary)]">
+                    <input
+                      type="checkbox"
+                      checked={review.isCompanyDocument}
+                      onChange={(event) =>
+                        setReview((prev) => (prev ? { ...prev, isCompanyDocument: event.target.checked } : prev))
+                      }
+                      className="rounded border-[var(--border)] text-[var(--brand-primary)] focus:ring-[var(--brand-primary)]"
+                    />
+                    <span>Company document (hide from customer)</span>
+                  </label>
+                  <span className="block text-xs text-[var(--text-secondary)] mt-1">
                     Checked documents are stored as internal-only and hidden from customer shipment views.
-                  </Typography>
-                </Box>
+                  </span>
+                </div>
               </>
             )}
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <div className="flex justify-end gap-2 mt-2">
               <Button
-                variant="outlined"
+                variant="outline"
                 onClick={() => {
                   setReview(null);
                   setIsCompanyDocument(false);
@@ -686,14 +645,13 @@ export function DocumentManager({
               >
                 Cancel
               </Button>
-              <Button variant="contained" onClick={saveReviewedDocument} disabled={savingReview}>
-                {savingReview ? 'Saving...' : 'Save Document'}
+              <Button variant="primary" onClick={saveReviewedDocument} disabled={savingReview} loading={savingReview}>
+                Save Document
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         )}
       </Modal>
-    </Box>
+    </div>
   );
 }
-

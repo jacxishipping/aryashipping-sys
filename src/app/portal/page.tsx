@@ -2,12 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
-import ArrowForwardOutlinedIcon from '@mui/icons-material/ArrowForwardOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
-import { Box, Typography } from '@mui/material';
+import { FolderGit2, ArrowRight, Package, Users, UserCheck } from 'lucide-react';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import { Button, EmptyState, PageHeader, toast } from '@/components/design-system';
 
@@ -79,84 +74,75 @@ export default function PortalHomePage() {
 
       <DashboardPanel title="My Portals" description="Open a workspace to manage partner shipments, downstream customers, and member access in one place.">
         {loading ? (
-          <Box sx={{ color: 'var(--text-secondary)' }}>Loading portals...</Box>
+          <div className="text-[var(--text-secondary)] text-sm py-4">Loading portals...</div>
         ) : portals.length === 0 ? (
-          <EmptyState icon={<AccountTreeOutlinedIcon />} title="No portal access" description="You are signed in, but no partner portal workspace has been assigned to your account yet." />
+          <EmptyState icon={<FolderGit2 className="w-12 h-12" />} title="No portal access" description="You are signed in, but no partner portal workspace has been assigned to your account yet." />
         ) : (
           <DashboardGrid className="grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
             {portals.map((portal) => (
-              <Box
+              <div
                 key={portal.id}
-                sx={{
-                  border: '1px solid var(--border)',
-                  background: 'linear-gradient(180deg, rgba(var(--panel-rgb), 0.92), rgba(var(--brand-primary-rgb),0.05))',
-                  borderRadius: 3,
-                  p: 3,
-                  display: 'grid',
-                  gap: 2,
-                  boxShadow: '0 16px 40px rgba(var(--text-primary-rgb),0.08)',
-                }}
+                className="border border-[var(--border)] bg-gradient-to-b from-[rgba(var(--panel-rgb),0.92)] to-[rgba(var(--brand-primary-rgb),0.05)] rounded-2xl p-5 grid gap-4 shadow-[0_16px_40px_rgba(0,0,0,0.08)]"
               >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'flex-start' }}>
-                  <Box>
-                    <Typography sx={{ fontWeight: 800, fontSize: '1.08rem', letterSpacing: '-0.02em' }}>{portal.name}</Typography>
-                    <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+                <div className="flex justify-between gap-3 items-start">
+                  <div>
+                    <h3 className="font-bold text-base tracking-tight text-[var(--text-primary)]">{portal.name}</h3>
+                    <p className="text-xs text-[var(--text-secondary)]">
                       {portal.code || 'No workspace code'}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ px: 1.2, py: 0.45, borderRadius: 999, bgcolor: portal.isActive ? 'rgba(var(--brand-primary-rgb),0.12)' : 'rgba(var(--text-primary-rgb),0.06)', color: portal.isActive ? 'var(--brand-primary)' : 'var(--text-secondary)', fontSize: '0.72rem', fontWeight: 700 }}>
+                    </p>
+                  </div>
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${portal.isActive ? 'bg-[rgba(var(--brand-primary-rgb),0.12)] text-[var(--brand-primary)]' : 'bg-[var(--background)] text-[var(--text-secondary)]'}`}>
                     {portal.isActive ? 'Active' : 'Inactive'}
-                  </Box>
-                </Box>
+                  </span>
+                </div>
 
-                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 1.25 }}>
-                  <Box sx={{ p: 1.4, borderRadius: 2.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.08)' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.75 }}>
-                      <Typography sx={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)' }}>Shipments</Typography>
-                      <Inventory2OutlinedIcon sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-                    </Box>
-                    <Typography sx={{ fontSize: '1.25rem', fontWeight: 800 }}>{portal._count?.shipmentAssignments || 0}</Typography>
-                  </Box>
-                  <Box sx={{ p: 1.4, borderRadius: 2.5, bgcolor: 'rgba(var(--accent-rgb),0.10)' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.75 }}>
-                      <Typography sx={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)' }}>Customers</Typography>
-                      <PeopleAltOutlinedIcon sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-                    </Box>
-                    <Typography sx={{ fontSize: '1.25rem', fontWeight: 800 }}>{portal._count?.customers || 0}</Typography>
-                  </Box>
-                  <Box sx={{ p: 1.4, borderRadius: 2.5, bgcolor: 'rgba(var(--text-primary-rgb),0.05)' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.75 }}>
-                      <Typography sx={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)' }}>Role</Typography>
-                      <GroupOutlinedIcon sx={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-                    </Box>
-                    <Typography sx={{ fontSize: '1rem', fontWeight: 800 }}>{portal.memberships?.[0]?.role || 'Member'}</Typography>
-                  </Box>
-                </Box>
+                <div className="grid grid-cols-3 gap-2.5">
+                  <div className="p-3 rounded-xl bg-[rgba(var(--brand-primary-rgb),0.08)]">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Shipments</span>
+                      <Package className="w-4 h-4 text-[var(--text-secondary)]" />
+                    </div>
+                    <span className="text-lg font-bold text-[var(--text-primary)]">{portal._count?.shipmentAssignments || 0}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[rgba(var(--accent-rgb),0.10)]">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Customers</span>
+                      <Users className="w-4 h-4 text-[var(--text-secondary)]" />
+                    </div>
+                    <span className="text-lg font-bold text-[var(--text-primary)]">{portal._count?.customers || 0}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-[rgba(var(--text-primary-rgb),0.05)]">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Role</span>
+                      <UserCheck className="w-4 h-4 text-[var(--text-secondary)]" />
+                    </div>
+                    <span className="text-sm font-bold text-[var(--text-primary)]">{portal.memberships?.[0]?.role || 'Member'}</span>
+                  </div>
+                </div>
 
-                <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>
+                <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
                   Use this workspace as the partner-facing operating layer for assigned vehicles, customer handoffs, and shared member access.
-                </Typography>
+                </p>
 
-                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  <Link href={`/portal/${portal.id}`} style={{ textDecoration: 'none' }}>
-                    <Button variant="primary" size="sm">
+                <div className="flex gap-2 flex-wrap pt-1">
+                  <Link href={`/portal/${portal.id}`}>
+                    <Button variant="primary" size="sm" icon={<ArrowRight className="w-4 h-4" />} iconPosition="end">
                       Open Workspace
-                      <ArrowForwardOutlinedIcon sx={{ fontSize: 16 }} />
                     </Button>
                   </Link>
-                  <Link href={`/portal/${portal.id}/shipments`} style={{ textDecoration: 'none' }}>
+                  <Link href={`/portal/${portal.id}/shipments`}>
                     <Button variant="outline" size="sm">Shipments</Button>
                   </Link>
-                  <Link href={`/portal/${portal.id}/customers`} style={{ textDecoration: 'none' }}>
+                  <Link href={`/portal/${portal.id}/customers`}>
                     <Button variant="outline" size="sm">Customers</Button>
                   </Link>
-                </Box>
+                </div>
 
-                <Box sx={{ display: 'flex', gap: 2, color: 'var(--text-secondary)', fontSize: '0.8rem', flexWrap: 'wrap' }}>
+                <div className="flex gap-4 text-xs text-[var(--text-secondary)] flex-wrap pt-2 border-t border-[var(--border)]">
                   <span>{portal.isActive ? 'Workspace is live for partner operations' : 'Workspace is currently inactive'}</span>
                   <span>{portal.memberships?.[0]?.role === 'ADMIN' ? 'You can manage members and activity' : 'You have member-level access'}</span>
-                </Box>
-              </Box>
+                </div>
+              </div>
             ))}
           </DashboardGrid>
         )}

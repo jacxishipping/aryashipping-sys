@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Upload, Sparkles, FileText, CheckCircle2, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
-import { Box, Typography, Chip } from '@mui/material';
+import { Upload, Sparkles, CheckCircle2, Loader2, RefreshCw } from 'lucide-react';
 import { Button, toast } from '@/components/design-system';
 
 export interface ExtractedShipmentData {
@@ -125,24 +124,14 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
   };
 
   return (
-    <Box
-      sx={{
-        mb: 2.5,
-        p: 2,
-        borderRadius: 2.5,
-        border: '1px dashed',
-        borderColor: isDragging
-          ? 'var(--accent-gold)'
+    <div
+      className={`mb-6 p-4 rounded-2xl border transition-all ${
+        isDragging
+          ? 'border-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.04)] border-dashed'
           : extractedData
-          ? 'rgba(var(--success-rgb), 0.4)'
-          : 'rgba(var(--border-rgb), 0.8)',
-        bgcolor: isDragging
-          ? 'rgba(var(--accent-gold-rgb), 0.04)'
-          : extractedData
-          ? 'rgba(var(--success-rgb), 0.03)'
-          : 'var(--panel)',
-        transition: 'all 0.2s ease',
-      }}
+          ? 'border-emerald-500/40 bg-emerald-500/5 border-dashed'
+          : 'border-[var(--border)] bg-[var(--panel)] border-dashed'
+      }`}
       onDragOver={(e) => {
         e.preventDefault();
         if (!disabled && !isProcessing) setIsDragging(true);
@@ -154,37 +143,26 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
         ref={fileInputRef}
         type="file"
         accept=".pdf,.png,.jpg,.jpeg,.webp"
-        style={{ display: 'none' }}
+        className="hidden"
         onChange={handleFileChange}
         disabled={disabled || isProcessing}
       />
 
       {/* Header & Description */}
-      <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 1.5, mb: 1.5 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 28,
-              height: 28,
-              borderRadius: 1.5,
-              bgcolor: 'rgba(var(--accent-gold-rgb), 0.12)',
-              color: 'var(--accent-gold)',
-            }}
-          >
-            <Sparkles size={16} />
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] flex items-center justify-center">
+            <Sparkles className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-[var(--text-primary)] leading-tight">
               Smart Document Auto-Fill
-            </Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+            </h4>
+            <p className="text-xs text-[var(--text-secondary)] mt-0.5">
               Drop a Copart / IAAI Bill of Sale, Title, or Dock Receipt to auto-populate vehicle & auction info
-            </Typography>
-          </Box>
-        </Box>
+            </p>
+          </div>
+        </div>
 
         {!isProcessing && !extractedData && (
           <Button
@@ -192,9 +170,8 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
             variant="outline"
             onClick={() => fileInputRef.current?.click()}
             disabled={disabled}
-            className="text-xs shrink-0"
+            icon={<Upload className="w-3.5 h-3.5" />}
           >
-            <Upload className="w-3.5 h-3.5 mr-1" />
             Upload File
           </Button>
         )}
@@ -204,92 +181,73 @@ export function AiDocumentAutoFillDropzone({ onExtracted, disabled = false }: Ai
             size="sm"
             variant="ghost"
             onClick={reset}
-            className="text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+            icon={<RefreshCw className="w-3.5 h-3.5" />}
           >
-            <RefreshCw className="w-3.5 h-3.5 mr-1" />
             Upload Another
           </Button>
         )}
-      </Box>
+      </div>
 
       {/* Processing State */}
       {isProcessing && (
-        <Box sx={{ py: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1.5 }}>
+        <div className="py-4 flex items-center justify-center gap-2.5">
           <Loader2 className="w-5 h-5 text-[var(--accent-gold)] animate-spin" />
-          <Typography sx={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+          <span className="text-xs text-[var(--text-secondary)] font-medium">
             Analyzing document with AI... Extracting VIN, Lot #, and vehicle details
-          </Typography>
-        </Box>
+          </span>
+        </div>
       )}
 
       {/* Extracted Data Preview Pills */}
       {extractedData && (
-        <Box sx={{ mt: 1, pt: 1.5, borderTop: '1px solid rgba(var(--border-rgb), 0.5)' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-            <CheckCircle2 size={15} style={{ color: 'var(--success-dark)' }} />
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--success-dark)' }}>
+        <div className="mt-2 pt-3 border-t border-[var(--border)]">
+          <div className="flex items-center gap-1.5 mb-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+            <span className="text-xs font-semibold text-emerald-600">
               Extracted from {fileName}:
-            </Typography>
-          </Box>
+            </span>
+          </div>
 
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75 }}>
+          <div className="flex flex-wrap gap-2">
             {extractedData.vin && (
-              <Chip
-                label={`VIN: ${extractedData.vin}`}
-                size="small"
-                sx={{
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  fontSize: '0.75rem',
-                  bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)',
-                  color: 'var(--text-primary)',
-                  border: '1px solid rgba(var(--accent-gold-rgb), 0.3)',
-                }}
-              />
+              <span className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-[rgba(var(--accent-gold-rgb),0.1)] text-[var(--text-primary)] border border-[rgba(var(--accent-gold-rgb),0.3)]">
+                VIN: {extractedData.vin}
+              </span>
             )}
             {(extractedData.year || extractedData.make || extractedData.model) && (
-              <Chip
-                label={[extractedData.year, extractedData.make, extractedData.model].filter(Boolean).join(' ')}
-                size="small"
-                sx={{ fontSize: '0.75rem', fontWeight: 600, bgcolor: 'var(--background)' }}
-              />
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]">
+                {[extractedData.year, extractedData.make, extractedData.model].filter(Boolean).join(' ')}
+              </span>
             )}
             {extractedData.lotNumber && (
-              <Chip
-                label={`Lot #${extractedData.lotNumber}${extractedData.auctionName ? ` (${extractedData.auctionName})` : ''}`}
-                size="small"
-                sx={{ fontSize: '0.75rem', fontWeight: 600, bgcolor: 'var(--background)' }}
-              />
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]">
+                Lot #{extractedData.lotNumber}{extractedData.auctionName ? ` (${extractedData.auctionName})` : ''}
+              </span>
             )}
             {extractedData.hasKeys !== undefined && (
-              <Chip
-                label={`Keys: ${extractedData.hasKeys ? 'Yes' : 'No'}`}
-                size="small"
-                sx={{
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  bgcolor: extractedData.hasKeys ? 'rgba(var(--success-rgb), 0.1)' : 'rgba(var(--error-rgb), 0.1)',
-                  color: extractedData.hasKeys ? 'var(--success-dark)' : 'var(--error)',
-                }}
-              />
+              <span
+                className={`px-2.5 py-1 rounded-lg text-xs font-semibold border ${
+                  extractedData.hasKeys
+                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600'
+                    : 'bg-red-500/10 border-red-500/30 text-red-600'
+                }`}
+              >
+                Keys: {extractedData.hasKeys ? 'Yes' : 'No'}
+              </span>
             )}
             {extractedData.titleStatus && (
-              <Chip
-                label={`Title: ${extractedData.titleStatus}`}
-                size="small"
-                sx={{ fontSize: '0.75rem', fontWeight: 600, bgcolor: 'var(--background)' }}
-              />
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-[var(--background)] border border-[var(--border)] text-[var(--text-primary)]">
+                Title: {extractedData.titleStatus}
+              </span>
             )}
             {typeof extractedData.purchasePrice === 'number' && extractedData.purchasePrice > 0 && (
-              <Chip
-                label={`Price: $${extractedData.purchasePrice.toLocaleString()}`}
-                size="small"
-                sx={{ fontSize: '0.75rem', fontWeight: 600, bgcolor: 'rgba(var(--info-rgb), 0.1)', color: 'var(--info-dark)' }}
-              />
+              <span className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-blue-500/10 border border-blue-500/30 text-blue-600">
+                Price: ${extractedData.purchasePrice.toLocaleString()}
+              </span>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       )}
-    </Box>
+    </div>
   );
 }

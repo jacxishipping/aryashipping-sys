@@ -1,8 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Box, Chip, TextField, Typography } from '@mui/material';
-import { StatusBadge } from '@/components/design-system';
+import { FormField, StatusBadge } from '@/components/design-system';
 import { ArrowRight, BadgeDollarSign, MapPin, Search, ShipWheel, Truck, Warehouse } from 'lucide-react';
 import type { UnifiedShipmentTimelineItem } from '@/lib/shipment-timeline';
 
@@ -84,15 +83,11 @@ export default function UnifiedShipmentTimeline({ items, onOpenCompanyLedgerEntr
   return (
     <div className="space-y-4">
       <div className="flex flex-col gap-3 rounded-lg border border-[var(--border)] bg-[var(--background)] p-4">
-        <TextField
-          fullWidth
-          size="small"
+        <FormField
           placeholder="Search timeline by stage, note, location, or ledger description"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          InputProps={{
-            startAdornment: <Search className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />,
-          }}
+          startAdornment={<Search className="h-4 w-4 text-[var(--text-secondary)]" />}
         />
         <div className="flex flex-wrap gap-2">
           {(Object.keys(filterLabels) as TimelineFilter[]).map((value) => (
@@ -138,21 +133,19 @@ export default function UnifiedShipmentTimeline({ items, onOpenCompanyLedgerEntr
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <Typography sx={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.95rem' }}>
+                          <h4 className="font-bold text-[var(--text-primary)] text-sm sm:text-base">
                             {item.title}
-                          </Typography>
-                          <Chip
-                            label={item.source.replace(/_/g, ' ')}
-                            size="small"
-                            sx={{
-                              height: 22,
-                              fontSize: '0.68rem',
-                              fontWeight: 700,
-                              bgcolor: sourceStyle.bg,
+                          </h4>
+                          <span
+                            className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold"
+                            style={{
+                              backgroundColor: sourceStyle.bg,
                               color: sourceStyle.color,
                               border: `1px solid ${sourceStyle.border}`,
                             }}
-                          />
+                          >
+                            {item.source.replace(/_/g, ' ')}
+                          </span>
                           <StatusBadge
                             status="DEFAULT"
                             label={filterLabels[item.category]}
@@ -160,13 +153,13 @@ export default function UnifiedShipmentTimeline({ items, onOpenCompanyLedgerEntr
                             size="sm"
                           />
                         </div>
-                        <Typography sx={{ mt: 1, color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                        <p className="mt-1 text-sm text-[var(--text-secondary)]">
                           {item.description}
-                        </Typography>
+                        </p>
                       </div>
-                      <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
+                      <span className="text-xs text-[var(--text-secondary)] whitespace-nowrap">
                         {new Date(item.occurredAt).toLocaleString()}
-                      </Typography>
+                      </span>
                     </div>
 
                     <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-[var(--text-secondary)]">

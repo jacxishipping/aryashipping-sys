@@ -1,16 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import {
-	TextField,
-	Box,
-	InputAdornment,
-	FormControlLabel,
-	Checkbox,
-	CircularProgress,
-} from '@mui/material';
-import { DollarSign, Plus, Trash2, Paperclip, X, TrendingUp, TrendingDown } from 'lucide-react';
-import { Button, Modal, Select, toast } from '@/components/design-system';
+import { DollarSign, Plus, Trash2, Paperclip, X, TrendingUp, TrendingDown, Loader2 } from 'lucide-react';
+import { Button, FormField, Modal, Select, toast } from '@/components/design-system';
 
 interface ShipmentOption {
 	id: string;
@@ -371,10 +363,10 @@ export default function AddShipmentExpenseModal({
 			onClose={handleClose}
 			size={isBulkMode ? 'lg' : 'sm'}
 			title={
-				<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-					<DollarSign style={{ fontSize: 24, color: 'var(--accent-gold)' }} />
-					<span>{modalTitle || 'Add Shipment Expense'}</span>
-				</Box>
+				<div className="flex items-center gap-2">
+					<DollarSign className="w-5 h-5 text-[var(--accent-gold)]" />
+					<span className="font-bold">{modalTitle || 'Add Shipment Expense'}</span>
+				</div>
 			}
 			description={
 				isBulkMode
@@ -383,7 +375,6 @@ export default function AddShipmentExpenseModal({
 			}
 			showCloseButton={!loading}
 			disableBackdropClick={loading}
-			contentSx={{ maxHeight: '72vh' }}
 			actions={
 				<>
 					<Button variant="outline" onClick={handleClose} disabled={loading}>
@@ -395,26 +386,26 @@ export default function AddShipmentExpenseModal({
 				</>
 			}
 		>
-			<Box component="form" id={formId} onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+			<form id={formId} onSubmit={handleSubmit} className="flex flex-col gap-4">
 				{isBulkMode ? (
 					<>
-						<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-							<Box sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+						<div className="flex justify-between items-center">
+							<span className="text-xs text-[var(--text-secondary)]">
 								Add multiple shipment expenses in one submission
-							</Box>
+							</span>
 							<Button type="button" variant="outline" size="sm" icon={<Plus className="w-4 h-4" />} onClick={addItem} disabled={loading}>
 								Add Row
 							</Button>
-						</Box>
+						</div>
 
 						{expenseItems.map((item, index) => (
-							<Box key={`expense-row-${index}`} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-								<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-									<Box sx={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)' }}>Expense #{index + 1}</Box>
-									<Button type="button" variant="outline" size="sm" icon={<Trash2 className="w-3 h-3" />} onClick={() => removeItem(index)} disabled={loading || expenseItems.length === 1}>
+							<div key={`expense-row-${index}`} className="border border-[var(--border)] rounded-xl p-3.5 flex flex-col gap-3 bg-[var(--background)]">
+								<div className="flex justify-between items-center">
+									<span className="text-xs font-bold text-[var(--text-secondary)]">Expense #{index + 1}</span>
+									<Button type="button" variant="ghost" size="sm" icon={<Trash2 className="w-3.5 h-3.5 text-[var(--error)]" />} onClick={() => removeItem(index)} disabled={loading || expenseItems.length === 1}>
 										Remove
 									</Button>
-								</Box>
+								</div>
 
 								<Select
 									label="Shipment"
@@ -438,26 +429,33 @@ export default function AddShipmentExpenseModal({
 									options={expenseTypes}
 								/>
 
-								<TextField size="small" label="Description" value={item.description} onChange={(e) => updateItem(index, 'description', e.target.value)} required />
+								<FormField size="small" label="Description" value={item.description} onChange={(e) => updateItem(index, 'description', e.target.value)} required />
 
-								<FormControlLabel
-									control={<Checkbox checked={item.useSplitAmounts} onChange={(e) => updateItem(index, 'useSplitAmounts', e.target.checked)} size="small" />}
-									label={<Box component="span" sx={{ fontSize: '0.8125rem', color: 'var(--text-secondary)' }}>Use split amounts (Customer vs. Company Cost)</Box>}
-								/>
+								<label className="flex items-center gap-2 cursor-pointer">
+									<input
+										type="checkbox"
+										checked={item.useSplitAmounts}
+										onChange={(e) => updateItem(index, 'useSplitAmounts', e.target.checked)}
+										className="rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)] w-4 h-4"
+									/>
+									<span className="text-xs text-[var(--text-secondary)]">
+										Use split amounts (Customer vs. Company Cost)
+									</span>
+								</label>
 
 								{!item.useSplitAmounts ? (
-									<TextField size="small" label="Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} helperText="Only the customer ledger will be debited" />
+									<FormField size="small" label="Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} leftIcon={<span className="text-[var(--text-secondary)]">$</span>} helperText="Only the customer ledger will be debited" />
 								) : (
-									<>
-										<TextField size="small" label="Customer Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} helperText="Amount debited to the customer ledger" />
-										<TextField size="small" label="Carrier Cost (USD)" type="number" value={item.companyAmount} onChange={(e) => updateItem(index, 'companyAmount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }} helperText="Amount credited to the company ledger" />
-									</>
+									<div className="grid grid-cols-2 gap-3">
+										<FormField size="small" label="Customer Amount (USD)" type="number" value={item.amount} onChange={(e) => updateItem(index, 'amount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} leftIcon={<span className="text-[var(--text-secondary)]">$</span>} helperText="Debited to customer" />
+										<FormField size="small" label="Carrier Cost (USD)" type="number" value={item.companyAmount} onChange={(e) => updateItem(index, 'companyAmount', e.target.value)} required inputProps={{ min: 0, step: 0.01 }} leftIcon={<span className="text-[var(--text-secondary)]">$</span>} helperText="Credited to company" />
+									</div>
 								)}
 
 								{/* Receipt attachment for bulk item */}
-								<Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 0.5 }}>
+								<div className="flex items-center gap-2 mt-1">
 									{item.receiptUrl ? (
-										<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, px: 1.5, py: 0.75, border: '1px solid var(--border)', borderRadius: 1.5, backgroundColor: 'rgba(var(--accent-gold-rgb), 0.08)' }}>
+										<div className="flex items-center gap-1.5 px-2.5 py-1 border border-[var(--border)] rounded-lg bg-[rgba(var(--accent-gold-rgb),0.08)]">
 											<Paperclip className="w-3.5 h-3.5 text-[var(--accent-gold)]" />
 											<span className="text-xs truncate max-w-[200px] text-[var(--text-primary)]">{item.receiptName || 'Attached Receipt'}</span>
 											<button
@@ -470,9 +468,9 @@ export default function AddShipmentExpenseModal({
 											>
 												<X className="w-3 h-3" />
 											</button>
-										</Box>
+										</div>
 									) : (
-										<label className="inline-flex items-center gap-1.5 px-3 py-1 border border-dashed border-[var(--border)] rounded text-xs text-[var(--text-secondary)] hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] cursor-pointer transition-colors">
+										<label className="inline-flex items-center gap-1.5 px-3 py-1 border border-dashed border-[var(--border)] rounded-lg text-xs text-[var(--text-secondary)] hover:border-[var(--accent-gold)] hover:text-[var(--accent-gold)] cursor-pointer transition-colors">
 											<Paperclip className="w-3.5 h-3.5" />
 											<span>Attach Receipt (PDF/Image)</span>
 											<input
@@ -486,14 +484,14 @@ export default function AddShipmentExpenseModal({
 											/>
 										</label>
 									)}
-								</Box>
+								</div>
 
-								<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+								<span className="text-[0.7rem] text-[var(--text-secondary)]">
 									Payment mode: Due (invoice first)
-								</Box>
+								</span>
 
-								<TextField size="small" label="Notes" value={item.notes} onChange={(e) => updateItem(index, 'notes', e.target.value)} multiline rows={2} />
-							</Box>
+								<FormField size="small" label="Notes" value={item.notes} onChange={(e) => updateItem(index, 'notes', e.target.value)} multiline rows={2} />
+							</div>
 						))}
 					</>
 				) : (
@@ -513,7 +511,7 @@ export default function AddShipmentExpenseModal({
 							/>
 						)}
 
-						{/* Accounting Leg Selector (when context is not locked by props) */}
+						{/* Accounting Leg Selector */}
 						{!contextTypeProp && (
 							<Select
 								label="Accounting Leg / Posting Route"
@@ -538,7 +536,7 @@ export default function AddShipmentExpenseModal({
 							options={expenseTypes}
 						/>
 
-						<TextField
+						<FormField
 							size="small"
 							label="Description"
 							value={formData.description}
@@ -547,13 +545,20 @@ export default function AddShipmentExpenseModal({
 							placeholder="e.g. Forklift fee, storage demurrage, extra towing"
 						/>
 
-						<FormControlLabel
-							control={<Checkbox checked={useSplitAmounts} onChange={(e) => setUseSplitAmounts(e.target.checked)} size="small" />}
-							label={<Box component="span" sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Use split amounts (Track Customer Charge vs. Carrier Cost)</Box>}
-						/>
+						<label className="flex items-center gap-2 cursor-pointer">
+							<input
+								type="checkbox"
+								checked={useSplitAmounts}
+								onChange={(e) => setUseSplitAmounts(e.target.checked)}
+								className="rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)] w-4 h-4"
+							/>
+							<span className="text-xs text-[var(--text-secondary)]">
+								Use split amounts (Track Customer Charge vs. Carrier Cost)
+							</span>
+						</label>
 
 						{!useSplitAmounts ? (
-							<TextField
+							<FormField
 								size="small"
 								label="Amount (USD)"
 								type="number"
@@ -561,13 +566,13 @@ export default function AddShipmentExpenseModal({
 								onChange={(e) => handleChange('amount', e.target.value)}
 								required
 								inputProps={{ min: 0, step: 0.01 }}
-								InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+								leftIcon={<span className="text-[var(--text-secondary)]">$</span>}
 								helperText="Customer ledger debited. Company ledger credited at same amount."
 							/>
 						) : (
-							<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-								<Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
-									<TextField
+							<div className="flex flex-col gap-3">
+								<div className="grid grid-cols-2 gap-3">
+									<FormField
 										size="small"
 										label="Customer Charge (USD)"
 										type="number"
@@ -575,10 +580,10 @@ export default function AddShipmentExpenseModal({
 										onChange={(e) => handleChange('amount', e.target.value)}
 										required
 										inputProps={{ min: 0, step: 0.01 }}
-										InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+										leftIcon={<span className="text-[var(--text-secondary)]">$</span>}
 										helperText="Debited to customer"
 									/>
-									<TextField
+									<FormField
 										size="small"
 										label="Carrier Cost (USD)"
 										type="number"
@@ -586,49 +591,43 @@ export default function AddShipmentExpenseModal({
 										onChange={(e) => handleChange('companyAmount', e.target.value)}
 										required
 										inputProps={{ min: 0, step: 0.01 }}
-										InputProps={{ startAdornment: <InputAdornment position="start">$</InputAdornment> }}
+										leftIcon={<span className="text-[var(--text-secondary)]">$</span>}
 										helperText="Credited to company ledger"
 									/>
-								</Box>
+								</div>
 
 								{/* Dynamic Margin Indicator */}
 								{customerAmountNum > 0 && companyAmountNum > 0 && (
-									<Box
-										sx={{
-											p: 1.25,
-											borderRadius: 1.5,
-											border: '1px solid',
-											borderColor: marginNum >= 0 ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)',
-											backgroundColor: marginNum >= 0 ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
-											display: 'flex',
-											alignItems: 'center',
-											justifyContent: 'space-between',
-											fontSize: '0.8125rem',
-										}}
+									<div
+										className={`p-3 rounded-xl border flex items-center justify-between text-xs ${
+											marginNum >= 0
+												? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600'
+												: 'border-red-500/30 bg-red-500/10 text-red-600'
+										}`}
 									>
-										<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+										<div className="flex items-center gap-1.5 font-semibold">
 											{marginNum >= 0 ? (
 												<TrendingUp className="w-4 h-4 text-emerald-500" />
 											) : (
 												<TrendingDown className="w-4 h-4 text-red-500" />
 											)}
-											<span style={{ color: marginNum >= 0 ? 'rgb(21,128,61)' : 'rgb(185,28,28)', fontWeight: 600 }}>
+											<span>
 												{marginNum >= 0 ? 'Projected Profit Margin' : 'Projected Negative Margin (Loss)'}
 											</span>
-										</Box>
-										<Box sx={{ fontWeight: 700, color: marginNum >= 0 ? 'rgb(21,128,61)' : 'rgb(185,28,28)' }}>
+										</div>
+										<span className="font-bold">
 											{marginNum >= 0 ? '+' : ''}${marginNum.toFixed(2)} ({marginPercentage.toFixed(1)}%)
-										</Box>
-									</Box>
+										</span>
+									</div>
 								)}
-							</Box>
+							</div>
 						)}
 
 						{/* Document / Receipt Upload */}
-						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-							<Box sx={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+						<div className="flex flex-col gap-1.5">
+							<span className="text-xs font-semibold text-[var(--text-secondary)]">
 								Receipt / Invoice Document
-							</Box>
+							</span>
 							<input
 								type="file"
 								ref={fileInputRef}
@@ -640,23 +639,13 @@ export default function AddShipmentExpenseModal({
 								}}
 							/>
 							{formData.receiptUrl ? (
-								<Box
-									sx={{
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'space-between',
-										p: 1.25,
-										border: '1px solid rgba(var(--accent-gold-rgb), 0.35)',
-										borderRadius: 1.5,
-										backgroundColor: 'rgba(var(--accent-gold-rgb), 0.08)',
-									}}
-								>
-									<Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+								<div className="flex items-center justify-between p-2.5 border border-[rgba(var(--accent-gold-rgb),0.35)] rounded-xl bg-[rgba(var(--accent-gold-rgb),0.08)]">
+									<div className="flex items-center gap-2 min-w-0">
 										<Paperclip className="w-4 h-4 text-[var(--accent-gold)] shrink-0" />
-										<Box sx={{ fontSize: '0.8125rem', fontWeight: 500, color: 'var(--text-primary)' }} className="truncate">
+										<span className="text-xs font-medium text-[var(--text-primary)] truncate">
 											{formData.receiptName || 'Receipt Document Attached'}
-										</Box>
-									</Box>
+										</span>
+									</div>
 									<button
 										type="button"
 										onClick={() => setFormData((prev) => ({ ...prev, receiptUrl: '', receiptName: '' }))}
@@ -665,26 +654,26 @@ export default function AddShipmentExpenseModal({
 									>
 										<X className="w-4 h-4" />
 									</button>
-								</Box>
+								</div>
 							) : (
 								<Button
 									type="button"
 									variant="outline"
 									size="sm"
 									disabled={uploadingReceipt}
-									icon={uploadingReceipt ? <CircularProgress size={14} color="inherit" /> : <Paperclip className="w-4 h-4" />}
+									icon={uploadingReceipt ? <Loader2 className="w-4 h-4 animate-spin" /> : <Paperclip className="w-4 h-4" />}
 									onClick={() => fileInputRef.current?.click()}
 								>
 									{uploadingReceipt ? 'Uploading Receipt...' : 'Attach Receipt (PDF or Image)'}
 								</Button>
 							)}
-						</Box>
+						</div>
 
-						<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+						<span className="text-[0.7rem] text-[var(--text-secondary)]">
 							Payment mode: Due (invoice first)
-						</Box>
+						</span>
 
-						<TextField
+						<FormField
 							size="small"
 							label="Notes"
 							value={formData.notes}
@@ -695,7 +684,7 @@ export default function AddShipmentExpenseModal({
 						/>
 					</>
 				)}
-			</Box>
+			</form>
 		</Modal>
 	);
 }

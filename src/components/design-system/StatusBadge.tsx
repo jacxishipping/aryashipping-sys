@@ -1,7 +1,6 @@
 "use client";
 
 import { Anchor, AlertTriangle, CheckCircle2, Clock, Truck, XCircle } from 'lucide-react';
-import { Box, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -66,21 +65,21 @@ function getStatusIcon(status: string) {
     case 'DELIVERED':
     case 'PAID':
     case 'ON_HAND':
-      return <CheckCircle2 width={10} height={10} />;
+      return <CheckCircle2 width={12} height={12} />;
     case 'PENDING':
     case 'DISPATCHING':
-      return <Clock width={10} height={10} />;
+      return <Clock width={12} height={12} />;
     case 'OVERDUE':
     case 'DELAYED':
-      return <AlertTriangle width={10} height={10} />;
+      return <AlertTriangle width={12} height={12} />;
     case 'IN_TRANSIT':
     case 'IN_TRANSIT_TO_DESTINATION':
-      return <Truck width={10} height={10} />;
+      return <Truck width={12} height={12} />;
     case 'AT_PORT':
     case 'ARRIVED_PORT':
-      return <Anchor width={10} height={10} />;
+      return <Anchor width={12} height={12} />;
     case 'CANCELLED':
-      return <XCircle width={10} height={10} />;
+      return <XCircle width={12} height={12} />;
     default:
       return null;
   }
@@ -91,7 +90,7 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
   // Shipment Statuses
   ON_HAND: {
     bg: 'rgba(16, 185, 129, 0.12)',
-    text: 'var(--success-dark)', // Darker green for text
+    text: 'var(--success-dark)',
     border: 'var(--success)',
   },
   DISPATCHING: {
@@ -101,7 +100,7 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
   },
   IN_TRANSIT: {
     bg: 'rgba(var(--info-rgb), 0.12)',
-    text: 'var(--info-dark)', // Darker blue for text
+    text: 'var(--info-dark)',
     border: 'var(--info)',
   },
   IN_TRANSIT_TO_DESTINATION: {
@@ -111,7 +110,7 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
   },
   AT_PORT: {
     bg: 'rgba(var(--warning-rgb), 0.12)',
-    text: 'var(--warning-dark)', // Darker amber for text
+    text: 'var(--warning-dark)',
     border: 'var(--warning)',
   },
   CUSTOMS: {
@@ -136,7 +135,7 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
   },
   DELAYED: {
     bg: 'rgba(239, 68, 68, 0.12)',
-    text: 'var(--error-dark)', // Darker red
+    text: 'var(--error-dark)',
     border: 'var(--error)',
   },
 
@@ -220,7 +219,6 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
     text: 'var(--info-dark)',
     border: 'var(--info)',
   },
-  // User Roles
   ADMIN: {
     bg: 'rgba(var(--accent-gold-rgb), 0.15)',
     text: 'var(--accent-gold)',
@@ -248,7 +246,6 @@ const statusColors: Record<string, { bg: string; text: string; border: string }>
   },
 };
 
-// Format status text for display
 function formatStatusText(status: string): string {
   return status
     .split('_')
@@ -256,28 +253,27 @@ function formatStatusText(status: string): string {
     .join(' ');
 }
 
-// Size configurations
 const sizeConfig = {
   sm: {
-    fontSize: '0.6875rem',
-    padding: '3px 10px',
-    height: '22px',
-    dotSize: '6px',
-    gap: '4px',
+    fontSize: 'text-[0.6875rem]',
+    padding: 'px-2 py-0.5',
+    height: 'h-[22px]',
+    dotSize: 'w-1.5 h-1.5',
+    gap: 'gap-1',
   },
   md: {
-    fontSize: '0.75rem',
-    padding: '4px 12px',
-    height: '24px',
-    dotSize: '8px',
-    gap: '6px',
+    fontSize: 'text-xs',
+    padding: 'px-2.5 py-1',
+    height: 'h-6',
+    dotSize: 'w-2 h-2',
+    gap: 'gap-1.5',
   },
   lg: {
-    fontSize: '0.8125rem',
-    padding: '6px 16px',
-    height: '28px',
-    dotSize: '10px',
-    gap: '8px',
+    fontSize: 'text-sm',
+    padding: 'px-3.5 py-1.5',
+    height: 'h-7',
+    dotSize: 'w-2.5 h-2.5',
+    gap: 'gap-2',
   },
 };
 
@@ -288,197 +284,63 @@ export default function StatusBadge({
   size = 'md',
   icon,
   showIcon = false,
-  className,
+  className = '',
 }: StatusBadgeProps) {
   const { density } = useTheme();
   const isCompact = density === 'compact';
-  const badgeClassName = ["status-badge", className].filter(Boolean).join(" ");
-  const normalizedStatus = status.toUpperCase().replace(/\s+/g, '_');
+  const normalizedStatus = (status || 'DEFAULT').toUpperCase().replace(/\s+/g, '_');
   const colors = statusColors[normalizedStatus] || statusColors.DEFAULT;
-  const baseConfig = sizeConfig[size];
-  const config = isCompact
-    ? {
-        ...baseConfig,
-        fontSize: '0.6875rem',
-        padding: '2px 8px',
-        height: '20px',
-        gap: '4px',
-        dotSize: '6px',
-      }
-    : baseConfig;
+  const config = isCompact ? sizeConfig.sm : (sizeConfig[size] || sizeConfig.md);
   const resolvedIcon = showIcon ? getStatusIcon(normalizedStatus) : icon;
-  const displayText = label || formatStatusText(status);
+  const displayText = label || formatStatusText(status || '');
 
-  // Default variant (filled background)
   if (variant === 'default') {
     return (
-      <Box
-        component="span"
-        className={badgeClassName}
-        sx={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: config.gap,
-          height: config.height,
-          px: config.padding,
-          borderRadius: isCompact ? '6px' : '12px',
+      <span
+        className={`status-badge inline-flex items-center justify-center ${config.gap} ${config.height} ${config.padding} rounded-md font-semibold ${config.fontSize} whitespace-nowrap transition-all shadow-sm ${className}`}
+        style={{
           backgroundColor: colors.bg,
-          border: '1px solid',
-          borderColor: colors.border,
-          fontSize: config.fontSize,
-          fontWeight: 600,
           color: colors.text,
-          whiteSpace: 'nowrap',
-          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-          boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
-          '&:hover': {
-            transform: 'translateY(-1px)',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          },
+          border: `1px solid ${colors.border}`,
         }}
       >
-        {resolvedIcon && (
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              fontSize: `${parseFloat(config.fontSize) * 0.9}rem`,
-              lineHeight: 1,
-            }}
-          >
-            {resolvedIcon}
-          </Box>
-        )}
-        <Typography
-          component="span"
-          sx={{
-            fontSize: 'inherit',
-            fontWeight: 'inherit',
-            letterSpacing: '0.025em',
-            lineHeight: 1,
-            textTransform: label ? 'none' : 'capitalize',
-          }}
-        >
-          {displayText}
-        </Typography>
-      </Box>
+        {resolvedIcon && <span className="inline-flex items-center">{resolvedIcon}</span>}
+        <span className={label ? '' : 'capitalize'}>{displayText}</span>
+      </span>
     );
   }
 
-  // Dot variant (with colored dot)
   if (variant === 'dot') {
     return (
-      <Box
-        component="span"
-        className={badgeClassName}
-        sx={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: config.gap,
-          fontSize: config.fontSize,
-          fontWeight: 500,
-          color: 'var(--text-primary)',
-        }}
-      >
-        <Box
-          sx={{
-            width: config.dotSize,
-            height: config.dotSize,
-            borderRadius: '50%',
-            backgroundColor: colors.text,
-            flexShrink: 0,
-            boxShadow: `0 0 0 2px ${colors.bg}`,
-          }}
+      <span className={`status-badge inline-flex items-center ${config.gap} ${config.fontSize} font-medium text-[var(--text-primary)] ${className}`}>
+        <span
+          className={`${config.dotSize} rounded-full flex-shrink-0`}
+          style={{ backgroundColor: colors.text }}
         />
-        {resolvedIcon && (
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              fontSize: `${parseFloat(config.fontSize) * 0.9}rem`,
-              color: colors.text,
-              lineHeight: 1,
-            }}
-          >
-            {resolvedIcon}
-          </Box>
-        )}
-        <Typography
-          component="span"
-          sx={{
-            fontSize: 'inherit',
-            fontWeight: 'inherit',
-            textTransform: label ? 'none' : 'capitalize',
-            lineHeight: 1,
-          }}
-        >
-          {displayText}
-        </Typography>
-      </Box>
+        {resolvedIcon && <span className="inline-flex items-center">{resolvedIcon}</span>}
+        <span className={label ? '' : 'capitalize'}>{displayText}</span>
+      </span>
     );
   }
 
-  // Outline variant (bordered, no background)
   if (variant === 'outline') {
     return (
-      <Box
-        component="span"
-        className={badgeClassName}
-        sx={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: config.gap,
-          height: config.height,
-          px: config.padding,
-          borderRadius: isCompact ? '6px' : '12px',
-          backgroundColor: 'transparent',
-          border: '1.5px solid',
-          borderColor: colors.border,
-          fontSize: config.fontSize,
-          fontWeight: 600,
+      <span
+        className={`status-badge inline-flex items-center justify-center ${config.gap} ${config.height} ${config.padding} rounded-md font-semibold ${config.fontSize} whitespace-nowrap transition-all bg-transparent ${className}`}
+        style={{
           color: colors.text,
-          whiteSpace: 'nowrap',
-          transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-          '&:hover': {
-            backgroundColor: colors.bg,
-            transform: 'translateY(-1px)',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          },
+          border: `1.5px solid ${colors.border}`,
         }}
       >
-        {resolvedIcon && (
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              fontSize: `${parseFloat(config.fontSize) * 0.9}rem`,
-              lineHeight: 1,
-            }}
-          >
-            {resolvedIcon}
-          </Box>
-        )}
-        <Typography
-          component="span"
-          sx={{
-            fontSize: 'inherit',
-            fontWeight: 'inherit',
-            letterSpacing: '0.025em',
-            textTransform: label ? 'none' : 'capitalize',
-            lineHeight: 1,
-          }}
-        >
-          {displayText}
-        </Typography>
-      </Box>
+        {resolvedIcon && <span className="inline-flex items-center">{resolvedIcon}</span>}
+        <span className={label ? '' : 'capitalize'}>{displayText}</span>
+      </span>
     );
   }
 
   return null;
 }
 
-// Convenience components for specific status types
 export function ShipmentStatusBadge({ 
   status, 
   ...props 

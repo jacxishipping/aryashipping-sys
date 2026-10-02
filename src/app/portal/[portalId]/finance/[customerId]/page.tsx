@@ -4,19 +4,9 @@ import { formatMoney as formatCurrency } from '@/lib/format';
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
-import HistoryOutlinedIcon from '@mui/icons-material/HistoryOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
-import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
-import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
-import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
-import ReceiptOutlinedIcon from '@mui/icons-material/ReceiptOutlined';
-import { Box, TextField, Typography } from '@mui/material';
+import { Wallet, History, Receipt, AlertTriangle, Package, FileText, ExternalLink, PlusCircle, CreditCard, FileCheck } from 'lucide-react';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
-import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, Skeleton, SkeletonTable, toast } from '@/components/design-system';
+import { Button, EmptyState, PageHeader, PaymentStatusBadge, Select, FormField, Skeleton, SkeletonTable, toast } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
 
 type PortalInfo = {
@@ -365,10 +355,10 @@ export default function PortalCustomerFinanceDetailPage() {
       key: 'invoice',
       header: 'Invoice',
       render: (_, row) => (
-        <Box sx={{ display: 'grid', gap: 0.35 }}>
-          <Typography sx={{ fontSize: '0.92rem', fontWeight: 700 }}>{row.invoiceNumber}</Typography>
-          <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Issued {formatDate(row.issueDate)}</Typography>
-        </Box>
+        <div className="grid gap-0.5">
+          <p className="text-sm font-bold text-[var(--text-primary)]">{row.invoiceNumber}</p>
+          <p className="text-xs text-[var(--text-secondary)]">Issued {formatDate(row.issueDate)}</p>
+        </div>
       ),
     },
     {
@@ -396,20 +386,19 @@ export default function PortalCustomerFinanceDetailPage() {
       header: 'Actions',
       align: 'right',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/portal/${portalId}/shipments/${row.shipmentId}`} style={{ textDecoration: 'none' }}>
-            <Button variant="outline" size="sm">
-              <OpenInNewOutlinedIcon sx={{ fontSize: 16 }} />
+        <div className="flex gap-2 justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/portal/${portalId}/shipments/${row.shipmentId}`}>
+            <Button variant="outline" size="sm" icon={<ExternalLink className="w-3.5 h-3.5" />}>
               Shipment
             </Button>
           </Link>
-          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none' }}>
+          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf`} target="_blank" rel="noreferrer">
             <Button variant="outline" size="sm">View PDF</Button>
           </a>
-          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf?download=1`} style={{ textDecoration: 'none' }}>
+          <a href={`/api/partner-portals/${portalId}/finance/invoices/${row.id}/pdf?download=1`}>
             <Button variant="outline" size="sm">Download</Button>
           </a>
-        </Box>
+        </div>
       ),
     },
   ], [portalId]);
@@ -424,10 +413,10 @@ export default function PortalCustomerFinanceDetailPage() {
       key: 'description',
       header: 'Charge',
       render: (_, row) => (
-        <Box sx={{ display: 'grid', gap: 0.35 }}>
-          <Typography sx={{ fontSize: '0.9rem', fontWeight: 700 }}>{row.description}</Typography>
-          <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{row.chargeCode} • {row.category.replace(/_/g, ' ')}</Typography>
-        </Box>
+        <div className="grid gap-0.5">
+          <p className="text-sm font-bold text-[var(--text-primary)]">{row.description}</p>
+          <p className="text-xs text-[var(--text-secondary)]">{row.chargeCode} • {row.category.replace(/_/g, ' ')}</p>
+        </div>
       ),
     },
     {
@@ -450,14 +439,13 @@ export default function PortalCustomerFinanceDetailPage() {
       header: 'Actions',
       align: 'right',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/portal/${portalId}/shipments/${row.shipmentId}`} style={{ textDecoration: 'none' }}>
-            <Button variant="outline" size="sm">
-              <OpenInNewOutlinedIcon sx={{ fontSize: 16 }} />
+        <div className="flex justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/portal/${portalId}/shipments/${row.shipmentId}`}>
+            <Button variant="outline" size="sm" icon={<ExternalLink className="w-3.5 h-3.5" />}>
               Shipment
             </Button>
           </Link>
-        </Box>
+        </div>
       ),
     },
   ], [portalId]);
@@ -486,18 +474,18 @@ export default function PortalCustomerFinanceDetailPage() {
     {
       key: 'mainStatus',
       header: 'Main Shipment Payment',
-      render: (_, row) => <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{row.paymentStatus}</Typography>,
+      render: (_, row) => <span className="text-xs text-[var(--text-secondary)]">{row.paymentStatus}</span>,
     },
     {
       key: 'actions',
       header: 'Actions',
       align: 'right',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/portal/${portalId}/shipments/${row.id}`} style={{ textDecoration: 'none' }}>
+        <div className="flex justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/portal/${portalId}/shipments/${row.id}`}>
             <Button variant="outline" size="sm">Open</Button>
           </Link>
-        </Box>
+        </div>
       ),
     },
   ], [portalId]);
@@ -512,10 +500,10 @@ export default function PortalCustomerFinanceDetailPage() {
       key: 'description',
       header: 'Entry',
       render: (_, row) => (
-        <Box sx={{ display: 'grid', gap: 0.3 }}>
-          <Typography sx={{ fontSize: '0.9rem', fontWeight: 700 }}>{row.description}</Typography>
-          <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{row.shipmentReference || 'Customer-level entry'}</Typography>
-        </Box>
+        <div className="grid gap-0.5">
+          <p className="text-sm font-bold text-[var(--text-primary)]">{row.description}</p>
+          <p className="text-xs text-[var(--text-secondary)]">{row.shipmentReference || 'Customer-level entry'}</p>
+        </div>
       ),
     },
     {
@@ -577,61 +565,61 @@ export default function PortalCustomerFinanceDetailPage() {
           { label: 'Shipments', value: data.summary.linkedShipmentCount, helper: 'Linked to this customer' },
         ] : undefined}
         actions={
-          <Box className="no-print" sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            <a href={activityExportHref} style={{ textDecoration: 'none' }}>
+          <div className="no-print flex gap-2 flex-wrap">
+            <a href={activityExportHref}>
               <Button variant="outline" size="sm">Export Portal-Only Activity</Button>
             </a>
-            <Link href={`/portal/${portalId}/finance`} style={{ textDecoration: 'none' }}>
+            <Link href={`/portal/${portalId}/finance`}>
               <Button variant="outline" size="sm">Back To Finance</Button>
             </Link>
-            <Link href={`/portal/${portalId}/customers`} style={{ textDecoration: 'none' }}>
+            <Link href={`/portal/${portalId}/customers`}>
               <Button variant="outline" size="sm">Customers</Button>
             </Link>
-          </Box>
+          </div>
         }
       />
 
       {loading ? (
         <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[0.95fr_1.35fr]">
           <DashboardPanel title="Customer Profile" description="Portal identity, main aging, and downstream customer context.">
-            <Box sx={{ display: 'grid', gap: 1.5 }}>
+            <div className="grid gap-3">
               {[0, 1, 2, 3, 4].map((index) => (
                 <Skeleton key={index} variant="rounded" height={44} />
               ))}
-            </Box>
+            </div>
           </DashboardPanel>
           <DashboardPanel title="Balances" description="Outstanding, overdue, and paid totals.">
-            <Box sx={{ display: 'grid', gap: 1.5 }}>
+            <div className="grid gap-3">
               {[0, 1, 2].map((index) => (
                 <Skeleton key={index} variant="rounded" height={72} />
               ))}
-            </Box>
+            </div>
           </DashboardPanel>
         </DashboardGrid>
       ) : !data ? (
         <DashboardPanel title="Customer finance unavailable">
-          <EmptyState icon={<AccountBalanceWalletOutlinedIcon />} title="Customer finance unavailable" description="This customer finance view could not be loaded." />
+          <EmptyState icon={<Wallet className="w-12 h-12" />} title="Customer finance unavailable" description="This customer finance view could not be loaded." />
         </DashboardPanel>
       ) : (
         <>
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[0.95fr_1.35fr]">
             <DashboardPanel title="Customer Profile" description="Portal identity, main aging, and downstream customer context.">
-              <Box sx={{ display: 'grid', gap: 1.5 }}>
-                <Box sx={{ display: 'grid', gap: 0.35 }}>
-                  <Typography sx={{ fontSize: '1.1rem', fontWeight: 800 }}>{data.customer.name}</Typography>
-                  <Typography sx={{ color: 'var(--text-secondary)' }}>{data.customer.email || 'No email saved'}</Typography>
-                  <Typography sx={{ color: 'var(--text-secondary)' }}>{data.customer.phone || 'No phone saved'}</Typography>
-                  <Typography sx={{ color: 'var(--text-secondary)' }}>{[data.customer.city, data.customer.country].filter(Boolean).join(', ') || 'No location saved'}</Typography>
-                </Box>
+              <div className="grid gap-3">
+                <div className="grid gap-1">
+                  <h3 className="text-base font-bold text-[var(--text-primary)]">{data.customer.name}</h3>
+                  <p className="text-xs text-[var(--text-secondary)]">{data.customer.email || 'No email saved'}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{data.customer.phone || 'No phone saved'}</p>
+                  <p className="text-xs text-[var(--text-secondary)]">{[data.customer.city, data.customer.country].filter(Boolean).join(', ') || 'No location saved'}</p>
+                </div>
                 {data.customer.notes ? (
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.5, bgcolor: 'rgba(var(--text-primary-rgb),0.03)' }}>
-                    <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.75 }}>Portal Notes</Typography>
-                    <Typography sx={{ color: 'var(--text-secondary)' }}>{data.customer.notes}</Typography>
-                  </Box>
+                  <div className="border border-[var(--border)] rounded-2xl p-3 bg-[rgba(var(--text-primary-rgb),0.03)]">
+                    <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Portal Notes</p>
+                    <p className="text-xs text-[var(--text-secondary)]">{data.customer.notes}</p>
+                  </div>
                 ) : null}
-                <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.5, bgcolor: 'rgba(var(--brand-primary-rgb),0.06)' }}>
-                  <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.75 }}>Main Invoice Aging</Typography>
-                  <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 1 }}>
+                <div className="border border-[var(--border)] rounded-2xl p-3 bg-[rgba(var(--brand-primary-rgb),0.06)]">
+                  <p className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)] mb-2">Main Invoice Aging</p>
+                  <div className="grid grid-cols-2 gap-2">
                     {[
                       { label: 'Current', value: data.aging.current.amount, count: data.aging.current.count },
                       { label: '1-30 Days', value: data.aging.days1to30.amount, count: data.aging.days1to30.count },
@@ -639,72 +627,72 @@ export default function PortalCustomerFinanceDetailPage() {
                       { label: '61-90 Days', value: data.aging.days61to90.amount, count: data.aging.days61to90.count },
                       { label: '90+ Days', value: data.aging.days90plus.amount, count: data.aging.days90plus.count },
                     ].map((bucket) => (
-                      <Box key={bucket.label} sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 1.25, bgcolor: 'var(--panel)' }}>
-                        <Typography sx={{ fontSize: '0.74rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>{bucket.label}</Typography>
-                        <Typography sx={{ fontSize: '1rem', fontWeight: 800 }}>{formatCurrency(bucket.value)}</Typography>
-                        <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{bucket.count} invoices</Typography>
-                      </Box>
+                      <div key={bucket.label} className="border border-[var(--border)] rounded-xl p-2.5 bg-[var(--panel)]">
+                        <span className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] block">{bucket.label}</span>
+                        <span className="text-sm font-bold text-[var(--text-primary)] block">{formatCurrency(bucket.value)}</span>
+                        <span className="text-[11px] text-[var(--text-secondary)]">{bucket.count} invoices</span>
+                      </div>
                     ))}
-                  </Box>
-                </Box>
-              </Box>
+                  </div>
+                </div>
+              </div>
             </DashboardPanel>
 
             <DashboardPanel title="Portal Ledger Controls" description="Create portal-only debits, credits, and payment records without changing the main shipment or customer finance tables.">
               {data.viewer?.canManageFinance ? (
-                <Box sx={{ display: 'grid', gap: 2.5 }}>
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.75, display: 'grid', gap: 1.25, bgcolor: 'rgba(var(--brand-primary-rgb),0.05)' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <NoteAddOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-                      <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>Create Manual Ledger Entry</Typography>
-                    </Box>
-                    <TextField label="Description" value={ledgerForm.description} onChange={(event) => setLedgerForm((current) => ({ ...current, description: event.target.value }))} />
-                    <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' } }}>
+                <div className="grid gap-4">
+                  <div className="border border-[var(--border)] rounded-2xl p-4 grid gap-3 bg-[rgba(var(--brand-primary-rgb),0.05)]">
+                    <div className="flex items-center gap-2">
+                      <PlusCircle className="w-4 h-4 text-[var(--text-secondary)]" />
+                      <h4 className="text-sm font-bold text-[var(--text-primary)]">Create Manual Ledger Entry</h4>
+                    </div>
+                    <FormField label="Description" value={ledgerForm.description} onChange={(event) => setLedgerForm((current) => ({ ...current, description: event.target.value }))} />
+                    <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
                       <Select label="Type" value={ledgerForm.type} onChange={(value) => setLedgerForm((current) => ({ ...current, type: String(value) as 'DEBIT' | 'CREDIT' }))} options={[{ value: 'DEBIT', label: 'Debit' }, { value: 'CREDIT', label: 'Credit' }]} />
-                      <TextField label="Amount" type="number" value={ledgerForm.amount} onChange={(event) => setLedgerForm((current) => ({ ...current, amount: event.target.value }))} />
-                      <TextField label="Date" type="date" value={ledgerForm.transactionDate} onChange={(event) => setLedgerForm((current) => ({ ...current, transactionDate: event.target.value }))} InputLabelProps={{ shrink: true }} />
-                    </Box>
+                      <FormField label="Amount" type="number" value={ledgerForm.amount} onChange={(event) => setLedgerForm((current) => ({ ...current, amount: event.target.value }))} />
+                      <FormField label="Date" type="date" value={ledgerForm.transactionDate} onChange={(event) => setLedgerForm((current) => ({ ...current, transactionDate: event.target.value }))} />
+                    </div>
                     <Select label="Portal Shipment" value={ledgerForm.shipmentId} onChange={(value) => setLedgerForm((current) => ({ ...current, shipmentId: String(value) }))} options={[{ value: '', label: 'Customer-level entry' }, ...data.shipments.map((shipment) => ({ value: shipment.id, label: shipment.reference }))]} />
-                    <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-                      <TextField label="Payment Method" value={ledgerForm.paymentMethod} onChange={(event) => setLedgerForm((current) => ({ ...current, paymentMethod: event.target.value }))} placeholder="Optional" />
-                      <TextField label="Reference" value={ledgerForm.reference} onChange={(event) => setLedgerForm((current) => ({ ...current, reference: event.target.value }))} placeholder="Optional" />
-                    </Box>
-                    <TextField label="Notes" multiline minRows={2} value={ledgerForm.notes} onChange={(event) => setLedgerForm((current) => ({ ...current, notes: event.target.value }))} />
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>This portal-only entry does not alter the main shipment finance state.</Typography>
+                    <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
+                      <FormField label="Payment Method" value={ledgerForm.paymentMethod} onChange={(event) => setLedgerForm((current) => ({ ...current, paymentMethod: event.target.value }))} placeholder="Optional" />
+                      <FormField label="Reference" value={ledgerForm.reference} onChange={(event) => setLedgerForm((current) => ({ ...current, reference: event.target.value }))} placeholder="Optional" />
+                    </div>
+                    <FormField label="Notes" multiline minRows={2} value={ledgerForm.notes} onChange={(event) => setLedgerForm((current) => ({ ...current, notes: event.target.value }))} />
+                    <div className="flex justify-between gap-4 items-center flex-wrap">
+                      <p className="text-xs text-[var(--text-secondary)]">This portal-only entry does not alter the main shipment finance state.</p>
                       <Button variant="primary" onClick={() => void handleCreateLedgerEntry()} disabled={savingLedgerEntry}>
                         {savingLedgerEntry ? 'Saving...' : 'Create Ledger Entry'}
                       </Button>
-                    </Box>
-                  </Box>
+                    </div>
+                  </div>
 
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.75, display: 'grid', gap: 1.25, bgcolor: 'rgba(var(--success-rgb),0.06)' }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <PaymentsOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-                      <Typography sx={{ fontSize: '0.95rem', fontWeight: 700 }}>Record Portal Payment</Typography>
-                    </Box>
-                    <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' } }}>
-                      <TextField label="Amount" type="number" value={paymentForm.amount} onChange={(event) => setPaymentForm((current) => ({ ...current, amount: event.target.value }))} />
-                      <TextField label="Date" type="date" value={paymentForm.paymentDate} onChange={(event) => setPaymentForm((current) => ({ ...current, paymentDate: event.target.value }))} InputLabelProps={{ shrink: true }} />
+                  <div className="border border-[var(--border)] rounded-2xl p-4 grid gap-3 bg-[rgba(var(--success-rgb),0.06)]">
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="w-4 h-4 text-[var(--text-secondary)]" />
+                      <h4 className="text-sm font-bold text-[var(--text-primary)]">Record Portal Payment</h4>
+                    </div>
+                    <div className="grid gap-3 grid-cols-1 md:grid-cols-3">
+                      <FormField label="Amount" type="number" value={paymentForm.amount} onChange={(event) => setPaymentForm((current) => ({ ...current, amount: event.target.value }))} />
+                      <FormField label="Date" type="date" value={paymentForm.paymentDate} onChange={(event) => setPaymentForm((current) => ({ ...current, paymentDate: event.target.value }))} />
                       <Select label="Method" value={paymentForm.paymentMethod} onChange={(value) => setPaymentForm((current) => ({ ...current, paymentMethod: String(value) }))} options={[{ value: 'BANK_TRANSFER', label: 'Bank Transfer' }, { value: 'CASH', label: 'Cash' }, { value: 'CHECK', label: 'Check' }, { value: 'CREDIT_CARD', label: 'Credit Card' }, { value: 'WIRE', label: 'Wire' }]} />
-                    </Box>
+                    </div>
                     <Select label="Portal Shipment" value={paymentForm.shipmentId} onChange={(value) => setPaymentForm((current) => ({ ...current, shipmentId: String(value) }))} options={[{ value: '', label: 'Customer-level payment' }, ...data.shipments.map((shipment) => ({ value: shipment.id, label: shipment.reference }))]} />
-                    <Box sx={{ display: 'grid', gap: 1.25, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-                      <TextField label="Reference" value={paymentForm.reference} onChange={(event) => setPaymentForm((current) => ({ ...current, reference: event.target.value }))} placeholder="Receipt, wire ref, check number" />
-                      <TextField label="Notes" value={paymentForm.notes} onChange={(event) => setPaymentForm((current) => ({ ...current, notes: event.target.value }))} placeholder="Optional" />
-                    </Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>Portal-only payments write a portal-only credit and update the portal shipment balance, not the main shipment payment state.</Typography>
+                    <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
+                      <FormField label="Reference" value={paymentForm.reference} onChange={(event) => setPaymentForm((current) => ({ ...current, reference: event.target.value }))} placeholder="Receipt, wire ref, check number" />
+                      <FormField label="Notes" value={paymentForm.notes} onChange={(event) => setPaymentForm((current) => ({ ...current, notes: event.target.value }))} placeholder="Optional" />
+                    </div>
+                    <div className="flex justify-between gap-4 items-center flex-wrap">
+                      <p className="text-xs text-[var(--text-secondary)]">Portal-only payments write a portal-only credit and update the portal shipment balance, not the main shipment payment state.</p>
                       <Button variant="primary" onClick={() => void handleCreatePaymentRecord()} disabled={savingPaymentRecord}>
                         {savingPaymentRecord ? 'Recording...' : 'Record Payment'}
                       </Button>
-                    </Box>
-                  </Box>
-                </Box>
+                    </div>
+                  </div>
+                </div>
               ) : (
-                <Box sx={{ color: 'var(--text-secondary)' }}>
+                <div className="text-[var(--text-secondary)] text-sm">
                   This login can review portal-only balances and payment history, but manual ledger and payment controls are restricted to portal staff.
-                </Box>
+                </div>
               )}
             </DashboardPanel>
           </DashboardGrid>
@@ -712,86 +700,86 @@ export default function PortalCustomerFinanceDetailPage() {
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[1fr_1fr]">
             <DashboardPanel title="Portal Shipment Balances" description="Current portal-only payment status derived from all portal ledger entries and payment records for this customer.">
               {data.shipments.length === 0 ? (
-                <EmptyState icon={<Inventory2OutlinedIcon />} title="No linked shipments" description="This customer does not have any linked shipments yet." />
+                <EmptyState icon={<Package className="w-12 h-12" />} title="No linked shipments" description="This customer does not have any linked shipments yet." />
               ) : (
                 <DataTable data={data.shipments} columns={shipmentColumns} keyField="id" />
               )}
             </DashboardPanel>
 
             <DashboardPanel title="Portal Ledger Activity" description="Filtered portal-only debits, credits, and payment records for this customer. Current portal balance above remains all-time.">
-              <Box sx={{ display: 'grid', gap: 2 }}>
-                <Box sx={{ display: 'flex', gap: 1.25, flexWrap: 'wrap', alignItems: 'end' }}>
-                  <TextField
-                    label="Activity Start"
-                    type="date"
-                    value={activityStartDate}
-                    onChange={(event) => setActivityStartDate(event.target.value)}
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ minWidth: 180 }}
-                  />
-                  <TextField
-                    label="Activity End"
-                    type="date"
-                    value={activityEndDate}
-                    onChange={(event) => setActivityEndDate(event.target.value)}
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ minWidth: 180 }}
-                  />
+              <div className="grid gap-4">
+                <div className="flex gap-2.5 flex-wrap items-end">
+                  <div className="min-w-[180px]">
+                    <FormField
+                      label="Activity Start"
+                      type="date"
+                      value={activityStartDate}
+                      onChange={(event) => setActivityStartDate(event.target.value)}
+                    />
+                  </div>
+                  <div className="min-w-[180px]">
+                    <FormField
+                      label="Activity End"
+                      type="date"
+                      value={activityEndDate}
+                      onChange={(event) => setActivityEndDate(event.target.value)}
+                    />
+                  </div>
                   <Button variant="outline" size="sm" onClick={() => {
                     setActivityStartDate('');
                     setActivityEndDate('');
                   }}>
                     Clear Dates
                   </Button>
-                  <a href={activityExportHref} style={{ textDecoration: 'none' }}>
+                  <a href={activityExportHref}>
                     <Button variant="outline" size="sm">Export Filtered CSV</Button>
                   </a>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+                  <span className="text-xs text-[var(--text-secondary)]">
                     {activityStartDate || activityEndDate
                       ? `Showing portal-only activity from ${activityStartDate || 'the beginning'} to ${activityEndDate || 'today'}.`
                       : 'Showing all portal-only activity.'}
-                  </Typography>
-                </Box>
+                  </span>
+                </div>
 
                 <DashboardGrid className="grid-cols-1 gap-3 md:grid-cols-4">
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.6, bgcolor: 'rgba(var(--brand-primary-rgb),0.08)', display: 'grid', gap: 0.65 }}>
-                    <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Current Portal-Only Balance</Typography>
-                    <Typography sx={{ fontSize: '1.35rem', fontWeight: 800 }}>{formatCurrency(data.portalLedgerSummary.balance)}</Typography>
-                  </Box>
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.6, bgcolor: 'rgba(var(--warning-rgb),0.08)', display: 'grid', gap: 0.65 }}>
-                    <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Activity Debits</Typography>
-                    <Typography sx={{ fontSize: '1.35rem', fontWeight: 800 }}>{formatCurrency(data.activitySummary.debitAmount)}</Typography>
-                  </Box>
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.6, bgcolor: 'rgba(var(--success-rgb),0.08)', display: 'grid', gap: 0.65 }}>
-                    <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Activity Credits</Typography>
-                    <Typography sx={{ fontSize: '1.35rem', fontWeight: 800 }}>{formatCurrency(data.activitySummary.creditAmount)}</Typography>
-                  </Box>
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 1.6, bgcolor: 'rgba(var(--text-primary-rgb),0.05)', display: 'grid', gap: 0.65 }}>
-                    <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Activity Payments</Typography>
-                    <Typography sx={{ fontSize: '1.35rem', fontWeight: 800 }}>{data.activitySummary.paymentRecordCount}</Typography>
-                  </Box>
+                  <div className="border border-[var(--border)] rounded-2xl p-3 bg-[rgba(var(--brand-primary-rgb),0.08)] grid gap-1">
+                    <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Current Portal-Only Balance</span>
+                    <span className="text-lg font-bold text-[var(--text-primary)]">{formatCurrency(data.portalLedgerSummary.balance)}</span>
+                  </div>
+                  <div className="border border-[var(--border)] rounded-2xl p-3 bg-[rgba(var(--warning-rgb),0.08)] grid gap-1">
+                    <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Activity Debits</span>
+                    <span className="text-lg font-bold text-[var(--text-primary)]">{formatCurrency(data.activitySummary.debitAmount)}</span>
+                  </div>
+                  <div className="border border-[var(--border)] rounded-2xl p-3 bg-[rgba(var(--success-rgb),0.08)] grid gap-1">
+                    <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Activity Credits</span>
+                    <span className="text-lg font-bold text-[var(--text-primary)]">{formatCurrency(data.activitySummary.creditAmount)}</span>
+                  </div>
+                  <div className="border border-[var(--border)] rounded-2xl p-3 bg-[rgba(var(--text-primary-rgb),0.05)] grid gap-1">
+                    <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Activity Payments</span>
+                    <span className="text-lg font-bold text-[var(--text-primary)]">{data.activitySummary.paymentRecordCount}</span>
+                  </div>
                 </DashboardGrid>
 
                 {data.portalLedgerEntries.length === 0 ? (
-                  <EmptyState icon={<ReceiptOutlinedIcon />} title="No portal-only ledger entries" description="Adjust the date range or create a debit, credit, or payment record to populate this portal-only activity window." />
+                  <EmptyState icon={<FileCheck className="w-12 h-12" />} title="No portal-only ledger entries" description="Adjust the date range or create a debit, credit, or payment record to populate this portal-only activity window." />
                 ) : (
                   <DataTable data={data.portalLedgerEntries} columns={ledgerColumns} keyField="id" />
                 )}
 
-                <Typography sx={{ fontSize: '0.82rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Portal-Only Payment Records</Typography>
+                <h5 className="text-xs uppercase tracking-wider text-[var(--text-secondary)] pt-2">Portal-Only Payment Records</h5>
                 {data.portalPaymentRecords.length === 0 ? (
-                  <Box sx={{ color: 'var(--text-secondary)' }}>No portal-only payment records match the selected activity window.</Box>
+                  <div className="text-[var(--text-secondary)] text-sm">No portal-only payment records match the selected activity window.</div>
                 ) : (
                   <DataTable data={data.portalPaymentRecords} columns={paymentColumns} keyField="id" />
                 )}
-              </Box>
+              </div>
             </DashboardPanel>
           </DashboardGrid>
 
           <DashboardGrid className="grid-cols-1 gap-3 xl:grid-cols-[1.2fr_0.8fr]">
             <DashboardPanel title="Invoice History" description="Main-system invoice trail for this customer's linked shipments.">
               {data.invoices.length === 0 ? (
-                <EmptyState icon={<ReceiptLongOutlinedIcon />} title="No invoice history" description="No invoices have been created yet for this customer's linked shipments." />
+                <EmptyState icon={<Receipt className="w-12 h-12" />} title="No invoice history" description="No invoices have been created yet for this customer's linked shipments." />
               ) : (
                 <DataTable data={data.invoices} columns={invoiceColumns} keyField="id" />
               )}
@@ -799,7 +787,7 @@ export default function PortalCustomerFinanceDetailPage() {
 
             <DashboardPanel title="Unbilled Charges" description="Main-system shipment charges that exist but have not yet been invoiced.">
               {data.unbilledCharges.length === 0 ? (
-                <EmptyState icon={<RequestQuoteOutlinedIcon />} title="No unbilled charges" description="All currently visible shipment charges for this customer are already invoiced or there are no charges yet." />
+                <EmptyState icon={<FileText className="w-12 h-12" />} title="No unbilled charges" description="All currently visible shipment charges for this customer are already invoiced or there are no charges yet." />
               ) : (
                 <DataTable data={data.unbilledCharges} columns={chargeColumns} keyField="id" />
               )}
@@ -807,26 +795,26 @@ export default function PortalCustomerFinanceDetailPage() {
           </DashboardGrid>
 
           <DashboardGrid className="grid-cols-1 gap-3 md:grid-cols-4">
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--brand-primary-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Invoice History</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{data.summary.invoiceCount}</Typography>
-              <HistoryOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--warning-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Overdue Exposure</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{formatCurrency(data.summary.overdueAmount)}</Typography>
-              <WarningAmberOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--text-primary-rgb),0.05)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Portal-Only Ledger Entries</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{data.portalLedgerSummary.ledgerEntryCount}</Typography>
-              <NoteAddOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
-            <Box sx={{ border: '1px solid var(--border)', borderRadius: 3, p: 2, bgcolor: 'rgba(var(--success-rgb),0.08)', display: 'grid', gap: 0.75 }}>
-              <Typography sx={{ fontSize: '0.76rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)' }}>Portal-Only Payments</Typography>
-              <Typography sx={{ fontSize: '1.55rem', fontWeight: 800 }}>{data.portalLedgerSummary.paymentRecordCount}</Typography>
-              <PaymentsOutlinedIcon sx={{ color: 'var(--text-secondary)' }} />
-            </Box>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--brand-primary-rgb),0.08)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Invoice History</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{data.summary.invoiceCount}</span>
+              <History className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--warning-rgb),0.08)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Overdue Exposure</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{formatCurrency(data.summary.overdueAmount)}</span>
+              <AlertTriangle className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--text-primary-rgb),0.05)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Portal-Only Ledger Entries</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{data.portalLedgerSummary.ledgerEntryCount}</span>
+              <PlusCircle className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
+            <div className="border border-[var(--border)] rounded-2xl p-4 bg-[rgba(var(--success-rgb),0.08)] grid gap-1.5">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--text-secondary)]">Portal-Only Payments</span>
+              <span className="text-xl font-bold text-[var(--text-primary)]">{data.portalLedgerSummary.paymentRecordCount}</span>
+              <CreditCard className="w-4 h-4 text-[var(--text-secondary)]" />
+            </div>
           </DashboardGrid>
         </>
       )}

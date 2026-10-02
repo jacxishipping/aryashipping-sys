@@ -1,4 +1,3 @@
-import { Box, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -33,54 +32,27 @@ export function Table<T extends Record<string, any>>({
   const density = propDensity ?? globalDensity;
   if (!data || data.length === 0) {
     return (
-      <Box
-        sx={{
-          p: 4,
-          textAlign: 'center',
-          color: 'var(--text-secondary)',
-          border: '1px dashed var(--border)',
-          borderRadius: 1.5,
-          backgroundColor: 'var(--background)',
-        }}
-      >
-        <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>{emptyTitle}</Typography>
-        <Typography sx={{ mt: 0.5, fontSize: '0.82rem', color: 'var(--text-secondary)' }}>{emptyMessage}</Typography>
-      </Box>
+      <div className="p-8 text-center text-[var(--text-secondary)] border border-dashed border-[var(--border)] rounded-xl bg-[var(--background)]">
+        <p className="text-sm font-bold text-[var(--text-primary)]">{emptyTitle}</p>
+        <p className="mt-1 text-xs text-[var(--text-secondary)]">{emptyMessage}</p>
+      </div>
     );
   }
 
-  const verticalPadding = density === 'compact' ? '9px' : '12px';
+  const verticalPadding = density === 'compact' ? 'py-2 px-4' : 'py-3 px-4';
 
   return (
-    <Box
-      sx={{
-        overflowX: 'auto',
-        border: '1px solid var(--border)',
-        borderRadius: 1.5,
-        backgroundColor: 'var(--panel)',
-      }}
-    >
-      <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+    <div className="overflow-x-auto border border-[var(--border)] rounded-xl bg-[var(--panel)]">
+      <table className="w-full border-collapse">
         <thead>
-          <tr style={{ backgroundColor: 'var(--background)' }}>
+          <tr className="bg-[var(--background)]">
             {columns.map((column, index) => (
               <th
                 key={index}
-                style={{
-                  padding: `${verticalPadding} 16px`,
-                  textAlign: column.align || 'left',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  color: 'var(--text-secondary)',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  width: column.width,
-                  borderBottom: '1px solid var(--border)',
-                  position: stickyHeader ? 'sticky' : 'static',
-                  top: 0,
-                  zIndex: 1,
-                  backgroundColor: 'var(--background)',
-                }}
+                className={`${verticalPadding} text-${column.align || 'left'} text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider border-b border-[var(--border)] ${
+                  stickyHeader ? 'sticky top-0 z-[1] bg-[var(--background)]' : ''
+                }`}
+                style={{ width: column.width }}
               >
                 {column.header}
               </th>
@@ -91,16 +63,7 @@ export function Table<T extends Record<string, any>>({
           {data.map((row) => (
             <tr 
               key={String(row[keyField])} 
-              style={{ 
-                borderTop: '1px solid var(--border)',
-                transition: 'background-color 0.2s',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(var(--text-primary-rgb), 0.02)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-              }}
+              className="border-t border-[var(--border)] transition-colors hover:bg-[rgba(var(--text-primary-rgb),0.02)]"
             >
               {columns.map((column, colIndex) => {
                 let cellContent: ReactNode = null;
@@ -116,13 +79,7 @@ export function Table<T extends Record<string, any>>({
                 return (
                   <td
                     key={colIndex}
-                    style={{
-                      padding: `${verticalPadding} 16px`,
-                      fontSize: '0.85rem',
-                      color: 'var(--text-primary)',
-                      textAlign: column.align || 'left',
-                      borderBottom: '1px solid var(--border)',
-                    }}
+                    className={`${verticalPadding} text-sm text-[var(--text-primary)] text-${column.align || 'left'} border-b border-[var(--border)]`}
                   >
                     {cellContent}
                   </td>
@@ -132,7 +89,6 @@ export function Table<T extends Record<string, any>>({
           ))}
         </tbody>
       </table>
-    </Box>
+    </div>
   );
 }
-

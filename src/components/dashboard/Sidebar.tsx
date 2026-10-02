@@ -4,11 +4,37 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import type { Session } from 'next-auth';
-import type { SvgIconComponent } from '@mui/icons-material';
-import { Dashboard, Inventory2, Description, Search, Analytics, Group, AllInbox, Receipt, ReceiptLong, AccountBalance, Payment, Business, LocalShipping, SmartToy, PhoneInTalk, Route, ExpandLess, ExpandMore, AdminPanelSettings, CompareArrows, SwapHoriz, Settings, Timer, ChevronLeft, ChevronRight, Logout, Close } from '@mui/icons-material';
+import {
+  LayoutDashboard,
+  Package,
+  FileText,
+  Search,
+  BarChart2,
+  Users,
+  Boxes,
+  Receipt,
+  Landmark,
+  CreditCard,
+  Building2,
+  Truck,
+  Bot,
+  PhoneCall,
+  Route,
+  ChevronDown,
+  ChevronUp,
+  ShieldAlert,
+  ArrowLeftRight,
+  Repeat,
+  Settings,
+  Clock,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
+  X,
+  LucideIcon,
+} from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
-import { Drawer, Box, List, ListItemButton, ListItemIcon, ListItemText, Typography, Collapse, IconButton, Avatar, Button, Divider } from '@mui/material';
-import { Tooltip } from '@/components/design-system';
+import { Tooltip, Button } from '@/components/design-system';
 import { hasPermission, type Permission } from '@/lib/rbac';
 import { useTheme } from '@/hooks/useTheme';
 import SiteLogo from '@/components/brand/SiteLogo';
@@ -16,7 +42,7 @@ import SiteLogo from '@/components/brand/SiteLogo';
 type NavigationItem = {
 	name: string;
 	href: string;
-	icon: SvgIconComponent;
+	icon: LucideIcon;
 	requiredPermission?: Permission;
 	allowedRoles?: string[];
 };
@@ -34,7 +60,7 @@ const mainNavigation: NavigationItem[] = [
 	{
 		name: 'Dashboard',
 		href: '/dashboard',
-		icon: Dashboard,
+		icon: LayoutDashboard,
 	},
 ];
 
@@ -42,31 +68,31 @@ const shipmentNavigation: NavigationItem[] = [
 	{
 		name: 'Shipments',
 		href: '/dashboard/shipments',
-		icon: Inventory2,
+		icon: Package,
 		requiredPermission: 'shipments:view',
 	},
 	{
 		name: 'Company Getpasses',
 		href: '/dashboard/company-getpasses',
-		icon: Timer,
+		icon: Clock,
 		requiredPermission: 'shipments:manage',
 	},
 	{
 		name: 'Containers',
 		href: '/dashboard/containers',
-		icon: AllInbox,
+		icon: Boxes,
 		requiredPermission: 'containers:view',
 	},
 	{
 		name: 'Dispatches',
 		href: '/dashboard/dispatches',
-		icon: LocalShipping,
+		icon: Truck,
 		requiredPermission: 'dispatches:manage',
 	},
 	{
 		name: 'Operations Board',
 		href: '/dashboard/operations',
-		icon: CompareArrows,
+		icon: ArrowLeftRight,
 		requiredPermission: 'shipments:manage',
 	},
 	{
@@ -87,19 +113,19 @@ const financeNavigation: NavigationItem[] = [
 	{
 		name: 'Finance',
 		href: '/dashboard/finance',
-		icon: AccountBalance,
+		icon: Landmark,
 		requiredPermission: 'finance:view',
 	},
 	{
 		name: 'Office Expenses',
 		href: '/dashboard/finance/office-expenses',
-		icon: ReceiptLong,
+		icon: Receipt,
 		requiredPermission: 'finance:view',
 	},
 	{
 		name: 'Banking',
 		href: '/dashboard/finance/banking',
-		icon: Payment,
+		icon: CreditCard,
 		requiredPermission: 'finance:view',
 	},
 	{
@@ -111,19 +137,19 @@ const financeNavigation: NavigationItem[] = [
 	{
 		name: 'Company Ledgers',
 		href: '/dashboard/finance/companies',
-		icon: Business,
+		icon: Building2,
 		requiredPermission: 'finance:manage',
 	},
 	{
 		name: 'Ledger Transfers',
 		href: '/dashboard/finance/transfers',
-		icon: SwapHoriz,
+		icon: Repeat,
 		requiredPermission: 'finance:manage',
 	},
 	{
 		name: 'Price Comparison',
 		href: '/dashboard/finance/price-comparison',
-		icon: CompareArrows,
+		icon: ArrowLeftRight,
 		requiredPermission: 'finance:view',
 	},
 ];
@@ -132,13 +158,13 @@ const companyNavigation: NavigationItem[] = [
 	{
 		name: 'Customers',
 		href: '/dashboard/customers',
-		icon: Group,
+		icon: Users,
 		requiredPermission: 'customers:view',
 	},
 	{
 		name: 'Partner Portals',
 		href: '/dashboard/partner-portals',
-		icon: Group,
+		icon: Users,
 		requiredPermission: 'customers:manage',
 	},
 ];
@@ -147,19 +173,19 @@ const aiDocumentNavigation: NavigationItem[] = [
 	{
 		name: 'Documents',
 		href: '/dashboard/documents',
-		icon: Description,
+		icon: FileText,
 		requiredPermission: 'documents:view',
 	},
 	{
 		name: 'AI Logs',
 		href: '/dashboard/ai-logs',
-		icon: SmartToy,
+		icon: Bot,
 		requiredPermission: 'shipments:read_all',
 	},
 	{
 		name: 'Call Agent',
 		href: '/dashboard/settings/call-agent',
-		icon: PhoneInTalk,
+		icon: PhoneCall,
 		requiredPermission: 'users:manage',
 		allowedRoles: ['admin'],
 	},
@@ -178,13 +204,13 @@ const adminNavigation: NavigationItem[] = [
 	{
 		name: 'Analytics',
 		href: '/dashboard/analytics',
-		icon: Analytics,
+		icon: BarChart2,
 		requiredPermission: 'analytics:view',
 	},
 	{
 		name: 'Users',
 		href: '/dashboard/users',
-		icon: Group,
+		icon: Users,
 		requiredPermission: 'users:manage',
 	},
 ];
@@ -239,59 +265,30 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarPr
 
 	return (
 		<>
-			{/* Mobile Drawer */}
-			<Drawer
-				variant="temporary"
-				open={mobileOpen}
-				onClose={onMobileClose}
-				ModalProps={{
-					keepMounted: true,
-				}}
-				sx={{
-					display: { xs: 'block', lg: 'none' },
-					'& .MuiDrawer-paper': {
-						width: 'min(300px, 85vw)',
-						height: '100%',
-						boxSizing: 'border-box',
-						background: 'linear-gradient(180deg, var(--panel) 0%, rgba(var(--panel-rgb), 0.97) 100%)',
-						color: 'var(--text-primary)',
-						borderRight: '1px solid var(--border)',
-						boxShadow: '0 10px 30px rgba(var(--text-primary-rgb),0.2)',
-					},
-				}}
-			>
-				<SidebarContent
-					pathname={pathname}
-					session={session}
-					adminCollapsed={adminCollapsed}
-					onToggleAdminCollapsed={toggleAdminCollapsed}
-					onNavClick={onMobileClose}
-					isMobile
-				/>
-			</Drawer>
+			{/* Mobile Drawer Backdrop and Panel */}
+			{mobileOpen && (
+				<div className="fixed inset-0 z-50 lg:hidden flex">
+					<div
+						className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+						onClick={onMobileClose}
+					/>
+					<div className="relative w-[min(300px,85vw)] h-full bg-[var(--panel)] border-r border-[var(--border)] shadow-2xl z-10 animate-in slide-in-from-left duration-200 flex flex-col">
+						<SidebarContent
+							pathname={pathname}
+							session={session}
+							adminCollapsed={adminCollapsed}
+							onToggleAdminCollapsed={toggleAdminCollapsed}
+							onNavClick={onMobileClose}
+							isMobile
+						/>
+					</div>
+				</div>
+			)}
 
-			{/* Desktop Drawer */}
-			<Drawer
-				variant="permanent"
-				sx={{
-					display: { xs: 'none', lg: 'block' },
-					width: desktopDrawerWidth,
-					flexShrink: 0,
-					transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-					'& .MuiDrawer-paper': {
-						width: desktopDrawerWidth,
-						boxSizing: 'border-box',
-						background: 'linear-gradient(180deg, var(--panel) 0%, rgba(var(--panel-rgb), 0.97) 100%)',
-						color: 'var(--text-primary)',
-						borderRight: '1px solid var(--border)',
-						borderTop: '2px solid rgba(var(--accent-gold-rgb), 0.15)',
-						boxShadow: 'inset -1px 0 0 var(--border)',
-						position: 'relative',
-						height: '100%',
-						overflow: 'hidden',
-						transition: 'width 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-					},
-				}}
+			{/* Desktop Sidebar */}
+			<aside
+				style={{ width: `${desktopDrawerWidth}px` }}
+				className="hidden lg:block shrink-0 transition-[width] duration-200 ease-in-out border-r border-[var(--border)] border-t-2 border-t-[rgba(var(--accent-gold-rgb),0.15)] bg-[var(--panel)] relative h-full overflow-hidden"
 			>
 				<SidebarContent
 					pathname={pathname}
@@ -301,7 +298,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }: SidebarPr
 					collapsed={isDesktopCollapsed}
 					onToggleCollapse={toggleDesktopCollapsed}
 				/>
-			</Drawer>
+			</aside>
 		</>
 	);
 }
@@ -322,8 +319,6 @@ function NavItem({ item, isActive, badge, badgeColor, onNavClick, collapsed }: N
 	const active = isActive(item.href);
 	const router = useRouter();
 
-	// Prefetch on hover/focus so the target route's chunk and data are ready
-	// before the click, making navigation feel instant after first visit.
 	const handlePrefetch = () => {
 		router.prefetch(item.href);
 	};
@@ -344,110 +339,56 @@ function NavItem({ item, isActive, badge, badgeColor, onNavClick, collapsed }: N
 	const badgeLabel = typeof badge === 'number' && badge > 99 ? '99+' : badge;
 
 	const itemButton = (
-		<ListItemButton
-			component={Link}
+		<Link
 			href={item.href}
 			onClick={onNavClick}
 			onMouseEnter={handlePrefetch}
 			onFocus={handlePrefetch}
-			selected={active}
 			aria-current={active ? 'page' : undefined}
-			sx={{
-				position: 'relative',
-				borderRadius: isCompact ? 1.25 : 1.5,
-				mx: collapsed ? 0.5 : (isCompact ? 0.75 : 1),
-				my: isCompact ? 0.125 : 0.25,
-				py: isCompact ? 0.45 : 0.75,
-				px: collapsed ? (isCompact ? 0.75 : 1) : (isCompact ? 1.25 : 1.5),
-				justifyContent: collapsed ? 'center' : 'initial',
-				minHeight: 0,
-				transition: 'all 150ms ease',
-				color: active ? 'var(--accent-gold)' : 'var(--text-primary)',
-				bgcolor: active ? 'rgba(var(--accent-gold-rgb), 0.15)' : 'transparent',
-				boxShadow: active ? 'inset 0 0 0 1px rgba(var(--accent-gold-rgb), 0.2)' : 'none',
-				'&:hover': {
-					bgcolor: 'rgba(var(--accent-gold-rgb), 0.06)',
-					color: 'var(--text-primary)',
-				},
-				'&::before': active
-					? {
-							content: '""',
-							position: 'absolute',
-							left: 0,
-							top: 4,
-							bottom: 4,
-							width: 4,
-							borderRadius: '0 2px 2px 0',
-							backgroundColor: 'var(--accent-gold)',
-							boxShadow: '2px 0 8px rgba(var(--accent-gold-rgb), 0.4)',
-					  }
-					: {},
-			}}
+			className={`relative flex items-center gap-3 no-underline transition-colors ${
+				isCompact ? 'rounded-lg my-0.5 py-1 px-3' : 'rounded-xl my-1 py-2 px-3.5'
+			} ${collapsed ? 'justify-center mx-1 px-2' : 'mx-2'} ${
+				active
+					? 'bg-[rgba(var(--accent-gold-rgb),0.15)] text-[var(--accent-gold)] font-semibold shadow-[inset_0_0_0_1px_rgba(var(--accent-gold-rgb),0.2)]'
+					: 'text-[var(--text-primary)] hover:bg-[rgba(var(--accent-gold-rgb),0.06)] hover:text-[var(--text-primary)]'
+			}`}
 		>
-			<ListItemIcon
-				sx={{
-					minWidth: collapsed ? 0 : 32,
-					justifyContent: 'center',
-					color: active ? 'var(--accent-gold)' : 'var(--text-primary)',
-				}}
-			>
-				<Icon sx={{ fontSize: 18, filter: active ? 'drop-shadow(0 0 4px rgba(var(--accent-gold-rgb), 0.5))' : 'none' }} />
+			{active && (
+				<span className="absolute left-0 top-1 bottom-1 w-1 bg-[var(--accent-gold)] rounded-r shadow-[2px_0_8px_rgba(var(--accent-gold-rgb),0.4)]" />
+			)}
+			<div className={`shrink-0 flex items-center justify-center ${active ? 'text-[var(--accent-gold)]' : 'text-[var(--text-primary)]'}`}>
+				<Icon className="w-4 h-4" />
 				{collapsed && typeof badge === 'number' && badge > 0 && (
-					<Box
-						component="span"
-						sx={{
-							position: 'absolute',
-							top: 6,
-							right: 14,
-							width: 7,
-							height: 7,
-							borderRadius: '50%',
-							bgcolor: badgeColor === 'error' ? 'var(--error)' : 'var(--warning)',
-						}}
+					<span
+						className={`absolute top-1.5 right-3 w-2 h-2 rounded-full ${
+							badgeColor === 'error' ? 'bg-[var(--error)]' : 'bg-[var(--warning)]'
+						}`}
 					/>
 				)}
-			</ListItemIcon>
+			</div>
 			{!collapsed && (
-				<ListItemText
-					primary={item.name}
-					primaryTypographyProps={{
-						fontSize: isCompact ? '0.8125rem' : '0.9rem',
-						fontWeight: 500,
-						color: 'inherit',
-					}}
-				/>
+				<span className={`truncate flex-1 ${isCompact ? 'text-xs' : 'text-sm'} font-medium`}>
+					{item.name}
+				</span>
 			)}
 			{!collapsed && typeof badge === 'number' && badge > 0 && badgeStyle && (
-				<Box
-					component="span"
-					sx={{
-						borderRadius: '999px',
-						px: 0.75,
-						py: 0.125,
-						fontSize: '0.625rem',
-						fontWeight: 800,
-						lineHeight: 1.6,
-						minWidth: '18px',
-						textAlign: 'center',
-						ml: 'auto',
-						display: 'inline-flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						flexShrink: 0,
+				<span
+					style={{
 						background: badgeStyle.background,
 						color: badgeStyle.color,
 						border: badgeStyle.border,
 					}}
+					className="rounded-full px-1.5 py-0.5 text-[10px] font-extrabold leading-none min-w-[18px] text-center ml-auto shrink-0 flex items-center justify-center"
 				>
 					{badgeLabel}
-				</Box>
+				</span>
 			)}
-		</ListItemButton>
+		</Link>
 	);
 
 	if (collapsed) {
 		return (
-			<Tooltip title={item.name} placement="right" arrow>
+			<Tooltip title={item.name} placement="right">
 				{itemButton}
 			</Tooltip>
 		);
@@ -468,13 +409,13 @@ type NavSectionProps = {
 
 const ADMIN_SECTION_STORAGE_KEY = 'sidebar_admin_collapsed';
 
-const sectionIcons: Partial<Record<string, typeof Inventory2>> = {
-	Operations: Inventory2,
-	Finance: AccountBalance,
-	'Companies & Customers': Business,
-	'AI & Documents': SmartToy,
-	Settings,
-	Admin: AdminPanelSettings,
+const sectionIcons: Partial<Record<string, LucideIcon>> = {
+	Operations: Package,
+	Finance: Landmark,
+	'Companies & Customers': Building2,
+	'AI & Documents': Bot,
+	Settings: Settings,
+	Admin: ShieldAlert,
 };
 
 function isNavigationItemActive(pathname: string, href: string) {
@@ -501,31 +442,19 @@ function NavSection({ title, items, role, isActive, badgeMap, onNavClick, collap
 	const SectionIcon = title ? sectionIcons[title] : undefined;
 
 	return (
-		<Box sx={{ mb: 0.5 }}>
+		<div className="mb-1">
 			{title && !collapsed && (
-				<Box sx={{ px: 2, py: 0.5, mt: 1 }}>
-					<Typography
-						variant="caption"
-						sx={{
-							fontSize: '0.6875rem',
-							fontWeight: 600,
-							color: 'var(--text-secondary)',
-							textTransform: 'uppercase',
-							letterSpacing: 0.5,
-							display: 'inline-flex',
-							alignItems: 'center',
-							gap: 0.5,
-						}}
-					>
-						{SectionIcon && <SectionIcon sx={{ fontSize: 12 }} />}
+				<div className="px-4 py-1 mt-2">
+					<span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider inline-flex items-center gap-1.5">
+						{SectionIcon && <SectionIcon className="w-3 h-3" />}
 						{title}
-					</Typography>
-				</Box>
+					</span>
+				</div>
 			)}
 			{title && collapsed && (
-				<Divider sx={{ my: 0.75, mx: 1.2, borderColor: 'var(--border)' }} />
+				<div className="my-2 mx-3 h-[1px] bg-[var(--border)]" />
 			)}
-			<List sx={{ py: 0 }}>
+			<div className="flex flex-col">
 				{filterNavigationItems(items, role).map((item) => (
 					<NavItem
 						key={item.name}
@@ -537,8 +466,8 @@ function NavSection({ title, items, role, isActive, badgeMap, onNavClick, collap
 						collapsed={collapsed}
 					/>
 				))}
-			</List>
-		</Box>
+			</div>
+		</div>
 	);
 }
 
@@ -561,9 +490,9 @@ function CollapsibleAdminSection({
 
 	if (isSidebarCollapsed) {
 		return (
-			<Box sx={{ mb: 0.5 }}>
-				<Divider sx={{ my: 0.75, mx: 1.2, borderColor: 'var(--border)' }} />
-				<List sx={{ py: 0 }}>
+			<div className="mb-1">
+				<div className="my-2 mx-3 h-[1px] bg-[var(--border)]" />
+				<div className="flex flex-col">
 					{visibleItems.map((item) => (
 						<NavItem
 							key={item.name}
@@ -575,58 +504,35 @@ function CollapsibleAdminSection({
 							collapsed={true}
 						/>
 					))}
-				</List>
-			</Box>
+				</div>
+			</div>
 		);
 	}
 
 	return (
-		<Box sx={{ mb: 0.5 }}>
-			<Box
-				sx={{
-					px: 2,
-					py: 0.5,
-					mt: 1,
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'space-between',
-					cursor: 'pointer',
-				}}
+		<div className="mb-1">
+			<div
+				className="px-4 py-1 mt-2 flex items-center justify-between cursor-pointer select-none"
 				onClick={onToggleCollapsed}
 			>
-				<Typography
-					variant="caption"
-					sx={{
-						fontSize: '0.6875rem',
-						fontWeight: 600,
-						color: 'var(--text-secondary)',
-						textTransform: 'uppercase',
-						letterSpacing: 0.5,
-						display: 'inline-flex',
-						alignItems: 'center',
-						gap: 0.5,
-					}}
-				>
-					{SectionIcon && <SectionIcon sx={{ fontSize: 12 }} />}
+				<span className="text-[11px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider inline-flex items-center gap-1.5">
+					{SectionIcon && <SectionIcon className="w-3 h-3" />}
 					Admin
-				</Typography>
-				<IconButton
-					size="small"
-					onClick={(event) => {
-						event.stopPropagation();
+				</span>
+				<button
+					type="button"
+					onClick={(e) => {
+						e.stopPropagation();
 						onToggleCollapsed();
 					}}
-					sx={{
-						p: 0.25,
-						color: 'var(--text-secondary)',
-					}}
 					aria-label={collapsed ? 'Expand admin navigation' : 'Collapse admin navigation'}
+					className="p-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-transparent border-0 cursor-pointer"
 				>
-					{collapsed ? <ExpandMore sx={{ fontSize: 14 }} /> : <ExpandLess sx={{ fontSize: 14 }} />}
-				</IconButton>
-			</Box>
-			<Collapse in={!collapsed}>
-				<List sx={{ py: 0 }}>
+					{collapsed ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+				</button>
+			</div>
+			{!collapsed && (
+				<div className="flex flex-col animate-in fade-in duration-150">
 					{visibleItems.map((item) => (
 						<NavItem
 							key={item.name}
@@ -637,9 +543,9 @@ function CollapsibleAdminSection({
 							onNavClick={onNavClick}
 						/>
 					))}
-				</List>
-			</Collapse>
-		</Box>
+				</div>
+			)}
+		</div>
 	);
 }
 
@@ -710,57 +616,24 @@ function SidebarContent({
 	};
 
 	return (
-		<Box
-			sx={{
-				display: 'flex',
-				flexDirection: 'column',
-				height: '100%',
-				overflow: 'hidden',
-			}}
-		>
+		<div className="flex flex-col h-full overflow-hidden">
 			{/* Mobile Drawer Header */}
 			{isMobile && (
-				<Box
-					sx={{
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'space-between',
-						px: 2,
-						py: 1.5,
-						borderBottom: '1px solid var(--border)',
-						background: 'rgba(var(--panel-rgb), 0.95)',
-					}}
-				>
+				<div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border)] bg-[var(--panel)]">
 					<SiteLogo variant="dashboard" className="w-[84px]" priority />
-					<IconButton
+					<button
+						type="button"
 						onClick={onNavClick}
-						size="small"
 						aria-label="Close menu"
-						sx={{
-							color: 'var(--text-secondary)',
-							p: 0.75,
-							'&:hover': {
-								color: 'var(--text-primary)',
-								bgcolor: 'rgba(var(--border-rgb), 0.3)',
-							},
-						}}
+						className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--background)] rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
 					>
-						<Close sx={{ fontSize: 20 }} />
-					</IconButton>
-				</Box>
+						<X className="w-5 h-5" />
+					</button>
+				</div>
 			)}
 
 			{/* Navigation - scrollable */}
-			<Box
-				sx={{
-					flex: 1,
-					px: 0.5,
-					py: 1.5,
-					overflow: 'auto',
-					display: 'flex',
-					flexDirection: 'column',
-				}}
-			>
+			<div className="flex-1 px-1 py-3 overflow-y-auto flex flex-col no-scrollbar">
 				{/* Main */}
 				<NavSection items={mainNavigation} role={userRole} isActive={isActive} onNavClick={onNavClick} collapsed={collapsed} />
 
@@ -781,151 +654,87 @@ function SidebarContent({
 
 				{/* Admin / Internal Section */}
 				<CollapsibleAdminSection items={adminNavigation} role={userRole} isActive={isActive} badgeMap={badgeMap} onNavClick={onNavClick} collapsed={adminCollapsed} onToggleCollapsed={onToggleAdminCollapsed} isSidebarCollapsed={collapsed} />
+			</div>
 
-			</Box>
 			{collapsed ? (
-				<Box
-					sx={{
-						borderTop: '1px solid var(--border)',
-						p: 1,
-						display: 'flex',
-						flexDirection: 'column',
-						alignItems: 'center',
-						gap: 1,
-						background: 'rgba(var(--panel-rgb), 0.92)',
-					}}
-				>
+				<div className="border-t border-[var(--border)] p-2 flex flex-col items-center gap-2 bg-[var(--panel)]">
 					<Tooltip title={`${userName} (${userRole || 'user'})`} placement="right">
-						<Avatar
-							src={userImage}
-							sx={{
-								width: 32,
-								height: 32,
-								bgcolor: 'var(--accent-gold)',
-								fontSize: '0.875rem',
-								fontWeight: 600,
-								color: 'var(--background)',
-								flexShrink: 0,
-							}}
-						>
-							{userInitial}
-						</Avatar>
+						{userImage ? (
+							// eslint-disable-next-line @next/next/no-img-element
+							<img src={userImage} alt={userName} className="w-8 h-8 rounded-full object-cover shrink-0" />
+						) : (
+							<div className="w-8 h-8 rounded-full bg-[var(--accent-gold)] text-[var(--background)] font-bold text-xs flex items-center justify-center shrink-0">
+								{userInitial}
+							</div>
+						)}
 					</Tooltip>
 					{onToggleCollapse && (
 						<Tooltip title="Expand sidebar" placement="right">
-							<IconButton
-								size="small"
+							<button
+								type="button"
 								onClick={onToggleCollapse}
 								aria-label="Expand sidebar"
-								sx={{
-									color: 'var(--text-secondary)',
-									'&:hover': { color: 'var(--accent-gold)', bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)' },
-								}}
+								className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] hover:bg-[rgba(var(--accent-gold-rgb),0.1)] rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
 							>
-								<ChevronRight sx={{ fontSize: 18 }} />
-							</IconButton>
+								<ChevronRight className="w-4 h-4" />
+							</button>
 						</Tooltip>
 					)}
 					<Tooltip title="Sign Out" placement="right">
-						<IconButton
-							size="small"
+						<button
+							type="button"
 							onClick={() => signOut({ callbackUrl: '/auth/signin' })}
 							aria-label="Sign out"
-							sx={{
-								color: 'var(--text-secondary)',
-								'&:hover': { color: 'var(--error, #ef4444)', bgcolor: 'rgba(var(--error-rgb), 0.1)' },
-							}}
+							className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--error)] hover:bg-red-500/10 rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
 						>
-							<Logout sx={{ fontSize: 18 }} />
-						</IconButton>
+							<LogOut className="w-4 h-4" />
+						</button>
 					</Tooltip>
-				</Box>
+				</div>
 			) : (
-				<Box
-					sx={{
-						borderTop: '1px solid var(--border)',
-						px: 1.5,
-						py: 1.5,
-						pb: isMobile ? 'calc(16px + env(safe-area-inset-bottom, 0px))' : 1.5,
-						background: 'rgba(var(--panel-rgb), 0.92)',
-					}}
-				>
-					<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.25 }}>
-						<Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, minWidth: 0, flex: 1 }}>
-							<Avatar
-								src={userImage}
-								sx={{
-									width: 32,
-									height: 32,
-									bgcolor: 'var(--accent-gold)',
-									fontSize: '0.875rem',
-									fontWeight: 600,
-									color: 'var(--background)',
-									flexShrink: 0,
-								}}
-							>
-								{userInitial}
-							</Avatar>
-							<Box sx={{ minWidth: 0 }}>
-								<Typography
-									sx={{
-										fontSize: '0.875rem',
-										fontWeight: 600,
-										color: 'var(--text-primary)',
-										overflow: 'hidden',
-										textOverflow: 'ellipsis',
-										whiteSpace: 'nowrap',
-									}}
-								>
+				<div className={`border-t border-[var(--border)] px-4 py-3 bg-[var(--panel)] ${isMobile ? 'pb-[calc(16px+env(safe-area-inset-bottom,0px))]' : ''}`}>
+					<div className="flex items-center justify-between mb-3">
+						<div className="flex items-center gap-3 min-w-0 flex-1">
+							{userImage ? (
+								// eslint-disable-next-line @next/next/no-img-element
+								<img src={userImage} alt={userName} className="w-8 h-8 rounded-full object-cover shrink-0" />
+							) : (
+								<div className="w-8 h-8 rounded-full bg-[var(--accent-gold)] text-[var(--background)] font-bold text-xs flex items-center justify-center shrink-0">
+									{userInitial}
+								</div>
+							)}
+							<div className="min-w-0">
+								<div className="text-sm font-semibold text-[var(--text-primary)] truncate">
 									{userName}
-								</Typography>
-								<Typography
-									sx={{
-										fontSize: '0.75rem',
-										color: 'var(--text-secondary)',
-										textTransform: 'capitalize',
-									}}
-								>
+								</div>
+								<div className="text-xs text-[var(--text-secondary)] capitalize truncate">
 									{userRole || 'user'}
-								</Typography>
-							</Box>
-						</Box>
+								</div>
+							</div>
+						</div>
 						{onToggleCollapse && (
 							<Tooltip title="Collapse sidebar" placement="right">
-								<IconButton
-									size="small"
+								<button
+									type="button"
 									onClick={onToggleCollapse}
 									aria-label="Collapse sidebar"
-									sx={{
-										color: 'var(--text-secondary)',
-										'&:hover': { color: 'var(--text-primary)', bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)' },
-									}}
+									className="p-1.5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(var(--accent-gold-rgb),0.1)] rounded-lg transition-colors border-0 bg-transparent cursor-pointer"
 								>
-									<ChevronLeft sx={{ fontSize: 18 }} />
-								</IconButton>
+									<ChevronLeft className="w-4 h-4" />
+								</button>
 							</Tooltip>
 						)}
-					</Box>
+					</div>
 					<Button
 						fullWidth
-						size="small"
-						variant="outlined"
+						size="sm"
+						variant="outline"
 						onClick={() => signOut({ callbackUrl: '/auth/signin' })}
-						sx={{
-							borderColor: 'var(--border)',
-							color: 'var(--text-primary)',
-							textTransform: 'none',
-							fontWeight: 600,
-							'&:hover': {
-								borderColor: 'var(--accent-gold)',
-								backgroundColor: 'rgba(var(--accent-gold-rgb), 0.08)',
-							},
-						}}
 					>
 						Sign Out
 					</Button>
-				</Box>
+				</div>
 			)}
-		</Box>
+		</div>
 	);
 }

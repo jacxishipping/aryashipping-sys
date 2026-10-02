@@ -2,12 +2,10 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { Box, Chip, List, ListItem, ListItemIcon, ListItemText, TextField, Typography } from '@mui/material';
 import { StatusBadge, StatusFilterPills } from '@/components/design-system';
 import { 
   ArrowRight,
   BadgeDollarSign,
-  FileText, 
   CheckCircle, 
   Container,
   RefreshCw,
@@ -415,13 +413,13 @@ export function ActivityLog({ logs }: ActivityLogProps) {
   };
 
   return (
-    <Box>
-      <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+    <div>
+      <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">
         Activity Log
-      </Typography>
+      </h2>
 
       {availableCategories.length > 1 && (
-        <Box sx={{ mb: 2 }}>
+        <div className="mb-4">
           <StatusFilterPills
             options={availableCategories.map((category) => ({
               value: category,
@@ -431,27 +429,21 @@ export function ActivityLog({ logs }: ActivityLogProps) {
             selectedValue={selectedCategory}
             onSelect={(value) => setSelectedCategory(value as ActivityCategory)}
           />
-        </Box>
+        </div>
       )}
 
-      <TextField
-        fullWidth
-        size="small"
-        placeholder="Search actor, status, invoice fields, or container reference"
-        value={searchTerm}
-        onChange={(event) => setSearchTerm(event.target.value)}
-        sx={{
-          mb: 2,
-          '& .MuiOutlinedInput-root': {
-            bgcolor: 'var(--panel)',
-          },
-        }}
-        InputProps={{
-          startAdornment: <Search className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />,
-        }}
-      />
+      <div className="relative flex items-center mb-4">
+        <Search className="absolute left-3.5 h-4 w-4 text-[var(--text-secondary)] pointer-events-none" />
+        <input
+          type="text"
+          placeholder="Search actor, status, invoice fields, or container reference"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          className="w-full pl-10 pr-4 py-2 bg-[var(--panel)] border border-[var(--border)] rounded-lg text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+        />
+      </div>
 
-      <Box sx={{ mb: 2 }}>
+      <div className="mb-4">
         <StatusFilterPills
           options={(['all', 'today', '7d', '30d'] as ActivityDateRange[]).map((range) => ({
             value: range,
@@ -460,97 +452,70 @@ export function ActivityLog({ logs }: ActivityLogProps) {
           selectedValue={selectedDateRange}
           onSelect={(value) => setSelectedDateRange(value as ActivityDateRange)}
         />
-      </Box>
+      </div>
       
       {filteredLogs.length === 0 ? (
-        <Typography color="textSecondary" sx={{ fontStyle: 'italic', fontSize: '0.875rem' }}>
+        <p className="text-[var(--text-secondary)] italic text-sm m-0">
           {logs.length === 0 ? 'No activity recorded yet.' : 'No activity matches the selected filter.'}
-        </Typography>
+        </p>
       ) : (
-        <List sx={{ 
-            bgcolor: 'var(--panel)', 
-            borderRadius: 2, 
-            border: '1px solid var(--border)',
-            py: 0
-        }}>
-          {filteredLogs.map((log, index) => (
-            (() => {
-              const actionMeta = getActionMeta(log.action);
-              const subtitles = getMetadataSubtitles(log);
-              return (
-            <ListItem 
+        <div className="bg-[var(--panel)] rounded-xl border border-[var(--border)] divide-y divide-[var(--border)] overflow-hidden">
+          {filteredLogs.map((log) => {
+            const actionMeta = getActionMeta(log.action);
+            const subtitles = getMetadataSubtitles(log);
+            return (
+              <div 
                 key={log.id} 
-                sx={{ 
-                    borderBottom: index < filteredLogs.length - 1 ? '1px solid var(--border)' : 'none',
-                    py: 1.5
-                }}
-            >
-              <ListItemIcon sx={{ minWidth: 36 }}>
-                {getIcon(log.action)}
-              </ListItemIcon>
-              <ListItemText
-                primaryTypographyProps={{ component: 'div' }}
-                secondaryTypographyProps={{ component: 'div' }}
-                primary={
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-                      <Chip
-                        label={actionMeta.label}
-                        size="small"
-                        sx={{
-                          height: 22,
-                          fontSize: '0.7rem',
-                          fontWeight: 700,
-                          letterSpacing: '0.02em',
-                          bgcolor: actionMeta.color,
+                className="p-4 flex gap-3 items-start"
+              >
+                <div className="shrink-0 pt-0.5">
+                  {getIcon(log.action)}
+                </div>
+                <div className="flex-1 min-w-0 flex flex-col gap-2">
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span
+                        style={{
+                          backgroundColor: actionMeta.color,
                           color: actionMeta.textColor,
-                          border: '1px solid rgba(255,255,255,0.06)',
                         }}
-                      />
-                    </Box>
-                    <Typography variant="body2" sx={{ color: 'var(--text-primary)', fontWeight: 500 }}>
+                        className="px-2 py-0.5 text-[0.7rem] font-bold rounded-md tracking-wide"
+                      >
+                        {actionMeta.label}
+                      </span>
+                    </div>
+                    <p className="text-sm font-medium text-[var(--text-primary)] m-0 leading-normal">
                       {log.description}
-                    </Typography>
+                    </p>
                     {subtitles.length > 0 && (
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.4 }}>
+                      <div className="flex flex-col gap-0.5">
                         {subtitles.map((subtitle) => (
-                          <Typography key={subtitle} variant="caption" sx={{ color: 'var(--text-secondary)' }}>
+                          <span key={subtitle} className="text-xs text-[var(--text-secondary)]">
                             {subtitle}
-                          </Typography>
+                          </span>
                         ))}
-                      </Box>
+                      </div>
                     )}
                     {(log.oldValue || log.newValue) && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, flexWrap: 'wrap' }}>
-                        <Typography variant="caption" sx={{ color: 'var(--text-secondary)', fontWeight: 700 }}>
-                          Change
-                        </Typography>
+                      <div className="flex items-center gap-2 flex-wrap text-xs text-[var(--text-secondary)]">
+                        <span className="font-bold">Change</span>
                         {renderValuePill(log.oldValue, 'old')}
                         <ArrowRight className="w-3 h-3 text-[var(--text-secondary)]" />
                         {renderValuePill(log.newValue, 'new')}
-                      </Box>
+                      </div>
                     )}
-                  </Box>
-                }
-                secondary={
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-[var(--text-secondary)]">
                     <User className="w-3 h-3 text-[var(--text-secondary)]" />
-                    <Typography variant="caption" color="textSecondary">
-                      {log.performedBy}
-                    </Typography>
-                    <Typography variant="caption" color="textSecondary">
-                      • {formatTime(log.timestamp)}
-                    </Typography>
-                  </Box>
-                }
-              />
-            </ListItem>
-              );
-            })()
-          ))}
-        </List>
+                    <span>{log.performedBy}</span>
+                    <span>• {formatTime(log.timestamp)}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
-    </Box>
+    </div>
   );
 }
-

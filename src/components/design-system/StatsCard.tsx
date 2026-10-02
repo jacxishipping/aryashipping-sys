@@ -1,6 +1,5 @@
 "use client";
 
-import { Box, Typography, Fade } from '@mui/material';
 import { ReactNode, useState, useEffect } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -11,7 +10,7 @@ import { useTheme } from '@/hooks/useTheme';
  * Now uses design tokens for consistent styling.
  */
 
-interface StatsCardProps {
+export interface StatsCardProps {
 	icon: ReactNode;
 	title: string;
 	value: string | number;
@@ -21,9 +20,12 @@ interface StatsCardProps {
 		value: number;
 		isPositive: boolean;
 	};
-	variant?: 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
+	variant?: 'default' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'primary';
 	size?: 'sm' | 'md' | 'lg';
 	delay?: number;
+	iconColor?: string;
+	iconBg?: string;
+	className?: string;
 }
 
 export default function StatsCard({
@@ -36,6 +38,9 @@ export default function StatsCard({
 	variant = 'default',
 	size = 'md',
 	delay = 0,
+	iconColor: customIconColor,
+	iconBg: customIconBg,
+	className = '',
 }: StatsCardProps) {
 	const { density } = useTheme();
 	const isCompact = density === 'compact';
@@ -51,6 +56,10 @@ export default function StatsCard({
 	// Variant colors
 	const variantConfig = {
 		default: {
+			iconColor: 'var(--accent-gold)',
+			iconBg: 'rgba(var(--accent-gold-rgb), 0.15)',
+		},
+		primary: {
 			iconColor: 'var(--accent-gold)',
 			iconBg: 'rgba(var(--accent-gold-rgb), 0.15)',
 		},
@@ -78,18 +87,19 @@ export default function StatsCard({
 
 	const sizeConfig = isCompact
 		? {
-				sm: { iconSize: 26, padding: 1, fontSize: '0.95rem' },
-				md: { iconSize: 32, padding: 1.25, fontSize: '1.15rem' },
-				lg: { iconSize: 38, padding: 1.5, fontSize: '1.3rem' },
+				sm: { iconSize: 'w-6 h-6', padding: 'p-2', fontSize: 'text-sm' },
+				md: { iconSize: 'w-8 h-8', padding: 'p-2.5', fontSize: 'text-base' },
+				lg: { iconSize: 'w-9 h-9', padding: 'p-3', fontSize: 'text-lg' },
 		  }
 		: {
-				sm: { iconSize: 36, padding: 1.5, fontSize: '1.125rem' },
-				md: { iconSize: 48, padding: 2, fontSize: '1.5rem' },
-				lg: { iconSize: 56, padding: 2.5, fontSize: '1.75rem' },
+				sm: { iconSize: 'w-9 h-9', padding: 'p-3', fontSize: 'text-base' },
+				md: { iconSize: 'w-12 h-12', padding: 'p-4', fontSize: 'text-xl' },
+				lg: { iconSize: 'w-14 h-14', padding: 'p-5', fontSize: 'text-2xl' },
 		  };
 
-	const colors = variantConfig[variant];
-	const sizes = sizeConfig[size];
+	const normalizedVariant = variant === 'primary' ? 'default' : variant;
+	const colors = variantConfig[normalizedVariant] || variantConfig.default;
+	const sizes = sizeConfig[size] || sizeConfig.md;
 	const isNeutralTrend = trend?.value === 0;
 	const trendColor = isNeutralTrend
 		? 'var(--text-secondary)'
@@ -108,130 +118,55 @@ export default function StatsCard({
 			: 'rgba(var(--error-rgb), 0.12)';
 	const trendPrefix = isNeutralTrend ? '' : trend?.isPositive ? '+' : '−';
 
+	const activeIconColor = customIconColor || colors.iconColor;
+	const activeIconBg = customIconBg || colors.iconBg;
+
 	return (
-		<Fade in={isVisible} timeout={600}>
-			<Box
-				component="article"
-				className="stats-card hover-lift"
-				sx={{
-				height: '100%',
-				borderRadius: isCompact ? 1.5 : 2,
-				border: '1px solid var(--border)',
-				borderLeft: variant === 'default' ? '3px solid var(--accent-gold)' : undefined,
-				background: 'var(--panel)',
-				padding: sizes.padding,
-			display: 'flex',
-				alignItems: 'center',
-				gap: isCompact ? 1 : 1.5,
-				position: 'relative',
-				zIndex: 1,
-				overflow: 'hidden',
-				minWidth: 0,
-				width: '100%',
-				boxSizing: 'border-box',
-				boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-				'&:hover': {
-					zIndex: 2,
-				},
-				}}
+		<article
+			className={`stats-card relative z-[1] hover:z-[2] h-full rounded-2xl border border-[var(--border)] bg-[var(--panel)] ${sizes.padding} flex items-center gap-3 overflow-hidden min-w-0 w-full box-border shadow-sm hover:shadow-md transition-all ${
+				variant === 'default' ? 'border-l-4 border-l-[var(--accent-gold)]' : ''
+			} ${className} ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'} transition-all duration-500`}
+		>
+			<div
+				className={`${sizes.iconSize} rounded-xl border border-[var(--border)] flex items-center justify-center flex-shrink-0 relative overflow-hidden`}
+				style={{ backgroundColor: activeIconBg, color: activeIconColor }}
 			>
-				<Box
-					sx={{
-						width: sizes.iconSize,
-						height: sizes.iconSize,
-						borderRadius: 3,
-						border: '1px solid var(--border)',
-						background: colors.iconBg,
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						flexShrink: 0,
-						color: colors.iconColor,
-						position: 'relative',
-						overflow: 'hidden',
-						'&::after': {
-							content: '""',
-							position: 'absolute',
-							inset: 0,
-							background: 'linear-gradient(135deg, rgba(var(--accent-gold-rgb), 0.08), transparent 72%)',
-							pointerEvents: 'none',
-						},
-						'& > *': {
-							position: 'relative',
-							zIndex: 1,
-						},
+				{icon}
+			</div>
+
+			<div className="flex-1 min-w-0 overflow-hidden">
+				<p className="text-[0.7rem] uppercase tracking-wider text-[var(--text-secondary)] mb-0.5 truncate font-medium">
+					{title}
+				</p>
+				<span
+					title={typeof value === 'string' && value.length > 12 ? value : undefined}
+					className={`${sizes.fontSize} font-bold text-[var(--text-primary)] leading-tight block truncate`}
+				>
+					{compactValue || value}
+				</span>
+				{subtitle && (
+					<p className="text-xs text-[var(--text-secondary)] mt-0.5 truncate">
+						{subtitle}
+					</p>
+				)}
+			</div>
+
+			{trend && (
+				<div
+					aria-label={`Trend: ${trendPrefix}${Math.abs(trend.value)}% ${
+						isNeutralTrend ? 'no change' : trend.isPositive ? 'increase' : 'decrease'
+					}`}
+					className="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0"
+					style={{
+						color: trendColor,
+						border: `1px solid ${trendBorderColor}`,
+						backgroundColor: trendBackground,
 					}}
 				>
-					{icon}
-				</Box>
-				<Box sx={{ flex: 1, minWidth: 0, overflow: 'hidden' }}>
-					<Typography
-						sx={{
-							fontSize: { xs: '0.65rem', sm: '0.7rem', md: '0.75rem' },
-							textTransform: 'uppercase',
-							letterSpacing: '0.15em',
-							color: 'var(--text-secondary)',
-							marginBottom: 0.5,
-							overflow: 'hidden',
-							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap',
-						}}
-					>
-						{title}
-					</Typography>
-					<Typography
-						component="span"
-						title={typeof value === 'string' && value.length > 12 ? value : undefined}
-						sx={{
-							fontSize: sizes.fontSize,
-							fontWeight: 700,
-							color: 'var(--text-primary)',
-							lineHeight: 1.15,
-							width: '100%',
-							overflow: 'hidden',
-							textOverflow: 'ellipsis',
-							whiteSpace: 'nowrap',
-						}}
-					>
-						{compactValue || value}
-					</Typography>
-					{subtitle && (
-						<Typography
-							sx={{
-								fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.8rem' },
-								color: 'var(--text-secondary)',
-								marginTop: 0.25,
-								overflow: 'hidden',
-								textOverflow: 'ellipsis',
-								whiteSpace: 'nowrap',
-							}}
-						>
-							{subtitle}
-						</Typography>
-					)}
-				</Box>
-				{trend && (
-					<Box
-						aria-label={`Trend: ${trendPrefix}${Math.abs(trend.value)}% ${
-							isNeutralTrend ? 'no change' : trend.isPositive ? 'increase' : 'decrease'
-						}`}
-						sx={{
-							fontSize: { xs: '0.65rem', sm: '0.7rem', md: '0.75rem' },
-							fontWeight: 700,
-							px: 1,
-							py: 0.5,
-							borderRadius: '999px',
-							color: trendColor,
-							border: `1px solid ${trendBorderColor}`,
-							background: trendBackground,
-							flexShrink: 0,
-						}}
-					>
-						{trendPrefix}
-						{Math.abs(trend.value)}%
-					</Box>
-				)}
-			</Box>
-		</Fade>
+					{trendPrefix}
+					{Math.abs(trend.value)}%
+				</div>
+			)}
+		</article>
 	);
 }

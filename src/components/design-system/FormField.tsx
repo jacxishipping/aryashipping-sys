@@ -4,9 +4,10 @@ import { TextField, TextFieldProps, Typography, Box, InputAdornment } from '@mui
 import { ReactNode } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 
-interface FormFieldProps extends Omit<TextFieldProps, 'variant'> {
+interface FormFieldProps extends Omit<TextFieldProps, 'variant' | 'error' | 'helperText'> {
 	label: string;
-	helperText?: string;
+	helperText?: ReactNode;
+	error?: boolean | string;
 	leftIcon?: ReactNode;
 	rightIcon?: ReactNode;
 }
@@ -14,12 +15,15 @@ interface FormFieldProps extends Omit<TextFieldProps, 'variant'> {
 export default function FormField({
 	label,
 	helperText,
+	error,
 	leftIcon,
 	rightIcon,
 	...textFieldProps
 }: FormFieldProps) {
 	const { density } = useTheme();
 	const isCompact = density === 'compact';
+	const hasError = typeof error === 'string' ? Boolean(error) : Boolean(error);
+	const displayedHelperText = (typeof error === 'string' && error) ? error : helperText;
 	const helperTextId = textFieldProps.id ? `${textFieldProps.id}-helper-text` : undefined;
 
 	return (
@@ -47,9 +51,10 @@ export default function FormField({
 			</Typography>
 			<TextField
 				size={textFieldProps.size || (isCompact ? 'small' : 'medium')}
+				error={hasError}
 				{...textFieldProps}
 				aria-describedby={[
-					helperText ? helperTextId : undefined,
+					displayedHelperText ? helperTextId : undefined,
 					textFieldProps['aria-describedby']
 				].filter(Boolean).join(' ') || undefined}
 				fullWidth
@@ -99,16 +104,16 @@ export default function FormField({
 					...textFieldProps.sx,
 				}}
 			/>
-			{helperText && (
+			{displayedHelperText && (
 				<Typography
 					id={helperTextId}
 					sx={{
 						fontSize: '0.75rem',
-						color: textFieldProps.error ? 'var(--error)' : 'var(--text-secondary)',
+						color: hasError ? 'var(--error)' : 'var(--text-secondary)',
 						mt: 0.5,
 					}}
 				>
-					{helperText}
+					{displayedHelperText}
 				</Typography>
 			)}
 		</Box>

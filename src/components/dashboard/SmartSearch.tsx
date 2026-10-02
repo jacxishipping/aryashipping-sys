@@ -3,34 +3,24 @@
 import { useState, useEffect, useCallback } from 'react';
 import { 
   Search, 
-  FilterAlt, 
-  Close, 
-  CalendarMonth,
-  AttachMoney,
-  Person,
-  Inventory2,
-  LocalShipping,
-  ExpandMore,
-  ExpandLess
-} from '@mui/icons-material';
-import { 
-  TextField,
-  InputAdornment,
-  Button,
-  Chip,
-  Box,
-  Typography,
-  Collapse,
-  CircularProgress,
-  Fade
-} from '@mui/material';
+  Filter, 
+  X, 
+  Calendar,
+  DollarSign,
+  User,
+  Package,
+  Truck,
+  ChevronDown,
+  ChevronUp,
+  Camera,
+  Loader2
+} from 'lucide-react';
 import {
   SHIPMENT_WORKFLOW_STAGE_OPTIONS,
   type ShipmentWorkflowStage,
 } from '@/lib/shipment-workflow-stage';
-import { Camera } from 'lucide-react';
 import { BarcodeScannerModal } from '@/components/ui/BarcodeScannerModal';
-import { Select } from '@/components/design-system';
+import { Select, Button } from '@/components/design-system';
 
 interface SmartSearchProps {
   onSearch: (filters: SearchFilters) => void;
@@ -100,7 +90,7 @@ export default function SmartSearch({
   });
   const [isSearching, setIsSearching] = useState(false);
 
-  // Count active filters (derived state, no need for useEffect)
+  // Count active filters
   const activeFiltersCount = (() => {
     let count = 0;
     if (filters.status) count++;
@@ -149,276 +139,138 @@ export default function SmartSearch({
   const hasActiveFilters = Boolean(query) || activeFiltersCount > 0;
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <div className="flex flex-col gap-3">
       {/* Search Bar */}
-      <Box sx={{ position: 'relative' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-          <TextField
-            fullWidth
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                    {isSearching ? (
-                      <CircularProgress size={20} sx={{ color: 'var(--accent-gold)' }} />
-                    ) : (
-                      <Search sx={{ fontSize: 20, color: 'rgba(var(--text-secondary-rgb), 0.5)' }} />
-                    )}
-                </InputAdornment>
-              ),
-              sx: {
-                  bgcolor: 'rgba(var(--panel-rgb), 0.6)',
-                borderRadius: 3,
-                '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'rgba(var(--text-primary-rgb), 0.08)',
-                },
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'rgba(var(--text-primary-rgb), 0.16)',
-                },
-                '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                  borderWidth: 2,
-                },
-                '& input': {
-                  color: 'var(--text-primary)',
-                  pr: { xs: '130px', sm: '190px' },
-                  '&::placeholder': {
-                    color: 'rgba(var(--text-secondary-rgb), 0.6)',
-                    opacity: 1,
-                  },
-                },
-              },
-            }}
-          />
-          <Box sx={{ position: 'absolute', right: 8, display: 'flex', alignItems: 'center', gap: 1 }}>
+      <div className="relative">
+        <div className="flex items-center relative">
+          <div className="relative w-full">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] pointer-events-none">
+              {isSearching ? (
+                <Loader2 className="w-5 h-5 animate-spin text-[var(--accent-gold)]" />
+              ) : (
+                <Search className="w-5 h-5 text-zinc-400" />
+              )}
+            </div>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={placeholder}
+              className="w-full pl-11 pr-32 sm:pr-48 py-3 bg-[var(--panel)] border border-[var(--border)] rounded-2xl text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] text-sm focus:outline-none focus:border-[var(--accent-gold)] focus:ring-1 focus:ring-[var(--accent-gold)] transition-colors shadow-sm"
+            />
+          </div>
+
+          <div className="absolute right-2 flex items-center gap-1.5">
             {showScanner && (
               <Button
-                size="small"
-                variant="outlined"
+                size="sm"
+                variant="outline"
                 onClick={() => setScannerOpen(true)}
                 title="Scan QR Code or VIN Barcode"
                 aria-label="Scan QR Code or VIN Barcode"
-                sx={{
-                  minWidth: 32,
-                  px: 1.25,
-                  py: 0.5,
-                  fontSize: '0.8125rem',
-                  fontWeight: 600,
-                  borderColor: 'rgba(var(--accent-gold-rgb), 0.35)',
-                  bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)',
-                  color: 'var(--accent-gold)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 0.5,
-                  '&:hover': {
-                    bgcolor: 'rgba(var(--accent-gold-rgb), 0.2)',
-                    borderColor: 'rgba(var(--accent-gold-rgb), 0.6)',
-                  },
-                }}
+                icon={<Camera className="w-3.5 h-3.5" />}
               >
-                <Camera className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Scan</span>
               </Button>
             )}
             {hasActiveFilters && (
-              <Button
-                size="small"
-                startIcon={<Close sx={{ fontSize: 16 }} />}
+              <button
+                type="button"
                 onClick={clearFilters}
-                sx={{
-                    color: 'var(--text-secondary)',
-                  '&:hover': {
-                      color: 'var(--text-primary)',
-                      bgcolor: 'rgba(var(--text-secondary-rgb), 0.08)',
-                  },
-                }}
+                className="flex items-center gap-1 px-2 py-1 text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] bg-transparent border-0 cursor-pointer"
               >
-                Clear
-              </Button>
+                <X className="w-3.5 h-3.5" />
+                <span>Clear</span>
+              </button>
             )}
             <Button
-              size="small"
-              variant={showFilters ? 'contained' : 'outlined'}
-              startIcon={<FilterAlt sx={{ fontSize: 16 }} />}
-              endIcon={showFilters ? <ExpandLess sx={{ fontSize: 16 }} /> : <ExpandMore sx={{ fontSize: 16 }} />}
+              size="sm"
+              variant={showFilters ? 'primary' : 'outline'}
+              icon={<Filter className="w-3.5 h-3.5" />}
               onClick={() => setShowFilters(!showFilters)}
-              sx={{
-                  borderColor: showFilters ? 'rgba(var(--accent-gold-rgb), 0.4)' : 'var(--border)',
-                  bgcolor: showFilters ? 'rgba(var(--accent-gold-rgb), 0.15)' : 'transparent',
-                  color: 'var(--text-primary)',
-                '&:hover': {
-                    bgcolor: showFilters ? 'rgba(var(--accent-gold-rgb), 0.25)' : 'rgba(var(--panel-rgb), 0.5)',
-                    borderColor: showFilters ? 'rgba(var(--accent-gold-rgb), 0.6)' : 'var(--border)',
-                },
-              }}
             >
-              Filters
+              <span>Filters</span>
               {activeFiltersCount > 0 && (
-                <Chip
-                  label={activeFiltersCount}
-                  size="small"
-                  sx={{
-                    ml: 1,
-                    height: 20,
-                    fontSize: '0.75rem',
-                    bgcolor: 'var(--accent-gold)',
-                      color: 'var(--background)',
-                  }}
-                />
+                <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold bg-[var(--accent-gold)] text-black">
+                  {activeFiltersCount}
+                </span>
               )}
+              {showFilters ? <ChevronUp className="w-3.5 h-3.5 ml-1" /> : <ChevronDown className="w-3.5 h-3.5 ml-1" />}
             </Button>
-          </Box>
-        </Box>
+          </div>
+        </div>
 
         {/* Quick Type Filter */}
         {showTypeFilter && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1.5 }}>
-            <Typography variant="body2" sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+          <div className="flex items-center gap-2 mt-3 flex-wrap">
+            <span className="text-xs text-[var(--text-secondary)]">
               Search in:
-            </Typography>
+            </span>
             {[
               { value: 'all', label: 'All', icon: Search },
-              { value: 'shipments', label: 'Shipments', icon: LocalShipping },
-              { value: 'items', label: 'Items', icon: Inventory2 },
-              ...(showUserFilter ? [{ value: 'users', label: 'Users', icon: Person }] : []),
+              { value: 'shipments', label: 'Shipments', icon: Truck },
+              { value: 'items', label: 'Items', icon: Package },
+              ...(showUserFilter ? [{ value: 'users', label: 'Users', icon: User }] : []),
             ].map(({ value, label, icon: Icon }) => (
               <Button
                 key={value}
-                size="small"
-                variant={filters.type === value ? 'contained' : 'outlined'}
-                startIcon={<Icon sx={{ fontSize: 16 }} />}
+                size="sm"
+                variant={filters.type === value ? 'primary' : 'outline'}
+                icon={<Icon className="w-3.5 h-3.5" />}
                 onClick={() => updateFilter('type', value as 'all' | 'shipments' | 'items' | 'users')}
-                sx={{
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  borderColor: filters.type === value ? 'rgba(var(--accent-gold-rgb), 0.4)' : 'var(--border)',
-                  bgcolor: filters.type === value ? 'rgba(var(--accent-gold-rgb), 0.15)' : 'rgba(var(--panel-rgb), 0.5)',
-                  color: filters.type === value ? 'var(--accent-gold)' : 'var(--text-secondary)',
-                  '&:hover': {
-                    bgcolor: filters.type === value ? 'rgba(var(--accent-gold-rgb), 0.25)' : 'rgba(var(--panel-rgb), 0.7)',
-                    color: 'var(--text-primary)',
-                  },
-                }}
               >
                 {label}
               </Button>
             ))}
-          </Box>
+          </div>
         )}
 
         {showWorkflowStageFilter && filters.type === 'shipments' && (
-          <Fade in timeout={180}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 1, mt: 1.5 }}>
-              <Typography variant="body2" sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                Workflow stage:
-              </Typography>
+          <div className="flex flex-wrap items-center gap-1.5 mt-3 animate-in fade-in duration-200">
+            <span className="text-xs text-[var(--text-secondary)] mr-1">
+              Workflow stage:
+            </span>
+            <Button
+              size="sm"
+              variant={filters.workflowStage ? 'outline' : 'primary'}
+              onClick={() => updateFilter('workflowStage', undefined)}
+            >
+              All stages
+            </Button>
+            {SHIPMENT_WORKFLOW_STAGE_OPTIONS.map((stageOption) => (
               <Button
-                size="small"
-                variant={filters.workflowStage ? 'outlined' : 'contained'}
-                onClick={() => updateFilter('workflowStage', undefined)}
-                sx={{
-                  fontSize: '0.875rem',
-                  fontWeight: 500,
-                  borderColor: filters.workflowStage ? 'var(--border)' : 'rgba(var(--accent-gold-rgb), 0.4)',
-                  bgcolor: filters.workflowStage ? 'rgba(var(--panel-rgb), 0.5)' : 'rgba(var(--accent-gold-rgb), 0.15)',
-                  color: filters.workflowStage ? 'var(--text-secondary)' : 'var(--accent-gold)',
-                  '&:hover': {
-                    bgcolor: filters.workflowStage ? 'rgba(var(--panel-rgb), 0.7)' : 'rgba(var(--accent-gold-rgb), 0.25)',
-                    color: 'var(--text-primary)',
-                  },
-                }}
+                key={stageOption.value}
+                size="sm"
+                variant={filters.workflowStage === stageOption.value ? 'primary' : 'outline'}
+                onClick={() => updateFilter('workflowStage', stageOption.value)}
               >
-                All stages
+                {stageOption.label}
               </Button>
-              {SHIPMENT_WORKFLOW_STAGE_OPTIONS.map((stageOption) => (
-                <Button
-                  key={stageOption.value}
-                  size="small"
-                  variant={filters.workflowStage === stageOption.value ? 'contained' : 'outlined'}
-                  onClick={() => updateFilter('workflowStage', stageOption.value)}
-                  sx={{
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    borderColor:
-                      filters.workflowStage === stageOption.value
-                        ? 'rgba(var(--accent-gold-rgb), 0.4)'
-                        : 'var(--border)',
-                    bgcolor:
-                      filters.workflowStage === stageOption.value
-                        ? 'rgba(var(--accent-gold-rgb), 0.15)'
-                        : 'rgba(var(--panel-rgb), 0.5)',
-                    color:
-                      filters.workflowStage === stageOption.value
-                        ? 'var(--accent-gold)'
-                        : 'var(--text-secondary)',
-                    '&:hover': {
-                      bgcolor:
-                        filters.workflowStage === stageOption.value
-                          ? 'rgba(var(--accent-gold-rgb), 0.25)'
-                          : 'rgba(var(--panel-rgb), 0.7)',
-                      color: 'var(--text-primary)',
-                    },
-                  }}
-                >
-                  {stageOption.label}
-                </Button>
-              ))}
-            </Box>
-          </Fade>
+            ))}
+          </div>
         )}
-      </Box>
+      </div>
 
       {/* Advanced Filters */}
-      <Collapse in={showFilters}>
-        <Box
-          sx={{
-            p: { xs: 2, sm: 3 },
-              bgcolor: 'var(--panel)',
-              border: '1px solid var(--border)',
-            borderRadius: 3,
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-            <Typography
-              variant="h6"
-              sx={{
-                fontSize: { xs: '1rem', sm: '1.125rem' },
-                fontWeight: 600,
-                  color: 'var(--text-primary)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-              }}
-            >
-              <FilterAlt sx={{ fontSize: 20, color: 'var(--accent-gold)' }} />
-              Advanced Filters
-            </Typography>
+      {showFilters && (
+        <div className="p-4 sm:p-5 bg-[var(--panel)] border border-[var(--border)] rounded-2xl shadow-sm animate-in fade-in duration-200">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-2">
+              <Filter className="w-4 h-4 text-[var(--accent-gold)]" />
+              <span>Advanced Filters</span>
+            </div>
             {activeFiltersCount > 0 && (
-              <Button
-                size="small"
+              <button
+                type="button"
                 onClick={clearFilters}
-                sx={{
-                  fontSize: '0.875rem',
-                  color: 'var(--accent-gold)',
-                  '&:hover': {
-                    color: 'var(--accent-gold)',
-                  },
-                }}
+                className="text-xs font-semibold text-[var(--accent-gold)] hover:underline bg-transparent border-0 cursor-pointer"
               >
                 Clear all filters
-              </Button>
+              </button>
             )}
-          </Box>
+          </div>
 
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
-              gap: 2,
-            }}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {/* Status Filter */}
             {showStatusFilter && (
               <Select
@@ -459,255 +311,121 @@ export default function SmartSearch({
 
             {/* Date From */}
             {showDateFilter && (
-              <TextField
-                type="date"
-                label="Date From"
-                value={filters.dateFrom || ''}
-                onChange={(e) => updateFilter('dateFrom', e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                      color: 'var(--text-secondary)',
-                    fontSize: '0.875rem',
-                    '&.Mui-focused': {
-                      color: 'var(--accent-gold)',
-                    },
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <CalendarMonth sx={{ fontSize: 16, color: 'var(--accent-gold)' }} />
-                    </InputAdornment>
-                  ),
-                  sx: {
-                      bgcolor: 'var(--panel)',
-                      color: 'var(--text-primary)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'var(--border)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'var(--border)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                    },
-                  },
-                }}
-              />
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
+                  Date From
+                </label>
+                <div className="relative">
+                  <Calendar className="w-4 h-4 text-[var(--accent-gold)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="date"
+                    value={filters.dateFrom || ''}
+                    onChange={(e) => updateFilter('dateFrom', e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
+                  />
+                </div>
+              </div>
             )}
 
             {/* Date To */}
             {showDateFilter && (
-              <TextField
-                type="date"
-                label="Date To"
-                value={filters.dateTo || ''}
-                onChange={(e) => updateFilter('dateTo', e.target.value)}
-                InputLabelProps={{
-                  shrink: true,
-                  sx: {
-                    color: 'rgba(var(--text-secondary-rgb), 0.7)',
-                    fontSize: '0.875rem',
-                    '&.Mui-focused': {
-                      color: 'var(--accent-gold)',
-                    },
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <CalendarMonth sx={{ fontSize: 16, color: 'var(--accent-gold)' }} />
-                    </InputAdornment>
-                  ),
-                  sx: {
-                    bgcolor: 'rgba(var(--text-secondary-rgb), 0.05)',
-                    color: 'var(--text-primary)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                    },
-                  },
-                }}
-              />
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
+                  Date To
+                </label>
+                <div className="relative">
+                  <Calendar className="w-4 h-4 text-[var(--accent-gold)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="date"
+                    value={filters.dateTo || ''}
+                    onChange={(e) => updateFilter('dateTo', e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
+                  />
+                </div>
+              </div>
             )}
 
             {/* Min Price */}
             {showPriceFilter && filters.type !== 'users' && (
-              <TextField
-                type="number"
-                label="Min Price"
-                value={filters.minPrice || ''}
-                onChange={(e) => updateFilter('minPrice', e.target.value)}
-                placeholder="0"
-                InputLabelProps={{
-                  sx: {
-                    color: 'rgba(var(--text-secondary-rgb), 0.7)',
-                    fontSize: '0.875rem',
-                    '&.Mui-focused': {
-                      color: 'var(--accent-gold)',
-                    },
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AttachMoney sx={{ fontSize: 16, color: 'var(--accent-gold)' }} />
-                    </InputAdornment>
-                  ),
-                  inputProps: { min: 0 },
-                  sx: {
-                    bgcolor: 'rgba(var(--text-secondary-rgb), 0.05)',
-                    color: 'var(--text-primary)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                    },
-                    '& input::placeholder': {
-                      color: 'rgba(var(--text-secondary-rgb), 0.4)',
-                      opacity: 1,
-                    },
-                  },
-                }}
-              />
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
+                  Min Price
+                </label>
+                <div className="relative">
+                  <DollarSign className="w-4 h-4 text-[var(--accent-gold)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    value={filters.minPrice || ''}
+                    onChange={(e) => updateFilter('minPrice', e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
+                  />
+                </div>
+              </div>
             )}
 
             {/* Max Price */}
             {showPriceFilter && filters.type !== 'users' && (
-              <TextField
-                type="number"
-                label="Max Price"
-                value={filters.maxPrice || ''}
-                onChange={(e) => updateFilter('maxPrice', e.target.value)}
-                placeholder="10000"
-                InputLabelProps={{
-                  sx: {
-                    color: 'rgba(var(--text-secondary-rgb), 0.7)',
-                    fontSize: '0.875rem',
-                    '&.Mui-focused': {
-                      color: 'var(--accent-gold)',
-                    },
-                  },
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <AttachMoney sx={{ fontSize: 16, color: 'var(--accent-gold)' }} />
-                    </InputAdornment>
-                  ),
-                  inputProps: { min: 0 },
-                  sx: {
-                    bgcolor: 'rgba(var(--text-secondary-rgb), 0.05)',
-                    color: 'var(--text-primary)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border)',
-                    },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(var(--accent-gold-rgb), 0.5)',
-                    },
-                    '& input::placeholder': {
-                      color: 'rgba(var(--text-secondary-rgb), 0.4)',
-                      opacity: 1,
-                    },
-                  },
-                }}
-              />
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
+                  Max Price
+                </label>
+                <div className="relative">
+                  <DollarSign className="w-4 h-4 text-[var(--accent-gold)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="10000"
+                    value={filters.maxPrice || ''}
+                    onChange={(e) => updateFilter('maxPrice', e.target.value)}
+                    className="w-full pl-9 pr-3 py-2 bg-[var(--background)] border border-[var(--border)] rounded-xl text-xs text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)]"
+                  />
+                </div>
+              </div>
             )}
-          </Box>
+          </div>
 
           {/* Filter Summary */}
-          <Fade in={hasActiveFilters} timeout={300}>
-              <Box
-                sx={{
-                  mt: 2,
-                  p: 1.5,
-                  bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)',
-                  border: '1px solid rgba(var(--accent-gold-rgb), 0.3)',
-                  borderRadius: 2,
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'start', gap: 1 }}>
-                  <FilterAlt sx={{ fontSize: 16, color: 'var(--accent-gold)', mt: 0.25, flexShrink: 0 }} />
-                  <Box sx={{ flex: 1 }}>
-                    <Typography variant="body2" sx={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--accent-gold)', mb: 1 }}>
-                      Active Filters:
-                    </Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                      {query && (
-                        <Chip
-                          label={`Query: "${query}"`}
-                          size="small"
-                          sx={{
-                            bgcolor: 'rgba(var(--accent-gold-rgb), 0.2)',
-                            color: 'var(--accent-gold)',
-                            fontSize: '0.75rem',
-                          }}
-                        />
-                      )}
-                      {filters.status && (
-                        <Chip
-                          label={`Status: ${filters.status}`}
-                          size="small"
-                          sx={{
-                            bgcolor: 'rgba(var(--accent-gold-rgb), 0.2)',
-                            color: 'var(--accent-gold)',
-                            fontSize: '0.75rem',
-                          }}
-                        />
-                      )}
-                      {filters.delivery && (
-                        <Chip
-                          label={filters.delivery === 'delivered' ? 'Delivered' : 'Not Delivered'}
-                          size="small"
-                          sx={{
-                            bgcolor: 'rgba(var(--accent-gold-rgb), 0.2)',
-                            color: 'var(--accent-gold)',
-                            fontSize: '0.75rem',
-                          }}
-                        />
-                      )}
-                      {(filters.dateFrom || filters.dateTo) && (
-                        <Chip
-                          label="Date Range"
-                          size="small"
-                          sx={{
-                            bgcolor: 'rgba(var(--accent-gold-rgb), 0.2)',
-                            color: 'var(--accent-gold)',
-                            fontSize: '0.75rem',
-                          }}
-                        />
-                      )}
-                      {(filters.minPrice || filters.maxPrice) && (
-                        <Chip
-                          label="Price Range"
-                          size="small"
-                          sx={{
-                            bgcolor: 'rgba(var(--accent-gold-rgb), 0.2)',
-                            color: 'var(--accent-gold)',
-                            fontSize: '0.75rem',
-                          }}
-                        />
-                      )}
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-          </Fade>
-        </Box>
-      </Collapse>
+          {hasActiveFilters && (
+            <div className="mt-4 p-3 bg-[rgba(var(--accent-gold-rgb),0.1)] border border-[rgba(var(--accent-gold-rgb),0.3)] rounded-xl flex items-start gap-2">
+              <Filter className="w-4 h-4 text-[var(--accent-gold)] shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <span className="text-xs font-semibold text-[var(--accent-gold)] block mb-1.5">
+                  Active Filters:
+                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {query && (
+                    <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-[rgba(var(--accent-gold-rgb),0.2)] text-[var(--accent-gold)]">
+                      Query: &quot;{query}&quot;
+                    </span>
+                  )}
+                  {filters.status && (
+                    <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-[rgba(var(--accent-gold-rgb),0.2)] text-[var(--accent-gold)]">
+                      Status: {filters.status}
+                    </span>
+                  )}
+                  {filters.delivery && (
+                    <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-[rgba(var(--accent-gold-rgb),0.2)] text-[var(--accent-gold)]">
+                      {filters.delivery === 'delivered' ? 'Delivered' : 'Not Delivered'}
+                    </span>
+                  )}
+                  {(filters.dateFrom || filters.dateTo) && (
+                    <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-[rgba(var(--accent-gold-rgb),0.2)] text-[var(--accent-gold)]">
+                      Date Range
+                    </span>
+                  )}
+                  {(filters.minPrice || filters.maxPrice) && (
+                    <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-[rgba(var(--accent-gold-rgb),0.2)] text-[var(--accent-gold)]">
+                      Price Range
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {showScanner && (
         <BarcodeScannerModal
@@ -728,6 +446,6 @@ export default function SmartSearch({
           description="Align the vehicle VIN barcode, tracking QR code, or gate pass within the camera frame"
         />
       )}
-    </Box>
+    </div>
   );
 }

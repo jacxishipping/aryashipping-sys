@@ -1,6 +1,5 @@
 "use client";
 
-import { Box, Typography } from '@mui/material';
 import { ReactNode } from 'react';
 import Breadcrumbs from './Breadcrumbs';
 import { useTheme } from '@/hooks/useTheme';
@@ -29,98 +28,68 @@ const metaIntentTextColor: Record<NonNullable<PageHeaderMeta['intent']>, string>
 	critical: 'var(--error-dark)',
 };
 
-export default function PageHeader({ title, description, actions, showBreadcrumbs = false, className, meta }: PageHeaderProps) {
+export default function PageHeader({ title, description, actions, showBreadcrumbs = false, className = '', meta }: PageHeaderProps) {
 	const { density } = useTheme();
 	const isCompact = density === 'compact';
 
 	return (
-		<Box className={['page-header-root', className].filter(Boolean).join(' ')} sx={{ mb: isCompact ? 1.5 : 3 }}>
+		<div className={`page-header-root ${isCompact ? 'mb-3' : 'mb-6'} ${className}`}>
 			{showBreadcrumbs && (
-				<Box sx={{ mb: isCompact ? 0.75 : 1.5 }}>
+				<div className={isCompact ? 'mb-2' : 'mb-3'}>
 					<Breadcrumbs />
-				</Box>
+				</div>
 			)}
-			<Box
-				sx={{
-					display: 'flex',
-					flexDirection: { xs: 'column', md: 'row' },
-					justifyContent: 'space-between',
-					alignItems: { xs: 'flex-start', md: 'center' },
-					gap: isCompact ? 1.25 : 2,
-					border: '1px solid var(--border)',
+			<div
+				className={`flex flex-col md:flex-row justify-between items-start md:items-center ${
+					isCompact ? 'gap-3 p-3' : 'gap-4 p-4 md:p-5'
+				} border border-[var(--border)] rounded-2xl bg-[var(--panel)] shadow-sm`}
+				style={{
 					borderTop: '2px solid rgba(var(--accent-gold-rgb), 0.3)',
-					borderRadius: isCompact ? 1.5 : 2,
-					backgroundColor: 'var(--panel)',
-					boxShadow: 'var(--shadow-header)',
-					padding: isCompact
-						? { xs: '8px 12px', md: '10px 14px' }
-						: { xs: '14px 16px', md: '16px 18px' },
 				}}
 			>
-				<Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, minWidth: 0 }}>
-					<Typography
-						component="h1"
-						sx={{
-							fontSize: { xs: '1.15rem', sm: '1.25rem', md: '1.4rem' },
-							fontWeight: 600,
-							color: 'var(--text-primary)',
-							lineHeight: 1.2,
-							overflowWrap: 'anywhere',
-						}}
-					>
+				<div className="flex flex-col gap-1 min-w-0">
+					<h1 className="text-xl md:text-2xl font-bold text-[var(--text-primary)] leading-tight tracking-tight">
 						{title}
-					</Typography>
+					</h1>
 					{description && (
-						<Typography
-							sx={{
-								fontSize: { xs: '0.82rem', sm: '0.88rem' },
-								color: 'var(--text-secondary)',
-								maxWidth: 680,
-							}}
-						>
+						<p className="text-xs md:text-sm text-[var(--text-secondary)] max-w-2xl">
 							{description}
-						</Typography>
+						</p>
 					)}
-				</Box>
-				<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1.5, alignItems: 'center', justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
+				</div>
+				<div className="flex flex-wrap gap-3 items-center justify-start md:justify-end">
 					{meta && meta.length > 0 && (
-						<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+						<div className="flex flex-wrap gap-2">
 							{meta.map((item) => (
-								<Box
+								<div
 									key={item.label}
-									sx={{
-										minWidth: isCompact ? 90 : 110,
-										border: '1px solid var(--border)',
-										borderRadius: 1.25,
-										padding: isCompact ? '4px 8px' : '8px 12px',
-										backgroundColor: 'var(--background)',
-									}}
+									className={`${
+										isCompact ? 'min-w-[90px] px-2 py-1' : 'min-w-[110px] px-3 py-2'
+									} border border-[var(--border)] rounded-xl bg-[var(--background)]`}
 								>
-									<Typography
-										sx={{
-											fontSize: '0.65rem',
-											textTransform: 'uppercase',
-											letterSpacing: '0.15em',
-											color: 'var(--text-secondary)',
-										}}
-									>
+									<p className="text-[0.65rem] uppercase tracking-wider text-[var(--text-secondary)] font-medium">
 										{item.label}
-									</Typography>
-									<Typography sx={{ fontSize: isCompact ? '0.875rem' : '1rem', fontWeight: 600, color: metaIntentTextColor[item.intent ?? 'default'] }}>
+									</p>
+									<p
+										className={`${
+											isCompact ? 'text-sm' : 'text-base'
+										} font-bold leading-tight`}
+										style={{ color: metaIntentTextColor[item.intent ?? 'default'] }}
+									>
 										{item.value}
-									</Typography>
+									</p>
 									{item.helper && (
-										<Typography sx={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>
+										<p className="text-[0.6875rem] text-[var(--text-secondary)]">
 											{item.helper}
-										</Typography>
+										</p>
 									)}
-								</Box>
+								</div>
 							))}
-						</Box>
+						</div>
 					)}
-					{actions && <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>{actions}</Box>}
-				</Box>
-			</Box>
-		</Box>
+					{actions && <div className="flex flex-wrap gap-2 items-center">{actions}</div>}
+				</div>
+			</div>
+		</div>
 	);
 }

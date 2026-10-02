@@ -2,26 +2,13 @@
 
 import React, { useState } from 'react';
 import {
-  FileText,
   Download,
-  Mail,
   Send,
   ShieldCheck,
-  CheckCircle2,
-  Ship,
-  Car,
-  ExternalLink,
-  PhoneCall
 } from 'lucide-react';
-import {
-  Box,
-  Typography,
-  TextField,
-} from '@mui/material';
-import { Button, Modal, StatusBadge, toast } from '@/components/design-system';
+import { Button, FormField, Modal, StatusBadge, toast } from '@/components/design-system';
 import { DataTable } from '@/components/ui/DataTable';
 import { 
-  generateCustomsPacketPDF, 
   downloadCustomsPacketPDF, 
   type CustomsPacketContainer, 
   type CustomsAgentInfo 
@@ -90,33 +77,23 @@ export function CustomsDocumentPacketModal({
       open={open}
       onClose={onClose}
       title={
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Box
-            sx={{
-              p: 1,
-              borderRadius: 2,
-              bgcolor: 'rgba(var(--accent-gold-rgb), 0.15)',
-              color: 'var(--accent-gold)',
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
+        <div className="flex items-center gap-2">
+          <div className="p-1.5 rounded-lg bg-[rgba(var(--accent-gold-rgb),0.15)] text-[var(--accent-gold)] flex items-center justify-center">
             <ShieldCheck className="w-5 h-5" />
-          </Box>
-          <Typography sx={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+          </div>
+          <span className="text-base font-bold text-[var(--text-primary)]">
             Export Customs Document Packet
-          </Typography>
-        </Box>
+          </span>
+        </div>
       }
       description="Auto-pack manifest, titles, and bills of sale for destination border clearance"
       size="md"
-      contentSx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
       actions={
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1.5, width: '100%', flexWrap: 'wrap' }}>
+        <div className="flex justify-between items-center gap-3 w-full flex-wrap">
           <Button variant="outline" size="sm" onClick={onClose}>
             Close
           </Button>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
+          <div className="flex gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -134,10 +111,11 @@ export function CustomsDocumentPacketModal({
             >
               Email Customs Agent
             </Button>
-          </Box>
-        </Box>
+          </div>
+        </div>
       }
     >
+      <div className="flex flex-col gap-4">
         {/* Container & Voyage Summary Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 rounded-xl bg-[var(--background)] border border-[var(--border)] text-xs">
           <div>
@@ -159,43 +137,43 @@ export function CustomsDocumentPacketModal({
         </div>
 
         {/* Destination Clearing Agent Form */}
-        <Box sx={{ p: 2, border: '1px solid var(--border)', borderRadius: 2, bgcolor: 'var(--background)' }}>
-          <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', mb: 1.5 }}>
+        <div className="p-4 border border-[var(--border)] rounded-xl bg-[var(--background)]">
+          <h4 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider mb-3">
             Destination Customs Broker & Consignee
-          </Typography>
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <TextField
+            <FormField
               label="Clearing Agent Name"
               size="small"
               value={agentInfo.agentName}
               onChange={(e) => setAgentInfo({ ...agentInfo, agentName: e.target.value })}
             />
-            <TextField
+            <FormField
               label="Agent Email Address"
               size="small"
               type="email"
               value={agentInfo.agentEmail}
               onChange={(e) => setAgentInfo({ ...agentInfo, agentEmail: e.target.value })}
             />
-            <TextField
+            <FormField
               label="Agent Telephone"
               size="small"
               value={agentInfo.agentPhone}
               onChange={(e) => setAgentInfo({ ...agentInfo, agentPhone: e.target.value })}
             />
           </div>
-        </Box>
+        </div>
 
         {/* Vehicle Cargo Manifest Preview Table */}
-        <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, overflow: 'hidden' }}>
-          <Box sx={{ p: 1.5, bgcolor: 'var(--background)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+        <div className="border border-[var(--border)] rounded-xl overflow-hidden">
+          <div className="p-3 bg-[var(--background)] border-b border-[var(--border)] flex justify-between items-center">
+            <h4 className="text-xs font-bold text-[var(--text-primary)] uppercase tracking-wider">
               Loaded Vehicles Manifest ({container.shipments.length} Units)
-            </Typography>
+            </h4>
             <span className="text-xs text-[var(--success)] font-semibold">
               All Titles & Documents Verified
             </span>
-          </Box>
+          </div>
 
           <DataTable
             data={container.shipments}
@@ -205,27 +183,27 @@ export function CustomsDocumentPacketModal({
                 key: 'vehicle',
                 header: 'Vehicle',
                 render: (_value, row) => (
-                  <Box component="span" sx={{ fontSize: '0.75rem', fontWeight: 600 }}>
+                  <span className="text-xs font-semibold text-[var(--text-primary)]">
                     {[row.vehicleYear, row.vehicleMake, row.vehicleModel].filter(Boolean).join(' ') || 'Motor Vehicle'}
-                  </Box>
+                  </span>
                 ),
               },
               {
                 key: 'vehicleVIN',
                 header: 'VIN (17 Digits)',
                 render: (value) => (
-                  <Box component="span" sx={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 700, color: 'var(--accent-gold)' }}>
+                  <span className="text-xs font-mono font-bold text-[var(--accent-gold)]">
                     {value || 'N/A'}
-                  </Box>
+                  </span>
                 ),
               },
               {
                 key: 'lotNumber',
                 header: 'Lot / Source',
                 render: (_value, row) => (
-                  <Box component="span" sx={{ fontSize: '0.75rem' }}>
+                  <span className="text-xs text-[var(--text-secondary)]">
                     {row.lotNumber ? `${row.lotNumber} (${row.auctionName || 'Auction'})` : 'N/A'}
-                  </Box>
+                  </span>
                 ),
               },
               {
@@ -244,14 +222,15 @@ export function CustomsDocumentPacketModal({
                 header: 'Declared Value',
                 align: 'right',
                 render: (value) => (
-                  <Box component="span" sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--success-dark)' }}>
+                  <span className="text-xs font-bold text-[var(--success-dark)]">
                     {value ? `$${value.toLocaleString()}` : '$0.00'}
-                  </Box>
+                  </span>
                 ),
               },
             ]}
           />
-        </Box>
+        </div>
+      </div>
     </Modal>
   );
 }

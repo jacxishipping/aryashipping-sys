@@ -1,6 +1,5 @@
 "use client";
 
-import { Box } from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import {
   SkeletonStatsCard,
@@ -21,29 +20,29 @@ export function DashboardPageSkeleton() {
   return (
     <DashboardSurface>
       {/* Header Skeleton */}
-      <Box sx={{ px: 2, pt: 3, pb: 2 }}>
+      <div className="px-2 pt-3 pb-2">
         <SkeletonText width="30%" />
-        <Box sx={{ mt: 0.5 }}>
+        <div className="mt-1">
           <SkeletonText width="50%" />
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Stats Cards Skeleton */}
-      <Box sx={{ px: 2, mb: 3 }}>
+      <div className="px-2 mb-3">
         <DashboardGrid className="grid-cols-1 md:grid-cols-4">
           <SkeletonStatsCard />
           <SkeletonStatsCard />
           <SkeletonStatsCard />
           <SkeletonStatsCard />
         </DashboardGrid>
-      </Box>
+      </div>
 
       {/* Table Skeleton */}
-      <Box sx={{ px: 2, pb: 4 }}>
+      <div className="px-2 pb-4">
         <DashboardPanel title="" description="">
           <SkeletonTable rows={8} columns={5} />
         </DashboardPanel>
-      </Box>
+      </div>
     </DashboardSurface>
   );
 }
@@ -53,34 +52,34 @@ export function DetailPageSkeleton() {
   return (
     <DashboardSurface>
       {/* Header Skeleton */}
-      <Box sx={{ px: 2, pt: 3, pb: 2 }}>
+      <div className="px-2 pt-3 pb-2">
         <SkeletonText width="40%" />
-        <Box sx={{ mt: 0.5 }}>
+        <div className="mt-1">
           <SkeletonText width="60%" />
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Stats Cards Skeleton */}
-      <Box sx={{ px: 2, mb: 3 }}>
+      <div className="px-2 mb-3">
         <DashboardGrid className="grid-cols-1 md:grid-cols-4">
           <SkeletonStatsCard />
           <SkeletonStatsCard />
           <SkeletonStatsCard />
           <SkeletonStatsCard />
         </DashboardGrid>
-      </Box>
+      </div>
 
       {/* Content Panels Skeleton */}
-      <Box sx={{ px: 2, pb: 4 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+      <div className="px-2 pb-4">
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
             <SkeletonCard />
-          </Box>
-        </Box>
-      </Box>
+          </div>
+        </div>
+      </div>
     </DashboardSurface>
   );
 }
@@ -90,45 +89,45 @@ export function FormPageSkeleton() {
   return (
     <DashboardSurface>
       {/* Header Skeleton */}
-      <Box sx={{ px: 2, pt: 3, pb: 2 }}>
+      <div className="px-2 pt-3 pb-2">
         <SkeletonText width="30%" />
-        <Box sx={{ mt: 0.5 }}>
+        <div className="mt-1">
           <SkeletonText width="50%" />
-        </Box>
-      </Box>
+        </div>
+      </div>
 
       {/* Form Fields Skeleton */}
-      <Box sx={{ px: 2, pb: 4 }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      <div className="px-2 pb-4">
+        <div className="flex flex-col gap-4">
           <DashboardPanel title="" description="">
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <div className="flex flex-col gap-4">
               <SkeletonFormField />
               <SkeletonFormField />
-            </Box>
+            </div>
           </DashboardPanel>
 
           <DashboardPanel title="" description="">
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <SkeletonFormField />
                 <SkeletonFormField />
-              </Box>
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 2.5 }}>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <SkeletonFormField />
                 <SkeletonFormField />
-              </Box>
-            </Box>
+              </div>
+            </div>
           </DashboardPanel>
 
           <DashboardPanel title="" description="">
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+            <div className="flex flex-col gap-4">
               <SkeletonFormField />
               <SkeletonFormField />
               <SkeletonFormField />
-            </Box>
+            </div>
           </DashboardPanel>
-        </Box>
-      </Box>
+        </div>
+      </div>
     </DashboardSurface>
   );
 }
@@ -136,12 +135,12 @@ export function FormPageSkeleton() {
 // Compact Skeleton (for smaller sections)
 export function CompactSkeleton() {
   return (
-    <Box sx={{ p: 3 }}>
+    <div className="p-4">
       <SkeletonText width="40%" />
-      <Box sx={{ mt: 2 }}>
+      <div className="mt-3">
         <SkeletonParagraph lines={4} />
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
 

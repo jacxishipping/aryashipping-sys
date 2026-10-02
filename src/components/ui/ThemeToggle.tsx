@@ -1,7 +1,6 @@
 'use client';
 
 import { Moon, Sun } from 'lucide-react';
-import { IconButton } from '@mui/material';
 import Tooltip from '@/components/design-system/Tooltip';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -10,31 +9,17 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <IconButton
-        size="small"
-        sx={{
-          color: 'var(--text-secondary)',
-          p: 1,
-        }}
-      >
+      <div className="p-2 w-9 h-9 flex items-center justify-center">
         <div className="w-5 h-5" />
-      </IconButton>
+      </div>
     );
   }
 
   return (
     <Tooltip title={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}>
-      <IconButton
+      <button
         onClick={toggleTheme}
-        size="small"
-        sx={{
-          color: 'var(--text-secondary)',
-          p: 1,
-          '&:hover': {
-            bgcolor: 'rgba(var(--border-rgb), 0.4)',
-            color: 'var(--text-primary)',
-          },
-        }}
+        className="p-2 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(var(--border-rgb),0.4)] transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
         aria-label="Toggle theme"
       >
         {theme === 'light' ? (
@@ -42,7 +27,7 @@ export function ThemeToggle() {
         ) : (
           <Sun className="w-5 h-5" />
         )}
-      </IconButton>
+      </button>
     </Tooltip>
   );
 }

@@ -5,18 +5,8 @@ import Link from 'next/link';
 import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Visibility, VisibilityOff, VpnKey, ArrowForward, LoginOutlined } from '@mui/icons-material';
-import {
-  Button,
-  TextField,
-  InputAdornment,
-  IconButton,
-  CircularProgress,
-  Box,
-  Typography,
-  Paper,
-} from '@mui/material';
-import { Alert } from '@/components/design-system';
+import { Key, Eye, EyeOff, ArrowRight, LogIn, Loader2 } from 'lucide-react';
+import { Alert, Button } from '@/components/design-system';
 import { getPortalBrandIdentity } from '@/lib/partner-portal-branding';
 
 type PortalLoginBranding = {
@@ -92,436 +82,242 @@ export default function SimpleLoginPageClient({ portal }: SimpleLoginPageClientP
 
 	if (!portal) {
 		return (
-			<Box
-				sx={{
-					minHeight: '100vh',
-					bgcolor: 'var(--background)',
-					display: 'flex',
-					alignItems: 'center',
-					justifyContent: 'center',
-					py: { xs: 6, sm: 10 },
-					px: { xs: 2, sm: 3, lg: 4 },
-				}}
-			>
+			<div className="min-h-screen bg-[var(--background)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
 				<motion.div
-					// Start visible so SSR HTML is never blank; animation only from a small offset
 					initial={{ opacity: 1, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6 }}
-					style={{ maxWidth: 448, width: '100%', position: 'relative', zIndex: 10 }}
+					className="max-w-md w-full relative z-10"
 				>
-					<Paper
-						elevation={0}
-						sx={{
-							position: 'relative',
-							borderRadius: 4,
-							background: 'var(--panel)',
-							border: '1px solid rgba(var(--panel-rgb), 0.9)',
-							boxShadow: '0 25px 60px rgba(var(--text-primary-rgb), 0.12)',
-							p: { xs: 4, sm: 5 },
-							overflow: 'hidden',
-						}}
-					>
-						<Box sx={{ position: 'relative', zIndex: 1 }}>
-							<Box sx={{ textAlign: 'center', mb: 3 }}>
-								<Typography
-									variant="h3"
-									sx={{
-										fontSize: { xs: '1.875rem', sm: '2.25rem' },
-										fontWeight: 700,
-										color: 'var(--text-primary)',
-										mb: 1,
-									}}
-								>
+					<div className="relative rounded-2xl bg-[var(--panel)] border border-[rgba(var(--panel-rgb),0.9)] shadow-xl p-6 sm:p-8 overflow-hidden">
+						<div className="relative z-10">
+							<div className="text-center mb-6">
+								<h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] mb-2">
 									Login With Code
-								</Typography>
-								<Typography
-									variant="body1"
-									sx={{
-										color: 'var(--text-secondary)',
-									}}
-								>
+								</h1>
+								<p className="text-[var(--text-secondary)] text-sm">
 									Enter your 8-character access code to continue.
-								</Typography>
-							</Box>
+								</p>
+							</div>
 
 							{error && (
-								<Box sx={{ mb: 2 }}>
+								<div className="mb-4">
 									<Alert severity="error">{error}</Alert>
-								</Box>
+								</div>
 							)}
 
-							<Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-								<Box>
-									<Typography
-										component="label"
+							<form onSubmit={handleSubmit} className="flex flex-col gap-5">
+								<div>
+									<label
 										htmlFor="loginCode"
-										sx={{
-											display: 'block',
-											fontSize: '0.875rem',
-											fontWeight: 500,
-											color: 'var(--text-primary)',
-											mb: 1,
-										}}
+										className="block text-sm font-medium text-[var(--text-primary)] mb-2"
 									>
 										8-Character Code
-									</Typography>
-									<TextField
-										id="loginCode"
-										type={showCode ? 'text' : 'password'}
-										fullWidth
-										value={loginCode}
-										onChange={handleCodeChange}
-										required
-										placeholder="Enter your 8-character code"
-										autoComplete="off"
-										autoFocus
-										InputProps={{
-											startAdornment: (
-												<InputAdornment position="start">
-													<VpnKey sx={{ fontSize: 20, color: 'var(--text-secondary)' }} />
-												</InputAdornment>
-											),
-											endAdornment: (
-												<InputAdornment position="end">
-													<IconButton
-														onClick={() => setShowCode(!showCode)}
-														edge="end"
-														sx={{
-															color: 'var(--accent-gold)',
-															'&:hover': {
-																color: 'var(--accent-gold)',
-															},
-														}}
-													>
-														{showCode ? (
-															<VisibilityOff sx={{ fontSize: 20 }} />
-														) : (
-															<Visibility sx={{ fontSize: 20 }} />
-														)}
-													</IconButton>
-												</InputAdornment>
-											),
-										}}
-										sx={{
-											'& .MuiOutlinedInput-root': {
-												bgcolor: 'var(--background)',
-												borderRadius: 2,
-												color: 'var(--text-primary)',
-												'& fieldset': {
-													borderColor: 'rgba(var(--panel-rgb), 0.9)',
-												},
-												'&:hover fieldset': {
-													borderColor: 'var(--panel)',
-												},
-												'&.Mui-focused fieldset': {
-													borderColor: 'var(--accent-gold)',
-													borderWidth: 2,
-												},
-												'& input': {
-													color: 'var(--text-primary)',
-													letterSpacing: '0.28em',
-													fontWeight: 600,
-													textAlign: 'center',
-													'&::placeholder': {
-														letterSpacing: 'normal',
-														color: 'var(--text-secondary)',
-														opacity: 1,
-													},
-												},
-											},
-										}}
-									/>
-								</Box>
+									</label>
+									<div className="relative flex items-center">
+										<div className="absolute left-3.5 text-[var(--text-secondary)] pointer-events-none">
+											<Key className="w-5 h-5" />
+										</div>
+										<input
+											id="loginCode"
+											type={showCode ? 'text' : 'password'}
+											value={loginCode}
+											onChange={handleCodeChange}
+											required
+											placeholder="Enter your 8-character code"
+											autoComplete="off"
+											autoFocus
+											className="w-full pl-11 pr-11 py-3 bg-[var(--background)] rounded-xl border border-[var(--border)] text-[var(--text-primary)] tracking-[0.28em] font-semibold text-center placeholder:tracking-normal placeholder:text-[var(--text-secondary)] placeholder:font-normal focus:outline-none focus:border-[var(--accent-gold)] focus:ring-1 focus:ring-[var(--accent-gold)] transition-colors"
+										/>
+										<button
+											type="button"
+											onClick={() => setShowCode(!showCode)}
+											className="absolute right-3.5 text-[var(--text-secondary)] hover:text-[var(--accent-gold)] transition-colors"
+										>
+											{showCode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+										</button>
+									</div>
+								</div>
 
 								<Button
 									type="submit"
 									disabled={isLoading || loginCode.length !== 8}
-									variant="contained"
-									size="large"
-									endIcon={!isLoading && <ArrowForward />}
-									sx={{
-										width: '100%',
-										bgcolor: 'var(--accent-gold)',
-										color: 'var(--background)',
-										fontWeight: 600,
-										py: 1.5,
-										fontSize: '1rem',
-										'&:hover': {
-											bgcolor: 'var(--accent-gold)',
-										},
-										'&:disabled': {
-											bgcolor: 'rgba(var(--accent-gold-rgb), 0.5)',
-											color: 'rgba(var(--background-rgb), 0.85)',
-										},
-									}}
+									loading={isLoading}
+									variant="primary"
+									size="lg"
+									fullWidth
+									icon={!isLoading ? <ArrowRight className="w-5 h-5" /> : undefined}
+									iconPosition="end"
 								>
-									{isLoading ? (
-										<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-											<CircularProgress size={20} sx={{ color: 'var(--background)' }} />
-											<Typography component="span">Signing in...</Typography>
-										</Box>
-									) : (
-										<Typography component="span">Login with Code</Typography>
-									)}
+									Login with Code
 								</Button>
-							</Box>
+							</form>
 
-							<Box sx={{ textAlign: 'center', pt: 2, mt: 2, borderTop: '1px solid var(--border)' }}>
-								<Typography variant="body2" sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)', mb: 1 }}>
+							<div className="text-center pt-4 mt-4 border-t border-[var(--border)]">
+								<p className="text-sm text-[var(--text-secondary)] mb-1">
 									Prefer email and password?
-								</Typography>
-								<Typography
-									component="button"
+								</p>
+								<button
 									type="button"
 									onClick={() => router.push('/auth/signin')}
-									sx={{
-										background: 'none',
-										border: 'none',
-										color: 'var(--accent-gold)',
-										fontWeight: 500,
-										cursor: 'pointer',
-										fontSize: '0.875rem',
-										textDecoration: 'underline',
-										transition: 'color 0.2s ease',
-										'&:hover': {
-											color: 'var(--accent-gold)',
-										},
-									}}
+									className="bg-transparent border-0 text-[var(--accent-gold)] font-medium cursor-pointer text-sm underline transition-colors hover:opacity-90"
 								>
 									Back to Sign In
-								</Typography>
-							</Box>
-						</Box>
-					</Paper>
+								</button>
+							</div>
+						</div>
+					</div>
 				</motion.div>
-			</Box>
+			</div>
 		);
 	}
 
 	return (
-		<Box
-			sx={{
-				minHeight: '100vh',
+		<div
+			style={{
 				background: `radial-gradient(circle at top left, rgba(${brand.accentRgb},0.22), transparent 26%), radial-gradient(circle at 82% 18%, rgba(${brand.accentRgb},0.12), transparent 22%), linear-gradient(180deg, #f8fafc 0%, #eef2f7 50%, #ffffff 100%)`,
-				display: 'flex',
-				alignItems: 'center',
-				justifyContent: 'center',
-				py: { xs: 6, sm: 10 },
-				px: { xs: 2, sm: 3, lg: 4 },
 			}}
+			className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
 		>
 			<motion.div
-				// Start visible so SSR HTML is never blank; animation only from a small offset
 				initial={{ opacity: 1, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6 }}
-				style={{ maxWidth: 560, width: '100%', position: 'relative', zIndex: 10 }}
+				className="max-w-xl w-full relative z-10"
 			>
-				<Paper
-					elevation={0}
-					sx={{
-						position: 'relative',
-						borderRadius: 5,
-						background: 'rgba(255,255,255,0.9)',
-						backdropFilter: 'blur(18px)',
-						border: '1px solid rgba(255,255,255,0.85)',
-						boxShadow: '0 30px 80px rgba(var(--text-primary-rgb), 0.14)',
-						p: { xs: 4, sm: 6 },
-						overflow: 'hidden',
-					}}
-				>
-					<Box sx={{ position: 'absolute', inset: 'auto -10% -26% auto', width: 220, height: 220, borderRadius: '50%', background: `radial-gradient(circle, rgba(${brand.accentRgb},0.24), rgba(${brand.accentRgb},0.02) 70%, transparent 75%)` }} />
-					<Box sx={{ position: 'relative', zIndex: 1 }}>
-						<Box sx={{ textAlign: 'center', mb: 4.5, display: 'grid', gap: 1.4 }}>
-							<Box sx={{ display: 'flex', justifyContent: 'center' }}>
+				<div className="relative rounded-3xl bg-white/90 backdrop-blur-xl border border-white/85 shadow-2xl p-8 sm:p-12 overflow-hidden">
+					<div
+						style={{
+							background: `radial-gradient(circle, rgba(${brand.accentRgb},0.24), rgba(${brand.accentRgb},0.02) 70%, transparent 75%)`,
+						}}
+						className="absolute -right-10 -bottom-16 w-56 h-56 rounded-full pointer-events-none"
+					/>
+					<div className="relative z-10">
+						<div className="text-center mb-8 grid gap-3">
+							<div className="flex justify-center">
 								{brand.logoUrl ? (
-									<Box component="img" src={brand.logoUrl} alt={`${brand.companyLabel} logo`} sx={{ width: 84, height: 84, borderRadius: 4, objectFit: 'cover', bgcolor: 'rgba(255,255,255,0.92)', border: '1px solid rgba(15,23,42,0.08)', boxShadow: '0 18px 34px rgba(15,23,42,0.12)' }} />
+									// eslint-disable-next-line @next/next/no-img-element
+									<img
+										src={brand.logoUrl}
+										alt={`${brand.companyLabel} logo`}
+										className="w-20 h-20 rounded-2xl object-cover bg-white/90 border border-slate-900/10 shadow-lg"
+									/>
 								) : (
-									<Box sx={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 84, height: 84, borderRadius: 4, bgcolor: `rgba(${brand.accentRgb}, 0.14)`, color: brand.accentColor, boxShadow: `0 16px 32px rgba(${brand.accentRgb},0.16)` }}>
-										<VpnKey sx={{ fontSize: 40, color: brand.accentColor }} />
-									</Box>
+									<div
+										style={{
+											backgroundColor: `rgba(${brand.accentRgb}, 0.14)`,
+											color: brand.accentColor,
+										}}
+										className="inline-flex items-center justify-center w-20 h-20 rounded-2xl shadow-md"
+									>
+										<Key className="w-10 h-10" />
+									</div>
 								)}
-							</Box>
-							<Typography sx={{ fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase', color: brand.accentColor }}>
+							</div>
+							<span
+								style={{ color: brand.accentColor }}
+								className="text-[0.78rem] font-bold tracking-[0.16em] uppercase"
+							>
 								{portal ? `${brand.companyLabel} Portal` : 'Customer Login'}
-							</Typography>
-							<Typography
-								variant="h3"
-								sx={{
-									fontSize: { xs: '2.2rem', sm: '2.9rem' },
-									fontWeight: 800,
-									color: 'var(--text-primary)',
-									letterSpacing: '-0.04em',
-									lineHeight: 0.95,
-								}}
-							>
+							</span>
+							<h1 className="text-3xl sm:text-4xl font-extrabold text-[var(--text-primary)] tracking-tight leading-none m-0">
 								{portal ? `Access ${brand.companyLabel}` : 'Enter Your Login Code'}
-							</Typography>
-							<Typography
-								variant="body1"
-								sx={{
-									color: 'var(--text-secondary)',
-									fontSize: '1.02rem',
-									lineHeight: 1.75,
-									maxWidth: 420,
-									mx: 'auto',
-								}}
-							>
+							</h1>
+							<p className="text-[var(--text-secondary)] text-sm leading-relaxed max-w-sm mx-auto m-0">
 								{portal
 									? 'Use the 8-character code shared by your portal team to open your branded customer workspace.'
 									: 'Enter your 8-character login code to open your customer workspace.'}
-							</Typography>
-						</Box>
+							</p>
+						</div>
 
 						{error && (
-							<Box sx={{ mb: 3 }}>
+							<div className="mb-6">
 								<Alert severity="error">{error}</Alert>
-							</Box>
+							</div>
 						)}
 
-						<Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-							<Box>
-								<Typography component="label" htmlFor="loginCode" sx={{ display: 'block', fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', mb: 1.5 }}>
+						<form onSubmit={handleSubmit} className="flex flex-col gap-6">
+							<div>
+								<label htmlFor="loginCode" className="block text-base font-bold text-[var(--text-primary)] mb-2">
 									Login Code
-								</Typography>
-								<TextField
-									id="loginCode"
-									type={showCode ? 'text' : 'password'}
-									fullWidth
-									value={loginCode}
-									onChange={handleCodeChange}
-									required
-									placeholder="Enter 8-character code"
-									autoComplete="off"
-									autoFocus
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<VpnKey sx={{ fontSize: 24, color: brand.accentColor }} />
-											</InputAdornment>
-										),
-										endAdornment: (
-											<InputAdornment position="end">
-												<IconButton
-													onClick={() => setShowCode(!showCode)}
-													edge="end"
-													sx={{ color: brand.accentColor }}
-												>
-													{showCode ? <VisibilityOff sx={{ fontSize: 24 }} /> : <Visibility sx={{ fontSize: 24 }} />}
-												</IconButton>
-											</InputAdornment>
-										),
-										sx: {
-											fontSize: '1.5rem',
-											fontWeight: 600,
-											letterSpacing: '0.22em',
-											textAlign: 'center',
-										},
-									}}
-									sx={{
-										'& .MuiOutlinedInput-root': {
-											bgcolor: 'rgba(255,255,255,0.88)',
-											borderRadius: 3.5,
-											color: 'var(--text-primary)',
-											fontSize: '1.5rem',
-											py: 1,
-											'& fieldset': {
-												borderColor: `rgba(${brand.accentRgb}, 0.2)`,
-												borderWidth: 2,
-											},
-											'&:hover fieldset': {
-												borderColor: brand.accentColor,
-											},
-											'&.Mui-focused fieldset': {
-												borderColor: brand.accentColor,
-												borderWidth: 3,
-											},
-											'& input': {
-												color: 'var(--text-primary)',
-												textAlign: 'center',
-												letterSpacing: '0.3em',
-												fontSize: '1.5rem',
-												fontWeight: 700,
-												'&::placeholder': {
-													color: 'var(--text-secondary)',
-													opacity: 0.7,
-													letterSpacing: 'normal',
-													textAlign: 'center',
-													fontSize: '1rem',
-												},
-											},
-										},
-									}}
-								/>
-								<Typography variant="caption" sx={{ display: 'block', mt: 1, color: 'var(--text-secondary)', fontSize: '0.875rem', textAlign: 'center' }}>
+								</label>
+								<div className="relative flex items-center">
+									<div
+										style={{ color: brand.accentColor }}
+										className="absolute left-4 pointer-events-none"
+									>
+										<Key className="w-6 h-6" />
+									</div>
+									<input
+										id="loginCode"
+										type={showCode ? 'text' : 'password'}
+										value={loginCode}
+										onChange={handleCodeChange}
+										required
+										placeholder="Enter 8-character code"
+										autoComplete="off"
+										autoFocus
+										style={{
+											borderColor: `rgba(${brand.accentRgb}, 0.25)`,
+										}}
+										className="w-full pl-12 pr-12 py-3.5 bg-white/90 rounded-2xl border-2 text-[var(--text-primary)] tracking-[0.3em] text-2xl font-bold text-center placeholder:tracking-normal placeholder:text-[var(--text-secondary)] placeholder:text-base placeholder:font-normal focus:outline-none transition-colors"
+									/>
+									<button
+										type="button"
+										onClick={() => setShowCode(!showCode)}
+										style={{ color: brand.accentColor }}
+										className="absolute right-4 hover:opacity-80 transition-opacity"
+									>
+										{showCode ? <EyeOff className="w-6 h-6" /> : <Eye className="w-6 h-6" />}
+									</button>
+								</div>
+								<span className="block mt-2 text-[var(--text-secondary)] text-sm text-center">
 									{loginCode.length}/8 characters
-								</Typography>
-							</Box>
+								</span>
+							</div>
 
-							<Button
+							<button
 								type="submit"
 								disabled={isLoading || loginCode.length !== 8}
-								variant="contained"
-								size="large"
-								endIcon={!isLoading && <ArrowForward />}
-								sx={{
-									width: '100%',
+								style={{
 									background: `linear-gradient(135deg, ${brand.accentColor}, rgba(${brand.accentRgb},0.82))`,
-									color: '#ffffff',
-									fontWeight: 800,
-									py: 2,
-									fontSize: '1.125rem',
-									borderRadius: 3.5,
-									boxShadow: `0 18px 36px rgba(${brand.accentRgb},0.28)`,
-									'&:hover': {
-										background: `linear-gradient(135deg, ${brand.accentColor}, rgba(${brand.accentRgb},0.88))`,
-										transform: 'translateY(-1px)',
-									},
-									'&:disabled': {
-										background: `rgba(${brand.accentRgb}, 0.45)`,
-										color: 'rgba(255,255,255,0.88)',
-									},
-									transition: 'all 0.2s ease',
 								}}
+								className="w-full text-white font-extrabold py-3.5 px-6 text-lg rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 hover:opacity-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
 							>
 								{isLoading ? (
-									<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-										<CircularProgress size={24} sx={{ color: '#ffffff' }} />
-										<Typography component="span" sx={{ fontWeight: 800 }}>Logging in...</Typography>
-									</Box>
+									<div className="flex items-center gap-2">
+										<Loader2 className="w-6 h-6 animate-spin text-white" />
+										<span>Logging in...</span>
+									</div>
 								) : (
-									<Typography component="span" sx={{ fontWeight: 800 }}>Open Portal</Typography>
+									<>
+										<span>Open Portal</span>
+										<ArrowRight className="w-5 h-5" />
+									</>
 								)}
-							</Button>
-						</Box>
+							</button>
+						</form>
 
-						<Box sx={{ textAlign: 'center', pt: 4, mt: 4, borderTop: `1px solid rgba(${brand.accentRgb}, 0.14)`, display: 'grid', gap: 1.25 }}>
-							<Typography variant="body2" sx={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+						<div
+							style={{ borderColor: `rgba(${brand.accentRgb}, 0.14)` }}
+							className="text-center pt-6 mt-6 border-t grid gap-3"
+						>
+							<p className="text-sm text-[var(--text-secondary)] m-0">
 								Prefer email and password instead?
-							</Typography>
-							<Link href={staffLoginHref} style={{ textDecoration: 'none' }}>
+							</p>
+							<Link href={staffLoginHref} className="no-underline">
 								<Button
-									variant="outlined"
-									size="large"
-									startIcon={<LoginOutlined />}
-									sx={{
-										borderColor: `rgba(${brand.accentRgb}, 0.26)`,
-										color: brand.accentColor,
-										borderRadius: 3,
-										'&:hover': {
-											borderColor: brand.accentColor,
-											backgroundColor: `rgba(${brand.accentRgb},0.06)`,
-										},
-									}}
+									variant="outline"
+									size="lg"
+									icon={<LogIn className="w-4 h-4" />}
 								>
 									Sign In With Email
 								</Button>
 							</Link>
-						</Box>
-					</Box>
-				</Paper>
+						</div>
+					</div>
+				</div>
 			</motion.div>
-		</Box>
+		</div>
 	);
 }

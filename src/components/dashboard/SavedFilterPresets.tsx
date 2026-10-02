@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
 import { Bookmark, Plus, X, Check } from 'lucide-react';
 import { Button } from '@/components/design-system';
 
@@ -87,92 +86,54 @@ export function SavedFilterPresets<T extends Record<string, any>>({
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 1,
-        flexWrap: 'wrap',
-        py: 0.5,
-      }}
-    >
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mr: 0.5 }}>
-        <Bookmark size={14} style={{ color: 'var(--accent-gold)' }} />
-        <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-secondary)' }}>
+    <div className="flex items-center gap-2 flex-wrap py-1">
+      <div className="flex items-center gap-1.5 mr-1">
+        <Bookmark size={14} className="text-[var(--accent-gold)]" />
+        <span className="text-xs font-bold text-[var(--text-secondary)]">
           Saved Views:
-        </Typography>
-      </Box>
+        </span>
+      </div>
 
       {presets.map((preset) => {
         const isActive = activePresetId === preset.id;
         return (
-          <Box
+          <div
             key={preset.id}
             onClick={() => {
               setActivePresetId(preset.id);
               onApplyPreset(preset.filters);
             }}
-            sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 0.75,
-              px: 1.25,
-              py: 0.4,
-              borderRadius: 2,
-              fontSize: '0.75rem',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'all 0.15s ease-in-out',
-              backgroundColor: isActive ? 'var(--accent-gold)' : 'var(--panel)',
-              color: isActive ? '#000000' : 'var(--text-primary)',
-              border: isActive ? '1px solid var(--accent-gold)' : '1px solid var(--border)',
-              '&:hover': {
-                borderColor: 'var(--accent-gold)',
-                transform: 'translateY(-1px)',
-              },
-            }}
+            className={`inline-flex items-center gap-2 px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all border ${
+              isActive
+                ? 'bg-[var(--accent-gold)] text-black border-[var(--accent-gold)]'
+                : 'bg-[var(--panel)] text-[var(--text-primary)] border-[var(--border)] hover:border-[var(--accent-gold)] hover:-translate-y-0.5'
+            }`}
           >
             <span>{preset.name}</span>
             {!preset.isDefault && (
-              <Box
-                component="span"
+              <button
+                type="button"
                 onClick={(e) => handleDeletePreset(preset.id, e)}
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  p: 0.25,
-                  borderRadius: 1,
-                  opacity: 0.7,
-                  '&:hover': { opacity: 1, backgroundColor: 'rgba(0,0,0,0.1)' },
-                }}
+                className="inline-flex items-center p-0.5 rounded opacity-70 hover:opacity-100 hover:bg-black/10 bg-transparent border-0 cursor-pointer"
               >
                 <X size={12} />
-              </Box>
+              </button>
             )}
-          </Box>
+          </div>
         );
       })}
 
       {isAdding ? (
-        <form onSubmit={handleSaveCurrent} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+        <form onSubmit={handleSaveCurrent} className="inline-flex items-center gap-1">
           <input
             type="text"
             placeholder="View name..."
             value={newPresetName}
             onChange={(e) => setNewPresetName(e.target.value)}
             autoFocus
-            style={{
-              fontSize: '0.75rem',
-              padding: '4px 8px',
-              borderRadius: '6px',
-              border: '1px solid var(--accent-gold)',
-              backgroundColor: 'var(--background)',
-              color: 'var(--text-primary)',
-              outline: 'none',
-              width: 120,
-            }}
+            className="text-xs px-2 py-1 rounded-md border border-[var(--accent-gold)] bg-[var(--background)] text-[var(--text-primary)] outline-none w-28"
           />
-          <Button type="submit" variant="primary" size="sm" icon={<Check size={12} />} sx={{ px: 1, py: 0.25 }}>
+          <Button type="submit" variant="primary" size="sm" icon={<Check size={12} />}>
             Save
           </Button>
           <Button
@@ -181,7 +142,6 @@ export function SavedFilterPresets<T extends Record<string, any>>({
             size="sm"
             onClick={() => setIsAdding(false)}
             icon={<X size={12} />}
-            sx={{ px: 1, py: 0.25 }}
           />
         </form>
       ) : (
@@ -190,18 +150,11 @@ export function SavedFilterPresets<T extends Record<string, any>>({
           size="sm"
           onClick={() => setIsAdding(true)}
           icon={<Plus size={12} />}
-          sx={{
-            fontSize: '0.72rem',
-            py: 0.4,
-            px: 1,
-            height: 'auto',
-            borderRadius: 2,
-            borderStyle: 'dashed',
-          }}
+          className="text-xs border-dashed"
         >
           Save Current Filter
         </Button>
       )}
-    </Box>
+    </div>
   );
 }
