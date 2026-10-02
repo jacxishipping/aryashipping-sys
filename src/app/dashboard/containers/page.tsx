@@ -55,7 +55,7 @@ function Typography({ children, className = '', component: Component = 'div', va
   );
 }
 
-function IconButton({ children, onClick, size, className = '', sx, ...props }: any) {
+function IconButton({ children, onClick, size, className = '', sx, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { sx?: any; size?: any; color?: any }) {
   return (
     <button
       type="button"

@@ -43,7 +43,7 @@ function Box({ children, className = '', component: Component = 'div', sx, style
   );
 }
 
-function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: any) {
+function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { sx?: any; size?: any; color?: any }) {
   return (
     <button
       type="button"

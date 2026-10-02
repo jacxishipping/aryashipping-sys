@@ -82,7 +82,7 @@ function FormLabel({ children, className = '', sx, style }: any) {
   );
 }
 
-function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: any) {
+function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { sx?: any; size?: any; color?: any }) {
   return (
     <button
       type="button"

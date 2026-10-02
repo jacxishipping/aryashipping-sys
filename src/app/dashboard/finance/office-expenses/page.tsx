@@ -110,7 +110,7 @@ function Chip({ label, icon, size = 'medium', sx, style, className = '', ...prop
   );
 }
 
-function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: any) {
+function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { sx?: any; size?: any; color?: any }) {
   return (
     <button
       type="button"

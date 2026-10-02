@@ -75,7 +75,7 @@ function Divider({ sx, className = '' }: any) {
   return <hr className={`border-[var(--border)] my-1 ${className}`} style={sxToStyle(sx)} />;
 }
 
-function IconButton({ children, onClick, size, className = '', sx, ...props }: any) {
+function IconButton({ children, onClick, size, className = '', sx, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { sx?: any; size?: any; color?: any }) {
   return (
     <button
       type="button"
