@@ -15,7 +15,6 @@ import {
   Webhook,
   XCircle,
 } from 'lucide-react';
-import { Box, Typography } from '@mui/material';
 
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
 import { Alert, Breadcrumbs, Button, FormField, LoadingState, Modal, PageHeader, StatsCard, toast } from '@/components/design-system';
@@ -83,33 +82,20 @@ type CallAgentConfig = {
 
 function StatusLine({ label, ready, detail }: { label: string; ready: boolean; detail: string }) {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        gap: 2,
-        p: 2,
-        borderRadius: 2,
-        border: '1px solid var(--border)',
-        bgcolor: 'var(--background)',
-      }}
-    >
-      <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+    <div className="flex items-start justify-between gap-4 p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+      <div className="min-w-0">
+        <div className="text-[0.92rem] font-bold text-[var(--text-primary)]">
           {label}
-        </Typography>
-        <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', mt: 0.5 }}>
+        </div>
+        <div className="text-[0.8rem] text-[var(--text-secondary)] mt-1">
           {detail}
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: ready ? 'var(--success-dark)' : 'var(--error-dark)' }}>
+        </div>
+      </div>
+      <div className={`flex items-center gap-1.5 shrink-0 text-xs font-bold ${ready ? 'text-[var(--success-dark)]' : 'text-[var(--error-dark)]'}`}>
         {ready ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-        <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, whiteSpace: 'nowrap' }}>
-          {ready ? 'Ready' : 'Missing'}
-        </Typography>
-      </Box>
-    </Box>
+        <span>{ready ? 'Ready' : 'Missing'}</span>
+      </div>
+    </div>
   );
 }
 
@@ -169,7 +155,6 @@ export default function CallAgentSettingsPage() {
     void loadConfig();
   }, [fetchConfig, router, session, status]);
 
-  
   const [testingCall, setTestingCall] = useState(false);
   const [testCallModalOpen, setTestCallModalOpen] = useState(false);
   const [testCallNumber, setTestCallNumber] = useState('');
@@ -327,14 +312,14 @@ export default function CallAgentSettingsPage() {
   if (error || !config) {
     return (
       <DashboardSurface>
-        <Box sx={{ px: 2, pt: 2 }}>
+        <div className="px-2 pt-2">
           <Breadcrumbs />
-        </Box>
+        </div>
         <PageHeader
           title="Call Agent"
           description="Voice webhook endpoints and provider readiness"
           actions={
-            <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+            <div className="flex gap-2 flex-wrap">
               <Button
                 variant="outline"
                 icon={<RefreshCw className="w-4 h-4" />}
@@ -345,20 +330,20 @@ export default function CallAgentSettingsPage() {
               </Button>
 
               <Button
-              variant="outline"
-              icon={<PhoneCall className="w-4 h-4" />}
-              onClick={() => void handleTestCall()}
-              disabled={!config?.status.twilioPhoneNumberConfigured && !config?.status.twilioPhoneNumberSidConfigured}
-              loading={testingCall}
-            >
-              Test Call
-            </Button>
-              <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
+                variant="outline"
+                icon={<PhoneCall className="w-4 h-4" />}
+                onClick={() => void handleTestCall()}
+                disabled={!config?.status.twilioPhoneNumberConfigured && !config?.status.twilioPhoneNumberSidConfigured}
+                loading={testingCall}
+              >
+                Test Call
+              </Button>
+              <Link href="/dashboard/settings" className="no-underline">
                 <Button variant="outline" icon={<ArrowLeft className="w-4 h-4" />}>
                   Back To Settings
                 </Button>
               </Link>
-            </Box>
+            </div>
           }
         />
         <DashboardPanel className="max-w-3xl mx-auto">
@@ -370,15 +355,15 @@ export default function CallAgentSettingsPage() {
 
   return (
     <DashboardSurface>
-      <Box sx={{ px: 2, pt: 2 }}>
+      <div className="px-2 pt-2">
         <Breadcrumbs />
-      </Box>
+      </div>
 
       <PageHeader
         title="Call Agent"
         description="Twilio endpoints, Gemini readiness, and live voice configuration"
         actions={
-          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             <Button
               variant="outline"
               icon={<RefreshCw className="w-4 h-4" />}
@@ -397,12 +382,12 @@ export default function CallAgentSettingsPage() {
             >
               Test Call
             </Button>
-            <Link href="/dashboard/settings" style={{ textDecoration: 'none' }}>
+            <Link href="/dashboard/settings" className="no-underline">
               <Button variant="outline" icon={<ArrowLeft className="w-4 h-4" />}>
                 Back To Settings
               </Button>
             </Link>
-          </Box>
+          </div>
         }
       />
 
@@ -488,24 +473,24 @@ export default function CallAgentSettingsPage() {
               />
             </div>
 
-            <Alert severity="info" sx={{ alignItems: 'flex-start' }}>
+            <Alert severity="info">
               If GEMINI_LIVE_API_KEY is empty, the live bridge falls back to GEMINI_API_KEY. The model fields can be left at their defaults unless you need to override them.
             </Alert>
 
-            <Alert severity="warning" sx={{ alignItems: 'flex-start' }}>
+            <Alert severity="warning">
               These Gemini values are stored in the application database and visible to admins on this page.
             </Alert>
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 1 }}>
+            <div className="flex justify-end pt-1">
               <Button type="submit" variant="primary" loading={savingGeminiSettings}>
                 Save Gemini Settings
               </Button>
-            </Box>
+            </div>
           </form>
         </DashboardPanel>
 
         <DashboardPanel title="Twilio Number Inspection" description="Live readback of the configured Twilio phone number when API credentials are available.">
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div className="flex flex-col gap-3">
             <StatusLine
               label="Inspection target"
               ready={config.twilioInspection.inspected}
@@ -522,29 +507,29 @@ export default function CallAgentSettingsPage() {
             />
 
             {config.twilioInspection.inspected ? (
-              <Box sx={{ p: 2, borderRadius: 2, border: '1px solid var(--border)', bgcolor: 'var(--background)' }}>
-                <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)', mb: 1.5 }}>
+              <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+                <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-3">
                   Current Twilio phone number config
-                </Typography>
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '180px 1fr' }, gap: 1.5 }}>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Phone number</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>{config.twilioInspection.phoneNumber || 'Not available'}</Typography>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Voice URL</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>{config.twilioInspection.voiceUrl || 'Not set'}</Typography>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Voice method</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>{config.twilioInspection.voiceMethod || 'Not set'}</Typography>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Fallback URL</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>{config.twilioInspection.voiceFallbackUrl || 'Not set'}</Typography>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>TwiML App SID</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>{config.twilioInspection.voiceApplicationSid || 'Not set'}</Typography>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Status callback</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>{config.twilioInspection.statusCallback || 'Not set'}</Typography>
-                  <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Trunk SID</Typography>
-                  <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>{config.twilioInspection.trunkSid || 'Not set'}</Typography>
-                </Box>
-              </Box>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-[180px_1fr] gap-2">
+                  <div className="text-sm text-[var(--text-secondary)]">Phone number</div>
+                  <div className="text-sm text-[var(--text-primary)] break-all font-medium">{config.twilioInspection.phoneNumber || 'Not available'}</div>
+                  <div className="text-sm text-[var(--text-secondary)]">Voice URL</div>
+                  <div className="text-sm text-[var(--text-primary)] break-all font-mono">{config.twilioInspection.voiceUrl || 'Not set'}</div>
+                  <div className="text-sm text-[var(--text-secondary)]">Voice method</div>
+                  <div className="text-sm text-[var(--text-primary)] font-medium">{config.twilioInspection.voiceMethod || 'Not set'}</div>
+                  <div className="text-sm text-[var(--text-secondary)]">Fallback URL</div>
+                  <div className="text-sm text-[var(--text-primary)] break-all font-mono">{config.twilioInspection.voiceFallbackUrl || 'Not set'}</div>
+                  <div className="text-sm text-[var(--text-secondary)]">TwiML App SID</div>
+                  <div className="text-sm text-[var(--text-primary)] break-all font-mono">{config.twilioInspection.voiceApplicationSid || 'Not set'}</div>
+                  <div className="text-sm text-[var(--text-secondary)]">Status callback</div>
+                  <div className="text-sm text-[var(--text-primary)] break-all font-mono">{config.twilioInspection.statusCallback || 'Not set'}</div>
+                  <div className="text-sm text-[var(--text-secondary)]">Trunk SID</div>
+                  <div className="text-sm text-[var(--text-primary)] break-all font-mono">{config.twilioInspection.trunkSid || 'Not set'}</div>
+                </div>
+              </div>
             ) : null}
-          </Box>
+          </div>
         </DashboardPanel>
 
         <DashboardPanel title="Twilio Credentials & Number Target" description="Shared Call Agent values saved in the database for Twilio API inspection.">
@@ -605,60 +590,60 @@ export default function CallAgentSettingsPage() {
               These values are stored in the application database and visible to admins on this page.
             </Alert>
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 1 }}>
+            <div className="flex justify-end pt-1">
               <Button type="submit" variant="primary" loading={savingTwilioSettings}>
                 Save Twilio Settings
               </Button>
-            </Box>
+            </div>
           </form>
         </DashboardPanel>
       </DashboardGrid>
 
       <DashboardGrid className="grid-cols-1 xl:grid-cols-2">
         <DashboardPanel title="Twilio Endpoints" description="Use these exact values when wiring the phone number to the call agent.">
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-            <Box sx={{ p: 2, borderRadius: 2, border: '1px solid var(--border)', bgcolor: 'var(--background)' }}>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)', mb: 1 }}>
+          <div className="flex flex-col gap-4">
+            <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+              <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
                 Inbound voice webhook
-              </Typography>
-              <Typography sx={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-primary)', mb: 1 }}>
+              </div>
+              <div className="text-sm font-bold text-[var(--text-primary)] mb-1">
                 Method: {config.urls.webhookMethod}
-              </Typography>
-              <Typography sx={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: '0.8rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>
+              </div>
+              <div className="font-mono text-xs text-[var(--text-primary)] break-all bg-[var(--panel)] p-2 rounded border border-[var(--border)]">
                 {config.urls.webhookUrl}
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+              </div>
+              <div className="flex justify-end mt-3">
                 <Button variant="outline" size="sm" icon={<Copy className="w-4 h-4" />} onClick={() => void copyValue(config.urls.webhookUrl, 'Webhook URL')}>
                   Copy Webhook URL
                 </Button>
-              </Box>
-            </Box>
+              </div>
+            </div>
 
-            <Box sx={{ p: 2, borderRadius: 2, border: '1px solid var(--border)', bgcolor: 'var(--background)' }}>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--text-secondary)', mb: 1 }}>
+            <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+              <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
                 Live media WebSocket
-              </Typography>
-              <Typography sx={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: '0.8rem', color: 'var(--text-primary)', wordBreak: 'break-all' }}>
+              </div>
+              <div className="font-mono text-xs text-[var(--text-primary)] break-all bg-[var(--panel)] p-2 rounded border border-[var(--border)]">
                 {config.urls.websocketUrl}
-              </Typography>
-              <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', mt: 1.5, lineHeight: 1.6 }}>
+              </div>
+              <p className="text-xs text-[var(--text-secondary)] mt-2 leading-relaxed">
                 Do not paste this into the phone number webhook field. Twilio opens this stream automatically when the caller chooses the live Gemini option.
-              </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+              </p>
+              <div className="flex justify-end mt-3">
                 <Button variant="outline" size="sm" icon={<Copy className="w-4 h-4" />} onClick={() => void copyValue(config.urls.websocketUrl, 'WebSocket URL')}>
                   Copy WebSocket URL
                 </Button>
-              </Box>
-            </Box>
+              </div>
+            </div>
 
             <Alert severity="info">
               The current endpoint host is based on {config.urls.source === 'NEXT_PUBLIC_APP_URL' ? 'NEXT_PUBLIC_APP_URL' : 'the active request host'}. Recommended base URL: {config.urls.preferredBaseUrl}
             </Alert>
-          </Box>
+          </div>
         </DashboardPanel>
 
         <DashboardPanel title="Provider Status" description="Non-secret readiness checks for Gemini, Twilio, and webhook protection.">
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div className="flex flex-col gap-3">
             <StatusLine
               label="Voice webhook token"
               ready={config.status.voiceWebhookTokenConfigured}
@@ -679,41 +664,41 @@ export default function CallAgentSettingsPage() {
               ready={config.status.twilioConfigured}
               detail={config.status.twilioAuthMode === 'auth-token' ? 'Using TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN.' : config.status.twilioAuthMode === 'api-key' ? 'Using TWILIO_ACCOUNT_SID + TWILIO_API_KEY + TWILIO_API_SECRET.' : 'No Twilio API credentials detected. Manual Twilio setup still works.'}
             />
-          </Box>
+          </div>
         </DashboardPanel>
       </DashboardGrid>
 
       {warnings.length ? (
         <DashboardPanel title="Action Items" description="Items that will block or limit the call agent until configured.">
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <div className="flex flex-col gap-2">
             {warnings.map((warning) => (
               <Alert key={warning} severity="warning">
                 {warning}
               </Alert>
             ))}
-          </Box>
+          </div>
         </DashboardPanel>
       ) : null}
 
       <DashboardPanel title="Twilio Setup Notes" description="Use this as the operator checklist when configuring the phone number.">
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '1fr 1fr' }, gap: 3 }}>
-          <Box>
-            <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', mb: 1 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+            <div className="text-sm font-bold text-[var(--text-primary)] mb-1">
               Phone number configuration
-            </Typography>
-            <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
               Set “A Call Comes In” to Webhook, use the webhook URL shown above, and keep the method set to POST.
-            </Typography>
-          </Box>
-          <Box>
-            <Typography sx={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)', mb: 1 }}>
+            </p>
+          </div>
+          <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+            <div className="text-sm font-bold text-[var(--text-primary)] mb-1">
               Live audio behavior
-            </Typography>
-            <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
               The WebSocket endpoint is only used when option 4 is selected from the IVR menu. It is not entered manually in the Twilio number settings.
-            </Typography>
-          </Box>
-        </Box>
+            </p>
+          </div>
+        </div>
       </DashboardPanel>
 
       <Modal

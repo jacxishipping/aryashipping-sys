@@ -3,13 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import {
-  Box,
-  TextField,
-  Typography,
-} from '@mui/material';
 import { AlertTriangle, Bot, Clock, Filter, RefreshCcw, Search as SearchIcon, ShieldCheck, XCircle } from 'lucide-react';
-import { PageHeader, Button, EmptyState, LoadingState, Select, StatsCard, StatusBadge, Modal, toast } from '@/components/design-system';
+import { PageHeader, Button, FormField, LoadingState, Select, StatsCard, StatusBadge, Modal, toast } from '@/components/design-system';
 import { DashboardGrid, DashboardPanel, DashboardSurface } from '@/components/dashboard/DashboardSurface';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { hasPermission } from '@/lib/rbac';
@@ -165,10 +160,10 @@ export default function AiLogsPage() {
         header: 'Feature',
         sortable: true,
         render: (_, log) => (
-          <Box>
-            <Typography sx={{ fontSize: '0.85rem', fontWeight: 600 }}>{formatFeatureLabel(log.feature)}</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{log.model || 'N/A'}</Typography>
-          </Box>
+          <div>
+            <div className="text-sm font-semibold text-[var(--text-primary)]">{formatFeatureLabel(log.feature)}</div>
+            <div className="text-xs text-[var(--text-secondary)]">{log.model || 'N/A'}</div>
+          </div>
         ),
       },
       {
@@ -186,22 +181,22 @@ export default function AiLogsPage() {
         header: 'Provider',
         sortable: true,
         render: (_, log) => (
-          <Box>
-            <Typography sx={{ fontSize: '0.8rem', fontWeight: 600 }}>{log.provider}</Typography>
-            <Typography sx={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
+          <div>
+            <div className="text-xs font-semibold text-[var(--text-primary)]">{log.provider}</div>
+            <div className="text-[11px] text-[var(--text-secondary)]">
               {log.provider === 'rules' ? 'Fallback' : 'Live provider'}
-            </Typography>
-          </Box>
+            </div>
+          </div>
         ),
       },
       {
         key: 'entityType',
         header: 'Entity',
         render: (_, log) => (
-          <Box>
-            <Typography sx={{ fontSize: '0.8rem' }}>{log.entityType || 'N/A'}</Typography>
-            <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{truncateText(log.entityId, 18)}</Typography>
-          </Box>
+          <div>
+            <div className="text-xs text-[var(--text-primary)]">{log.entityType || 'N/A'}</div>
+            <div className="text-xs text-[var(--text-secondary)]">{truncateText(log.entityId, 18)}</div>
+          </div>
         ),
       },
       {
@@ -209,10 +204,10 @@ export default function AiLogsPage() {
         header: 'Created',
         sortable: true,
         render: (_, log) => (
-          <Box>
-            <Typography sx={{ fontSize: '0.8rem' }}>{new Date(log.createdAt).toLocaleDateString()}</Typography>
-            <Typography sx={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>{new Date(log.createdAt).toLocaleTimeString()}</Typography>
-          </Box>
+          <div>
+            <div className="text-xs text-[var(--text-primary)]">{new Date(log.createdAt).toLocaleDateString()}</div>
+            <div className="text-[11px] text-[var(--text-secondary)]">{new Date(log.createdAt).toLocaleTimeString()}</div>
+          </div>
         ),
       },
       {
@@ -221,14 +216,14 @@ export default function AiLogsPage() {
         render: (_, log) => {
           const reason = getLogFailureReason(log);
           return reason ? (
-            <Box sx={{ display: 'flex', gap: 0.75, alignItems: 'flex-start', maxWidth: 260 }}>
-              {log.provider === 'rules' ? <Clock className="w-4 h-4 text-[var(--warning)]" /> : <AlertTriangle className="w-4 h-4 text-[var(--error)]" />}
-              <Typography sx={{ fontSize: '0.78rem', color: log.provider === 'rules' ? 'var(--warning)' : 'var(--error)' }}>
+            <div className="flex gap-2 items-start max-w-[260px]">
+              {log.provider === 'rules' ? <Clock className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" /> : <AlertTriangle className="w-4 h-4 text-[var(--error)] shrink-0 mt-0.5" />}
+              <span className={`text-xs ${log.provider === 'rules' ? 'text-[var(--warning)]' : 'text-[var(--error)]'}`}>
                 {truncateText(reason, 120)}
-              </Typography>
-            </Box>
+              </span>
+            </div>
           ) : (
-            <Typography sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>No issue reported</Typography>
+            <span className="text-xs text-[var(--text-secondary)]">No issue reported</span>
           );
         },
       },
@@ -236,7 +231,7 @@ export default function AiLogsPage() {
         key: 'prompt',
         header: 'Prompt',
         render: (_, log) => (
-          <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{truncateText(log.prompt, 90)}</Typography>
+          <span className="text-xs text-[var(--text-secondary)]">{truncateText(log.prompt, 90)}</span>
         ),
       },
       {
@@ -244,11 +239,11 @@ export default function AiLogsPage() {
         header: 'Action',
         align: 'right',
         render: (_, log) => (
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }} onClick={(e) => e.stopPropagation()}>
+          <div className="flex justify-end" onClick={(e) => e.stopPropagation()}>
             <Button variant="outline" size="sm" onClick={() => setSelectedLog(log)}>
               View
             </Button>
-          </Box>
+          </div>
         ),
       },
     ],
@@ -273,14 +268,14 @@ export default function AiLogsPage() {
         title="AI Interaction Logs"
         description="Browse prompt and response traces for dashboard briefs, shipment drafts, and extraction workflows."
         actions={
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <div className="flex gap-2 flex-wrap">
             <Button variant="outline" size="sm" onClick={clearFilters} icon={<XCircle className="w-4 h-4" />}>
               Clear Filters
             </Button>
             <Button variant="secondary" size="sm" onClick={handleRefresh} icon={<RefreshCcw className="w-4 h-4" />} loading={refreshing}>
               Refresh Logs
             </Button>
-          </Box>
+          </div>
         }
       />
 
@@ -288,7 +283,7 @@ export default function AiLogsPage() {
         title="Filter AI Activity"
         description="Filter by feature domain, entity type, or review reason"
       >
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mb: 2 }}>
+        <div className="flex gap-2 flex-wrap mb-4">
           {quickFilters.map((filter) => (
             <Button
               key={filter.id}
@@ -300,9 +295,9 @@ export default function AiLogsPage() {
               {filter.label}
             </Button>
           ))}
-        </Box>
+        </div>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, minmax(0, 1fr))' }, gap: 2, mb: 3 }}>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <Select
             size="small"
             label="Feature"
@@ -325,17 +320,14 @@ export default function AiLogsPage() {
               { value: 'DOCUMENT', label: 'Document' },
             ]}
           />
-          <TextField
-            size="small"
+          <FormField
             label="Entity ID"
             value={entityId}
-            onChange={(event) => setEntityId(event.target.value)}
+            onChange={(value) => setEntityId(value)}
             placeholder="Filter by exact entity id"
-            InputProps={{
-              startAdornment: <SearchIcon className="mr-2 h-4 w-4 text-[var(--text-secondary)]" />,
-            }}
+            leftIcon={<SearchIcon className="h-4 w-4" />}
           />
-        </Box>
+        </div>
 
         <DashboardGrid className="grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
           <StatsCard title="Total Logs" value={stats.total} icon={<Bot className="w-5 h-5" />} variant="default" />
@@ -344,45 +336,31 @@ export default function AiLogsPage() {
           <StatsCard title="Non-Success Status" value={stats.failedCount} icon={<AlertTriangle className="w-5 h-5" />} variant="error" />
         </DashboardGrid>
 
-        <Box
-          sx={{
-            mt: 3,
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', lg: '1.25fr 0.75fr' },
-            gap: 2,
-          }}
-        >
-          <Box sx={{ p: 2, borderRadius: 2, border: '1px solid var(--border)', bgcolor: 'var(--background)' }}>
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.75 }}>
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-[1.25fr_0.75fr] gap-4">
+          <div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+            <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
               Current View
-            </Typography>
-            <Typography sx={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            </div>
+            <div className="text-base font-bold text-[var(--text-primary)]">
               Showing {visibleLogs.length} of {logs.length} logs
-            </Typography>
-            <Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)', mt: 0.5 }}>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
               {stats.featureCount} feature areas in the latest activity. Use quick filters for live provider runs, fallbacks, or logs needing review.
-            </Typography>
-          </Box>
+            </p>
+          </div>
 
-          <Box
-            sx={{
-              p: 2,
-              borderRadius: 2,
-              border: stats.latestFailure ? '1px solid rgba(var(--warning-rgb), 0.35)' : '1px solid var(--border)',
-              bgcolor: stats.latestFailure ? 'rgba(var(--warning-rgb), 0.08)' : 'var(--background)',
-            }}
-          >
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.75 }}>
+          <div className={`p-4 rounded-xl border ${stats.latestFailure ? 'border-[rgba(var(--warning-rgb),0.35)] bg-[rgba(var(--warning-rgb),0.08)]' : 'border-[var(--border)] bg-[var(--background)]'}`}>
+            <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
               Latest Attention Item
-            </Typography>
-            <Typography sx={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+            </div>
+            <div className="text-sm font-bold text-[var(--text-primary)]">
               {stats.latestFailure ? formatFeatureLabel(stats.latestFailure.feature) : 'No issues in the latest logs'}
-            </Typography>
-            <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', mt: 0.5 }}>
+            </div>
+            <p className="text-xs text-[var(--text-secondary)] mt-1">
               {stats.latestFailure ? truncateText(getLogFailureReason(stats.latestFailure), 150) : 'TokenRouter and fallback activity will appear here when review is needed.'}
-            </Typography>
-          </Box>
-        </Box>
+            </p>
+          </div>
+        </div>
       </DashboardPanel>
 
       <DashboardPanel title="Recent AI Activity" description="Latest persisted interactions matching your filters">
@@ -408,70 +386,60 @@ export default function AiLogsPage() {
         }
       >
         {selectedLog && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 1.5 }}>
-              <Box sx={{ p: 1.5, border: '1px solid var(--border)', borderRadius: 2, bgcolor: 'var(--background)' }}>
-                <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>Status</Typography>
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="p-3 border border-[var(--border)] rounded-xl bg-[var(--background)]">
+                <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Status</div>
                 <StatusBadge status={selectedLog.status === 'SUCCESS' ? 'success' : selectedLog.status === 'FALLBACK' ? 'warning' : 'error'} />
-              </Box>
-              <Box sx={{ p: 1.5, border: '1px solid var(--border)', borderRadius: 2, bgcolor: 'var(--background)' }}>
-                <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>Provider</Typography>
-                <Typography sx={{ fontSize: '0.88rem', fontWeight: 700 }}>{selectedLog.provider}</Typography>
-                <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{selectedLog.model || 'No model recorded'}</Typography>
-              </Box>
-              <Box sx={{ p: 1.5, border: '1px solid var(--border)', borderRadius: 2, bgcolor: 'var(--background)' }}>
-                <Typography sx={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>Created</Typography>
-                <Typography sx={{ fontSize: '0.88rem', fontWeight: 700 }}>{new Date(selectedLog.createdAt).toLocaleString()}</Typography>
-              </Box>
-            </Box>
+              </div>
+              <div className="p-3 border border-[var(--border)] rounded-xl bg-[var(--background)]">
+                <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Provider</div>
+                <div className="text-sm font-bold text-[var(--text-primary)]">{selectedLog.provider}</div>
+                <div className="text-xs text-[var(--text-secondary)]">{selectedLog.model || 'No model recorded'}</div>
+              </div>
+              <div className="p-3 border border-[var(--border)] rounded-xl bg-[var(--background)]">
+                <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)] mb-1">Created</div>
+                <div className="text-sm font-bold text-[var(--text-primary)]">{new Date(selectedLog.createdAt).toLocaleString()}</div>
+              </div>
+            </div>
             {getLogFailureReason(selectedLog) && (
-              <Box
-                sx={{
-                  p: 1.5,
-                  borderRadius: 2,
-                  border: '1px solid rgba(var(--warning-rgb), 0.35)',
-                  bgcolor: 'rgba(var(--warning-rgb), 0.08)',
-                  display: 'flex',
-                  gap: 1,
-                  alignItems: 'flex-start',
-                }}
-              >
-                <AlertTriangle className="w-4 h-4" style={{ color: 'var(--warning-dark)', marginTop: 2 }} />
-                <Box>
-                  <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--warning-dark)', mb: 0.5 }}>
+              <div className="p-3 rounded-xl border border-[rgba(var(--warning-rgb),0.35)] bg-[rgba(var(--warning-rgb),0.08)] flex gap-2 items-start">
+                <AlertTriangle className="w-4 h-4 text-[var(--warning)] shrink-0 mt-0.5" />
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-wider text-[var(--warning)] mb-0.5">
                     Review reason
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.85rem', color: 'var(--warning-dark)' }}>
+                  </div>
+                  <div className="text-xs text-[var(--warning)]">
                     {getLogFailureReason(selectedLog)}
-                  </Typography>
-                </Box>
-              </Box>
+                  </div>
+                </div>
+              </div>
             )}
-            <Box>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>Prompt</Typography>
-              <Box component="pre" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.8rem', p: 2, bgcolor: 'var(--background)', borderRadius: 2, border: '1px solid var(--border)', maxHeight: 200, overflowY: 'auto' }}>
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">Prompt</div>
+              <pre className="whitespace-pre-wrap break-words text-xs p-3 bg-[var(--background)] rounded-xl border border-[var(--border)] max-h-48 overflow-y-auto">
                 {selectedLog.prompt}
-              </Box>
-            </Box>
-            <Box>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>Response</Typography>
-              <Box component="pre" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.8rem', p: 2, bgcolor: 'var(--background)', borderRadius: 2, border: '1px solid var(--border)', maxHeight: 200, overflowY: 'auto' }}>
+              </pre>
+            </div>
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">Response</div>
+              <pre className="whitespace-pre-wrap break-words text-xs p-3 bg-[var(--background)] rounded-xl border border-[var(--border)] max-h-48 overflow-y-auto">
                 {selectedLog.response || 'N/A'}
-              </Box>
-            </Box>
-            <Box>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>Request Payload</Typography>
-              <Box component="pre" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.8rem', p: 2, bgcolor: 'var(--background)', borderRadius: 2, border: '1px solid var(--border)', maxHeight: 160, overflowY: 'auto' }}>
+              </pre>
+            </div>
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">Request Payload</div>
+              <pre className="whitespace-pre-wrap break-words text-xs p-3 bg-[var(--background)] rounded-xl border border-[var(--border)] max-h-40 overflow-y-auto">
                 {JSON.stringify(selectedLog.requestPayload, null, 2)}
-              </Box>
-            </Box>
-            <Box>
-              <Typography sx={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>Response Payload</Typography>
-              <Box component="pre" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '0.8rem', p: 2, bgcolor: 'var(--background)', borderRadius: 2, border: '1px solid var(--border)', maxHeight: 160, overflowY: 'auto' }}>
+              </pre>
+            </div>
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1">Response Payload</div>
+              <pre className="whitespace-pre-wrap break-words text-xs p-3 bg-[var(--background)] rounded-xl border border-[var(--border)] max-h-40 overflow-y-auto">
                 {JSON.stringify(selectedLog.responsePayload, null, 2)}
-              </Box>
-            </Box>
-          </Box>
+              </pre>
+            </div>
+          </div>
         )}
       </Modal>
     </DashboardSurface>

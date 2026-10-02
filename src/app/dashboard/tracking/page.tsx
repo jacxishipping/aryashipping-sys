@@ -3,10 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Box, Typography } from '@mui/material';
 import { AlertCircle, Calendar, CheckCircle2, Clock, Copy, MapPin, Package, Search, Ship, XCircle, Camera } from 'lucide-react';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Button, EmptyState, FormField, Breadcrumbs, toast, DashboardPageSkeleton, StatusBadge } from '@/components/design-system';
+import { PageHeader, Button, EmptyState, FormField, toast, DashboardPageSkeleton, StatusBadge } from '@/components/design-system';
 import TrackingRouteMap from '@/components/tracking/TrackingRouteMap';
 import { BarcodeScannerModal } from '@/components/ui/BarcodeScannerModal';
 import { sanitizeTrackNumber } from '@/lib/tracking-sanitize';
@@ -184,23 +183,23 @@ export default function DashboardTrackingPage() {
 
 			{/* Search Panel */}
 			<DashboardPanel title="Track Shipment" description="Enter container or tracking number">
-				<Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2 }}>
-					<Box sx={{ flex: 1 }}>
+				<div className="flex flex-col sm:flex-row gap-4">
+					<div className="flex-1">
 						<FormField
 							label=""
 							type="text"
 							value={trackingNumber}
-							onChange={(e) => setTrackingNumber(e.target.value)}
+							onChange={(value) => setTrackingNumber(value)}
 							placeholder="Container or tracking number (e.g., UETU6059142)"
-							leftIcon={<Search style={{ fontSize: 20, color: 'var(--text-secondary)' }} />}
-							onKeyPress={(e) => {
+							leftIcon={<Search className="w-5 h-5 text-[var(--text-secondary)]" />}
+							onKeyDown={(e) => {
 								if (e.key === 'Enter') {
 									void handleTrack();
 								}
 							}}
 						/>
-					</Box>
-					<Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
+					</div>
+					<div className="flex items-end gap-2">
 						<Button
 							variant="outline"
 							onClick={() => setScannerOpen(true)}
@@ -216,34 +215,27 @@ export default function DashboardTrackingPage() {
 						>
 							{isLoading ? 'Tracking...' : 'Track'}
 						</Button>
-					</Box>
-				</Box>
+					</div>
+				</div>
 
-				<Box
-					sx={{
-						mt: 2,
-						display: 'grid',
-						gridTemplateColumns: { xs: '1fr', lg: '1.2fr 0.8fr' },
-						gap: 2,
-					}}
-				>
-					<Box sx={{ p: 2, border: '1px solid var(--border)', borderRadius: 2, bgcolor: 'var(--background)' }}>
-						<Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, mb: 1.25 }}>
-							<Typography sx={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)' }}>
+				<div className="mt-4 grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-4">
+					<div className="p-4 border border-[var(--border)] rounded-xl bg-[var(--background)]">
+						<div className="flex items-center justify-between gap-2 mb-3">
+							<div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)]">
 								Recent lookups
-							</Typography>
+							</div>
 							{recentTrackingNumbers.length > 0 && (
 								<Button variant="ghost" size="sm" icon={<XCircle className="w-4 h-4" />} onClick={clearRecentTrackingNumbers}>
 									Clear
 								</Button>
 							)}
-						</Box>
+						</div>
 						{recentTrackingNumbers.length === 0 ? (
-							<Typography sx={{ fontSize: '0.82rem', color: 'var(--text-secondary)' }}>
+							<p className="text-xs text-[var(--text-secondary)]">
 								Successful tracking searches will appear here for fast repeat checks.
-							</Typography>
+							</p>
 						) : (
-							<Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+							<div className="flex flex-wrap gap-2">
 								{recentTrackingNumbers.map((number) => (
 									<Button
 										key={number}
@@ -256,41 +248,30 @@ export default function DashboardTrackingPage() {
 										{number}
 									</Button>
 								))}
-							</Box>
+							</div>
 						)}
-					</Box>
+					</div>
 
-					<Box sx={{ p: 2, border: '1px solid var(--border)', borderRadius: 2, bgcolor: 'var(--background)' }}>
-						<Typography sx={{ fontSize: '0.78rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 1 }}>
+					<div className="p-4 border border-[var(--border)] rounded-xl bg-[var(--background)]">
+						<div className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-2">
 							Tracking readiness
-						</Typography>
-						<Typography sx={{ fontSize: '0.84rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+						</div>
+						<div className="text-sm text-[var(--text-primary)] font-bold">
 							Container number, booking number, or carrier tracking ID
-						</Typography>
-						<Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)', mt: 0.5 }}>
+						</div>
+						<p className="text-xs text-[var(--text-secondary)] mt-1">
 							Results include carrier milestones, route, ETA, and progress when the provider returns those fields.
-						</Typography>
-					</Box>
-				</Box>
+						</p>
+					</div>
+				</div>
 
 				{errorMessage && (
-					<Box
-						sx={{
-							mt: 2,
-							p: 2,
-							borderRadius: 2,
-							border: '1px solid rgba(var(--error-rgb), 0.3)',
-							bgcolor: 'rgba(var(--error-rgb), 0.1)',
-							display: 'flex',
-							alignItems: 'start',
-							gap: 1.5,
-						}}
-					>
-						<AlertCircle style={{ fontSize: 18, color: 'var(--error-dark)', flexShrink: 0 }} />
-						<Typography sx={{ fontSize: '0.85rem', color: 'var(--error-dark)' }}>
+					<div className="mt-4 p-4 rounded-xl border border-[rgba(var(--error-rgb),0.3)] bg-[rgba(var(--error-rgb),0.1)] flex items-start gap-3">
+						<AlertCircle className="w-5 h-5 text-[var(--error)] shrink-0 mt-0.5" />
+						<span className="text-sm text-[var(--error)]">
 							{errorMessage}
-						</Typography>
-					</Box>
+						</span>
+					</div>
 				)}
 			</DashboardPanel>
 
@@ -298,7 +279,7 @@ export default function DashboardTrackingPage() {
 			{trackingDetails ? (
 				<>
 					{/* Interactive Route Map Toggle Button */}
-					<Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1 }}>
+					<div className="flex justify-end mb-2">
 						<Button
 							variant={showRouteMap ? 'primary' : 'outline'}
 							size="sm"
@@ -307,7 +288,7 @@ export default function DashboardTrackingPage() {
 						>
 							{showRouteMap ? 'Hide Route Map' : 'View Interactive Route Map'}
 						</Button>
-					</Box>
+					</div>
 
 					{/* Interactive Route Map (Only on demand) */}
 					{showRouteMap && (
@@ -325,124 +306,108 @@ export default function DashboardTrackingPage() {
 					{/* Container Details */}
 					<DashboardPanel title="Container Details" description="Current status and information">
 						<DashboardGrid className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-							<Box>
-								<Typography sx={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', mb: 0.5 }}>
+							<div>
+								<div className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
 									Container Number
-								</Typography>
-								<Typography sx={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', wordBreak: 'break-all' }}>
+								</div>
+								<div className="text-base font-bold text-[var(--text-primary)] break-all">
 									{trackingDetails.containerNumber}
-								</Typography>
-								<Button
-									variant="ghost"
-									size="sm"
-									icon={<Copy className="w-4 h-4" />}
-									onClick={() => void copyTrackingNumber(trackingDetails.containerNumber)}
-									sx={{ mt: 1 }}
-								>
-									Copy
-								</Button>
+								</div>
+								<div className="mt-2">
+									<Button
+										variant="ghost"
+										size="sm"
+										icon={<Copy className="w-4 h-4" />}
+										onClick={() => void copyTrackingNumber(trackingDetails.containerNumber)}
+									>
+										Copy
+									</Button>
+								</div>
 								{trackingDetails.company?.name && (
-									<Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mt: 0.5 }}>
+									<div className="text-xs text-[var(--text-secondary)] mt-1">
 										Carrier: {trackingDetails.company.name}
-									</Typography>
+									</div>
 								)}
-							</Box>
+							</div>
 
-							<Box>
-								<Typography sx={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', mb: 0.5 }}>
+							<div>
+								<div className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
 									Status
-								</Typography>
-								<Box sx={{ mt: 0.5 }}>
+								</div>
+								<div className="mt-1">
 									<StatusBadge status={trackingDetails.shipmentStatus || 'IN_TRANSIT'} size="md" />
-								</Box>
-							</Box>
+								</div>
+							</div>
 
-							<Box>
-								<Typography sx={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', mb: 0.5 }}>
+							<div>
+								<div className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
 									Current Location
-								</Typography>
-								<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-									<MapPin style={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-									<Typography sx={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-										{trackingDetails.currentLocation || 'Not available'}
-									</Typography>
-								</Box>
-							</Box>
+								</div>
+								<div className="flex items-center gap-1.5 text-sm text-[var(--text-primary)]">
+									<MapPin className="w-4 h-4 text-[var(--text-secondary)]" />
+									<span>{trackingDetails.currentLocation || 'Not available'}</span>
+								</div>
+							</div>
 
-							<Box>
-								<Typography sx={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--text-secondary)', mb: 0.5 }}>
+							<div>
+								<div className="text-xs font-semibold uppercase tracking-wider text-[var(--text-secondary)] mb-1">
 									Estimated Arrival
-								</Typography>
-								<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-									<Calendar style={{ fontSize: 16, color: 'var(--text-secondary)' }} />
-									<Typography sx={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
-										{formatDisplayDate(trackingDetails.estimatedArrival) || 'Not available'}
-									</Typography>
-								</Box>
-							</Box>
+								</div>
+								<div className="flex items-center gap-1.5 text-sm text-[var(--text-primary)]">
+									<Calendar className="w-4 h-4 text-[var(--text-secondary)]" />
+									<span>{formatDisplayDate(trackingDetails.estimatedArrival) || 'Not available'}</span>
+								</div>
+							</div>
 						</DashboardGrid>
 
 						{/* Route Information */}
-						<Box sx={{ mt: 3, display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2 }}>
-							<Box sx={{ p: 2, borderRadius: 2, border: '1px solid var(--border)', bgcolor: 'var(--background)' }}>
-								<Typography sx={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>
+						<div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+							<div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+								<div className="text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">
 									Origin
-								</Typography>
-								<Typography sx={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+								</div>
+								<div className="text-sm text-[var(--text-primary)] font-medium">
 									{trackingDetails.origin || 'Not available'}
-								</Typography>
-							</Box>
+								</div>
+							</div>
 
-							<Box sx={{ p: 2, borderRadius: 2, border: '1px solid var(--border)', bgcolor: 'var(--background)' }}>
-								<Typography sx={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>
+							<div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+								<div className="text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">
 									Destination
-								</Typography>
-								<Typography sx={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+								</div>
+								<div className="text-sm text-[var(--text-primary)] font-medium">
 									{trackingDetails.destination || 'Not available'}
-								</Typography>
-							</Box>
+								</div>
+							</div>
 
-							<Box sx={{ p: 2, borderRadius: 2, border: '1px solid var(--border)', bgcolor: 'var(--background)' }}>
-								<Typography sx={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', color: 'var(--text-secondary)', mb: 0.5 }}>
+							<div className="p-4 rounded-xl border border-[var(--border)] bg-[var(--background)]">
+								<div className="text-xs font-semibold uppercase text-[var(--text-secondary)] mb-1">
 									Container Type
-								</Typography>
-								<Typography sx={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+								</div>
+								<div className="text-sm text-[var(--text-primary)] font-medium">
 									{trackingDetails.containerType || 'Not available'}
-								</Typography>
-							</Box>
-						</Box>
+								</div>
+							</div>
+						</div>
 
 						{/* Progress Bar */}
 						{progressValue !== null && (
-							<Box sx={{ mt: 3 }}>
-								<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-									<Typography sx={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+							<div className="mt-6">
+								<div className="flex justify-between items-center mb-2">
+									<span className="text-xs font-semibold text-[var(--text-primary)]">
 										Shipment Progress
-									</Typography>
-									<Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
+									</span>
+									<span className="text-xs font-bold text-[var(--accent-gold)]">
 										{progressValue}%
-									</Typography>
-								</Box>
-								<Box
-									sx={{
-										width: '100%',
-										height: 8,
-										borderRadius: 1,
-										bgcolor: 'var(--background)',
-										border: '1px solid var(--border)',
-										overflow: 'hidden',
-									}}
-								>
-									<Box
-										sx={{
-											width: `${progressValue}%`,
-											height: '100%',
-											bgcolor: 'var(--accent-gold)',
-											transition: 'width 0.5s ease',
-										}}
+									</span>
+								</div>
+								<div className="w-full h-2 rounded-full bg-[var(--background)] border border-[var(--border)] overflow-hidden">
+									<div
+										className="h-full bg-[var(--accent-gold)] transition-all duration-500"
+										style={{ width: `${progressValue}%` }}
 									/>
-								</Box>
-							</Box>
+								</div>
+							</div>
 						)}
 					</DashboardPanel>
 
@@ -450,87 +415,71 @@ export default function DashboardTrackingPage() {
 					<DashboardPanel title="Carrier Milestones" description="Tracking history and updates" fullHeight>
 						{timelineEvents.length === 0 ? (
 							<EmptyState
-								icon={<Package />}
+								icon={<Package className="w-8 h-8 text-[var(--text-secondary)]" />}
 								title="No milestone history"
 								description="No tracking events available for this container yet"
 							/>
 						) : (
-							<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+							<div className="flex flex-col gap-4">
 								{timelineEvents.map((event) => {
 									const Icon = event.icon;
 									const isActual = event.actual;
 									return (
-										<Box
+										<div
 											key={event.id}
-											sx={{
-												p: 2,
-												borderRadius: 2,
-												border: `1px solid ${isActual ? 'rgba(var(--info-rgb), 0.3)' : 'var(--border)'}`,
-												bgcolor: isActual ? 'rgba(var(--info-rgb), 0.05)' : 'var(--panel)',
-												transition: 'all 0.2s ease',
-												'&:hover': {
-													transform: 'translateX(4px)',
-													borderColor: isActual ? 'rgba(var(--info-rgb), 0.5)' : 'var(--accent-gold)',
-												},
-											}}
+											className={`p-4 rounded-xl border transition-all hover:translate-x-1 ${
+												isActual
+													? 'border-[rgba(var(--info-rgb),0.3)] bg-[rgba(var(--info-rgb),0.05)] hover:border-[rgba(var(--info-rgb),0.5)]'
+													: 'border-[var(--border)] bg-[var(--panel)] hover:border-[var(--accent-gold)]'
+											}`}
 										>
-											<Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
-												<Box
-													sx={{
-														width: 40,
-														height: 40,
-														borderRadius: 2,
-														bgcolor: isActual ? 'rgba(var(--info-rgb), 0.15)' : 'var(--background)',
-														border: `1px solid ${isActual ? 'rgba(var(--info-rgb), 0.3)' : 'var(--border)'}`,
-														display: 'flex',
-														alignItems: 'center',
-														justifyContent: 'center',
-														flexShrink: 0,
-													}}
+											<div className="flex items-start gap-4">
+												<div
+													className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border ${
+														isActual
+															? 'bg-[rgba(var(--info-rgb),0.15)] border-[rgba(var(--info-rgb),0.3)]'
+															: 'bg-[var(--background)] border-[var(--border)]'
+													}`}
 												>
-													<Icon style={{ fontSize: 18, color: isActual ? 'var(--info)' : 'var(--text-secondary)' }} />
-												</Box>
+													<Icon className={`w-5 h-5 ${isActual ? 'text-[var(--info)]' : 'text-[var(--text-secondary)]'}`} />
+												</div>
 
-												<Box sx={{ flex: 1, minWidth: 0 }}>
-													<Typography sx={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', mb: 0.5 }}>
+												<div className="flex-1 min-w-0">
+													<div className="text-sm font-semibold text-[var(--text-primary)] mb-1">
 														{event.status}
-													</Typography>
+													</div>
 													
-													<Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', mb: 0.5 }}>
+													<div className="flex items-center gap-3 flex-wrap mb-1 text-xs text-[var(--text-secondary)]">
 														{event.location && (
-															<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-																<MapPin style={{ fontSize: 14, color: 'var(--text-secondary)' }} />
-																<Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-																	{event.location}
-																</Typography>
-															</Box>
+															<div className="flex items-center gap-1">
+																<MapPin className="w-3.5 h-3.5" />
+																<span>{event.location}</span>
+															</div>
 														)}
-														<Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-															<Clock style={{ fontSize: 14, color: 'var(--text-secondary)' }} />
-															<Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-																{event.displayTimestamp}
-															</Typography>
-														</Box>
-													</Box>
+														<div className="flex items-center gap-1">
+															<Clock className="w-3.5 h-3.5" />
+															<span>{event.displayTimestamp}</span>
+														</div>
+													</div>
 
 													{event.description && (
-														<Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mt: 0.5 }}>
+														<p className="text-xs text-[var(--text-secondary)] mt-1">
 															{event.description}
-														</Typography>
+														</p>
 													)}
-												</Box>
-											</Box>
-										</Box>
+												</div>
+											</div>
+										</div>
 									);
 								})}
-							</Box>
+							</div>
 						)}
 					</DashboardPanel>
 				</>
 			) : !isLoading && !errorMessage && (
 				<DashboardPanel fullHeight>
 					<EmptyState
-						icon={<Ship />}
+						icon={<Ship className="w-8 h-8 text-[var(--text-secondary)]" />}
 						title="Start tracking"
 						description="Enter a container or tracking number above to view shipment details and milestones"
 					/>

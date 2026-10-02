@@ -3,7 +3,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Box, Avatar, Divider } from '@mui/material';
+
 import {
 	User,
 	Mail,
@@ -120,8 +120,7 @@ export default function ProfilePage() {
 		fetchProfile();
 	}, [session, status, router]);
 
-	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = event.target;
+	const handleChange = (name: keyof ProfileFormState) => (value: string) => {
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
@@ -202,8 +201,7 @@ export default function ProfilePage() {
 		toast.info('Form reset to saved values');
 	};
 
-	const handlePasswordFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = event.target;
+	const handlePasswordFieldChange = (name: keyof PasswordFormState) => (value: string) => {
 		setPasswordForm((prev) => ({ ...prev, [name]: value }));
 	};
 
@@ -309,9 +307,9 @@ export default function ProfilePage() {
 	return (
 		<DashboardSurface>
 			{/* Breadcrumbs */}
-			<Box sx={{ px: 2, pt: 2 }}>
+			<div className="px-4 pt-4">
 				<Breadcrumbs />
-			</Box>
+			</div>
 
 			<PageHeader
 				title="Profile"
@@ -319,64 +317,63 @@ export default function ProfilePage() {
 			/>
 
 			{/* Account Stats */}
-			<Box sx={{ px: 2, mb: 3 }}>
+			<div className="px-4 mb-6">
 				<DashboardGrid className="grid-cols-1 md:grid-cols-3">
 					<StatsCard
-						icon={<Mail style={{ fontSize: 18 }} />}
+						icon={<Mail className="w-4 h-4" />}
 						title="Email"
 						value={profile.email}
 						variant="info"
 						size="md"
 					/>
 					<StatsCard
-						icon={<Shield style={{ fontSize: 18 }} />}
+						icon={<Shield className="w-4 h-4" />}
 						title="Role"
 						value={profile.role.charAt(0).toUpperCase() + profile.role.slice(1)}
 						variant="success"
 						size="md"
 					/>
 					<StatsCard
-						icon={<Calendar style={{ fontSize: 18 }} />}
+						icon={<Calendar className="w-4 h-4" />}
 						title="Member Since"
 						value={memberSince}
 						variant="default"
 						size="md"
 					/>
 				</DashboardGrid>
-			</Box>
+			</div>
 
-			<Box sx={{ px: 2, pb: 4 }}>
-				<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', lg: '2fr 1fr' }, gap: 3 }}>
+			<div className="px-4 pb-8">
+				<div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6">
 					{/* Main Profile Form */}
-					<Box>
+					<div>
 						<DashboardPanel
 							title="Personal Information"
 							description="Update your personal details and contact information"
 						>
-							<Box component="form" onSubmit={handleSubmit}>
-								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+							<form onSubmit={handleSubmit}>
+								<div className="flex flex-col gap-6">
 									{/* Avatar Section */}
-									<Box>
-										<Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-											<Avatar
-												sx={{
-													width: 80,
-													height: 80,
-													bgcolor: 'var(--accent-gold)',
-													fontSize: '2rem',
-													fontWeight: 600,
-												}}
-												src={profile.image || undefined}
-											>
-												{(profile.name || profile.email)[0].toUpperCase()}
-											</Avatar>
-											<Box>
-												<Box sx={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--text-primary)', mb: 0.5 }}>
+									<div>
+										<div className="flex items-center gap-6">
+											{profile.image ? (
+												<img
+													src={profile.image}
+													alt={profile.name || 'User'}
+													className="w-20 h-20 rounded-full object-cover border border-[var(--border)]"
+												/>
+											) : (
+												<div className="w-20 h-20 rounded-full bg-[var(--accent-gold)] flex items-center justify-center text-2xl font-bold text-[var(--text-primary)]">
+													{(profile.name || profile.email)[0].toUpperCase()}
+												</div>
+											)}
+											<div>
+												<div className="text-xl font-semibold text-[var(--text-primary)] mb-1">
 													{profile.name || 'User'}
-												</Box>
-												<Box sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+												</div>
+												<div className="text-sm text-[var(--text-secondary)]">
 													{profile.email}
-												</Box>
+												</div>
 												<input
 													ref={avatarInputRef}
 													type="file"
@@ -384,30 +381,31 @@ export default function ProfilePage() {
 													onChange={handleAvatarUpload}
 													className="sr-only"
 												/>
-												<Button
-													type="button"
-													variant="outline"
-													size="sm"
-													icon={<Upload className="w-4 h-4" />}
-													onClick={() => avatarInputRef.current?.click()}
-													disabled={uploadingAvatar}
-													sx={{ mt: 1.25 }}
-												>
-													{uploadingAvatar ? 'Uploading...' : 'Change photo'}
-												</Button>
-											</Box>
-										</Box>
-									</Box>
+												<div className="mt-3">
+													<Button
+														type="button"
+														variant="outline"
+														size="sm"
+														icon={<Upload className="w-4 h-4" />}
+														onClick={() => avatarInputRef.current?.click()}
+														disabled={uploadingAvatar}
+													>
+														{uploadingAvatar ? 'Uploading...' : 'Change photo'}
+													</Button>
+												</div>
+											</div>
+										</div>
+									</div>
 
-									<Divider sx={{ borderColor: 'var(--border)' }} />
+									<hr className="border-[var(--border)]" />
 
 									{/* Name & Phone */}
-									<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 										<FormField
 											label="Full Name"
 											name="name"
 											value={form.name}
-											onChange={handleChange}
+											onChange={handleChange('name')}
 											placeholder="Enter your full name"
 											leftIcon={<User className="w-4 h-4 text-[var(--text-secondary)]" />}
 										/>
@@ -416,31 +414,31 @@ export default function ProfilePage() {
 											label="Phone Number"
 											name="phone"
 											value={form.phone}
-											onChange={handleChange}
+											onChange={handleChange('phone')}
 											placeholder="+1 (555) 123-4567"
 											leftIcon={<Phone className="w-4 h-4 text-[var(--text-secondary)]" />}
 										/>
-									</Box>
+									</div>
 
 									{/* Address */}
-									<Box>
+									<div>
 										<FormField
 											label="Address"
 											name="address"
 											value={form.address}
-											onChange={handleChange}
+											onChange={handleChange('address')}
 											placeholder="123 Main Street"
 											leftIcon={<MapPin className="w-4 h-4 text-[var(--text-secondary)]" />}
 										/>
-									</Box>
+									</div>
 
 									{/* City & Country */}
-									<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' }, gap: 3 }}>
+									<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 										<FormField
 											label="City"
 											name="city"
 											value={form.city}
-											onChange={handleChange}
+											onChange={handleChange('city')}
 											placeholder="New York"
 											leftIcon={<MapPin className="w-4 h-4 text-[var(--text-secondary)]" />}
 										/>
@@ -449,27 +447,27 @@ export default function ProfilePage() {
 											label="Country"
 											name="country"
 											value={form.country}
-											onChange={handleChange}
+											onChange={handleChange('country')}
 											placeholder="United States"
 											leftIcon={<MapPin className="w-4 h-4 text-[var(--text-secondary)]" />}
 										/>
-									</Box>
+									</div>
 
 									{/* Image URL */}
-									<Box>
+									<div>
 										<FormField
 											label="Profile Image URL"
 											name="image"
 											value={form.image}
-											onChange={handleChange}
+											onChange={handleChange('image')}
 											placeholder="https://example.com/image.jpg"
 											leftIcon={<ImageIcon className="w-4 h-4 text-[var(--text-secondary)]" />}
 										/>
-									</Box>
+									</div>
 
 									{/* Action Buttons */}
-									<Box>
-										<Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 2 }}>
+									<div>
+										<div className="flex gap-4 justify-end mt-4">
 											<Button
 												type="button"
 												variant="outline"
@@ -489,41 +487,41 @@ export default function ProfilePage() {
 											>
 												{saving ? 'Saving...' : 'Save Changes'}
 											</Button>
-										</Box>
-									</Box>
-								</Box>
-							</Box>
+										</div>
+									</div>
+								</div>
+							</form>
 						</DashboardPanel>
-					</Box>
+					</div>
 
 					{/* Sidebar - Security Tips */}
-					<Box>
-						<Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+					<div>
+						<div className="flex flex-col gap-6">
 							<DashboardPanel
 								title="Security Tips"
 								description="Keep your account safe"
 							>
-								<Box sx={{ color: 'var(--text-secondary)', fontSize: '0.875rem', lineHeight: 1.6 }}>
-									<ul style={{ listStyle: 'disc', paddingLeft: '1.25rem', margin: 0 }}>
-										<li style={{ marginBottom: '0.5rem' }}>Use a strong, unique password</li>
-										<li style={{ marginBottom: '0.5rem' }}>Enable two-factor authentication</li>
-										<li style={{ marginBottom: '0.5rem' }}>Keep your contact info up to date</li>
-										<li style={{ marginBottom: '0.5rem' }}>Review account activity regularly</li>
+								<div className="text-[var(--text-secondary)] text-sm leading-relaxed">
+									<ul className="list-disc pl-5 m-0 space-y-2">
+										<li>Use a strong, unique password</li>
+										<li>Enable two-factor authentication</li>
+										<li>Keep your contact info up to date</li>
+										<li>Review account activity regularly</li>
 									</ul>
-								</Box>
+								</div>
 							</DashboardPanel>
 
 							<DashboardPanel
 								title="Password"
 								description="Set a new password for your account"
 							>
-								<Box component="form" onSubmit={handlePasswordSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
+								<form onSubmit={handlePasswordSubmit} className="flex flex-col gap-5">
 									<FormField
 										label="Current Password"
 										name="currentPassword"
 										type="password"
 										value={passwordForm.currentPassword}
-										onChange={handlePasswordFieldChange}
+										onChange={handlePasswordFieldChange('currentPassword')}
 										placeholder={profile.role === 'user' ? 'Optional if you signed in with a code' : 'Enter your current password'}
 										helperText={profile.role === 'user' ? 'Customers who signed in with an 8-character code can set a password without entering a current one.' : 'Required before saving a new password.'}
 										leftIcon={<Key className="w-4 h-4 text-[var(--text-secondary)]" />}
@@ -534,7 +532,7 @@ export default function ProfilePage() {
 										name="newPassword"
 										type="password"
 										value={passwordForm.newPassword}
-										onChange={handlePasswordFieldChange}
+										onChange={handlePasswordFieldChange('newPassword')}
 										placeholder="At least 8 characters"
 										helperText="Choose a password with at least 8 characters."
 										leftIcon={<Key className="w-4 h-4 text-[var(--text-secondary)]" />}
@@ -545,12 +543,12 @@ export default function ProfilePage() {
 										name="confirmPassword"
 										type="password"
 										value={passwordForm.confirmPassword}
-										onChange={handlePasswordFieldChange}
+										onChange={handlePasswordFieldChange('confirmPassword')}
 										placeholder="Re-enter your new password"
 										leftIcon={<Key className="w-4 h-4 text-[var(--text-secondary)]" />}
 									/>
 
-									<Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+									<div className="flex gap-4 justify-end">
 										<Button
 											type="button"
 											variant="outline"
@@ -570,8 +568,8 @@ export default function ProfilePage() {
 										>
 											{savingPassword ? 'Updating...' : 'Update Password'}
 										</Button>
-									</Box>
-								</Box>
+									</div>
+								</form>
 							</DashboardPanel>
 
 							{profile.role === 'user' && (
@@ -588,37 +586,18 @@ export default function ProfilePage() {
 								title="Login Code"
 								description="Quick access code for simplified login"
 							>
-								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+								<div className="flex flex-col gap-4">
 									{profile.loginCode ? (
 										<>
-											<Box>
-												<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mb: 1 }}>
+											<div>
+												<div className="text-xs text-[var(--text-secondary)] mb-2">
 													Your Login Code
-												</Box>
-												<Box 
-													sx={{ 
-														display: 'flex',
-														alignItems: 'center',
-														gap: 1,
-														bgcolor: 'var(--background)',
-														border: '2px solid var(--accent-gold)',
-														borderRadius: 2,
-														p: 2,
-													}}
-												>
-													<Key className="w-5 h-5" style={{ color: 'var(--accent-gold)' }} />
-													<Box 
-														sx={{ 
-															fontSize: '1.5rem', 
-															fontWeight: 700,
-															color: 'var(--text-primary)',
-															fontFamily: 'monospace',
-															letterSpacing: '0.2em',
-															flex: 1,
-														}}
-													>
+												</div>
+												<div className="flex items-center gap-2 bg-[var(--background)] border-2 border-[var(--accent-gold)] rounded-xl p-4">
+													<Key className="w-5 h-5 text-[var(--accent-gold)]" />
+													<div className="text-2xl font-bold text-[var(--text-primary)] font-mono tracking-widest flex-1">
 														{formatLoginCode(profile.loginCode)}
-													</Box>
+													</div>
 													<Button
 														variant="ghost"
 														size="sm"
@@ -627,18 +606,18 @@ export default function ProfilePage() {
 													>
 														Copy
 													</Button>
-												</Box>
-											</Box>
-											<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+												</div>
+											</div>
+											<div className="text-xs text-[var(--text-secondary)] leading-relaxed">
 												Use this code to login at{' '}
-												<Box component="span" sx={{ color: 'var(--accent-gold)', fontWeight: 500 }}>
+												<span className="text-[var(--accent-gold)] font-medium">
 													/auth/simple-login
-												</Box>
+												</span>
 												. Keep it secure and don't share it with others.
-											</Box>
+											</div>
 											{session?.user.role === 'admin' && (
 												<>
-													<Divider sx={{ borderColor: 'var(--border)' }} />
+													<hr className="border-[var(--border)]" />
 													<Button
 														variant="outline"
 														size="sm"
@@ -654,10 +633,10 @@ export default function ProfilePage() {
 										</>
 									) : (
 										<>
-											<Box sx={{ textAlign: 'center', py: 2 }}>
-												<Box sx={{ fontSize: '0.875rem', color: 'var(--text-secondary)', mb: 2 }}>
+											<div className="text-center py-4">
+												<div className="text-sm text-[var(--text-secondary)] mb-4">
 													No login code set yet
-												</Box>
+												</div>
 												{session?.user.role === 'admin' && (
 													<Button
 														variant="primary"
@@ -670,43 +649,43 @@ export default function ProfilePage() {
 													</Button>
 												)}
 												{session?.user.role !== 'admin' && (
-													<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+													<div className="text-xs text-[var(--text-secondary)]">
 														Contact an administrator to set up a login code
-													</Box>
+													</div>
 												)}
-											</Box>
+											</div>
 										</>
 									)}
-								</Box>
+								</div>
 							</DashboardPanel>
 
 							<DashboardPanel
 								title="Account Info"
 							>
-								<Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-									<Box>
-										<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mb: 0.5 }}>
+								<div className="flex flex-col gap-4">
+									<div>
+										<div className="text-xs text-[var(--text-secondary)] mb-1">
 											Account ID
-										</Box>
-										<Box sx={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontFamily: 'monospace' }}>
+										</div>
+										<div className="text-sm text-[var(--text-primary)] font-mono">
 											{profile.id.slice(0, 8)}...
-										</Box>
-									</Box>
-									<Divider sx={{ borderColor: 'var(--border)' }} />
-									<Box>
-										<Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mb: 0.5 }}>
+										</div>
+									</div>
+									<hr className="border-[var(--border)]" />
+									<div>
+										<div className="text-xs text-[var(--text-secondary)] mb-1">
 											Last Updated
-										</Box>
-										<Box sx={{ fontSize: '0.875rem', color: 'var(--text-primary)' }}>
+										</div>
+										<div className="text-sm text-[var(--text-primary)]">
 											{new Date(profile.updatedAt).toLocaleDateString()}
-										</Box>
-									</Box>
-								</Box>
+										</div>
+									</div>
+								</div>
 							</DashboardPanel>
-						</Box>
-					</Box>
-				</Box>
-			</Box>
+						</div>
+					</div>
+				</div>
+			</div>
 		</DashboardSurface>
 	);
 }

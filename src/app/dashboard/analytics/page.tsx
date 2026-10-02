@@ -26,7 +26,6 @@ import {
   BarChart,
   Bar,
 } from 'recharts';
-import { Box, Typography } from '@mui/material';
 import { 
   PageHeader,
   Breadcrumbs,
@@ -226,32 +225,18 @@ export default function AnalyticsPage() {
     return (
       <ProtectedRoute>
         <DashboardSurface>
-          <Box sx={{ px: 2, pt: 2 }}>
+          <div className="px-4 pt-4">
             <Breadcrumbs />
-          </Box>
-        <Box
-          sx={{
-            mx: 2,
-            my: 4,
-            borderRadius: 2,
-            border: '1px solid var(--error)',
-            background: 'rgba(var(--error-rgb), 0.08)',
-            p: 4,
-            color: 'var(--error)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2,
-          }}
-        >
-          <AlertTriangle size={48} />
-          <Typography variant="h6" fontWeight={600}>Failed to load analytics</Typography>
-          <Typography>{error}</Typography>
-          <Button variant="outline" onClick={() => window.location.reload()}>
-            Retry
-          </Button>
-        </Box>
-      </DashboardSurface>
+          </div>
+          <div className="mx-4 my-8 rounded-xl border border-[var(--error)] bg-[rgba(var(--error-rgb),0.08)] p-8 text-[var(--error)] flex flex-col items-center gap-4">
+            <AlertTriangle size={48} />
+            <div className="text-xl font-semibold">Failed to load analytics</div>
+            <p className="text-sm">{error}</p>
+            <Button variant="outline" onClick={() => window.location.reload()}>
+              Retry
+            </Button>
+          </div>
+        </DashboardSurface>
       </ProtectedRoute>
     );
   }
@@ -261,31 +246,17 @@ export default function AnalyticsPage() {
     return (
       <ProtectedRoute>
         <DashboardSurface>
-          <Box sx={{ px: 2, pt: 2 }}>
+          <div className="px-4 pt-4">
             <Breadcrumbs />
-          </Box>
-          <Box
-            sx={{
-              mx: 2,
-              my: 4,
-              borderRadius: 2,
-              border: '1px solid var(--error)',
-              background: 'rgba(var(--error-rgb), 0.08)',
-              p: 4,
-              color: 'var(--error)',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 2,
-            }}
-          >
+          </div>
+          <div className="mx-4 my-8 rounded-xl border border-[var(--error)] bg-[rgba(var(--error-rgb),0.08)] p-8 text-[var(--error)] flex flex-col items-center gap-4">
             <AlertTriangle size={48} />
-            <Typography variant="h6" fontWeight={600}>No data available</Typography>
-            <Typography>Unable to load analytics data. Please try refreshing the page.</Typography>
+            <div className="text-xl font-semibold">No data available</div>
+            <p className="text-sm">Unable to load analytics data. Please try refreshing the page.</p>
             <Button variant="outline" onClick={handleRefresh}>
               Refresh
             </Button>
-          </Box>
+          </div>
         </DashboardSurface>
       </ProtectedRoute>
     );
@@ -319,19 +290,9 @@ export default function AnalyticsPage() {
         />
 
       {error && (
-        <Box
-          sx={{
-            mx: { xs: 2, md: 3 },
-            borderRadius: 2,
-            border: '1px solid var(--error)',
-            background: 'rgba(var(--error-rgb), 0.08)',
-            px: 2.5,
-            py: 1.5,
-            color: 'var(--error)',
-          }}
-        >
+        <div className="mx-4 md:mx-6 rounded-xl border border-[var(--error)] bg-[rgba(var(--error-rgb),0.08)] px-5 py-3 text-[var(--error)] text-sm">
           {error}
-        </Box>
+        </div>
       )}
 
       <DashboardGrid className="grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
@@ -351,7 +312,7 @@ export default function AnalyticsPage() {
 
       <DashboardGrid className="lg:grid-cols-2">
         <DashboardPanel title="Shipment volume" description="Six month rolling window" fullHeight>
-          <Box sx={{ height: 300, width: '100%' }}>
+          <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.shipmentsByMonth || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -361,11 +322,11 @@ export default function AnalyticsPage() {
                 <Line type="monotone" dataKey="count" stroke="var(--accent-gold)" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
               </LineChart>
             </ResponsiveContainer>
-          </Box>
+          </div>
         </DashboardPanel>
 
         <DashboardPanel title="Revenue (USD)" description="Paid invoices (six months)" fullHeight>
-          <Box sx={{ height: 300, width: '100%' }}>
+          <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.revenueByMonth || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -378,11 +339,11 @@ export default function AnalyticsPage() {
                 <Bar dataKey="totalUSD" fill="var(--accent-gold)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </Box>
+          </div>
         </DashboardPanel>
 
         <DashboardPanel title="Dispatch spend (USD)" description="Dispatch expenses over six months" fullHeight>
-          <Box sx={{ height: 300, width: '100%' }}>
+          <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.dispatchSpendByMonth || []}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -395,35 +356,30 @@ export default function AnalyticsPage() {
                 <Bar dataKey="totalUSD" fill="var(--warning)" radius={[6, 6, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </Box>
+          </div>
         </DashboardPanel>
 
         <DashboardPanel title="Dispatch status mix" description="Current workflow distribution" fullHeight>
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {(data.dispatchesByStatus || []).map((item) => (
-              <Box
+              <div
                 key={item.status}
-                sx={{
-                  border: '1px solid var(--border)',
-                  borderRadius: 2,
-                  p: 2,
-                  backgroundColor: 'var(--panel)',
-                }}
+                className="border border-[var(--border)] rounded-xl p-4 bg-[var(--panel)]"
               >
-                <Typography sx={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.16em', color: 'var(--text-secondary)' }}>
+                <div className="text-xs uppercase tracking-widest text-[var(--text-secondary)]">
                   {getDispatchStatusLabel(item.status)}
-                </Typography>
-                <Typography sx={{ fontSize: '1.6rem', fontWeight: 700, mt: 0.5 }}>
+                </div>
+                <div className="text-2xl font-bold text-[var(--text-primary)] mt-1">
                   {item.count}
-                </Typography>
-              </Box>
+                </div>
+              </div>
             ))}
             {(data.dispatchesByStatus || []).length === 0 && (
-              <Box sx={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
+              <div className="text-sm text-[var(--text-secondary)]">
                 No dispatch activity recorded yet.
-              </Box>
+              </div>
             )}
-          </Box>
+          </div>
         </DashboardPanel>
       </DashboardGrid>
     </DashboardSurface>
