@@ -1,0 +1,396 @@
+src/app/dashboard/ai-logs/page.tsx(326,46): error TS2345: Argument of type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to parameter of type 'SetStateAction<string>'.
+src/app/dashboard/containers/[id]/page.tsx(1264,18): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/containers/[id]/page.tsx(1264,21): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/containers/[id]/page.tsx(1787,21): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/containers/[id]/page.tsx(1787,24): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/app/dashboard/containers/[id]/page.tsx(2517,6): error TS2304: Cannot find name 'Dialog'.
+src/app/dashboard/containers/[id]/page.tsx(2564,7): error TS2304: Cannot find name 'Dialog'.
+src/app/dashboard/containers/[id]/page.tsx(3179,27): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/containers/new/page.tsx(266,22): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/containers/new/page.tsx(277,23): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/containers/new/page.tsx(432,26): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/containers/new/page.tsx(439,27): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/containers/new/page.tsx(482,19): error TS2322: Type '{ label: string; type: "date"; id: string; name: string; value: string; onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, Element>) => void; InputLabelProps: { ...; }; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'InputLabelProps' does not exist on type 'IntrinsicAttributes & FormFieldProps'. Did you mean 'InputProps'?
+src/app/dashboard/containers/new/page.tsx(492,19): error TS2322: Type '{ label: string; type: "date"; id: string; name: string; value: string; onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, Element>) => void; InputLabelProps: { ...; }; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'InputLabelProps' does not exist on type 'IntrinsicAttributes & FormFieldProps'. Did you mean 'InputProps'?
+src/app/dashboard/containers/new/page.tsx(502,19): error TS2322: Type '{ label: string; type: "date"; id: string; name: string; value: string; onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, Element>) => void; InputLabelProps: { ...; }; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'InputLabelProps' does not exist on type 'IntrinsicAttributes & FormFieldProps'. Did you mean 'InputProps'?
+src/app/dashboard/containers/page.tsx(801,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/containers/page.tsx(821,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/containers/page.tsx(838,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/containers/page.tsx(855,37): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(707,117): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(825,127): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1014,46): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1014,49): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1092,132): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1093,140): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1094,134): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1095,82): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1096,89): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1112,73): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1113,77): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1114,127): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1115,102): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1193,26): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1193,29): error TS7006: Parameter 'shipment' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1194,31): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1194,34): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1195,32): error TS7006: Parameter 'shipment' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1196,29): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1232,26): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1232,29): error TS7006: Parameter 'shipments' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1232,82): error TS7006: Parameter 'shipment' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1233,32): error TS7006: Parameter 'shipment' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1234,29): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1249,26): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1249,29): error TS7006: Parameter 'container' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1250,32): error TS7006: Parameter 'container' implicitly has an 'any' type.
+src/app/dashboard/dispatches/[id]/page.tsx(1251,29): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/app/dashboard/dispatches/page.tsx(280,10): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(281,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(284,13): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(285,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(285,97): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(286,11): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(293,10): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(294,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(294,30): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(295,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(295,77): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(296,11): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(323,10): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(323,130): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/dispatches/page.tsx(365,11): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(379,16): error TS2304: Cannot find name 'Link'.
+src/app/dashboard/dispatches/page.tsx(383,17): error TS2304: Cannot find name 'Link'.
+src/app/dashboard/dispatches/page.tsx(435,14): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(435,109): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(449,18): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(461,20): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(482,21): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(484,20): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(493,22): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(495,23): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(504,21): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/dispatches/page.tsx(505,19): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/finance/banking/page.tsx(571,15): error TS2322: Type '{ label: string; value: string; onChange: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; hint: string; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'hint' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/app/dashboard/finance/companies/[id]/page.tsx(1173,129): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1178,29): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1187,27): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1281,24): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1281,27): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1343,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1349,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1359,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1531,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1541,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1553,28): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1657,88): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1660,85): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1663,83): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1666,97): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1669,98): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1713,117): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1841,142): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1878,142): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(1959,142): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2037,84): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2040,129): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2042,140): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2044,80): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2045,82): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2047,91): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2071,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2081,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2293,84): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2296,129): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2298,140): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2300,80): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2301,82): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/[id]/page.tsx(2303,91): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(482,129): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(486,27): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(496,27): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(540,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(550,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(605,78): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(606,70): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(614,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(623,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(632,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(639,72): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(640,72): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(641,76): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(642,76): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(643,91): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(659,78): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(660,70): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(668,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(677,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(686,34): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(693,72): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(694,72): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(695,76): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(696,76): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/companies/page.tsx(697,91): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(147,8): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/finance/office-expenses/page.tsx(148,14): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/finance/office-expenses/page.tsx(149,16): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/finance/office-expenses/page.tsx(623,24): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(623,27): error TS7006: Parameter 'val' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(704,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(1180,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(1216,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(1237,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(1264,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(1278,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(1294,28): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/office-expenses/page.tsx(1317,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/finance/price-comparison/page.tsx(48,8): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/finance/price-comparison/page.tsx(49,14): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/finance/price-comparison/page.tsx(51,16): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/finance/record-payment/page.tsx(720,19): error TS2322: Type '{ label: string; type: "number"; value: string; onChange: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; required: true; hint: string; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'hint' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/app/dashboard/invoices/[id]/page.tsx(925,19): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(925,22): error TS7006: Parameter 'val' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(986,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(995,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1003,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1025,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1038,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1064,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1074,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1216,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1260,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1277,26): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1299,27): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1364,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1389,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1397,22): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1410,23): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/[id]/page.tsx(1999,19): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/invoices/new/page.tsx(141,6): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/invoices/new/page.tsx(143,7): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/invoices/page.tsx(428,126): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/invoices/page.tsx(705,18): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/partner-portals/new/page.tsx(189,13): error TS2322: Type '{ label: string; value: string; onChange: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; hint: string; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'hint' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/app/dashboard/partner-portals/new/page.tsx(221,13): error TS2322: Type '{ label: string; value: string; onChange: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; hint: string; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'hint' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/app/dashboard/profile/page.tsx(408,12): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(417,12): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(429,12): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(441,12): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(450,12): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(462,12): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(524,11): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(535,11): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/profile/page.tsx(546,11): error TS2322: Type '(value: string) => void' is not assignable to type 'ChangeEventHandler<HTMLInputElement, HTMLInputElement>'.
+  Types of parameters 'value' and 'event' are incompatible.
+    Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/dashboard/settings/page.tsx(1665,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1672,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1680,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1696,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1704,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1712,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1721,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1920,119): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1926,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1931,118): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1932,125): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1937,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1962,115): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1963,123): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1969,30): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1974,116): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1975,135): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(1976,114): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2019,23): error TS2322: Type '{ size: string; checked: boolean; onChange: (e: ChangeEvent<HTMLInputElement, Element>) => void; }' is not assignable to type 'IntrinsicAttributes & { checked?: boolean | undefined; onChange?: ((e: ChangeEvent<HTMLInputElement, Element>) => void) | undefined; disabled?: boolean | undefined; className?: string | undefined; }'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & { checked?: boolean | undefined; onChange?: ((e: ChangeEvent<HTMLInputElement, Element>) => void) | undefined; disabled?: boolean | undefined; className?: string | undefined; }'.
+src/app/dashboard/settings/page.tsx(2035,23): error TS2322: Type '{ size: string; checked: boolean; onChange: (e: ChangeEvent<HTMLInputElement, Element>) => void; }' is not assignable to type 'IntrinsicAttributes & { checked?: boolean | undefined; onChange?: ((e: ChangeEvent<HTMLInputElement, Element>) => void) | undefined; disabled?: boolean | undefined; className?: string | undefined; }'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & { checked?: boolean | undefined; onChange?: ((e: ChangeEvent<HTMLInputElement, Element>) => void) | undefined; disabled?: boolean | undefined; className?: string | undefined; }'.
+src/app/dashboard/settings/page.tsx(2051,23): error TS2322: Type '{ size: string; checked: boolean; onChange: (e: ChangeEvent<HTMLInputElement, Element>) => void; }' is not assignable to type 'IntrinsicAttributes & { checked?: boolean | undefined; onChange?: ((e: ChangeEvent<HTMLInputElement, Element>) => void) | undefined; disabled?: boolean | undefined; className?: string | undefined; }'.
+  Property 'size' does not exist on type 'IntrinsicAttributes & { checked?: boolean | undefined; onChange?: ((e: ChangeEvent<HTMLInputElement, Element>) => void) | undefined; disabled?: boolean | undefined; className?: string | undefined; }'.
+src/app/dashboard/settings/page.tsx(2072,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2079,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2086,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2134,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2219,117): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2220,131): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2221,109): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2222,131): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2223,119): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2224,126): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2237,132): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2238,141): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2239,126): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/settings/page.tsx(2240,121): error TS7006: Parameter 'event' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(762,25): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/app/dashboard/shipments/[id]/edit/page.tsx(917,37): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1046,40): error TS7006: Parameter 'option' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1048,34): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1048,37): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1051,37): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1099,27): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1127,42): error TS7006: Parameter 'option' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1131,36): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1131,39): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/edit/page.tsx(1134,39): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/page.tsx(119,8): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/shipments/[id]/page.tsx(120,14): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/shipments/[id]/page.tsx(121,16): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/shipments/[id]/page.tsx(1397,24): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/shipments/[id]/page.tsx(1397,27): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(71,8): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/shipments/new/page.tsx(72,14): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/shipments/new/page.tsx(73,16): error TS2686: 'React' refers to a UMD global, but the current file is a module. Consider adding an import instead.
+src/app/dashboard/shipments/new/page.tsx(795,13): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/app/dashboard/shipments/new/page.tsx(921,14): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/app/dashboard/shipments/new/page.tsx(1039,14): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/app/dashboard/shipments/new/page.tsx(1323,13): error TS2322: Type 'string | undefined' is not assignable to type 'string | number'.
+  Type 'undefined' is not assignable to type 'string | number'.
+src/app/dashboard/shipments/new/page.tsx(1369,31): error TS7006: Parameter 'option' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(1373,25): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(1373,28): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(1376,28): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(1453,29): error TS7006: Parameter 'option' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(1455,23): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(1455,26): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/shipments/new/page.tsx(1458,26): error TS7006: Parameter 'params' implicitly has an 'any' type.
+src/app/dashboard/shipments/page.tsx(256,7): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/shipments/page.tsx(272,8): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/shipments/page.tsx(281,6): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/shipments/page.tsx(284,8): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/shipments/page.tsx(299,9): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/shipments/page.tsx(301,7): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/shipments/page.tsx(475,6): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/shipments/page.tsx(484,7): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/tracking/page.tsx(192,47): error TS2345: Argument of type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to parameter of type 'SetStateAction<string>'.
+src/app/dashboard/transits/[id]/page.tsx(697,127): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(803,129): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(982,26): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(982,29): error TS7006: Parameter 'v' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1086,136): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1087,141): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1089,133): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1090,91): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1119,75): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1120,78): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1122,83): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1123,79): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1124,104): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1125,139): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1182,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1220,35): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1263,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1268,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/[id]/page.tsx(1310,26): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/page.tsx(252,10): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(253,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(256,13): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(257,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(257,135): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(258,11): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(265,10): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(266,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(266,58): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(267,12): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(267,110): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(268,11): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(302,10): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(302,130): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/dashboard/transits/page.tsx(345,11): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(403,14): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/transits/page.tsx(403,107): error TS2304: Cannot find name 'Box'.
+src/app/dashboard/users/[id]/page.tsx(496,22): error TS7006: Parameter '_' implicitly has an 'any' type.
+src/app/dashboard/users/[id]/page.tsx(496,25): error TS7006: Parameter 'newValue' implicitly has an 'any' type.
+src/app/dashboard/users/page.tsx(376,126): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/app/portal/[portalId]/customers/page.tsx(346,54): error TS2322: Type '{ label: string; multiline: true; minRows: number; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'minRows' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/app/portal/[portalId]/finance/[customerId]/page.tsx(660,56): error TS2322: Type '{ label: string; multiline: true; minRows: number; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'minRows' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/app/portal/[portalId]/members/page.tsx(510,98): error TS2345: Argument of type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { name: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to parameter of type 'SetStateAction<{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }>'.
+  Type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { name: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to type '(prevState: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }'.
+    Call signature return types '{ name: ChangeEvent<HTMLInputElement, HTMLInputElement>; email: string; phone: string; city: string; country: string; membershipRole: string; }' and '{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }' are incompatible.
+      The types of 'name' are incompatible between these types.
+        Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/portal/[portalId]/members/page.tsx(511,100): error TS2345: Argument of type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { email: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to parameter of type 'SetStateAction<{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }>'.
+  Type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { email: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to type '(prevState: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }'.
+    Call signature return types '{ email: ChangeEvent<HTMLInputElement, HTMLInputElement>; name: string; phone: string; city: string; country: string; membershipRole: string; }' and '{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }' are incompatible.
+      The types of 'email' are incompatible between these types.
+        Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/portal/[portalId]/members/page.tsx(512,100): error TS2345: Argument of type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { phone: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to parameter of type 'SetStateAction<{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }>'.
+  Type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { phone: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to type '(prevState: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }'.
+    Call signature return types '{ phone: ChangeEvent<HTMLInputElement, HTMLInputElement>; name: string; email: string; city: string; country: string; membershipRole: string; }' and '{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }' are incompatible.
+      The types of 'phone' are incompatible between these types.
+        Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/portal/[portalId]/members/page.tsx(513,98): error TS2345: Argument of type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { city: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to parameter of type 'SetStateAction<{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }>'.
+  Type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { city: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to type '(prevState: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }'.
+    Call signature return types '{ city: ChangeEvent<HTMLInputElement, HTMLInputElement>; name: string; email: string; phone: string; country: string; membershipRole: string; }' and '{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }' are incompatible.
+      The types of 'city' are incompatible between these types.
+        Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/portal/[portalId]/members/page.tsx(514,104): error TS2345: Argument of type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { country: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to parameter of type 'SetStateAction<{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }>'.
+  Type '(prev: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { country: ChangeEvent<HTMLInputElement, HTMLInputElement>; ... 4 more ...; membershipRole: string; }' is not assignable to type '(prevState: { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }) => { name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }'.
+    Call signature return types '{ country: ChangeEvent<HTMLInputElement, HTMLInputElement>; name: string; email: string; phone: string; city: string; membershipRole: string; }' and '{ name: string; email: string; phone: string; city: string; country: string; membershipRole: string; }' are incompatible.
+      The types of 'country' are incompatible between these types.
+        Type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to type 'string'.
+src/app/portal/[portalId]/shipments/page.tsx(445,49): error TS2345: Argument of type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to parameter of type 'SetStateAction<string>'.
+src/app/portal/[portalId]/shipments/page.tsx(505,61): error TS2345: Argument of type 'ChangeEvent<HTMLInputElement, HTMLInputElement>' is not assignable to parameter of type 'SetStateAction<string>'.
+src/components/dispatches/DispatchExpenseModal.tsx(249,15): error TS2322: Type '{ label: string; type: "number"; value: string; onChange: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; required: true; min: number; step: number; startAdornment: Element; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'startAdornment' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/finance/CompanyPriceComparisonFilters.tsx(226,19): error TS2322: Type '{ label: string; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; startAdornment: Element; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'startAdornment' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/notifications/NotificationComposer.tsx(100,9): error TS2322: Type '{ label: string; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; multiline: true; minRows: number; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'minRows' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/shipments/ShipmentBillingTab.tsx(726,17): error TS2322: Type '{ id: string; label: string; multiline: true; minRows: number; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; helperText: string; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'minRows' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/shipments/ShipmentCustomerTab.tsx(139,15): error TS2322: Type '{ label: string; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; multiline: true; minRows: number; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'minRows' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/shipments/ShipmentCustomerTab.tsx(161,15): error TS2322: Type '{ label: string; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; multiline: true; minRows: number; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'minRows' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/shipments/ShipmentDetailOverlays.tsx(186,15): error TS2322: Type '{ label: string; type: "password" | "text"; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; helperText: string; endAdornment: Element; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'endAdornment' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/shipments/UnifiedShipmentTimeline.tsx(90,11): error TS2322: Type '{ placeholder: string; value: string; onChange: (event: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; startAdornment: Element; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'startAdornment' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/transits/AddTransitExpenseModal.tsx(174,8): error TS2322: Type '{ label: string; type: "number"; value: string; onChange: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; required: true; min: number; step: number; startAdornment: Element; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'startAdornment' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+src/components/ui/DataTable.tsx(346,24): error TS2304: Cannot find name 'Checkbox'.
+src/components/ui/DataTable.tsx(441,18): error TS2304: Cannot find name 'Checkbox'.
+src/components/ui/DataTable.tsx(444,30): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/ui/DataTable.tsx(505,28): error TS2304: Cannot find name 'Checkbox'.
+src/components/ui/DataTable.tsx(507,40): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/ui/DataTable.tsx(607,20): error TS2304: Cannot find name 'Checkbox'.
+src/components/ui/DataTable.tsx(610,32): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/ui/DataTable.tsx(717,26): error TS2304: Cannot find name 'Checkbox'.
+src/components/ui/DataTable.tsx(719,38): error TS7006: Parameter 'e' implicitly has an 'any' type.
+src/components/users/ResetPasswordModal.tsx(170,13): error TS2322: Type '{ type: "password" | "text"; value: string; onChange: (e: ChangeEvent<HTMLInputElement, HTMLInputElement>) => void; placeholder: string; disabled: boolean; required: true; endAdornment: Element; }' is not assignable to type 'IntrinsicAttributes & FormFieldProps'.
+  Property 'endAdornment' does not exist on type 'IntrinsicAttributes & FormFieldProps'.
+
+
+EXIT_CODE:2

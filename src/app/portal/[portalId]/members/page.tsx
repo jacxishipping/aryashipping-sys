@@ -507,11 +507,11 @@ export default function PortalMembersPage() {
             }
           >
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-              <FormField label="Name" value={inviteForm.name} onChange={(value) => setInviteForm((prev) => ({ ...prev, name: value }))} />
-              <FormField label="Email" value={inviteForm.email} onChange={(value) => setInviteForm((prev) => ({ ...prev, email: value }))} />
-              <FormField label="Phone" value={inviteForm.phone} onChange={(value) => setInviteForm((prev) => ({ ...prev, phone: value }))} />
-              <FormField label="City" value={inviteForm.city} onChange={(value) => setInviteForm((prev) => ({ ...prev, city: value }))} />
-              <FormField label="Country" value={inviteForm.country} onChange={(value) => setInviteForm((prev) => ({ ...prev, country: value }))} />
+              <FormField label="Name" value={inviteForm.name} onChange={(e: any) => setInviteForm((prev) => ({ ...prev, name: e?.target ? e.target.value : e }))} />
+              <FormField label="Email" value={inviteForm.email} onChange={(e: any) => setInviteForm((prev) => ({ ...prev, email: e?.target ? e.target.value : e }))} />
+              <FormField label="Phone" value={inviteForm.phone} onChange={(e: any) => setInviteForm((prev) => ({ ...prev, phone: e?.target ? e.target.value : e }))} />
+              <FormField label="City" value={inviteForm.city} onChange={(e: any) => setInviteForm((prev) => ({ ...prev, city: e?.target ? e.target.value : e }))} />
+              <FormField label="Country" value={inviteForm.country} onChange={(e: any) => setInviteForm((prev) => ({ ...prev, country: e?.target ? e.target.value : e }))} />
               <Select label="Portal Role" value={inviteForm.membershipRole} onChange={(value) => setInviteForm((prev) => ({ ...prev, membershipRole: String(value) }))} options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]} />
             </div>
           </Modal>

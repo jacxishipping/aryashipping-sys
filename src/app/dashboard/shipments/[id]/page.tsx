@@ -29,6 +29,8 @@ import {
   Ship,
   AlertTriangle,
   Radio,
+} from 'lucide-react';
+
 function sxToStyle(sx?: any): React.CSSProperties {
   if (!sx) return {};
   const style: any = {};

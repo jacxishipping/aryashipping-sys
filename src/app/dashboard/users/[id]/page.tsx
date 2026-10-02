@@ -30,6 +30,29 @@ import {
   Shield,
   Key,
 } from 'lucide-react';
+import {
+  DashboardSurface,
+  DashboardPanel,
+  DashboardGrid,
+} from '@/components/dashboard/DashboardSurface';
+import {
+  PageHeader,
+  Button,
+  Breadcrumbs,
+  LoadingState,
+  EmptyState,
+  StatsCard,
+  StatusBadge,
+  Select,
+  toast,
+} from '@/components/design-system';
+import ShipmentCard from '@/components/dashboard/ShipmentCard';
+import NotificationComposer from '@/components/notifications/NotificationComposer';
+import { exportToCSVWithHeaders } from '@/lib/export';
+import { hasPermission } from '@/lib/rbac';
+import { downloadCustomerStatementPDF } from '@/lib/utils/generateCustomerStatementPDF';
+import { addWorkspaceItem } from '@/components/dashboard/WorkspaceTray';
+
 function sxToStyle(sx?: any): React.CSSProperties {
   if (!sx) return {};
   const style: any = {};
@@ -109,27 +132,6 @@ function Tab({ label, icon, selected, onClick, className = '' }: any) {
     </button>
   );
 }
-  DashboardSurface,
-  DashboardPanel,
-  DashboardGrid,
-} from '@/components/dashboard/DashboardSurface';
-import {
-  PageHeader,
-  Button,
-  Breadcrumbs,
-  LoadingState,
-  EmptyState,
-  StatsCard,
-  StatusBadge,
-  Select,
-  toast,
-} from '@/components/design-system';
-import ShipmentCard from '@/components/dashboard/ShipmentCard';
-import NotificationComposer from '@/components/notifications/NotificationComposer';
-import { exportToCSVWithHeaders } from '@/lib/export';
-import { hasPermission } from '@/lib/rbac';
-import { downloadCustomerStatementPDF } from '@/lib/utils/generateCustomerStatementPDF';
-import { addWorkspaceItem } from '@/components/dashboard/WorkspaceTray';
 
 interface UserDetail {
   id: string;

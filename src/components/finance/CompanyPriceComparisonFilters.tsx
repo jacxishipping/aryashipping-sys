@@ -10,7 +10,6 @@ import {
 } from '@/lib/shipping-rate-calculator';
 import type { ComparisonSortKey } from '@/lib/company-price-comparison';
 import type { ComparisonDisplayMode } from '@/lib/company-price-comparison-presets';
-import { Skeleton, SkeletonGroup } from '@/components/design-system';
 
 type CompanyOption = {
   id: string;

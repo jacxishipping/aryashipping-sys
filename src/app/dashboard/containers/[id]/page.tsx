@@ -94,7 +94,7 @@ function CircularProgress({ size = 20, className = '' }: any) {
   return <div className={`inline-block animate-spin rounded-full border-2 border-[var(--accent-gold)] border-t-transparent ${className}`} style={{ width: size, height: size }} />;
 }
 
-function Checkbox({ checked, onChange, disabled, className = '' }: any) {
+function Checkbox({ checked, onChange, disabled, className = '', ...props }: { checked?: boolean; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; disabled?: boolean; className?: string; [key: string]: any }) {
   return (
     <input 
       type="checkbox" 
@@ -102,11 +102,12 @@ function Checkbox({ checked, onChange, disabled, className = '' }: any) {
       onChange={onChange} 
       disabled={disabled}
       className={`rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)] w-4 h-4 cursor-pointer ${className}`}
+      {...props}
     />
   );
 }
 
-function TextField({ label, value, onChange, disabled, type = 'text', size, placeholder, multiline, rows = 3, className = '', ...props }: any) {
+function TextField({ label, value, onChange, disabled, type = 'text', size, placeholder, multiline, rows = 3, className = '', ...props }: { label?: string; value?: any; onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void; disabled?: boolean; type?: string; size?: string; placeholder?: string; multiline?: boolean; rows?: number; className?: string; [key: string]: any }) {
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>
       {label && <label className="text-xs font-semibold text-[var(--text-secondary)]">{label}</label>}
@@ -135,14 +136,15 @@ function TextField({ label, value, onChange, disabled, type = 'text', size, plac
   );
 }
 
-function Tabs({ value, onChange, children, className = '' }: any) {
+function Tabs({ value, onChange, children, className = '', ...props }: { value?: any; onChange?: (event: any, value: any) => void; children?: any; className?: string; [key: string]: any }) {
   return (
-    <div className={`flex items-center gap-1 border-b border-[var(--border)] overflow-x-auto ${className}`}>
+    <div className={`flex items-center gap-1 border-b border-[var(--border)] overflow-x-auto ${className}`} style={sxToStyle(props.sx)} {...props}>
       {React.Children.map(children, (child, index) => {
         if (!React.isValidElement(child)) return child;
+        const childValue = (child.props as any)?.value !== undefined ? (child.props as any).value : index;
         return React.cloneElement(child as any, {
-          selected: value === index,
-          onClick: () => onChange && onChange(null, index),
+          selected: value === childValue,
+          onClick: () => onChange && onChange(null, childValue),
         });
       })}
     </div>
@@ -1261,7 +1263,7 @@ export default function ContainerDetailPage() {
 				<Box sx={{ px: 2, mb: 2 }}>
 					<Tabs 
 						value={activeTab} 
-						onChange={(_, newValue) => {
+						onChange={(_: any, newValue: any) => {
 							setActiveTab(newValue);
 							const nextParams = new URLSearchParams(searchParams.toString());
 							nextParams.set('tab', newValue);
@@ -1784,7 +1786,7 @@ export default function ContainerDetailPage() {
 							<Box sx={{ borderBottom: '1px solid var(--border)', mb: 2 }}>
 								<Tabs
 									value={expenseView}
-									onChange={(_, value) => setExpenseView(value)}
+									onChange={(_: any, value: any) => setExpenseView(value)}
 									sx={{
 										'& .MuiTab-root': {
 											textTransform: 'none',
@@ -2513,55 +2515,45 @@ export default function ContainerDetailPage() {
 					onSuccess={fetchContainer}
 				/>
 
-				{/* QR Code Modal — intentionally raw MUI Dialog: QR scannability needs a guaranteed white surface in both themes. */}
-				<Dialog
+				{/* QR Code Modal */}
+				<Modal
 					open={qrModalOpen}
 					onClose={() => setQrModalOpen(false)}
-					maxWidth="xs"
-					fullWidth
-					PaperProps={{
-						sx: {
-							bgcolor: 'white',
-							backgroundImage: 'none',
-							borderRadius: 2,
-							p: 2
-						}
-					}}
+					title="Container QR Code"
+					size="sm"
+					actions={
+						<Button 
+							variant="outline" 
+							onClick={() => setQrModalOpen(false)}
+						>
+							Close
+						</Button>
+					}
 				>
-					<Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, py: 2 }}>
-						<Typography variant="h6" sx={{ fontWeight: 700, color: 'black' }}>
-							Container QR Code
-						</Typography>
-						<Box sx={{ p: 2, bgcolor: 'var(--panel)', borderRadius: 2, border: '1px solid var(--border)' }}>
+					<div className="flex flex-col items-center gap-4 py-2">
+						<div className="p-3 bg-white rounded-xl border border-[var(--border)] shadow-sm">
 							<QRCode 
-								value={`${window.location.origin}/tracking?container=${container.containerNumber}`}
+								value={typeof window !== 'undefined' ? `${window.location.origin}/tracking?container=${container.containerNumber}` : `/tracking?container=${container.containerNumber}`}
 								size={200}
 								style={{ height: "auto", maxWidth: "100%", width: "100%" }}
 								viewBox={`0 0 256 256`}
 							/>
-						</Box>
-						<Box sx={{ textAlign: 'center' }}>
-							<Typography sx={{ fontWeight: 700, fontSize: '1.1rem', color: 'black' }}>
+						</div>
+						<div className="text-center">
+							<p className="font-bold text-lg text-[var(--text-primary)]">
 								{container.containerNumber}
-							</Typography>
+							</p>
 							{container.trackingNumber && (
-								<Typography sx={{ color: 'gray', fontSize: '0.9rem' }}>
+								<p className="text-sm text-[var(--text-secondary)]">
 									Tracking: {container.trackingNumber}
-								</Typography>
+								</p>
 							)}
-						</Box>
-						<Typography sx={{ fontSize: '0.8rem', color: 'gray', textAlign: 'center', maxWidth: '80%' }}>
+						</div>
+						<p className="text-xs text-[var(--text-secondary)] text-center max-w-[80%]">
 							Scan to view container status and tracking details on mobile.
-						</Typography>
-						<Button 
-							variant="outline" 
-							onClick={() => setQrModalOpen(false)}
-							sx={{ mt: 1, minWidth: 100 }}
-						>
-							Close
-						</Button>
-					</Box>
-				</Dialog>
+						</p>
+					</div>
+				</Modal>
 
 				{/* Duplicate Container Modal */}
 				<Modal

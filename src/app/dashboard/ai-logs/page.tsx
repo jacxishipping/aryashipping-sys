@@ -323,7 +323,7 @@ export default function AiLogsPage() {
           <FormField
             label="Entity ID"
             value={entityId}
-            onChange={(value) => setEntityId(value)}
+            onChange={(e: any) => setEntityId(e?.target ? e.target.value : e)}
             placeholder="Filter by exact entity id"
             leftIcon={<SearchIcon className="h-4 w-4" />}
           />

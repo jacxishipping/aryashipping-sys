@@ -3,7 +3,7 @@
 import React, { InputHTMLAttributes, TextareaHTMLAttributes, ReactNode } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 
-export interface FormFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+export interface FormFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'> {
   label?: string;
   helperText?: ReactNode;
   error?: boolean | string;
@@ -12,13 +12,17 @@ export interface FormFieldProps extends Omit<InputHTMLAttributes<HTMLInputElemen
   size?: 'small' | 'medium' | 'large' | 'sm' | 'md' | 'lg';
   multiline?: boolean;
   rows?: number;
+  minRows?: number;
   fullWidth?: boolean;
+  onChange?: (e: any) => void;
   InputProps?: {
     startAdornment?: ReactNode;
     endAdornment?: ReactNode;
     [key: string]: any;
   };
   inputProps?: any;
+  InputLabelProps?: any;
+  FormHelperTextProps?: any;
   sx?: any;
 }
 
@@ -31,13 +35,17 @@ export default function FormField({
   size = 'medium',
   multiline = false,
   rows = 3,
+  minRows,
   fullWidth = true,
   className = '',
   id,
   required,
   disabled,
+  onChange,
   InputProps,
   inputProps,
+  InputLabelProps,
+  FormHelperTextProps,
   sx, // Backwards compatibility
   ...restProps
 }: FormFieldProps) {
@@ -52,6 +60,7 @@ export default function FormField({
   const endAdornment = rightIcon || InputProps?.endAdornment;
 
   const isSmall = size === 'small' || size === 'sm' || isCompact;
+  const effectiveRows = rows || minRows || 3;
 
   const baseInputClasses = [
     'w-full transition-all duration-200 rounded-lg border text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed',
@@ -63,6 +72,12 @@ export default function FormField({
       : 'border-[var(--border)] bg-[var(--background)] focus:ring-[var(--accent-gold)] focus:border-[var(--accent-gold)]',
     className,
   ].filter(Boolean).join(' ');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    if (onChange) {
+      onChange(e);
+    }
+  };
 
   return (
     <div className={`ds-form-field ${fullWidth ? 'w-full' : ''}`}>
@@ -88,9 +103,10 @@ export default function FormField({
         {multiline ? (
           <textarea
             id={inputId}
-            rows={rows}
+            rows={effectiveRows}
             disabled={disabled}
             required={required}
+            onChange={handleChange}
             aria-invalid={hasError}
             aria-describedby={displayedHelperText ? helperTextId : undefined}
             className={baseInputClasses}
@@ -102,6 +118,7 @@ export default function FormField({
             id={inputId}
             disabled={disabled}
             required={required}
+            onChange={handleChange}
             aria-invalid={hasError}
             aria-describedby={displayedHelperText ? helperTextId : undefined}
             className={baseInputClasses}

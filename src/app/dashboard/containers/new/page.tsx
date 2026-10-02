@@ -263,7 +263,7 @@ export default function NewContainerPage() {
               <div className="space-y-4">
                 <div className="md:col-span-2">
                   <div className="flex flex-col sm:flex-row gap-3 items-end">
-                    <Box sx={{ flex: 1 }}>
+                    <div className="flex-1">
                       <FormField
                         label="Container Number *"
                         id="containerNumber"
@@ -274,7 +274,7 @@ export default function NewContainerPage() {
                         placeholder="e.g., ABCU1234567"
                         helperText="Enter container number and click 'Fetch Data' to automatically retrieve shipping information"
                       />
-                    </Box>
+                    </div>
                     <Button
                       type="button"
                       onClick={fetchContainerData}
@@ -429,14 +429,14 @@ export default function NewContainerPage() {
                   <div className="space-y-2">
                     {formData.transshipmentPorts.map((port, index) => (
                       <div key={index} className="flex gap-2 items-end">
-                        <Box sx={{ flex: 1 }}>
+                        <div className="flex-1">
                           <FormField
                             label={`Port ${index + 1}`}
                             value={port}
                             onChange={(e) => updateTransshipmentPort(index, e.target.value)}
                             placeholder={`Transshipment port ${index + 1}`}
                           />
-                        </Box>
+                        </div>
                         <Button
                           type="button"
                           onClick={() => removeTransshipmentPort(index)}
