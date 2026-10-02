@@ -1011,7 +1011,7 @@ export default function DispatchDetailPage() {
             Use <strong>Receive to Yard</strong> when this dispatch ends at your yard and the cars should wait there as ON_HAND. Use <strong>Handoff to Container</strong> only when the dispatch moves directly into a container.
           </Box>
 
-          <Tabs value={activeTab} onChange={(_, value) => setActiveTab(value)}>
+          <Tabs value={activeTab} onChange={(_: any, value: any) => setActiveTab(value)}>
             <Tab label={`Shipments (${dispatch.shipments.length})`} />
             <Tab label={`Events (${dispatch.events.length})`} />
             <Tab label={`Expenses (${dispatch.expenses.length})`} />
