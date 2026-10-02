@@ -6,17 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { 
-  Box, 
-  TextField, 
-  Checkbox, 
-  Divider, 
-  InputAdornment,
-  Stepper,
-  Step,
-  StepLabel,
-  Paper
-} from '@mui/material';
-import { 
   ArrowLeft, 
   DollarSign, 
   AlertCircle, 
@@ -25,12 +14,13 @@ import {
   FileText,
   CreditCard,
   ArrowRight,
-  Info
+  Info,
+  Search,
+  Check
 } from 'lucide-react';
-import { Search } from '@mui/icons-material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { DataTable } from '@/components/ui/DataTable';
-import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select, StatusBadge } from '@/components/design-system';
+import { Alert, PageHeader, Button, Breadcrumbs, toast, LoadingState, EmptyState, DashboardPageSkeleton, Modal, Select, StatusBadge, FormField } from '@/components/design-system';
 import AdminRoute from '@/components/auth/AdminRoute';
 
 interface User {
@@ -338,9 +328,9 @@ export default function RecordPaymentPage() {
   return (
     <AdminRoute>
       <DashboardSurface>
-        <Box sx={{ px: 2, pt: 2 }}>
+        <div className="px-2 pt-2">
           <Breadcrumbs />
-        </Box>
+        </div>
 
         <PageHeader
           title="Record Shipment Payment"
@@ -355,64 +345,78 @@ export default function RecordPaymentPage() {
         />
 
         {/* Progress Stepper */}
-        <Box sx={{ px: 4, py: 3, bgcolor: 'var(--surface)', borderBottom: '1px solid var(--border)' }}>
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Box>
+        <div className="px-4 py-3 bg-[var(--surface)] border-b border-[var(--border)]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {steps.map((label, idx) => {
+              const isActive = activeStep === idx;
+              const isPast = activeStep > idx;
+              return (
+                <div
+                  key={label}
+                  className={`flex items-center gap-2 p-2 rounded-lg text-xs font-semibold ${
+                    isActive
+                      ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] border border-[rgba(var(--accent-gold-rgb),0.3)]'
+                      : isPast
+                      ? 'text-[var(--text-primary)]'
+                      : 'text-[var(--text-secondary)] opacity-50'
+                  }`}
+                >
+                  <div
+                    className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] shrink-0 ${
+                      isPast
+                        ? 'bg-[var(--success)] text-white'
+                        : isActive
+                        ? 'bg-[var(--accent-gold)] text-black font-bold'
+                        : 'bg-[var(--border)] text-[var(--text-secondary)]'
+                    }`}
+                  >
+                    {isPast ? <Check className="w-3 h-3" /> : idx + 1}
+                  </div>
+                  <span className="truncate">{label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
-        <Box sx={{ px: 2, pb: 4, pt: 3 }}>
+        <div className="px-2 pb-4 pt-3">
           {/* Step 1: Customer Selection */}
           {activeStep === 0 && (
             <DashboardPanel
               title="Step 1: Select Customer"
               description="Choose the customer who made the payment"
             >
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <div className="space-y-4">
                 {/* Search field */}
-                <TextField
-                  placeholder="Search by name or email..."
-                  size="small"
-                  value={customerSearch}
-                  onChange={(e) => {
-                    setCustomerSearch(e.target.value);
-                    if (selectedUserId) setSelectedUserId('');
-                  }}
-                  InputProps={{
-                    startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-                  }}
-                  fullWidth
-                  autoComplete="off"
-                />
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+                  <input
+                    type="text"
+                    placeholder="Search by name or email..."
+                    value={customerSearch}
+                    onChange={(e) => {
+                      setCustomerSearch(e.target.value);
+                      if (selectedUserId) setSelectedUserId('');
+                    }}
+                    className="w-full pl-9 pr-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                    autoComplete="off"
+                  />
+                </div>
 
                 {/* Selected customer display */}
                 {selectedUserId && (() => {
                   const sel = users.find(u => u.id === selectedUserId);
                   return sel ? (
-                    <>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          p: 2,
-                          borderRadius: 2,
-                          border: '2px solid var(--accent-gold)',
-                          bgcolor: 'rgba(var(--accent-gold-rgb),0.08)',
-                        }}
-                      >
-                        <Box>
-                          <Box sx={{ fontWeight: 600, fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-4 rounded-xl border-2 border-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.08)]">
+                        <div>
+                          <div className="font-semibold text-sm text-[var(--text-primary)]">
                             {sel.name || sel.email}
-                          </Box>
+                          </div>
                           {sel.name && (
-                            <Box sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{sel.email}</Box>
+                            <div className="text-xs text-[var(--text-secondary)]">{sel.email}</div>
                           )}
-                        </Box>
+                        </div>
                         <Button
                           variant="outline"
                           size="sm"
@@ -420,11 +424,11 @@ export default function RecordPaymentPage() {
                         >
                           Change
                         </Button>
-                      </Box>
+                      </div>
 
                       {/* Account balance status */}
                       {loadingBalance ? (
-                        <Box sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)', py: 1 }}>Checking account balance...</Box>
+                        <div className="text-xs text-[var(--text-secondary)] py-1">Checking account balance...</div>
                       ) : customerBalance !== null && (
                         <Alert
                           severity={customerBalance > 0 ? 'warning' : 'info'}
@@ -437,7 +441,7 @@ export default function RecordPaymentPage() {
                           }
                         />
                       )}
-                    </>
+                    </div>
                   ) : null;
                 })()}
 
@@ -449,58 +453,40 @@ export default function RecordPaymentPage() {
                       (u.name?.toLowerCase().includes(q) || u.email.toLowerCase().includes(q))
                   );
                   return (
-                    <Box
-                      sx={{
-                        border: '1px solid var(--border)',
-                        borderRadius: 2,
-                        overflow: 'hidden',
-                        maxHeight: 280,
-                        overflowY: 'auto',
-                      }}
-                    >
+                    <div className="border border-[var(--border)] rounded-xl overflow-hidden max-h-60 overflow-y-auto divide-y divide-[var(--border)] bg-[var(--background)]">
                       {results.length === 0 ? (
-                        <Box sx={{ p: 2, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                        <div className="p-4 text-center text-sm text-[var(--text-secondary)]">
                           No customers found
-                        </Box>
+                        </div>
                       ) : (
-                        results.map((user, idx) => (
-                          <Box
+                        results.map((user) => (
+                          <button
                             key={user.id}
+                            type="button"
                             onClick={() => {
                               setSelectedUserId(user.id);
                               setCustomerSearch('');
                             }}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 1.5,
-                              px: 2,
-                              py: 1.5,
-                              cursor: 'pointer',
-                              borderTop: idx > 0 ? '1px solid var(--border)' : 'none',
-                              bgcolor: 'var(--surface)',
-                              '&:hover': { bgcolor: 'rgba(var(--accent-gold-rgb),0.08)' },
-                              transition: 'background 0.15s',
-                            }}
+                            className="w-full text-left flex items-center gap-3 px-4 py-3 hover:bg-[rgba(var(--accent-gold-rgb),0.08)] transition-colors"
                           >
-                            <User className="w-4 h-4" style={{ color: 'var(--text-secondary)', flexShrink: 0 }} />
-                            <Box>
-                              <Box sx={{ fontWeight: 500, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                            <User className="w-4 h-4 text-[var(--text-secondary)] shrink-0" />
+                            <div>
+                              <div className="font-medium text-sm text-[var(--text-primary)]">
                                 {user.name || user.email}
-                              </Box>
+                              </div>
                               {user.name && (
-                                <Box sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>{user.email}</Box>
+                                <div className="text-xs text-[var(--text-secondary)]">{user.email}</div>
                               )}
-                            </Box>
-                          </Box>
+                            </div>
+                          </button>
                         ))
                       )}
-                    </Box>
+                    </div>
                   );
                 })()}
 
                 {selectedUserId && (
-                  <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                  <div className="mt-4 flex justify-end">
                     <Button
                       onClick={handleNext}
                       variant="primary"
@@ -509,9 +495,9 @@ export default function RecordPaymentPage() {
                     >
                       Continue to Shipments
                     </Button>
-                  </Box>
+                  </div>
                 )}
-              </Box>
+              </div>
             </DashboardPanel>
           )}
 
@@ -522,9 +508,9 @@ export default function RecordPaymentPage() {
               description={`Choose the shipment and payment category — ${selectedUser?.name || selectedUser?.email}`}
             >
               {loadingShipments ? (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
+                <div className="text-center py-8">
                   <LoadingState message="Loading shipments..." />
-                </Box>
+                </div>
               ) : shipments.length === 0 ? (
                 <EmptyState
                   icon={<AlertCircle className="w-12 h-12" />}
@@ -532,7 +518,7 @@ export default function RecordPaymentPage() {
                   description="This customer has no shipments with an outstanding balance"
                 />
               ) : (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <div className="space-y-4">
                   <Select
                     label="Payment Category"
                     value={paymentCategory}
@@ -563,135 +549,109 @@ export default function RecordPaymentPage() {
                           }
                         />
 
-                        <TextField
-                          placeholder="Enter VIN or Lot Number..."
-                          size="small"
-                          value={shipmentSearch}
-                          onChange={(e) => setShipmentSearch(e.target.value)}
-                          InputProps={{
-                            startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-                          }}
-                          fullWidth
-                          autoComplete="off"
-                        />
+                        <div className="relative">
+                          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+                          <input
+                            type="text"
+                            placeholder="Enter VIN or Lot Number..."
+                            value={shipmentSearch}
+                            onChange={(e) => setShipmentSearch(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                            autoComplete="off"
+                          />
+                        </div>
 
                         {filtered.length === 0 ? (
-                          <Box sx={{ py: 3, textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                          <div className="py-6 text-center text-sm text-[var(--text-secondary)]">
                             {q ? 'No shipment matches this VIN or Lot Number for this payment category' : `No shipments have outstanding ${paymentCategoryLabels[paymentCategory].toLowerCase()} balances`}
-                          </Box>
-                        ) : filtered.map((shipment) => (
-                    <Box
-                      key={shipment.id}
-                      sx={{
-                        p: 2.5,
-                        border: '2px solid',
-                        borderColor: selectedShipmentIds.includes(shipment.id) 
-                          ? 'var(--accent-gold)' 
-                          : 'var(--border)',
-                        borderRadius: 2,
-                        bgcolor: selectedShipmentIds.includes(shipment.id) 
-                          ? 'rgba(var(--accent-gold-rgb), 0.08)' 
-                          : 'transparent',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        '&:hover': {
-                          borderColor: 'var(--accent-gold)',
-                          bgcolor: 'rgba(var(--accent-gold-rgb), 0.05)',
-                        },
-                      }}
-                      onClick={() => handleShipmentToggle(shipment.id)}
-                    >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <Checkbox
-                          checked={selectedShipmentIds.includes(shipment.id)}
-                          onChange={() => handleShipmentToggle(shipment.id)}
-                          sx={{ 
-                            color: 'var(--accent-gold)',
-                            '&.Mui-checked': { color: 'var(--accent-gold)' },
-                          }}
-                        />
-                        <Box sx={{ flex: 1 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                            <Box sx={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-                              {shipment.trackingNumber}
-                            </Box>
-                            <StatusBadge
-                              status={shipment.paymentStatus === 'FAILED' ? 'ERROR' : 'WARNING'}
-                              label={shipment.paymentStatus}
-                              size="sm"
-                            />
-                          </Box>
-                          <Box sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                            {shipment.vehicleMake} {shipment.vehicleModel}
-                          </Box>
-                          {shipment.vehicleVIN && (
-                            <Box sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)', mt: 0.5 }}>
-                              VIN: {shipment.vehicleVIN}
-                            </Box>
-                          )}
-                          {shipment.lotNumber && (
-                            <Box sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)', mt: 0.5 }}>
-                              Lot: {shipment.lotNumber}
-                            </Box>
-                          )}
-                        </Box>
-                        <Box sx={{ textAlign: 'right' }}>
-                          <>
-                            <Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mb: 0.5 }}>
-                              {paymentCategoryLabels[paymentCategory]} Due
-                            </Box>
-                            <Box sx={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
-                              {formatCurrency(getShipmentDueForCategory(shipment))}
-                            </Box>
-                            <Box sx={{ mt: 0.75, display: 'flex', flexDirection: 'column', gap: 0.35 }}>
-                              <Box sx={{ fontSize: '0.72rem', color: paymentCategory === 'PURCHASE_PRICE' ? 'var(--accent-gold)' : 'var(--text-secondary)', fontWeight: paymentCategory === 'PURCHASE_PRICE' ? 700 : 500 }}>
-                                Purchase due: {formatCurrency(shipment.purchaseAmountDue || 0)}
-                              </Box>
-                              <Box sx={{ fontSize: '0.72rem', color: paymentCategory === 'EXPENSES' ? 'var(--accent-gold)' : 'var(--text-secondary)', fontWeight: paymentCategory === 'EXPENSES' ? 700 : 500 }}>
-                                Expense due: {formatCurrency(shipment.expenseAmountDue || 0)}
-                              </Box>
-                              <Box sx={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>
-                                Total shipment due: {formatCurrency(shipment.amountDue || 0)}
-                              </Box>
-                            </Box>
-                          </>
-                        </Box>
-                      </Box>
-                    </Box>
-                        ))}
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            {filtered.map((shipment) => {
+                              const isSelected = selectedShipmentIds.includes(shipment.id);
+                              return (
+                                <div
+                                  key={shipment.id}
+                                  onClick={() => handleShipmentToggle(shipment.id)}
+                                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-4 ${
+                                    isSelected
+                                      ? 'border-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.08)]'
+                                      : 'border-[var(--border)] hover:border-[var(--accent-gold)] hover:bg-[rgba(var(--accent-gold-rgb),0.04)]'
+                                  }`}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isSelected}
+                                    onChange={() => handleShipmentToggle(shipment.id)}
+                                    className="w-4 h-4 rounded text-[var(--accent-gold)] focus:ring-[var(--accent-gold)]"
+                                  />
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <span className="font-semibold text-sm text-[var(--text-primary)]">
+                                        {shipment.trackingNumber}
+                                      </span>
+                                      <StatusBadge
+                                        status={shipment.paymentStatus === 'FAILED' ? 'ERROR' : 'WARNING'}
+                                        label={shipment.paymentStatus}
+                                        size="sm"
+                                      />
+                                    </div>
+                                    <div className="text-xs text-[var(--text-secondary)]">
+                                      {shipment.vehicleMake} {shipment.vehicleModel}
+                                    </div>
+                                    {shipment.vehicleVIN && (
+                                      <div className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                                        VIN: {shipment.vehicleVIN}
+                                      </div>
+                                    )}
+                                    {shipment.lotNumber && (
+                                      <div className="text-xs text-[var(--text-secondary)] font-mono mt-0.5">
+                                        Lot: {shipment.lotNumber}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="text-xs text-[var(--text-secondary)] mb-0.5">
+                                      {paymentCategoryLabels[paymentCategory]} Due
+                                    </div>
+                                    <div className="text-base font-bold text-[var(--accent-gold)]">
+                                      {formatCurrency(getShipmentDueForCategory(shipment))}
+                                    </div>
+                                    <div className="mt-1 flex flex-col gap-0.5 text-[11px] text-[var(--text-secondary)]">
+                                      <span className={paymentCategory === 'PURCHASE_PRICE' ? 'text-[var(--accent-gold)] font-bold' : ''}>
+                                        Purchase: {formatCurrency(shipment.purchaseAmountDue || 0)}
+                                      </span>
+                                      <span className={paymentCategory === 'EXPENSES' ? 'text-[var(--accent-gold)] font-bold' : ''}>
+                                        Expense: {formatCurrency(shipment.expenseAmountDue || 0)}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </>
                     );
                   })()}
 
                   {selectedShipmentIds.length > 0 && (
-                    <>
-                      <Divider sx={{ my: 2, borderColor: 'var(--border)' }} />
-                      <Box
-                        sx={{
-                          p: 3,
-                          borderRadius: 2,
-                          bgcolor: 'rgba(var(--accent-gold-rgb), 0.12)',
-                          border: '2px solid var(--accent-gold)',
-                        }}
-                      >
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Box>
-                            <Box sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)', mb: 0.5 }}>
-                              {paymentCategoryLabels[paymentCategory]} Remaining Due
-                            </Box>
-                            <Box sx={{ fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                              {selectedShipmentIds.length} shipment{selectedShipmentIds.length !== 1 ? 's' : ''} selected
-                            </Box>
-                          </Box>
-                          <Box sx={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
-                            {formatCurrency(totalSelectedAmount)}
-                          </Box>
-                        </Box>
-                      </Box>
-                    </>
+                    <div className="mt-4 p-4 rounded-xl bg-[rgba(var(--accent-gold-rgb),0.12)] border-2 border-[var(--accent-gold)] flex justify-between items-center">
+                      <div>
+                        <div className="text-xs text-[var(--text-secondary)] mb-0.5">
+                          {paymentCategoryLabels[paymentCategory]} Remaining Due
+                        </div>
+                        <div className="text-sm font-medium text-[var(--text-primary)]">
+                          {selectedShipmentIds.length} shipment{selectedShipmentIds.length !== 1 ? 's' : ''} selected
+                        </div>
+                      </div>
+                      <div className="text-2xl font-bold text-[var(--accent-gold)]">
+                        {formatCurrency(totalSelectedAmount)}
+                      </div>
+                    </div>
                   )}
 
-                  <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                  <div className="mt-4 flex gap-2 justify-end">
                     <Button
                       onClick={handleBack}
                       variant="outline"
@@ -706,8 +666,8 @@ export default function RecordPaymentPage() {
                     >
                       Continue to Payment
                     </Button>
-                  </Box>
-                </Box>
+                  </div>
+                </div>
               )}
             </DashboardPanel>
           )}
@@ -718,70 +678,46 @@ export default function RecordPaymentPage() {
               title="Step 3: Enter Payment Details"
               description={`Enter the amount to apply against the shipment's ${paymentCategoryLabels[paymentCategory].toLowerCase()} balance`}
             >
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <div className="space-y-4">
                 {/* Payment Summary */}
-                <Box
-                  sx={{
-                    p: 2.5,
-                    borderRadius: 2,
-                    bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)',
-                    border: '1px solid var(--accent-gold)',
-                  }}
-                >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Box sx={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                <div className="p-4 rounded-xl bg-[rgba(var(--accent-gold-rgb),0.08)] border border-[var(--accent-gold)]">
+                  <div className="flex justify-between items-center mb-2">
+                    <div className="text-sm font-semibold text-[var(--text-primary)]">
                       {paymentCategoryLabels[paymentCategory]} Payment Summary
-                    </Box>
-                    <Box sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    </div>
+                    <div className="text-xs text-[var(--text-secondary)]">
                       {selectedShipmentIds.length} shipment{selectedShipmentIds.length !== 1 ? 's' : ''}
-                    </Box>
-                  </Box>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Box sx={{ fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <div className="text-sm text-[var(--text-secondary)]">
                       {paymentCategoryLabels[paymentCategory]} Outstanding:
-                    </Box>
-                    <Box sx={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
+                    </div>
+                    <div className="text-xl font-bold text-[var(--accent-gold)]">
                       {formatCurrency(totalSelectedAmount)}
-                    </Box>
-                  </Box>
+                    </div>
+                  </div>
                   {selectedShipmentIds.length === 1 && (() => {
                     const selectedShipment = shipments.find((shipment) => shipment.id === selectedShipmentIds[0]);
-                    if (!selectedShipment) {
-                      return null;
-                    }
-
+                    if (!selectedShipment) return null;
                     return (
-                      <Box sx={{ mt: 1.5, display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                        <Box sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                          Purchase due: {formatCurrency(selectedShipment.purchaseAmountDue || 0)}
-                        </Box>
-                        <Box sx={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-                          Expense due: {formatCurrency(selectedShipment.expenseAmountDue || 0)}
-                        </Box>
-                      </Box>
+                      <div className="mt-2 pt-2 border-t border-[rgba(var(--accent-gold-rgb),0.2)] flex gap-4 text-xs text-[var(--text-secondary)]">
+                        <span>Purchase due: <strong className="text-[var(--text-primary)]">{formatCurrency(selectedShipment.purchaseAmountDue || 0)}</strong></span>
+                        <span>Expense due: <strong className="text-[var(--text-primary)]">{formatCurrency(selectedShipment.expenseAmountDue || 0)}</strong></span>
+                      </div>
                     );
                   })()}
-                </Box>
+                </div>
 
                 {/* Amount Input */}
-                <TextField
-                  fullWidth
+                <FormField
                   label="Payment Amount (USD) *"
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
                   required
-                  size="medium"
-                  inputProps={{ step: '0.01', min: '0.01' }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <DollarSign className="w-5 h-5 text-[var(--text-secondary)]" />
-                      </InputAdornment>
-                    ),
-                  }}
-                  helperText={`Enter the amount to apply against the shipment's ${paymentCategoryLabels[paymentCategory].toLowerCase()} balance`}
+                  hint={`Enter the amount to apply against the shipment's ${paymentCategoryLabels[paymentCategory].toLowerCase()} balance`}
                 />
 
                 <Select
@@ -799,28 +735,30 @@ export default function RecordPaymentPage() {
                   onChange={(value) => setPaymentMethod(String(value))}
                   required
                   options={[
-                    { value: 'CASH', label: 'Cash', icon: <DollarSign className="w-4 h-4" /> },
-                    { value: 'BANK_TRANSFER', label: 'Bank Transfer', icon: <CreditCard className="w-4 h-4" /> },
-                    { value: 'CHECK', label: 'Check', icon: <FileText className="w-4 h-4" /> },
-                    { value: 'CREDIT_CARD', label: 'Credit Card', icon: <CreditCard className="w-4 h-4" /> },
-                    { value: 'WIRE', label: 'Wire Transfer', icon: <CreditCard className="w-4 h-4" /> },
+                    { value: 'CASH', label: 'Cash' },
+                    { value: 'BANK_TRANSFER', label: 'Bank Transfer' },
+                    { value: 'CHECK', label: 'Check' },
+                    { value: 'CREDIT_CARD', label: 'Credit Card' },
+                    { value: 'WIRE', label: 'Wire Transfer' },
                   ]}
                 />
 
                 {/* Notes */}
-                <TextField
-                  fullWidth
-                  label="Notes (Optional)"
-                  multiline
-                  rows={3}
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Additional notes about this payment (e.g., reference number, check number, etc.)"
-                  size="medium"
-                />
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+                    Notes (Optional)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={notes}
+                    onChange={(e) => setNotes(e.target.value)}
+                    placeholder="Additional notes about this payment (e.g., reference number, check number, etc.)"
+                    className="w-full px-3.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                  />
+                </div>
 
                 {/* Navigation */}
-                <Box sx={{ mt: 2, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                <div className="mt-4 flex gap-2 justify-end pt-2 border-t border-[var(--border)]">
                   <Button
                     onClick={handleBack}
                     variant="outline"
@@ -835,8 +773,8 @@ export default function RecordPaymentPage() {
                   >
                     Review Payment
                   </Button>
-                </Box>
-              </Box>
+                </div>
+              </div>
             </DashboardPanel>
           )}
 
@@ -846,59 +784,49 @@ export default function RecordPaymentPage() {
               title="Step 4: Review & Confirm"
               description="Review the payment details before submitting"
             >
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              <div className="space-y-4">
                 {/* Customer Info */}
-                <Box>
-                  <Box sx={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', mb: 1 }}>
+                <div className="border-b border-[var(--border)] pb-3">
+                  <div className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">
                     Customer
-                  </Box>
-                  <Box sx={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                  </div>
+                  <div className="text-base font-semibold text-[var(--text-primary)]">
                     {selectedUser?.name || selectedUser?.email}
-                  </Box>
-                </Box>
-
-                <Divider />
+                  </div>
+                </div>
 
                 {/* Payment Details Summary */}
-                <Box>
-                  <Box sx={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', mb: 2 }}>
+                <div className="border-b border-[var(--border)] pb-3">
+                  <div className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
                     Payment Details
-                  </Box>
-                  <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                    <Box>
-                      <Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mb: 0.5 }}>
-                        Payment Amount
-                      </Box>
-                      <Box sx={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <div className="text-xs text-[var(--text-secondary)]">Payment Amount</div>
+                      <div className="text-lg font-bold text-[var(--accent-gold)] mt-0.5">
                         {formatCurrency(paymentAmount)}
-                      </Box>
-                    </Box>
-                    <Box>
-                      <Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mb: 0.5 }}>
-                        Payment Method
-                      </Box>
-                      <Box sx={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-[var(--text-secondary)]">Payment Method</div>
+                      <div className="text-sm font-semibold text-[var(--text-primary)] mt-0.5">
                         {paymentMethod.replace('_', ' ')}
-                      </Box>
-                    </Box>
-                    <Box>
-                      <Box sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mb: 0.5 }}>
-                        Payment Category
-                      </Box>
-                      <Box sx={{ fontSize: '1rem', fontWeight: 600, color: 'var(--accent-gold)' }}>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs text-[var(--text-secondary)]">Payment Category</div>
+                      <div className="text-sm font-semibold text-[var(--accent-gold)] mt-0.5">
                         {paymentCategoryLabels[paymentCategory]}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
-
-                <Divider />
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Payment Allocation */}
-                <Box>
-                  <Box sx={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', mb: 2 }}>
+                <div className="space-y-2">
+                  <div className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider">
                     Payment Allocation
-                  </Box>
+                  </div>
                   
                   <DataTable
                     data={paymentAllocations}
@@ -912,9 +840,9 @@ export default function RecordPaymentPage() {
                         header: 'Amount Applied',
                         align: 'right',
                         render: (value) => (
-                          <Box component="span" sx={{ fontWeight: 600, color: 'var(--accent-gold)' }}>
+                          <span className="font-bold text-[var(--accent-gold)]">
                             {formatCurrency(value)}
-                          </Box>
+                          </span>
                         ),
                       },
                       {
@@ -932,15 +860,13 @@ export default function RecordPaymentPage() {
                   />
 
                   {/* Summary Row */}
-                  <Box sx={{ mt: 2, p: 2, bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)', borderRadius: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Box sx={{ fontSize: '0.9rem', fontWeight: 600 }}>Total Payment:</Box>
-                      <Box sx={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent-gold)' }}>
-                        {formatCurrency(paymentAmount)}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Box>
+                  <div className="p-3 bg-[rgba(var(--accent-gold-rgb),0.08)] rounded-lg flex justify-between items-center">
+                    <span className="text-sm font-semibold text-[var(--text-primary)]">Total Payment:</span>
+                    <span className="text-lg font-bold text-[var(--accent-gold)]">
+                      {formatCurrency(paymentAmount)}
+                    </span>
+                  </div>
+                </div>
 
                 {/* Info */}
                 {isPartialPayment && (
@@ -954,18 +880,18 @@ export default function RecordPaymentPage() {
                 )}
 
                 {notes && (
-                  <Box>
-                    <Box sx={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', mb: 1 }}>
+                  <div>
+                    <div className="text-xs font-bold text-[var(--text-secondary)] uppercase tracking-wider mb-1">
                       Notes
-                    </Box>
-                    <Box sx={{ p: 2, bgcolor: 'var(--surface)', borderRadius: 1, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
+                    </div>
+                    <div className="p-3 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-xs text-[var(--text-primary)]">
                       {notes}
-                    </Box>
-                  </Box>
+                    </div>
+                  </div>
                 )}
 
                 {/* Navigation */}
-                <Box sx={{ mt: 3, display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+                <div className="mt-4 flex gap-2 justify-end pt-2 border-t border-[var(--border)]">
                   <Button
                     onClick={handleBack}
                     variant="outline"
@@ -981,11 +907,11 @@ export default function RecordPaymentPage() {
                   >
                     Record Payment
                   </Button>
-                </Box>
-              </Box>
+                </div>
+              </div>
             </DashboardPanel>
           )}
-        </Box>
+        </div>
 
         {/* Confirmation Dialog */}
         <Modal
@@ -994,7 +920,7 @@ export default function RecordPaymentPage() {
           title="Confirm Payment Recording"
           size="sm"
           actions={
-            <>
+            <div className="flex gap-2 justify-end w-full">
               <Button
                 onClick={() => setShowConfirmDialog(false)}
                 variant="outline"
@@ -1010,23 +936,25 @@ export default function RecordPaymentPage() {
               >
                 {loading ? 'Recording...' : 'Confirm & Record'}
               </Button>
-            </>
+            </div>
           }
         >
-          <Alert
-            severity="info"
-            message={
-              <>You are about to record a payment of <strong>{formatCurrency(paymentAmount)}</strong> from{' '}<strong>{selectedUser?.name || selectedUser?.email}</strong>.</>
-            }
-          />
-          <Box sx={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-            This action will:
-            <ul style={{ marginTop: 8, paddingLeft: 20 }}>
-              <li>Create a {paymentCategoryLabels[paymentCategory].toLowerCase()} payment ledger entry</li>
-              <li>Update the customer's balance</li>
-              <li>Apply payment to the shipment's {paymentCategoryLabels[paymentCategory].toLowerCase()} balance</li>
-            </ul>
-          </Box>
+          <div className="space-y-3">
+            <Alert
+              severity="info"
+              message={
+                <>You are about to record a payment of <strong>{formatCurrency(paymentAmount)}</strong> from{' '}<strong>{selectedUser?.name || selectedUser?.email}</strong>.</>
+              }
+            />
+            <div className="text-xs text-[var(--text-secondary)]">
+              This action will:
+              <ul className="list-disc pl-5 mt-1.5 space-y-1">
+                <li>Create a {paymentCategoryLabels[paymentCategory].toLowerCase()} payment ledger entry</li>
+                <li>Update the customer's balance</li>
+                <li>Apply payment to the shipment's {paymentCategoryLabels[paymentCategory].toLowerCase()} balance</li>
+              </ul>
+            </div>
+          </div>
         </Modal>
       </DashboardSurface>
     </AdminRoute>

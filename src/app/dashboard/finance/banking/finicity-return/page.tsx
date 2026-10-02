@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Box } from '@mui/material';
+import { ArrowLeft } from 'lucide-react';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { Alert, Breadcrumbs, Button } from '@/components/design-system';
@@ -70,16 +70,16 @@ export default function FinicityReturnPage() {
   return (
     <ProtectedRoute>
       <DashboardSurface>
-        <Box sx={{ px: 2, pt: 2 }}>
+        <div className="px-2 pt-2">
           <Breadcrumbs />
-        </Box>
+        </div>
 
         <DashboardPanel
           title="Finicity Connection"
           description="Finalizing your bank connection and syncing transactions into your ledger"
           actions={
             <Link href="/dashboard/finance/banking" style={{ textDecoration: 'none' }}>
-              <Button variant="outline">Back to Banking</Button>
+              <Button variant="outline" icon={<ArrowLeft className="w-4 h-4" />}>Back to Banking</Button>
             </Link>
           }
         >

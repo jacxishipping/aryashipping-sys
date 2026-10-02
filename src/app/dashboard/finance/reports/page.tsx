@@ -28,7 +28,6 @@ import AdminRoute from '@/components/auth/AdminRoute';
 import { Button, PageHeader, toast, DashboardPageSkeleton, TableSkeleton, SkeletonCard } from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { ResponsiveDataView, CardField } from '@/components/ui/MobileCardView';
-import { Box } from '@mui/material';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { getDispatchStatusLabel } from '@/lib/dispatch-workflow';
 

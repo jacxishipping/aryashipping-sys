@@ -4,7 +4,77 @@ import { formatMoney as formatCurrency } from '@/lib/format';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Box, Tab, Tabs } from '@mui/material';
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Tabs({ value, onChange, children, className = '', sx, style }: any) {
+  return (
+    <div className={`flex items-center gap-2 overflow-x-auto border-b border-[var(--border)] pb-2 ${className}`} style={{ ...sxToStyle(sx), ...style }}>
+      {React.Children.map(children, (child, idx) => {
+        if (!React.isValidElement(child)) return child;
+        const childVal = (child.props as any).value ?? idx;
+        return React.cloneElement(child as React.ReactElement<any>, {
+          isSelected: childVal === value,
+          onSelectTab: () => onChange?.(null, childVal),
+        });
+      })}
+    </div>
+  );
+}
+
+function Tab({ value, label, icon, isSelected, onSelectTab, className = '', sx, style, ...props }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onSelectTab}
+      className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+        isSelected
+          ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] border border-[rgba(var(--accent-gold-rgb),0.25)]'
+          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--panel-secondary,rgba(255,255,255,0.03))]'
+      } ${className}`}
+      style={{ ...sxToStyle(sx), ...style }}
+      {...props}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+}
 import {
   ArrowLeft,
   ArrowLeftRight,

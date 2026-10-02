@@ -3,16 +3,151 @@ import { formatMoney as formatCurrency } from '@/lib/format';
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  IconButton,
-  MenuItem,
-  TextField,
-} from '@mui/material';
+import React from 'react';
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Checkbox({ checked, onChange, name, disabled, className = '', sx, style, ...props }: any) {
+  return (
+    <input
+      type="checkbox"
+      checked={checked}
+      name={name}
+      disabled={disabled}
+      onChange={onChange}
+      className={`w-4 h-4 rounded text-[var(--accent-gold)] focus:ring-[var(--accent-gold)] ${className}`}
+      style={{ ...sxToStyle(sx), ...style }}
+      {...props}
+    />
+  );
+}
+
+function FormControlLabel({ control, label, className = '', sx, style }: any) {
+  return (
+    <label className={`inline-flex items-center gap-2 cursor-pointer text-xs font-medium text-[var(--text-primary)] ${className}`} style={{ ...sxToStyle(sx), ...style }}>
+      {control}
+      <span>{label}</span>
+    </label>
+  );
+}
+
+function FormGroup({ children, row, className = '', sx, style }: any) {
+  return (
+    <div className={`flex ${row ? 'flex-row flex-wrap gap-4' : 'flex-col gap-2'} ${className}`} style={{ ...sxToStyle(sx), ...style }}>
+      {children}
+    </div>
+  );
+}
+
+function FormLabel({ children, className = '', sx, style }: any) {
+  return (
+    <span className={`block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1 ${className}`} style={{ ...sxToStyle(sx), ...style }}>
+      {children}
+    </span>
+  );
+}
+
+function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(var(--accent-gold-rgb),0.08)] transition-colors disabled:opacity-40 disabled:pointer-events-none ${className}`}
+      style={{ ...sxToStyle(sx), ...style }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+function MenuItem({ value, children }: any) {
+  return <option value={value}>{children}</option>;
+}
+
+function TextField({ label, placeholder, value, onChange, type = 'text', size, select, fullWidth, InputProps, helperText, required, disabled, multiline, minRows, rows, children, className = '', sx, style, ...props }: any) {
+  return (
+    <div className={`space-y-1.5 ${fullWidth ? 'w-full' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }}>
+      {label && (
+        <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+          {label} {required && <span className="text-[var(--error)]">*</span>}
+        </label>
+      )}
+      <div className={`flex items-center rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] focus-within:ring-2 focus-within:ring-[var(--accent-gold)] focus-within:border-transparent transition-all ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+        {InputProps?.startAdornment}
+        {select ? (
+          <select
+            value={value}
+            onChange={onChange}
+            disabled={disabled}
+            className="w-full bg-transparent border-none outline-none text-sm text-[var(--text-primary)]"
+            {...props}
+          >
+            {children}
+          </select>
+        ) : multiline ? (
+          <textarea
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            rows={rows || minRows || 3}
+            disabled={disabled}
+            className="w-full bg-transparent border-none outline-none resize-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]"
+            {...props}
+          />
+        ) : (
+          <input
+            type={type}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            disabled={disabled}
+            className="w-full bg-transparent border-none outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]"
+            {...props}
+          />
+        )}
+        {InputProps?.endAdornment}
+      </div>
+      {helperText && <p className="text-xs text-[var(--text-secondary)]">{helperText}</p>}
+    </div>
+  );
+}
 import { Building2, GitCompareArrows, Pencil, Plus, Search, Trash2 } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';

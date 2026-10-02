@@ -7,7 +7,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, DollarSign, AlertCircle, CheckCircle, Package } from 'lucide-react';
-import { Box } from '@mui/material';
 import AdminRoute from '@/components/auth/AdminRoute';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { Button, Breadcrumbs, PageHeader, LoadingState, Select, toast } from '@/components/design-system';
@@ -149,9 +148,9 @@ export default function AddExpensePage() {
     return (
       <AdminRoute>
         <DashboardSurface>
-          <Box sx={{ px: 2, pt: 2 }}>
+          <div className="px-2 pt-2">
             <Breadcrumbs />
-          </Box>
+          </div>
           <LoadingState message="Loading expense form…" />
         </DashboardSurface>
       </AdminRoute>

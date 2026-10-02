@@ -49,17 +49,167 @@ import {
 } from 'lucide-react';
 import RecurringExpensesTab from './RecurringExpensesTab';
 import BudgetsTab from './BudgetsTab';
-import {
-  Box,
-  Typography,
-  Chip,
-  IconButton,
-  TextField,
-  InputAdornment,
-  Paper,
-  Tabs,
-  Tab,
-} from '@mui/material';
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Typography({ children, className = '', variant, sx, style, ...props }: any) {
+  return (
+    <div className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </div>
+  );
+}
+
+function Chip({ label, icon, size = 'medium', sx, style, className = '', ...props }: any) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1 font-semibold rounded-full ${
+        size === 'small' ? 'px-2 py-0.5 text-xs' : 'px-3 py-1 text-xs'
+      } ${className}`}
+      style={{ ...sxToStyle(sx), ...style }}
+      {...props}
+    >
+      {icon}
+      {label}
+    </span>
+  );
+}
+
+function IconButton({ children, onClick, disabled, className = '', sx, style, size = 'medium', color, ...props }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`p-1.5 rounded-lg text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(var(--accent-gold-rgb),0.08)] transition-colors disabled:opacity-40 disabled:pointer-events-none ${className}`}
+      style={{ ...sxToStyle(sx), ...style }}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+function InputAdornment({ children, position }: any) {
+  return <span className={`text-[var(--text-secondary)] flex items-center ${position === 'start' ? 'mr-2' : 'ml-2'}`}>{children}</span>;
+}
+
+function Paper({ children, className = '', sx, style, ...props }: any) {
+  return (
+    <div
+      className={`rounded-xl border border-[var(--border)] bg-[var(--panel)] ${className}`}
+      style={{ ...sxToStyle(sx), ...style }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function Tabs({ value, onChange, children, className = '', sx, style }: any) {
+  return (
+    <div className={`flex items-center gap-2 overflow-x-auto border-b border-[var(--border)] pb-2 ${className}`} style={{ ...sxToStyle(sx), ...style }}>
+      {React.Children.map(children, (child) => {
+        if (!React.isValidElement(child)) return child;
+        return React.cloneElement(child as React.ReactElement<any>, {
+          isSelected: (child.props as any).value === value,
+          onSelectTab: (val: any) => onChange?.(null, val),
+        });
+      })}
+    </div>
+  );
+}
+
+function Tab({ value, label, icon, isSelected, onSelectTab, className = '', sx, style }: any) {
+  return (
+    <button
+      type="button"
+      onClick={() => onSelectTab?.(value)}
+      className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+        isSelected
+          ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] border border-[rgba(var(--accent-gold-rgb),0.25)]'
+          : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--panel-secondary,rgba(255,255,255,0.03))]'
+      } ${className}`}
+      style={{ ...sxToStyle(sx), ...style }}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+}
+
+function TextField({ label, placeholder, value, onChange, type = 'text', size, fullWidth, InputProps, helperText, required, disabled, multiline, minRows, rows, className = '', sx, style, ...props }: any) {
+  return (
+    <div className={`space-y-1.5 ${fullWidth ? 'w-full' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }}>
+      {label && (
+        <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+          {label} {required && <span className="text-[var(--error)]">*</span>}
+        </label>
+      )}
+      <div className={`flex items-center rounded-lg border border-[var(--border)] bg-[var(--background)] px-3 py-2 text-sm text-[var(--text-primary)] focus-within:ring-2 focus-within:ring-[var(--accent-gold)] focus-within:border-transparent transition-all ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+        {InputProps?.startAdornment}
+        {multiline ? (
+          <textarea
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            rows={rows || minRows || 3}
+            disabled={disabled}
+            className="w-full bg-transparent border-none outline-none resize-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]"
+            {...props}
+          />
+        ) : (
+          <input
+            type={type}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            disabled={disabled}
+            className="w-full bg-transparent border-none outline-none text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]"
+            {...props}
+          />
+        )}
+        {InputProps?.endAdornment}
+      </div>
+      {helperText && <p className="text-xs text-[var(--text-secondary)]">{helperText}</p>}
+    </div>
+  );
+}
 
 export type OfficeExpenseCategory =
   | 'RENT'
