@@ -1,18 +1,17 @@
 "use client";
 
-import { Button as MuiButton, ButtonProps as MuiButtonProps, CircularProgress } from '@mui/material';
-import { ReactNode } from 'react';
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 
 /**
  * Button Component
  * 
- * Standardized button with consistent variants, sizes, and states.
- * Replaces ActionButton with more complete API.
+ * Standardized design system button with consistent variants, sizes, and states.
  */
 
-export interface ButtonProps extends Omit<MuiButtonProps, 'variant' | 'size'> {
+export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'size'> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   loading?: boolean;
@@ -22,96 +21,29 @@ export interface ButtonProps extends Omit<MuiButtonProps, 'variant' | 'size'> {
   href?: string;
   target?: string;
   rel?: string;
+  component?: any;
+  sx?: any;
 }
 
-// Variant configurations
-const variantStyles = {
-  primary: {
-    bgcolor: 'var(--accent-gold)',
-    // Dark text on gold for WCAG AA contrast (light text on #D4AF37 is only ~2.1:1)
-    color: 'var(--text-primary)',
-    border: 'none',
-    '&:hover': {
-      bgcolor: 'var(--accent-gold)',
-      opacity: 0.9,
-    },
-    '&:disabled': {
-      bgcolor: 'rgba(var(--accent-gold-rgb), 0.5)',
-      color: 'rgba(var(--text-primary-rgb), 0.7)',
-    },
-  },
-  secondary: {
-    bgcolor: 'var(--panel)',
-    color: 'var(--text-primary)',
-    border: '1px solid var(--border)',
-    '&:hover': {
-      bgcolor: 'var(--background)',
-      borderColor: 'var(--accent-gold)',
-    },
-    '&:disabled': {
-      bgcolor: 'var(--panel)',
-      opacity: 0.5,
-    },
-  },
-  outline: {
-    bgcolor: 'transparent',
-    color: 'var(--text-primary)',
-    border: '1px solid var(--border)',
-    '&:hover': {
-      bgcolor: 'rgba(var(--border-rgb), 0.1)',
-      borderColor: 'var(--accent-gold)',
-    },
-    '&:disabled': {
-      opacity: 0.5,
-    },
-  },
-  ghost: {
-    bgcolor: 'transparent',
-    color: 'var(--text-secondary)',
-    border: 'none',
-    '&:hover': {
-      bgcolor: 'rgba(var(--border-rgb), 0.1)',
-      color: 'var(--text-primary)',
-    },
-    '&:disabled': {
-      opacity: 0.5,
-    },
-  },
-  danger: {
-    bgcolor: 'var(--error)',
-    color: '#FFFFFF',
-    border: 'none',
-    '&:hover': {
-      bgcolor: 'var(--error)',
-      opacity: 0.9,
-    },
-    '&:disabled': {
-      bgcolor: 'rgba(var(--error-rgb), 0.5)',
-      color: 'rgba(255, 255, 255, 0.7)',
-    },
-  },
+const variantClasses = {
+  primary: 'bg-[var(--accent-gold)] text-[var(--text-primary)] hover:opacity-90 disabled:opacity-50 disabled:bg-[rgba(var(--accent-gold-rgb),0.5)] shadow-sm font-semibold',
+  secondary: 'bg-[var(--panel)] text-[var(--text-primary)] border border-[var(--border)] hover:bg-[var(--background)] hover:border-[var(--accent-gold)] disabled:opacity-50',
+  outline: 'bg-transparent text-[var(--text-primary)] border border-[var(--border)] hover:bg-[rgba(var(--border-rgb),0.1)] hover:border-[var(--accent-gold)] disabled:opacity-50',
+  ghost: 'bg-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[rgba(var(--border-rgb),0.1)] disabled:opacity-50',
+  danger: 'bg-[var(--error)] text-white hover:opacity-90 disabled:opacity-50 shadow-sm font-semibold',
 };
 
-// Size configurations
-const sizeStyles = {
-  sm: {
-    fontSize: '0.75rem',
-    px: 2,
-    py: 0.75,
-    height: '32px',
+const sizeClasses = {
+  normal: {
+    sm: 'text-xs px-2.5 py-1.5 h-8 gap-1.5 rounded-lg',
+    md: 'text-sm px-3.5 py-2 h-10 gap-2 rounded-lg',
+    lg: 'text-base px-4 py-2.5 h-12 gap-2.5 rounded-xl',
   },
-  md: {
-    fontSize: '0.875rem',
-    px: 2.5,
-    py: 1,
-    height: '40px',
-  },
-  lg: {
-    fontSize: '1rem',
-    px: 3,
-    py: 1.25,
-    height: '48px',
-  },
+  compact: {
+    sm: 'text-[11px] px-2 py-1 h-6.5 gap-1 rounded-md',
+    md: 'text-xs px-2.5 py-1.5 h-7.5 gap-1.5 rounded-md',
+    lg: 'text-sm px-3 py-2 h-9 gap-2 rounded-lg',
+  }
 };
 
 export default function Button({
@@ -123,96 +55,68 @@ export default function Button({
   fullWidth = false,
   children,
   disabled,
+  className = '',
+  href,
+  target,
+  rel,
+  component,
+  sx, // Ignored or mapped for backwards compatibility
   ...buttonProps
 }: ButtonProps) {
   const { density } = useTheme();
   const isCompact = density === 'compact';
+  const densityMode = isCompact ? 'compact' : 'normal';
 
-  const sizeStyles = isCompact
-    ? {
-        sm: {
-          fontSize: '0.7rem',
-          px: 1.25,
-          py: 0.25,
-          height: '26px',
-        },
-        md: {
-          fontSize: '0.75rem',
-          px: 1.5,
-          py: 0.5,
-          height: '30px',
-        },
-        lg: {
-          fontSize: '0.85rem',
-          px: 2,
-          py: 0.75,
-          height: '36px',
-        },
-      }
-    : {
-        sm: {
-          fontSize: '0.75rem',
-          px: 2,
-          py: 0.75,
-          height: '32px',
-        },
-        md: {
-          fontSize: '0.875rem',
-          px: 2.5,
-          py: 1,
-          height: '40px',
-        },
-        lg: {
-          fontSize: '1rem',
-          px: 3,
-          py: 1.25,
-          height: '48px',
-        },
-      };
+  const baseClasses = [
+    'ds-button inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer select-none active:scale-[0.98] disabled:cursor-not-allowed disabled:active:scale-100',
+    fullWidth ? 'w-full' : '',
+    variantClasses[variant],
+    sizeClasses[densityMode][size],
+    className,
+  ].filter(Boolean).join(' ');
 
-  const variantStyle = variantStyles[variant];
-  const sizeStyle = sizeStyles[size];
-  const isLink = Boolean(buttonProps.href);
-  const Component = (buttonProps.component || (isLink ? Link : 'button')) as React.ElementType;
-
-  return (
-    <MuiButton
-      {...buttonProps}
-      component={Component}
-      className={["ds-button", buttonProps.className].filter(Boolean).join(" ")}
-      disabled={disabled || loading}
-      fullWidth={fullWidth}
-      startIcon={!loading && icon && iconPosition === 'start' ? icon : undefined}
-      endIcon={!loading && icon && iconPosition === 'end' ? icon : undefined}
-      sx={{
-        textTransform: 'none',
-        textDecoration: isLink ? 'none' : undefined,
-        fontWeight: 600,
-        borderRadius: isCompact ? 1.5 : 2,
-        transition: 'all 200ms cubic-bezier(0.4, 0, 0.2, 1)',
-        ...variantStyle,
-        ...sizeStyle,
-        // Micro-interactions
-        '&:active:not(:disabled)': {
-          transform: 'scale(0.98)',
-        },
-        '&:hover:not(:disabled)': {
-          transform: 'translateY(-1px)',
-        },
-        ...buttonProps.sx,
-      }}
-    >
+  const content = (
+    <>
       {loading && (
-        <CircularProgress
-          size={size === 'sm' ? 12 : size === 'md' ? 14 : 16}
-          sx={{
-            color: 'inherit',
-            mr: 1,
-          }}
+        <Loader2
+          className={`animate-spin ${size === 'sm' ? 'w-3.5 h-3.5' : size === 'md' ? 'w-4 h-4' : 'w-5 h-5'}`}
         />
       )}
-      {children}
-    </MuiButton>
+      {!loading && icon && iconPosition === 'start' && (
+        <span className="inline-flex shrink-0 items-center justify-center">{icon}</span>
+      )}
+      {children && <span>{children}</span>}
+      {!loading && icon && iconPosition === 'end' && (
+        <span className="inline-flex shrink-0 items-center justify-center">{icon}</span>
+      )}
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link
+        href={href}
+        target={target}
+        rel={rel}
+        className={baseClasses}
+        aria-disabled={disabled || loading}
+        tabIndex={disabled || loading ? -1 : undefined}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  const CustomComponent = component || 'button';
+
+  return (
+    <CustomComponent
+      {...buttonProps}
+      disabled={disabled || loading}
+      className={baseClasses}
+    >
+      {content}
+    </CustomComponent>
   );
 }
 
@@ -226,34 +130,30 @@ export function IconButton({
   icon,
   ariaLabel,
   size = 'md',
+  className = '',
   ...props
 }: IconButtonProps) {
   const { density } = useTheme();
   const isCompact = density === 'compact';
 
-  const sizeConfig = isCompact
+  const sizeClassesIcon = isCompact
     ? {
-        sm: { width: '24px', height: '24px', p: 0 },
-        md: { width: '28px', height: '28px', p: 0 },
-        lg: { width: '34px', height: '34px', p: 0 },
+        sm: 'w-6 h-6 p-0',
+        md: 'w-7.5 h-7.5 p-0',
+        lg: 'w-9 h-9 p-0',
       }
     : {
-        sm: { width: '32px', height: '32px', p: 0 },
-        md: { width: '40px', height: '40px', p: 0 },
-        lg: { width: '48px', height: '48px', p: 0 },
+        sm: 'w-8 h-8 p-0',
+        md: 'w-10 h-10 p-0',
+        lg: 'w-12 h-12 p-0',
       };
 
   return (
     <Button
       {...props}
-      className={["ds-icon-button", props.className].filter(Boolean).join(" ")}
+      className={["ds-icon-button", sizeClassesIcon[size], className].filter(Boolean).join(" ")}
       size={size}
       aria-label={ariaLabel}
-      sx={{
-        minWidth: 'unset',
-        ...sizeConfig[size],
-        ...props.sx,
-      }}
     >
       {icon}
     </Button>

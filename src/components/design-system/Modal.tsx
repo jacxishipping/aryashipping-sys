@@ -1,24 +1,7 @@
 "use client";
 
-import { 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions, 
-  IconButton, 
-  Box,
-  Typography,
-  SxProps,
-  Theme,
-} from '@mui/material';
-import { Close } from '@mui/icons-material';
-import { ReactNode } from 'react';
-
-/**
- * Modal Component
- * 
- * Accessible modal dialog with animations and consistent styling.
- */
+import React, { ReactNode, useEffect, useRef } from 'react';
+import { X } from 'lucide-react';
 
 export interface ModalProps {
   open: boolean;
@@ -31,17 +14,16 @@ export interface ModalProps {
   showCloseButton?: boolean;
   disableBackdropClick?: boolean;
   className?: string;
-  contentSx?: SxProps<Theme>;
-  actionsSx?: SxProps<Theme>;
+  contentSx?: any;
+  actionsSx?: any;
 }
 
-// Size configurations
 const sizeConfig = {
-  sm: '400px',
-  md: '600px',
-  lg: '800px',
-  xl: '1000px',
-  full: '95vw',
+  sm: 'max-w-md',
+  md: 'max-w-xl',
+  lg: 'max-w-3xl',
+  xl: 'max-w-5xl',
+  full: 'max-w-[95vw]',
 };
 
 export default function Modal({
@@ -54,142 +36,91 @@ export default function Modal({
   size = 'md',
   showCloseButton = true,
   disableBackdropClick = false,
-  className,
-  contentSx,
-  actionsSx,
+  className = '',
 }: ModalProps) {
-  const handleClose = (_event: object, reason: 'backdropClick' | 'escapeKeyDown') => {
-    if (disableBackdropClick && reason === 'backdropClick') {
-      return;
-    }
+  const modalRef = useRef<HTMLDivElement>(null);
 
-    onClose();
-  };
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && open) {
+        onClose();
+      }
+    };
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth={false}
-      fullWidth
-      scroll="paper"
-      className={className}
-      PaperProps={{
-        sx: {
-          width: '100%',
-          maxWidth: sizeConfig[size],
-          borderRadius: { xs: 2.5, sm: 3 },
-          bgcolor: 'var(--panel)',
-          backgroundImage: 'none',
-          boxShadow: '0 24px 60px rgba(var(--text-primary-rgb), 0.15), 0 8px 16px rgba(var(--text-primary-rgb), 0.1)',
-          m: { xs: 1, sm: 2.5 },
-          maxHeight: { xs: 'calc(100% - 16px)', sm: 'calc(100% - 40px)' },
-          overflow: 'hidden',
-        },
-      }}
-      slotProps={{
-        backdrop: {
-          sx: {
-            bgcolor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(4px)',
-          },
-        },
-      }}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
     >
-      {/* Header */}
-      {(title || showCloseButton) && (
-        <DialogTitle
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 2,
-            px: { xs: 2, sm: 3 },
-            py: { xs: 1.75, sm: 2.5 },
-            borderBottom: '1px solid var(--border)',
-            bgcolor: 'var(--panel)',
-          }}
-        >
-          <Box sx={{ flex: 1, minWidth: 0 }}>
-            {typeof title === 'string' ? (
-              <Typography
-                sx={{
-                  fontSize: { xs: '1rem', sm: '1.125rem' },
-                  fontWeight: 600,
-                  color: 'var(--text-primary)',
-                }}
-              >
-                {title}
-              </Typography>
-            ) : (
-              title
-            )}
-            {description ? (
-              <Typography
-                sx={{
-                  mt: 0.5,
-                  fontSize: { xs: '0.8125rem', sm: '0.875rem' },
-                  lineHeight: 1.5,
-                  color: 'var(--text-secondary)',
-                }}
-              >
-                {description}
-              </Typography>
-            ) : null}
-          </Box>
-          {showCloseButton && (
-            <IconButton
-              onClick={onClose}
-              sx={{
-                color: 'var(--text-secondary)',
-                border: '1px solid rgba(var(--border-rgb), 0.6)',
-                p: 0.75,
-                '&:hover': {
-                  bgcolor: 'rgba(var(--border-rgb), 0.2)',
-                },
-              }}
-            >
-              <Close sx={{ fontSize: 18 }} />
-            </IconButton>
-          )}
-        </DialogTitle>
-      )}
-
-      {/* Content */}
-      <DialogContent
-        sx={{
-          px: { xs: 2, sm: 3 },
-          py: { xs: 2, sm: 3 },
-          color: 'var(--text-primary)',
-          overflowY: 'auto',
-          bgcolor: 'var(--panel)',
-          ...contentSx,
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity animate-in fade-in"
+        onClick={() => {
+          if (!disableBackdropClick) onClose();
         }}
-      >
-        {children}
-      </DialogContent>
+      />
 
-      {/* Actions */}
-      {actions && (
-        <DialogActions
-          sx={{
-            px: { xs: 2, sm: 3 },
-            py: { xs: 1.75, sm: 2.5 },
-            gap: 1.5,
-            borderTop: '1px solid var(--border)',
-            bgcolor: 'var(--panel)',
-            flexDirection: { xs: 'column-reverse', sm: 'row' },
-            '& > *': {
-              width: { xs: '100% !important', sm: 'auto !important' },
-              m: '0 !important',
-            },
-            ...actionsSx,
-          }}
-        >
-          {actions}
-        </DialogActions>
-      )}
-    </Dialog>
+      {/* Dialog Card */}
+      <div
+        ref={modalRef}
+        className={`relative z-10 w-full ${sizeConfig[size]} my-auto overflow-hidden rounded-2xl bg-[var(--panel)] border border-[var(--border)] shadow-2xl transition-all duration-200 animate-in fade-in zoom-in-95 ${className}`}
+      >
+        {/* Header */}
+        {(title || showCloseButton) && (
+          <div className="flex items-start justify-between gap-4 px-6 py-4 border-b border-[var(--border)] bg-[var(--panel)]">
+            <div className="flex-1 min-w-0">
+              {typeof title === 'string' ? (
+                <h3 className="text-lg font-semibold text-[var(--text-primary)] leading-tight">
+                  {title}
+                </h3>
+              ) : (
+                title
+              )}
+              {description && (
+                <p className="mt-1 text-xs text-[var(--text-secondary)] leading-normal">
+                  {description}
+                </p>
+              )}
+            </div>
+
+            {showCloseButton && (
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close modal"
+                className="rounded-lg p-1.5 text-[var(--text-secondary)] hover:bg-[var(--background)] hover:text-[var(--text-primary)] border border-transparent hover:border-[var(--border)] transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Content */}
+        <div className="px-6 py-5 max-h-[calc(85vh-120px)] overflow-y-auto text-[var(--text-primary)]">
+          {children}
+        </div>
+
+        {/* Actions */}
+        {actions && (
+          <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 px-6 py-4 border-t border-[var(--border)] bg-[var(--panel)]">
+            {actions}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -217,10 +148,10 @@ export function ConfirmDialog({
   severity = 'info',
   loading = false,
 }: ConfirmDialogProps) {
-  const severityColors = {
-    info: 'var(--info)',
-    warning: 'var(--warning)',
-    error: 'var(--error)',
+  const severityButtonClasses = {
+    info: 'bg-[var(--info)] text-white hover:opacity-90',
+    warning: 'bg-[var(--warning)] text-white hover:opacity-90',
+    error: 'bg-[var(--error)] text-white hover:opacity-90',
   };
 
   return (
@@ -232,45 +163,27 @@ export function ConfirmDialog({
       actions={
         <>
           <button
+            type="button"
             onClick={onClose}
             disabled={loading}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              border: '1px solid var(--border)',
-              background: 'transparent',
-              color: 'var(--text-primary)',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.5 : 1,
-            }}
+            className="w-full sm:w-auto px-4 py-2 text-sm font-semibold rounded-lg border border-[var(--border)] bg-transparent text-[var(--text-primary)] hover:bg-[var(--background)] disabled:opacity-50 cursor-pointer transition-colors"
           >
             {cancelText}
           </button>
           <button
+            type="button"
             onClick={onConfirm}
             disabled={loading}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              border: 'none',
-              background: severityColors[severity],
-              color: '#FFFFFF',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1,
-            }}
+            className={`w-full sm:w-auto px-4 py-2 text-sm font-semibold rounded-lg border-0 ${severityButtonClasses[severity]} disabled:opacity-50 cursor-pointer transition-opacity`}
           >
             {loading ? 'Processing...' : confirmText}
           </button>
         </>
       }
     >
-      <Typography sx={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+      <div className="text-sm text-[var(--text-secondary)] leading-relaxed">
         {message}
-      </Typography>
+      </div>
     </Modal>
   );
 }

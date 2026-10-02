@@ -1,24 +1,8 @@
 "use client";
 
-import {
-  Select as MuiSelect,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  SelectChangeEvent,
-  Box,
-  Typography,
-  InputAdornment,
-} from '@mui/material';
-import { ReactNode } from 'react';
-import { ExpandMore } from '@mui/icons-material';
+import React, { ReactNode } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
-
-/**
- * Select Component
- * 
- * Dropdown select with consistent styling matching FormField.
- */
 
 export interface SelectOption {
   value: string | number;
@@ -29,7 +13,7 @@ export interface SelectOption {
 
 export interface SelectProps {
   id?: string;
-  label: string;
+  label?: string;
   value: string | number;
   onChange: (value: any) => void;
   options: readonly SelectOption[] | readonly { readonly value: string | number; readonly label: string; readonly disabled?: boolean; readonly icon?: ReactNode; }[] | SelectOption[];
@@ -40,7 +24,8 @@ export interface SelectProps {
   disabled?: boolean;
   leftIcon?: ReactNode;
   fullWidth?: boolean;
-  size?: 'small' | 'medium';
+  size?: 'small' | 'medium' | 'sm' | 'md';
+  className?: string;
 }
 
 export default function Select({
@@ -57,146 +42,79 @@ export default function Select({
   leftIcon,
   fullWidth = true,
   size = 'medium',
+  className = '',
 }: SelectProps) {
   const { density } = useTheme();
   const isCompact = density === 'compact';
   const hasError = Boolean(error);
-  const displayedHelperText = (typeof error === 'string' && error) ? error : helperText;
-  const handleChange = (event: SelectChangeEvent<string | number>) => {
-    onChange(event.target.value);
-  };
+  const displayedHelperText = typeof error === 'string' && error ? error : helperText;
+  const selectId = id || (label ? `select-${label.toLowerCase().replace(/\s+/g, '-')}` : undefined);
+  const isSmall = size === 'small' || size === 'sm' || isCompact;
 
   return (
-    <Box className="ds-select">
-      {/* Label */}
-      <Typography
-        component="label"
-        htmlFor={id}
-        sx={{
-          display: 'block',
-          fontSize: isCompact ? '0.775rem' : '0.875rem',
-          fontWeight: 500,
-          color: hasError ? 'var(--error)' : 'var(--text-primary)',
-          mb: isCompact ? 0.35 : 1,
-        }}
-      >
-        {label}
-        {required && (
-          <Typography
-            component="span"
-            sx={{ color: 'var(--error)', ml: 0.5 }}
-          >
-            *
-          </Typography>
-        )}
-      </Typography>
+    <div className={`ds-select ${fullWidth ? 'w-full' : ''}`}>
+      {label && (
+        <label
+          htmlFor={selectId}
+          className={`block font-medium text-[var(--text-primary)] ${
+            isCompact ? 'text-xs mb-1' : 'text-sm mb-1.5'
+          }`}
+        >
+          {label}
+          {required && <span className="text-[var(--error)] ml-1">*</span>}
+        </label>
+      )}
 
-      {/* Select */}
-      <FormControl fullWidth={fullWidth} error={hasError} disabled={disabled} size={size === 'medium' && isCompact ? 'small' : size}>
-        <MuiSelect
-          id={id}
+      <div className="relative">
+        {leftIcon && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] pointer-events-none flex items-center">
+            {leftIcon}
+          </div>
+        )}
+
+        <select
+          id={selectId}
           value={value}
-          onChange={handleChange}
-          displayEmpty={!!placeholder}
-          startAdornment={
-            leftIcon ? (
-              <InputAdornment position="start">
-                <Box sx={{ display: 'flex', color: 'var(--text-secondary)' }}>
-                  {leftIcon}
-                </Box>
-              </InputAdornment>
-            ) : undefined
-          }
-          IconComponent={ExpandMore}
-          sx={{
-            bgcolor: 'var(--background)',
-            borderRadius: 2,
-            color: 'var(--text-primary)',
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: hasError ? 'var(--error)' : 'rgba(var(--border-rgb), 0.9)',
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              borderColor: hasError ? 'var(--error)' : 'var(--border)',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: hasError ? 'var(--error)' : 'var(--accent-gold)',
-              borderWidth: 2,
-            },
-            '& .MuiSelect-select': {
-              color: value ? 'var(--text-primary)' : 'var(--text-secondary)',
-            },
-            '& .MuiSvgIcon-root': {
-              color: 'var(--text-secondary)',
-            },
-          }}
-          MenuProps={{
-            PaperProps: {
-              sx: {
-                bgcolor: 'var(--panel)',
-                borderRadius: 2,
-                border: '1px solid var(--border)',
-                boxShadow: '0 12px 28px rgba(var(--text-primary-rgb), 0.12), 0 4px 8px rgba(var(--text-primary-rgb), 0.08)',
-                mt: 0.5,
-                '& .MuiList-root': {
-                  py: 1,
-                },
-              },
-            },
-          }}
+          disabled={disabled}
+          required={required}
+          onChange={(e) => onChange(e.target.value)}
+          className={`w-full appearance-none rounded-lg border text-sm text-[var(--text-primary)] bg-[var(--background)] transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+            leftIcon ? 'pl-9' : 'pl-3'
+          } pr-9 ${isSmall ? 'py-1.5 text-xs' : 'py-2 text-sm'} ${
+            hasError
+              ? 'border-[var(--error)] bg-red-50/10 focus:ring-[var(--error)]'
+              : 'border-[var(--border)] focus:ring-[var(--accent-gold)] focus:border-[var(--accent-gold)]'
+          } ${className}`}
         >
           {placeholder && (
-            <MenuItem value="" disabled>
-              <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                {placeholder}
-              </Typography>
-            </MenuItem>
+            <option value="" disabled className="text-[var(--text-secondary)] bg-[var(--panel)]">
+              {placeholder}
+            </option>
           )}
           {options.map((option: any) => (
-            <MenuItem
+            <option
               key={option.value}
               value={option.value}
               disabled={option.disabled}
-              sx={{
-                color: 'var(--text-primary)',
-                fontSize: '0.875rem',
-                py: 1.25,
-                px: 2,
-                mx: 0.5,
-                borderRadius: 1.5,
-                '&:hover': {
-                  bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)',
-                },
-                '&.Mui-selected': {
-                  bgcolor: 'rgba(var(--accent-gold-rgb), 0.15)',
-                  '&:hover': {
-                    bgcolor: 'rgba(var(--accent-gold-rgb), 0.2)',
-                  },
-                },
-              }}
+              className="bg-[var(--panel)] text-[var(--text-primary)] py-1"
             >
-              {option.icon && (
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1.5 }}>
-                  {option.icon}
-                </Box>
-              )}
               {option.label}
-            </MenuItem>
+            </option>
           ))}
-        </MuiSelect>
-      </FormControl>
+        </select>
 
-      {/* Helper Text */}
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] pointer-events-none">
+          <ChevronDown className="w-4 h-4" />
+        </div>
+      </div>
+
       {displayedHelperText && (
-        <Typography
-          sx={{
-            fontSize: '0.75rem',
-            color: hasError ? 'var(--error)' : 'var(--text-secondary)',
-            mt: 0.5,
-          }}
+        <p
+          className={`mt-1 text-xs ${hasError ? 'text-[var(--error)]' : 'text-[var(--text-secondary)]'}`}
         >
           {displayedHelperText}
-        </Typography>
+        </p>
       )}
-    </Box>
+    </div>
   );
 }

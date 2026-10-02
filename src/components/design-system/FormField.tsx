@@ -1,121 +1,130 @@
 "use client";
 
-import { TextField, TextFieldProps, Typography, Box, InputAdornment } from '@mui/material';
-import { ReactNode } from 'react';
+import React, { InputHTMLAttributes, TextareaHTMLAttributes, ReactNode } from 'react';
 import { useTheme } from '@/hooks/useTheme';
 
-interface FormFieldProps extends Omit<TextFieldProps, 'variant' | 'error' | 'helperText'> {
-	label: string;
-	helperText?: ReactNode;
-	error?: boolean | string;
-	leftIcon?: ReactNode;
-	rightIcon?: ReactNode;
+export interface FormFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+  label?: string;
+  helperText?: ReactNode;
+  error?: boolean | string;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+  size?: 'small' | 'medium' | 'large' | 'sm' | 'md' | 'lg';
+  multiline?: boolean;
+  rows?: number;
+  fullWidth?: boolean;
+  InputProps?: {
+    startAdornment?: ReactNode;
+    endAdornment?: ReactNode;
+    [key: string]: any;
+  };
+  inputProps?: any;
+  sx?: any;
 }
 
 export default function FormField({
-	label,
-	helperText,
-	error,
-	leftIcon,
-	rightIcon,
-	...textFieldProps
+  label,
+  helperText,
+  error,
+  leftIcon,
+  rightIcon,
+  size = 'medium',
+  multiline = false,
+  rows = 3,
+  fullWidth = true,
+  className = '',
+  id,
+  required,
+  disabled,
+  InputProps,
+  inputProps,
+  sx, // Backwards compatibility
+  ...restProps
 }: FormFieldProps) {
-	const { density } = useTheme();
-	const isCompact = density === 'compact';
-	const hasError = typeof error === 'string' ? Boolean(error) : Boolean(error);
-	const displayedHelperText = (typeof error === 'string' && error) ? error : helperText;
-	const helperTextId = textFieldProps.id ? `${textFieldProps.id}-helper-text` : undefined;
+  const { density } = useTheme();
+  const isCompact = density === 'compact';
+  const hasError = typeof error === 'string' ? Boolean(error) : Boolean(error);
+  const displayedHelperText = typeof error === 'string' && error ? error : helperText;
+  const inputId = id || (label ? `field-${label.toLowerCase().replace(/\s+/g, '-')}` : undefined);
+  const helperTextId = inputId ? `${inputId}-helper-text` : undefined;
 
-	return (
-		<Box className="ds-form-field">
-			<Typography
-				component="label"
-				htmlFor={textFieldProps.id}
-				sx={{
-					display: 'block',
-					fontSize: isCompact ? '0.775rem' : '0.875rem',
-					fontWeight: 500,
-					color: 'var(--text-primary)',
-					mb: isCompact ? 0.35 : 1,
-				}}
-			>
-				{label}
-				{textFieldProps.required && (
-					<Typography
-						component="span"
-						sx={{ color: 'var(--error)', ml: 0.5 }}
-					>
-						*
-					</Typography>
-				)}
-			</Typography>
-			<TextField
-				size={textFieldProps.size || (isCompact ? 'small' : 'medium')}
-				error={hasError}
-				{...textFieldProps}
-				aria-describedby={[
-					displayedHelperText ? helperTextId : undefined,
-					textFieldProps['aria-describedby']
-				].filter(Boolean).join(' ') || undefined}
-				fullWidth
-				InputProps={{
-					...textFieldProps.InputProps,
-					startAdornment: leftIcon ? (
-						<InputAdornment position="start">
-							{leftIcon}
-						</InputAdornment>
-					) : textFieldProps.InputProps?.startAdornment,
-					endAdornment: rightIcon ? (
-						<InputAdornment position="end">
-							{rightIcon}
-						</InputAdornment>
-					) : textFieldProps.InputProps?.endAdornment,
-				}}
-				sx={{
-					'& .MuiOutlinedInput-root': {
-						bgcolor: 'var(--background)',
-						borderRadius: 2,
-						color: 'var(--text-primary)',
-						'& fieldset': {
-							borderColor: 'rgba(var(--border-rgb), 0.9)',
-						},
-						'&:hover fieldset': {
-							borderColor: 'var(--border)',
-						},
-						'&.Mui-focused fieldset': {
-							borderColor: 'var(--accent-gold)',
-							borderWidth: 2,
-						},
-						'& input, & textarea': {
-							color: 'var(--text-primary)',
-							'&::placeholder': {
-								color: 'var(--text-secondary)',
-								opacity: 1,
-							},
-							'&:-webkit-autofill': {
-								WebkitBoxShadow: '0 0 0 100px var(--background) inset',
-								WebkitTextFillColor: 'var(--text-primary)',
-							},
-						},
-						'& .MuiInputAdornment-root': {
-							color: 'var(--text-secondary)',
-						},
-					},
-					...textFieldProps.sx,
-				}}
-			/>
-			{displayedHelperText && (
-				<Typography
-					id={helperTextId}
-					sx={{
-						fontSize: '0.75rem',
-						color: hasError ? 'var(--error)' : 'var(--text-secondary)',
-						mt: 0.5,
-					}}
-				>
-					{displayedHelperText}
-				</Typography>
-			)}
-		</Box>
-	);
+  const startAdornment = leftIcon || InputProps?.startAdornment;
+  const endAdornment = rightIcon || InputProps?.endAdornment;
+
+  const isSmall = size === 'small' || size === 'sm' || isCompact;
+
+  const baseInputClasses = [
+    'w-full transition-all duration-200 rounded-lg border text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed',
+    startAdornment ? 'pl-9' : 'pl-3',
+    endAdornment ? 'pr-9' : 'pr-3',
+    isSmall ? 'py-1.5 text-xs' : 'py-2 text-sm',
+    hasError
+      ? 'border-[var(--error)] bg-red-50/10 focus:ring-[var(--error)]'
+      : 'border-[var(--border)] bg-[var(--background)] focus:ring-[var(--accent-gold)] focus:border-[var(--accent-gold)]',
+    className,
+  ].filter(Boolean).join(' ');
+
+  return (
+    <div className={`ds-form-field ${fullWidth ? 'w-full' : ''}`}>
+      {label && (
+        <label
+          htmlFor={inputId}
+          className={`block font-medium text-[var(--text-primary)] ${
+            isCompact ? 'text-xs mb-1' : 'text-sm mb-1.5'
+          }`}
+        >
+          {label}
+          {required && <span className="text-[var(--error)] ml-1">*</span>}
+        </label>
+      )}
+
+      <div className="relative">
+        {startAdornment && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] flex items-center pointer-events-none">
+            {startAdornment}
+          </div>
+        )}
+
+        {multiline ? (
+          <textarea
+            id={inputId}
+            rows={rows}
+            disabled={disabled}
+            required={required}
+            aria-invalid={hasError}
+            aria-describedby={displayedHelperText ? helperTextId : undefined}
+            className={baseInputClasses}
+            {...(restProps as TextareaHTMLAttributes<HTMLTextAreaElement>)}
+            {...inputProps}
+          />
+        ) : (
+          <input
+            id={inputId}
+            disabled={disabled}
+            required={required}
+            aria-invalid={hasError}
+            aria-describedby={displayedHelperText ? helperTextId : undefined}
+            className={baseInputClasses}
+            {...restProps}
+            {...inputProps}
+          />
+        )}
+
+        {endAdornment && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] flex items-center pointer-events-none">
+            {endAdornment}
+          </div>
+        )}
+      </div>
+
+      {displayedHelperText && (
+        <p
+          id={helperTextId}
+          className={`mt-1 text-xs ${hasError ? 'text-[var(--error)]' : 'text-[var(--text-secondary)]'}`}
+        >
+          {displayedHelperText}
+        </p>
+      )}
+    </div>
+  );
 }
