@@ -1,6 +1,5 @@
 'use client';
 import { formatMoney as formatCurrency } from '@/lib/format';
-import { Box } from '@mui/material';
 
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -180,9 +179,9 @@ export default function AgingReportPage() {
     return (
       <AdminRoute>
         <DashboardSurface>
-          <Box sx={{ px: 2, pt: 2 }}>
+          <div className="px-2 pt-2">
             <Breadcrumbs />
-          </Box>
+          </div>
           <LoadingState message="Loading aging report..." />
         </DashboardSurface>
       </AdminRoute>
@@ -193,9 +192,9 @@ export default function AgingReportPage() {
     return (
       <AdminRoute>
         <DashboardSurface>
-          <Box sx={{ px: 2, pt: 2 }}>
+          <div className="px-2 pt-2">
             <Breadcrumbs />
-          </Box>
+          </div>
           <div className="text-center py-12 space-y-4">
             <AlertCircle className="w-16 h-16 mx-auto text-[var(--text-secondary)] opacity-50" />
             <p className="text-[var(--text-secondary)]">Failed to load aging report</p>

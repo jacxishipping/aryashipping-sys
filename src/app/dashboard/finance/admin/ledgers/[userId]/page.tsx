@@ -7,29 +7,34 @@ import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { hasPermission } from '@/lib/rbac';
 import {
-  ArrowBack,
-  Add,
-  Edit,
-  Delete,
+  ArrowLeft,
+  Plus,
+  Pencil,
+  Trash2,
   Download,
-  Print,
-  FilterList,
+  Printer,
+  Filter,
   Search,
   ChevronLeft,
   ChevronRight,
-  AttachMoney,
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
-  LocalShipping,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
+  Truck,
   Check,
-} from '@mui/icons-material';
+} from 'lucide-react';
 import {
-  Box,
-  Typography,
-  TextField,
-  IconButton,
-} from '@mui/material';
-import { Alert, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Modal, ConfirmDialog, Select } from '@/components/design-system';
+  Alert,
+  Button,
+  toast,
+  StatusBadge,
+  DashboardPageSkeleton,
+  StatsCard,
+  PageHeader,
+  Modal,
+  ConfirmDialog,
+  Select,
+} from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -334,7 +339,7 @@ export default function UserLedgerManagementPage() {
       sortable: true,
       width: '15%',
       render: (_, row) => (
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+        <span className="text-xs text-[var(--text-secondary)]">
           {formatDate(row.transactionDate)}
         </span>
       )
@@ -348,68 +353,36 @@ export default function UserLedgerManagementPage() {
         const isPending = row.metadata?.pendingInvoice === true;
         const isInvoicePaid = !isPending && (typeof row.metadata?.invoiceId === 'string' || typeof row.metadata?.invoiceNumber === 'string');
         return (
-          <Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-              <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+          <div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-sm font-medium text-[var(--text-primary)]">
                 {row.description}
-              </Typography>
+              </span>
               {isPending && (
-                <Box
-                  component="span"
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    px: 0.75,
-                    py: 0.25,
-                    borderRadius: 1,
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.05em',
-                    backgroundColor: 'rgba(var(--warning-rgb), 0.15)',
-                    color: 'var(--warning-dark)',
-                    border: '1px solid rgba(var(--warning-rgb), 0.3)',
-                    textTransform: 'uppercase',
-                  }}
-                >
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-[rgba(var(--warning-rgb),0.15)] text-[var(--warning-dark)] border border-[rgba(var(--warning-rgb),0.3)] uppercase">
                   Pending Invoice
-                </Box>
+                </span>
               )}
               {isInvoicePaid && (
-                <Box
-                  component="span"
-                  sx={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    px: 0.75,
-                    py: 0.25,
-                    borderRadius: 1,
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.05em',
-                    backgroundColor: 'rgba(var(--success-rgb), 0.15)',
-                    color: 'var(--success-dark)',
-                    border: '1px solid rgba(var(--success-rgb), 0.3)',
-                    textTransform: 'uppercase',
-                  }}
-                >
+                <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-[rgba(var(--success-rgb),0.15)] text-[var(--success-dark)] border border-[rgba(var(--success-rgb),0.3)] uppercase">
                   Invoice Paid
-                </Box>
+                </span>
               )}
-            </Box>
-            <Typography sx={{ fontSize: '0.72rem', color: 'var(--accent-gold)', mt: 0.5, fontWeight: 600 }}>
+            </div>
+            <p className="text-xs text-[var(--accent-gold)] mt-0.5 font-semibold">
               {row.transactionInfoType ? transactionInfoTypeLabels[row.transactionInfoType] : 'Not specified'}
-            </Typography>
+            </p>
             {row.notes && (
-              <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', mt: 0.5 }}>
+              <p className="text-xs text-[var(--text-secondary)] mt-0.5">
                 {row.notes}
-              </Typography>
+              </p>
             )}
             {row.shipment && (
-              <Typography sx={{ fontSize: '0.75rem', color: 'var(--accent-gold)', mt: 0.5 }}>
+              <p className="text-xs text-[var(--accent-gold)] mt-0.5">
                 {row.shipment.vehicleMake} {row.shipment.vehicleModel}
-              </Typography>
+              </p>
             )}
-          </Box>
+          </div>
         );
       }
     },
@@ -424,7 +397,7 @@ export default function UserLedgerManagementPage() {
           status={row.type === 'DEBIT' ? 'ERROR' : 'SUCCESS'}
           label={row.type}
           size="sm"
-          icon={row.type === 'DEBIT' ? <TrendingUpIcon /> : <TrendingDownIcon />}
+          icon={row.type === 'DEBIT' ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
         />
       )
     },
@@ -435,7 +408,10 @@ export default function UserLedgerManagementPage() {
       align: 'right' as const,
       width: '15%',
       render: (_, row) => (
-        <span style={{ fontSize: '0.9rem', fontWeight: 600, color: row.type === 'DEBIT' ? 'var(--error)' : 'var(--success)' }}>
+        <span
+          className="text-sm font-semibold"
+          style={{ color: row.type === 'DEBIT' ? 'var(--error)' : 'var(--success)' }}
+        >
           {row.type === 'DEBIT' ? '+' : '-'}{formatCurrency(row.amount)}
         </span>
       )
@@ -447,7 +423,10 @@ export default function UserLedgerManagementPage() {
       align: 'right' as const,
       width: '15%',
       render: (_, row) => (
-        <span style={{ fontSize: '0.9rem', fontWeight: 600, color: getBalanceColor(row.balance) }}>
+        <span
+          className="text-sm font-semibold"
+          style={{ color: getBalanceColor(row.balance) }}
+        >
           {formatCurrency(row.balance)}
         </span>
       )
@@ -458,22 +437,24 @@ export default function UserLedgerManagementPage() {
       align: 'center' as const,
       width: '10%',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'center', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <IconButton
-            size="small"
+        <div className="flex gap-1 justify-center whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
             onClick={() => openEditModal(row)}
-            sx={{ color: 'var(--accent-gold)' }}
+            aria-label="Edit transaction"
+            className="p-1.5 rounded-lg hover:bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] transition-colors"
           >
-            <Edit fontSize="small" />
-          </IconButton>
-          <IconButton
-            size="small"
+            <Pencil className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
             onClick={() => handleDeleteEntry(row.id)}
-            sx={{ color: 'var(--error)' }}
+            aria-label="Delete transaction"
+            className="p-1.5 rounded-lg hover:bg-[var(--error)]/10 text-[var(--error)] transition-colors"
           >
-            <Delete fontSize="small" />
-          </IconButton>
-        </Box>
+            <Trash2 className="w-4 h-4" />
+          </button>
+        </div>
       )
     }
   ], []);
@@ -501,12 +482,11 @@ export default function UserLedgerManagementPage() {
             { label: 'Credits', value: formatCurrency(summary.totalCredit), helper: 'Amount paid' },
           ]}
           actions={
-            <Link href="/dashboard/finance/admin/ledgers" style={{ textDecoration: 'none' }}>
+            <Link href="/dashboard/finance/admin/ledgers" className="no-underline">
               <Button
                 variant="outline"
                 size="sm"
-                icon={<ArrowBack />}
-                sx={{ textTransform: 'none', fontSize: '0.78rem' }}
+                icon={<ArrowLeft className="w-4 h-4" />}
               >
                 Back to All Ledgers
               </Button>
@@ -517,28 +497,28 @@ export default function UserLedgerManagementPage() {
         {/* Summary Cards */}
         <DashboardGrid className="grid-cols-1 md:grid-cols-2 xl:grid-cols-4">
           <StatsCard
-            icon={<TrendingDownIcon />}
+            icon={<TrendingDown className="w-5 h-5" />}
             title="Total Credits"
             value={formatCurrency(summary.totalCredit)}
             subtitle="Amount paid"
             variant="success"
           />
           <StatsCard
-            icon={<TrendingUpIcon />}
+            icon={<TrendingUp className="w-5 h-5" />}
             title="Total Debits"
             value={formatCurrency(summary.totalDebit)}
             subtitle="Amount charged"
             variant="warning"
           />
           <StatsCard
-            icon={<LocalShipping />}
+            icon={<Truck className="w-5 h-5" />}
             title="Total Shipment Purchase Amount"
             value={formatCurrency(summary.totalShipmentPurchaseAmount)}
             subtitle="Total car purchase amount for this customer"
             variant="default"
           />
           <StatsCard
-            icon={<AttachMoney />}
+            icon={<DollarSign className="w-5 h-5" />}
             title="Total Shipment Expenses"
             value={formatCurrency(summary.totalShipmentExpenses)}
             subtitle="All shipment expense debits"
@@ -555,38 +535,36 @@ export default function UserLedgerManagementPage() {
               variant="primary"
               size="sm"
               onClick={() => setShowAddModal(true)}
-              icon={<Add />}
-              sx={{ textTransform: 'none', fontSize: '0.78rem', fontWeight: 600 }}
+              icon={<Plus className="w-4 h-4" />}
             >
               Add Transaction
             </Button>
           }
         >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              <TextField
-                placeholder="Search transactions..."
-                size="small"
-                value={filters.search}
-                onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                InputProps={{
-                  startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-                }}
-                fullWidth
-              />
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-3 items-center">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+                <input
+                  type="text"
+                  placeholder="Search transactions..."
+                  value={filters.search}
+                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                  className="w-full pl-9 pr-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                />
+              </div>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
-                icon={<FilterList />}
-                sx={{ textTransform: 'none', fontSize: '0.75rem', minWidth: 120 }}
+                icon={<Filter className="w-4 h-4" />}
               >
                 {showFilters ? 'Hide' : 'Show'} Filters
               </Button>
-            </Box>
+            </div>
 
             {showFilters && (
-              <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }, gap: 2 }}>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <Select
                   label="Type"
                   value={filters.type}
@@ -598,34 +576,33 @@ export default function UserLedgerManagementPage() {
                     { value: 'CREDIT', label: 'Credit Only' },
                   ]}
                 />
-                <TextField
-                  label="Start Date"
-                  type="date"
-                  size="small"
-                  value={filters.startDate}
-                  onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-                <TextField
-                  label="End Date"
-                  type="date"
-                  size="small"
-                  value={filters.endDate}
-                  onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                  InputLabelProps={{ shrink: true }}
-                  fullWidth
-                />
-              </Box>
+                <div>
+                  <label className="block text-xs font-medium text-[var(--text-primary)] mb-1">Start Date</label>
+                  <input
+                    type="date"
+                    value={filters.startDate}
+                    onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[var(--text-primary)] mb-1">End Date</label>
+                  <input
+                    type="date"
+                    value={filters.endDate}
+                    onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+                    className="w-full px-3 py-1.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                  />
+                </div>
+              </div>
             )}
 
-            <Box sx={{ display: 'flex', gap: 1 }}>
+            <div className="flex gap-2">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => window.print()}
-                icon={<Print />}
-                sx={{ textTransform: 'none', fontSize: '0.75rem' }}
+                icon={<Printer className="w-4 h-4" />}
               >
                 Print
               </Button>
@@ -633,8 +610,7 @@ export default function UserLedgerManagementPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => handleExport('pdf')}
-                icon={<Download />}
-                sx={{ textTransform: 'none', fontSize: '0.75rem' }}
+                icon={<Download className="w-4 h-4" />}
               >
                 PDF
               </Button>
@@ -642,13 +618,12 @@ export default function UserLedgerManagementPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => handleExport('excel')}
-                icon={<Download />}
-                sx={{ textTransform: 'none', fontSize: '0.75rem' }}
+                icon={<Download className="w-4 h-4" />}
               >
                 Excel
               </Button>
-            </Box>
-          </Box>
+            </div>
+          </div>
         </DashboardPanel>
 
         {/* Transactions Table */}
@@ -665,18 +640,17 @@ export default function UserLedgerManagementPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3 }}>
-              <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+            <div className="flex items-center justify-between mt-4">
+              <p className="text-xs text-[var(--text-secondary)]">
                 Page {page} of {totalPages}
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              </p>
+              <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  icon={<ChevronLeft />}
-                  sx={{ textTransform: 'none', fontSize: '0.75rem' }}
+                  icon={<ChevronLeft className="w-4 h-4" />}
                 >
                   Previous
                 </Button>
@@ -685,13 +659,12 @@ export default function UserLedgerManagementPage() {
                   size="sm"
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  icon={<ChevronRight />}
-                  sx={{ textTransform: 'none', fontSize: '0.75rem' }}
+                  icon={<ChevronRight className="w-4 h-4" />}
                 >
                   Next
                 </Button>
-              </Box>
-            </Box>
+              </div>
+            </div>
           )}
         </DashboardPanel>
       </DashboardSurface>
@@ -704,15 +677,14 @@ export default function UserLedgerManagementPage() {
         size="sm"
         actions={
           <>
-            <Button onClick={() => setShowAddModal(false)} sx={{ textTransform: 'none' }}>
+            <Button variant="ghost" onClick={() => setShowAddModal(false)}>
               Cancel
             </Button>
             <Button
               type="submit"
               form="add-ledger-entry-form"
               variant="primary"
-              icon={<Check />}
-              sx={{ textTransform: 'none' }}
+              icon={<Check className="w-4 h-4" />}
             >
               Add Transaction
             </Button>
@@ -720,98 +692,108 @@ export default function UserLedgerManagementPage() {
         }
       >
         <form id="add-ledger-entry-form" onSubmit={handleAddEntry}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {/* Account balance info */}
-              {(() => {
-                const enteredAmount = parseFloat(formData.amount) || 0;
-                const projectedBalance = formData.type === 'DEBIT'
-                  ? summary.currentBalance + enteredAmount
-                  : summary.currentBalance - enteredAmount;
-                const currentBalanceLabel = summary.currentBalance > 0
-                  ? `Customer owes ${formatCurrency(summary.currentBalance)}`
-                  : summary.currentBalance < 0
-                    ? `Customer has ${formatCurrency(Math.abs(summary.currentBalance))} credit`
-                    : 'Account is settled';
-                const projectedBalanceLabel = projectedBalance > 0
-                  ? `customer will owe ${formatCurrency(projectedBalance)}`
-                  : projectedBalance < 0
-                    ? `customer will have ${formatCurrency(Math.abs(projectedBalance))} credit`
-                    : 'account will be settled';
-                return (
-                  <>
-                    <Alert
-                      severity={formData.type === 'DEBIT' ? 'info' : 'success'}
-                      className="text-[0.9rem] font-medium"
-                    >
-                      Current Balance: {currentBalanceLabel}. {enteredAmount > 0 ? `After this transaction, ${projectedBalanceLabel}.` : 'Enter an amount to preview the new balance.'}
-                    </Alert>
-                  </>
-                );
-              })()}
+          <div className="flex flex-col gap-4">
+            {/* Account balance info */}
+            {(() => {
+              const enteredAmount = parseFloat(formData.amount) || 0;
+              const projectedBalance = formData.type === 'DEBIT'
+                ? summary.currentBalance + enteredAmount
+                : summary.currentBalance - enteredAmount;
+              const currentBalanceLabel = summary.currentBalance > 0
+                ? `Customer owes ${formatCurrency(summary.currentBalance)}`
+                : summary.currentBalance < 0
+                  ? `Customer has ${formatCurrency(Math.abs(summary.currentBalance))} credit`
+                  : 'Account is settled';
+              const projectedBalanceLabel = projectedBalance > 0
+                ? `customer will owe ${formatCurrency(projectedBalance)}`
+                : projectedBalance < 0
+                  ? `customer will have ${formatCurrency(Math.abs(projectedBalance))} credit`
+                  : 'account will be settled';
+              return (
+                <Alert
+                  severity={formData.type === 'DEBIT' ? 'info' : 'success'}
+                  className="text-sm font-medium"
+                >
+                  Current Balance: {currentBalanceLabel}. {enteredAmount > 0 ? `After this transaction, ${projectedBalanceLabel}.` : 'Enter an amount to preview the new balance.'}
+                </Alert>
+              );
+            })()}
 
-              <Select
-                label="Type"
-                value={formData.type}
-                onChange={(value) => setFormData({ ...formData, type: value as 'DEBIT' | 'CREDIT' })}
-                required
-                options={[
-                  { value: 'DEBIT', label: 'Debit / Charge Customer' },
-                  { value: 'CREDIT', label: 'Credit / Customer Payment' },
-                ]}
-              />
+            <Select
+              label="Type"
+              value={formData.type}
+              onChange={(value) => setFormData({ ...formData, type: value as 'DEBIT' | 'CREDIT' })}
+              required
+              options={[
+                { value: 'DEBIT', label: 'Debit / Charge Customer' },
+                { value: 'CREDIT', label: 'Credit / Customer Payment' },
+              ]}
+            />
 
-              <Select
-                label="Category"
-                value={formData.transactionInfoType}
-                onChange={(value) => setFormData({ ...formData, transactionInfoType: value as TransactionInfoType })}
-                required
-                options={Object.entries(transactionInfoTypeLabels).map(([value, label]) => ({ value, label }))}
-              />
+            <Select
+              label="Category"
+              value={formData.transactionInfoType}
+              onChange={(value) => setFormData({ ...formData, transactionInfoType: value as TransactionInfoType })}
+              required
+              options={Object.entries(transactionInfoTypeLabels).map(([value, label]) => ({ value, label }))}
+            />
 
-              <TextField
-                label="Description *"
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                Description <span className="text-[var(--error)]">*</span>
+              </label>
+              <input
+                type="text"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="e.g. Shipping charge, Customer payment"
                 required
-                fullWidth
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
               />
+            </div>
 
-              <TextField
-                label="Amount * (USD)"
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                Amount * (USD)
+              </label>
+              <input
                 type="number"
+                step="0.01"
+                min="0.01"
                 value={formData.amount}
                 onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
                 placeholder="0.00"
-                inputProps={{ step: '0.01', min: '0.01' }}
-                helperText={
-                  formData.amount
-                    ? (() => {
-                        const amt = parseFloat(formData.amount) || 0;
-                        const projected = formData.type === 'DEBIT'
-                          ? summary.currentBalance + amt
-                          : summary.currentBalance - amt;
-                        if (projected > 0) return `New balance: customer owes ${formatCurrency(projected)}`;
-                        if (projected < 0) return `New balance: customer has ${formatCurrency(Math.abs(projected))} credit`;
-                        return 'New balance: account settled';
-                      })()
-                    : ''
-                }
-                FormHelperTextProps={{ sx: { color: 'var(--success)' } }}
                 required
-                fullWidth
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
               />
+              {formData.amount && (
+                <p className="text-xs text-[var(--success)] mt-1">
+                  {(() => {
+                    const amt = parseFloat(formData.amount) || 0;
+                    const projected = formData.type === 'DEBIT'
+                      ? summary.currentBalance + amt
+                      : summary.currentBalance - amt;
+                    if (projected > 0) return `New balance: customer owes ${formatCurrency(projected)}`;
+                    if (projected < 0) return `New balance: customer has ${formatCurrency(Math.abs(projected))} credit`;
+                    return 'New balance: account settled';
+                  })()}
+                </p>
+              )}
+            </div>
 
-              <TextField
-                label="Notes (Optional)"
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                Notes (Optional)
+              </label>
+              <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="Add any additional notes"
-                multiline
                 rows={3}
-                fullWidth
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
               />
-            </Box>
+            </div>
+          </div>
         </form>
       </Modal>
 
@@ -823,53 +805,76 @@ export default function UserLedgerManagementPage() {
         size="sm"
         actions={
           <>
-            <Button onClick={() => setShowEditModal(false)} sx={{ textTransform: 'none' }}>
+            <Button variant="ghost" onClick={() => setShowEditModal(false)}>
               Cancel
             </Button>
-            <Button type="submit" form="edit-ledger-entry-form" variant="primary" icon={<Check />} sx={{ textTransform: 'none' }}>
+            <Button
+              type="submit"
+              form="edit-ledger-entry-form"
+              variant="primary"
+              icon={<Check className="w-4 h-4" />}
+            >
               Update Transaction
             </Button>
           </>
         }
       >
         <form id="edit-ledger-entry-form" onSubmit={handleEditEntry}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Alert
-                severity="warning"
-                message="Note: Type and amount cannot be edited to maintain ledger integrity. Only description and notes can be updated."
-              />
+          <div className="flex flex-col gap-4">
+            <Alert
+              severity="warning"
+              message="Note: Type and amount cannot be edited to maintain ledger integrity. Only description and notes can be updated."
+            />
 
-              <TextField
-                label="Type (Read-only)"
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                Type (Read-only)
+              </label>
+              <input
+                type="text"
                 value={formData.type}
                 disabled
-                fullWidth
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-secondary)] opacity-70 cursor-not-allowed"
               />
+            </div>
 
-              <TextField
-                label="Amount (Read-only)"
-                value={formatCurrency(parseFloat(formData.amount))}
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-secondary)] mb-1">
+                Amount (Read-only)
+              </label>
+              <input
+                type="text"
+                value={formatCurrency(parseFloat(formData.amount) || 0)}
                 disabled
-                fullWidth
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-secondary)] opacity-70 cursor-not-allowed"
               />
+            </div>
 
-              <TextField
-                label="Description *"
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                Description <span className="text-[var(--error)]">*</span>
+              </label>
+              <input
+                type="text"
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 required
-                fullWidth
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
               />
+            </div>
 
-              <TextField
-                label="Notes"
+            <div>
+              <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
+                Notes
+              </label>
+              <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                multiline
                 rows={3}
-                fullWidth
+                className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
               />
-            </Box>
+            </div>
+          </div>
         </form>
       </Modal>
 

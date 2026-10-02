@@ -220,7 +220,6 @@ import AddDamageModal from '@/components/containers/AddDamageModal';
 import AddInvoiceModal from '@/components/containers/AddInvoiceModal';
 import AddTrackingEventModal from '@/components/containers/AddTrackingEventModal';
 import AddShipmentExpenseModal from '@/components/shipments/AddShipmentExpenseModal';
-import { Dialog } from '@mui/material';
 import { DocumentManager } from '@/components/dashboard/DocumentManager';
 import { ActivityLog } from '@/components/dashboard/ActivityLog';
 import { ContainerCapacityGauge } from '@/components/dashboard/ContainerCapacityGauge';

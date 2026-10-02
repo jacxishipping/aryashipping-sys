@@ -6,17 +6,23 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import {
-  People,
-  Visibility,
-  AttachMoney,
-  TrendingUp as TrendingUpIcon,
-  TrendingDown as TrendingDownIcon,
+  Users,
+  Eye,
+  DollarSign,
+  TrendingUp,
+  TrendingDown,
   Search,
-  FilterList,
-  Payment,
-} from '@mui/icons-material';
-import {  Box, Typography, TextField } from '@mui/material';
-import { Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, DashboardPageSkeleton, StatsCard, PageHeader, Select } from '@/components/design-system';
+  Filter,
+  CreditCard,
+} from 'lucide-react';
+import {
+  Button,
+  StatusBadge,
+  DashboardPageSkeleton,
+  StatsCard,
+  PageHeader,
+  Select,
+} from '@/components/design-system';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -130,7 +136,7 @@ export default function AdminLedgersPage() {
           status="ERROR"
           label={formatCurrency(balance)}
           size="sm"
-          icon={<TrendingUpIcon />}
+          icon={<TrendingUp className="w-3.5 h-3.5" />}
         />
       );
     }
@@ -140,7 +146,7 @@ export default function AdminLedgersPage() {
           status="SUCCESS"
           label={formatCurrency(Math.abs(balance))}
           size="sm"
-          icon={<TrendingDownIcon />}
+          icon={<TrendingDown className="w-3.5 h-3.5" />}
         />
       );
     }
@@ -166,7 +172,6 @@ export default function AdminLedgersPage() {
     return matchesSearch && matchesBalance;
   });
 
-  // ⚡ Bolt: Consolidated multiple array iterations into a single O(N) loop
   let totalBalance = 0;
   let totalDebit = 0;
   let totalCredit = 0;
@@ -187,14 +192,14 @@ export default function AdminLedgersPage() {
       header: 'User',
       sortable: true,
       render: (_, row) => (
-        <Box>
-          <Typography sx={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500 }}>
+        <div>
+          <p className="text-sm font-medium text-[var(--text-primary)]">
             {row.userName}
-          </Typography>
-          <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+          </p>
+          <p className="text-xs text-[var(--text-secondary)]">
             {row.email}
-          </Typography>
-        </Box>
+          </p>
+        </div>
       )
     },
     {
@@ -210,7 +215,7 @@ export default function AdminLedgersPage() {
       sortable: true,
       align: 'right' as const,
       render: (_, row) => (
-        <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+        <span className="text-sm text-[var(--text-primary)]">
           {formatCurrency(row.totalDebit)}
         </span>
       )
@@ -221,7 +226,7 @@ export default function AdminLedgersPage() {
       sortable: true,
       align: 'right' as const,
       render: (_, row) => (
-        <span style={{ fontSize: '0.85rem', color: 'var(--success)' }}>
+        <span className="text-sm text-[var(--success)]">
           {formatCurrency(row.totalCredit)}
         </span>
       )
@@ -232,7 +237,7 @@ export default function AdminLedgersPage() {
       sortable: true,
       align: 'center' as const,
       render: (_, row) => (
-        <span style={{ fontSize: '0.85rem', color: 'var(--text-primary)' }}>
+        <span className="text-sm text-[var(--text-primary)]">
           {row.transactionCount}
         </span>
       )
@@ -242,7 +247,7 @@ export default function AdminLedgersPage() {
       header: 'Last Activity',
       sortable: true,
       render: (_, row) => (
-        <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
+        <span className="text-xs text-[var(--text-secondary)]">
           {formatDate(row.lastTransaction)}
         </span>
       )
@@ -252,18 +257,17 @@ export default function AdminLedgersPage() {
       header: 'Actions',
       align: 'right' as const,
       render: (_, row) => (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/dashboard/finance/admin/ledgers/${row.userId}`} style={{ textDecoration: 'none' }}>
+        <div className="flex justify-end whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/dashboard/finance/admin/ledgers/${row.userId}`} className="no-underline">
             <Button
               variant="outline"
               size="sm"
-              icon={<Visibility />}
-              sx={{ textTransform: 'none', fontSize: '0.75rem' }}
+              icon={<Eye className="w-4 h-4" />}
             >
               View Ledger
             </Button>
           </Link>
-        </Box>
+        </div>
       )
     }
   ], []);
@@ -298,28 +302,28 @@ export default function AdminLedgersPage() {
         {/* Summary Cards */}
         <DashboardGrid className="grid-cols-1 md:grid-cols-4">
           <StatsCard
-            icon={<TrendingUpIcon />}
+            icon={<TrendingUp className="w-5 h-5" />}
             title="Total Outstanding"
             value={formatCurrency(totalBalance)}
             subtitle={`${usersWithBalance} users with balance`}
             variant="error"
           />
           <StatsCard
-            icon={<AttachMoney />}
+            icon={<DollarSign className="w-5 h-5" />}
             title="Total Debits"
             value={formatCurrency(totalDebit)}
             subtitle="All charges"
             variant="warning"
           />
           <StatsCard
-            icon={<TrendingDownIcon />}
+            icon={<TrendingDown className="w-5 h-5" />}
             title="Total Credits"
             value={formatCurrency(totalCredit)}
             subtitle="All payments"
             variant="success"
           />
           <StatsCard
-            icon={<People />}
+            icon={<Users className="w-5 h-5" />}
             title="Users With Balance"
             value={`${usersWithBalance} / ${users.length}`}
             subtitle="Active accounts"
@@ -332,24 +336,24 @@ export default function AdminLedgersPage() {
           title="Search & Filter"
           description="Find users quickly"
         >
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '1fr auto' }, gap: 2 }}>
-            <TextField
-              placeholder="Search by name or email..."
-              size="small"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: <Search sx={{ mr: 1, color: 'var(--text-secondary)', fontSize: 20 }} />,
-              }}
-              fullWidth
-            />
-            <Box sx={{ minWidth: 200 }}>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+              <input
+                type="text"
+                placeholder="Search by name or email..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+              />
+            </div>
+            <div className="min-w-[200px]">
               <Select
                 label="Balance Filter"
                 value={filterBalance}
                 onChange={(value) => setFilterBalance(value as typeof filterBalance)}
                 size="small"
-                leftIcon={<FilterList sx={{ fontSize: 20 }} />}
+                leftIcon={<Filter className="w-4 h-4" />}
                 options={[
                   { value: 'all', label: 'All Balances' },
                   { value: 'positive', label: 'Owes Money' },
@@ -357,8 +361,8 @@ export default function AdminLedgersPage() {
                   { value: 'negative', label: 'Credit Balance' },
                 ]}
               />
-            </Box>
-          </Box>
+            </div>
+          </div>
         </DashboardPanel>
 
         {/* Users Table */}
@@ -367,18 +371,17 @@ export default function AdminLedgersPage() {
           description={`${filteredUsers.length} user${filteredUsers.length !== 1 ? 's' : ''} found`}
           fullHeight
           actions={
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Link href="/dashboard/finance/record-payment" style={{ textDecoration: 'none' }}>
+            <div className="flex gap-2">
+              <Link href="/dashboard/finance/record-payment" className="no-underline">
                 <Button
                   variant="primary"
                   size="sm"
-                  icon={<Payment />}
-                  sx={{ textTransform: 'none', fontSize: '0.78rem', fontWeight: 600 }}
+                  icon={<CreditCard className="w-4 h-4" />}
                 >
                   Record Payment
                 </Button>
               </Link>
-            </Box>
+            </div>
           }
         >
           <DataTable

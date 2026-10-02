@@ -1,0 +1,9 @@
+src/app/dashboard/shipments/[id]/page.tsx(32,1): error TS1003: Identifier expected.
+src/app/dashboard/shipments/[id]/page.tsx(32,10): error TS1005: ',' expected.
+src/app/dashboard/shipments/[id]/page.tsx(32,19): error TS1005: ',' expected.
+src/app/dashboard/shipments/[id]/page.tsx(32,51): error TS1005: '=>' expected.
+src/app/dashboard/users/[id]/page.tsx(115,1): error TS1109: Expression expected.
+src/app/dashboard/users/[id]/page.tsx(115,3): error TS1434: Unexpected keyword or identifier.
+
+
+EXIT_CODE:1
