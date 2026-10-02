@@ -3,39 +3,18 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import PersonIcon from '@mui/icons-material/Person';
-import EmailIcon from '@mui/icons-material/Email';
-import LockIcon from '@mui/icons-material/Lock';
-import PhoneIcon from '@mui/icons-material/Phone';
-import HomeIcon from '@mui/icons-material/Home';
-import LocationCityIcon from '@mui/icons-material/LocationCity';
-import PublicIcon from '@mui/icons-material/Public';
-import BadgeIcon from '@mui/icons-material/Badge';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { User, Mail, Lock, Phone, Home, Building2, Globe, Shield, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
-import {
-	Box,
-	Typography,
-	TextField,
-	InputAdornment,
-	IconButton,
-	Button as MuiButton,
-	Stepper,
-	Step,
-	StepLabel,
-} from '@mui/material';
-import { Breadcrumbs, PageHeader, Button, Select, toast, FormPageSkeleton } from '@/components/design-system';
+import { PageHeader, Button, Select, toast, FormPageSkeleton } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { hasPermission } from '@/lib/rbac';
 
 const steps = ['Basic Info', 'Contact Details', 'Security'];
 
 export default function CreateUserPage() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const { data: session, status } = useSession();
+	const { status } = useSession();
 	const accountType = searchParams.get('accountType') === 'user' ? 'user' : 'customer';
 	const defaultRole = accountType === 'user' ? 'admin' : 'user';
 	const successRedirect = accountType === 'user' ? '/dashboard/users' : '/dashboard/customers';
@@ -59,94 +38,58 @@ export default function CreateUserPage() {
 		return <FormPageSkeleton />;
 	}
 
-	const role = session?.user?.role;
-	const canCreateCustomers = hasPermission(role, 'customers:manage');
-	const canCreateInternalUsers = hasPermission(role, 'users:manage');
-	const hasAccess = accountType === 'user' ? canCreateInternalUsers : canCreateCustomers;
-
-	if (!session || !hasAccess) {
-		return (
-			<DashboardSurface>
-				<Box sx={{ px: 2, pt: 1 }}>
-					<Breadcrumbs />
-				</Box>
-				<DashboardPanel>
-					<div className="py-12 text-center">
-						<h2 className="text-xl font-bold text-[var(--text-primary)] mb-2">Access Restricted</h2>
-						<p className="text-sm text-[var(--text-secondary)] mb-6">You do not have permission to create this account type.</p>
-						<Link href="/dashboard">
-							<Button variant="primary">Go to Dashboard</Button>
-						</Link>
-					</div>
-				</DashboardPanel>
-			</DashboardSurface>
-		);
-	}
-
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setFormData({
-			...formData,
-			[e.target.name]: e.target.value,
-		});
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
 	const handleNext = () => {
-		// Validation for each step
 		if (activeStep === 0) {
-			if (!formData.name || !formData.email || !formData.role) {
-				toast.error('Please fill in all required fields');
+			if (!formData.name.trim()) {
+				toast.error('Name is required');
+				return;
+			}
+			if (!formData.email.trim()) {
+				toast.error('Email is required');
 				return;
 			}
 		} else if (activeStep === 2) {
-			if (!formData.password || !formData.confirmPassword) {
-				toast.error('Please enter and confirm password');
-				return;
-			}
-			if (formData.password !== formData.confirmPassword) {
-				toast.error('Passwords do not match');
+			if (!formData.password) {
+				toast.error('Password is required');
 				return;
 			}
 			if (formData.password.length < 6) {
 				toast.error('Password must be at least 6 characters');
 				return;
 			}
-			// Submit form
+			if (formData.password !== formData.confirmPassword) {
+				toast.error('Passwords do not match');
+				return;
+			}
 			handleSubmit();
 			return;
 		}
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
+		setActiveStep((prev) => prev + 1);
 	};
 
 	const handleBack = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+		setActiveStep((prev) => prev - 1);
 	};
 
 	const handleSubmit = async () => {
 		setIsLoading(true);
-
 		try {
-			const response = await fetch('/api/auth/register', {
+			const res = await fetch('/api/users', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					name: formData.name,
-					email: formData.email,
-					password: formData.password,
-					role: formData.role,
-					phone: formData.phone,
-					address: formData.address,
-					city: formData.city,
-					country: formData.country,
-				}),
+				body: JSON.stringify(formData),
 			});
 
-			const data = await response.json().catch(() => ({}));
+			const data = await res.json();
 
-			if (response.ok) {
-				if (data?.user) {
-					try {
-						sessionStorage.setItem('jacxi.createdUser', JSON.stringify(data.user));
-					} catch {}
+			if (res.ok) {
+				if (typeof window !== 'undefined') {
+					window.dispatchEvent(new CustomEvent('jacxi-users-updated', { detail: { action: 'created', user: data.user } }));
 
 					if (typeof BroadcastChannel !== 'undefined') {
 						try {
@@ -188,66 +131,92 @@ export default function CreateUserPage() {
 
 			<div className="max-w-3xl">
 				<DashboardPanel>
-					<Box sx={{ mb: 4 }}>
-						<Stepper activeStep={activeStep} alternativeLabel>
-							{steps.map((label) => (
-								<Step key={label}>
-									<StepLabel
-										sx={{
-											'& .MuiStepLabel-label': { color: 'var(--text-secondary)' },
-											'& .MuiStepLabel-label.Mui-active': { color: 'var(--accent-gold)', fontWeight: 600 },
-											'& .MuiStepLabel-label.Mui-completed': { color: 'var(--text-primary)' },
-											'& .MuiStepIcon-root': { color: 'var(--border)' },
-											'& .MuiStepIcon-root.Mui-active': { color: 'var(--accent-gold)' },
-											'& .MuiStepIcon-root.Mui-completed': { color: 'var(--accent-gold)' },
-										}}
-									>
-										{label}
-									</StepLabel>
-								</Step>
-							))}
-						</Stepper>
-					</Box>
+					{/* Custom Stepper */}
+					<div className="w-full mb-8">
+						<div className="flex items-center justify-between relative max-w-xl mx-auto px-4">
+							{steps.map((label, idx) => {
+								const isCompleted = activeStep > idx;
+								const isActive = activeStep === idx;
+								return (
+									<div key={label} className="flex flex-col items-center relative z-10">
+										<div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
+											isActive 
+												? 'bg-[var(--accent-gold)] text-black shadow-md ring-2 ring-[var(--accent-gold)] ring-offset-2 ring-offset-[var(--background)]' 
+												: isCompleted 
+												? 'bg-[var(--accent-gold)] text-black' 
+												: 'bg-[var(--background)] border border-[var(--border)] text-[var(--text-secondary)]'
+										}`}>
+											{idx + 1}
+										</div>
+										<span className={`text-xs mt-1.5 font-medium ${isActive ? 'text-[var(--accent-gold)] font-bold' : isCompleted ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
+											{label}
+										</span>
+									</div>
+								);
+							})}
+						</div>
+					</div>
 
 					{/* Form Content */}
-					<Box sx={{ minHeight: 280 }}>
+					<div className="min-h-[280px]">
 						{activeStep === 0 && (
-							<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2.5 }}>
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 								{/* Name */}
-								<Box sx={{ gridColumn: '1 / -1' }}>
-									<Typography component="label" htmlFor="name" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Full Name</Typography>
-									<TextField
-										id="name" name="name" type="text" fullWidth value={formData.name} onChange={handleChange} required
-										placeholder="Enter full name"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><PersonIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
+								<div className="sm:col-span-2">
+									<label htmlFor="name" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">
+										Full Name <span className="text-[var(--error)]">*</span>
+									</label>
+									<div className="relative flex items-center">
+										<User className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="name"
+											name="name"
+											type="text"
+											value={formData.name}
+											onChange={handleChange}
+											required
+											placeholder="Enter full name"
+											className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+									</div>
+								</div>
+
 								{/* Email */}
-								<Box sx={{ gridColumn: '1 / -1' }}>
-									<Typography component="label" htmlFor="email" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Email</Typography>
-									<TextField
-										id="email" name="email" type="email" fullWidth value={formData.email} onChange={handleChange} required
-										placeholder="Enter email address"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><EmailIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
+								<div className="sm:col-span-2">
+									<label htmlFor="email" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">
+										Email <span className="text-[var(--error)]">*</span>
+									</label>
+									<div className="relative flex items-center">
+										<Mail className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="email"
+											name="email"
+											type="email"
+											value={formData.email}
+											onChange={handleChange}
+											required
+											placeholder="Enter email address"
+											className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+									</div>
+								</div>
+
 								{/* Role */}
-								<Box sx={{ gridColumn: '1 / -1' }}>
+								<div className="sm:col-span-2">
 									{accountType === 'customer' ? (
-										<>
-											<Typography component="label" htmlFor="role" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Role</Typography>
-											<TextField
-												id="role"
-												name="role"
-												fullWidth
-												value="Customer"
-												disabled
-												InputProps={{ startAdornment: (<InputAdornment position="start"><BadgeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-												sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-											/>
-										</>
+										<div>
+											<label htmlFor="role" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Role</label>
+											<div className="relative flex items-center">
+												<Shield className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+												<input
+													id="role"
+													name="role"
+													value="Customer"
+													disabled
+													className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--panel)] text-[var(--text-secondary)] opacity-80 cursor-not-allowed"
+												/>
+											</div>
+										</div>
 									) : (
 										<Select
 											id="role"
@@ -255,7 +224,7 @@ export default function CreateUserPage() {
 											value={formData.role}
 											onChange={(value) => setFormData({ ...formData, role: String(value) })}
 											required
-											leftIcon={<BadgeIcon sx={{ fontSize: 20 }} />}
+											leftIcon={<Shield className="w-4 h-4" />}
 											options={[
 												{ value: 'admin', label: 'Admin' },
 												{ value: 'manager', label: 'Manager' },
@@ -265,124 +234,169 @@ export default function CreateUserPage() {
 											]}
 										/>
 									)}
-								</Box>
-							</Box>
+								</div>
+							</div>
 						)}
 
 						{activeStep === 1 && (
-							<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2.5 }}>
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 								{/* Phone */}
-								<Box sx={{ gridColumn: '1 / -1' }}>
-									<Typography component="label" htmlFor="phone" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Phone</Typography>
-									<TextField
-										id="phone" name="phone" type="tel" fullWidth value={formData.phone} onChange={handleChange}
-										placeholder="Enter phone number"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><PhoneIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
+								<div className="sm:col-span-2">
+									<label htmlFor="phone" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Phone</label>
+									<div className="relative flex items-center">
+										<Phone className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="phone"
+											name="phone"
+											type="tel"
+											value={formData.phone}
+											onChange={handleChange}
+											placeholder="Enter phone number"
+											className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+									</div>
+								</div>
+
 								{/* Address */}
-								<Box sx={{ gridColumn: '1 / -1' }}>
-									<Typography component="label" htmlFor="address" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Address</Typography>
-									<TextField
-										id="address" name="address" type="text" fullWidth value={formData.address} onChange={handleChange}
-										placeholder="Enter address"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><HomeIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
+								<div className="sm:col-span-2">
+									<label htmlFor="address" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Address</label>
+									<div className="relative flex items-center">
+										<Home className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="address"
+											name="address"
+											type="text"
+											value={formData.address}
+											onChange={handleChange}
+											placeholder="Enter address"
+											className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+									</div>
+								</div>
+
 								{/* City */}
-								<Box>
-									<Typography component="label" htmlFor="city" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>City</Typography>
-									<TextField
-										id="city" name="city" type="text" fullWidth value={formData.city} onChange={handleChange}
-										placeholder="Enter city"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><LocationCityIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
+								<div>
+									<label htmlFor="city" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">City</label>
+									<div className="relative flex items-center">
+										<Building2 className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="city"
+											name="city"
+											type="text"
+											value={formData.city}
+											onChange={handleChange}
+											placeholder="Enter city"
+											className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+									</div>
+								</div>
+
 								{/* Country */}
-								<Box>
-									<Typography component="label" htmlFor="country" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Country</Typography>
-									<TextField
-										id="country" name="country" type="text" fullWidth value={formData.country} onChange={handleChange}
-										placeholder="Enter country"
-										InputProps={{ startAdornment: (<InputAdornment position="start"><PublicIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>) }}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
-							</Box>
+								<div>
+									<label htmlFor="country" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">Country</label>
+									<div className="relative flex items-center">
+										<Globe className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="country"
+											name="country"
+											type="text"
+											value={formData.country}
+											onChange={handleChange}
+											placeholder="Enter country"
+											className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+									</div>
+								</div>
+							</div>
 						)}
 
 						{activeStep === 2 && (
-							<Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2.5 }}>
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 								{/* Password */}
-								<Box sx={{ gridColumn: '1 / -1' }}>
-									<Typography component="label" htmlFor="password" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Password</Typography>
-									<TextField
-										id="password" name="password" type={showPassword ? 'text' : 'password'} fullWidth value={formData.password} onChange={handleChange} required
-										placeholder="Enter password (min. 6 characters)"
-										InputProps={{
-											startAdornment: (<InputAdornment position="start"><LockIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>),
-											endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowPassword(!showPassword)} edge="end" sx={{ color: 'var(--accent-gold)' }}>{showPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}</IconButton></InputAdornment>)
-										}}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
+								<div className="sm:col-span-2">
+									<label htmlFor="password" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">
+										Password <span className="text-[var(--error)]">*</span>
+									</label>
+									<div className="relative flex items-center">
+										<Lock className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="password"
+											name="password"
+											type={showPassword ? 'text' : 'password'}
+											value={formData.password}
+											onChange={handleChange}
+											required
+											placeholder="Enter password (min. 6 characters)"
+											className="w-full pl-9 pr-10 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+										<button
+											type="button"
+											onClick={() => setShowPassword(!showPassword)}
+											className="absolute right-3 text-[var(--accent-gold)] hover:opacity-80 p-1"
+										>
+											{showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+										</button>
+									</div>
+								</div>
+
 								{/* Confirm Password */}
-								<Box sx={{ gridColumn: '1 / -1' }}>
-									<Typography component="label" htmlFor="confirmPassword" sx={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-primary)', mb: 1 }}>Confirm Password</Typography>
-									<TextField
-										id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? 'text' : 'password'} fullWidth value={formData.confirmPassword} onChange={handleChange} required
-										placeholder="Confirm password"
-										InputProps={{
-											startAdornment: (<InputAdornment position="start"><LockIcon sx={{ fontSize: 20, color: 'var(--text-secondary)' }} /></InputAdornment>),
-											endAdornment: (<InputAdornment position="end"><IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)} edge="end" sx={{ color: 'var(--accent-gold)' }}>{showConfirmPassword ? <VisibilityOff sx={{ fontSize: 20 }} /> : <Visibility sx={{ fontSize: 20 }} />}</IconButton></InputAdornment>)
-										}}
-										sx={{ '& .MuiOutlinedInput-root': { bgcolor: 'var(--background)', borderRadius: 2, color: 'var(--text-primary)' } }}
-									/>
-								</Box>
-							</Box>
+								<div className="sm:col-span-2">
+									<label htmlFor="confirmPassword" className="block text-sm font-medium text-[var(--text-primary)] mb-1.5">
+										Confirm Password <span className="text-[var(--error)]">*</span>
+									</label>
+									<div className="relative flex items-center">
+										<Lock className="w-4 h-4 absolute left-3 text-[var(--text-secondary)]" />
+										<input
+											id="confirmPassword"
+											name="confirmPassword"
+											type={showConfirmPassword ? 'text' : 'password'}
+											value={formData.confirmPassword}
+											onChange={handleChange}
+											required
+											placeholder="Confirm password"
+											className="w-full pl-9 pr-10 py-2 text-sm rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors"
+										/>
+										<button
+											type="button"
+											onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+											className="absolute right-3 text-[var(--accent-gold)] hover:opacity-80 p-1"
+										>
+											{showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+										</button>
+									</div>
+								</div>
+							</div>
 						)}
-					</Box>
+					</div>
 
 					{/* Actions */}
-					<Box sx={{ display: 'flex', flexDirection: 'row', pt: 4, gap: 2, borderTop: '1px solid var(--border)', mt: 3 }}>
-						<MuiButton
-							color="inherit"
+					<div className="flex items-center justify-between pt-6 border-t border-[var(--border)] mt-6">
+						<Button
+							variant="outline"
 							disabled={activeStep === 0}
 							onClick={handleBack}
-							sx={{
-								color: 'var(--text-secondary)',
-								'&:disabled': { opacity: 0.5 },
-							}}
 						>
 							Back
-						</MuiButton>
-						<Box sx={{ flex: '1 1 auto' }} />
-						{activeStep === 0 && (
-							<MuiButton
-								onClick={() => router.push(successRedirect)}
-								color="inherit"
-								sx={{ color: 'var(--text-secondary)', mr: 1 }}
+						</Button>
+						
+						<div className="flex items-center gap-2">
+							{activeStep === 0 && (
+								<Button
+									variant="ghost"
+									onClick={() => router.push(successRedirect)}
+								>
+									Cancel
+								</Button>
+							)}
+							<Button
+								onClick={handleNext}
+								variant="primary"
+								loading={isLoading}
 							>
-								Cancel
-							</MuiButton>
-						)}
-						<MuiButton
-							onClick={handleNext}
-							variant="contained"
-							disabled={isLoading}
-							sx={{
-								bgcolor: 'var(--accent-gold)',
-								color: '#000000',
-								fontWeight: 600,
-								'&:hover': { bgcolor: 'var(--accent-gold)' },
-							}}
-						>
-							{activeStep === steps.length - 1 ? (isLoading ? 'Creating...' : 'Create Account') : 'Next'}
-						</MuiButton>
-					</Box>
+								{activeStep === steps.length - 1 ? (isLoading ? 'Creating...' : 'Create Account') : 'Next'}
+							</Button>
+						</div>
+					</div>
 				</DashboardPanel>
 			</div>
 		</DashboardSurface>

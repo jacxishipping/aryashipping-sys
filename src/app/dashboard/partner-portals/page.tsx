@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Building2, Users, Package, ShieldCheck } from 'lucide-react';
-import { Box, Typography } from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import { PageHeader, Button, EmptyState, StatsCard, toast } from '@/components/design-system';
 import { DataTable, type Column } from '@/components/ui/DataTable';
@@ -73,17 +72,17 @@ export default function PartnerPortalsPage() {
       header: 'Partner Portal', 
       sortable: true,
       render: (_, row) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[rgba(var(--accent-gold-rgb),0.12)] border border-[rgba(var(--accent-gold-rgb),0.25)] flex items-center justify-center text-[var(--accent-gold)] shrink-0">
             <Building2 className="w-4 h-4" />
           </div>
           <div>
-            <Typography sx={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }}>
+            <div className="font-bold text-sm text-[var(--text-primary)]">
               {row.name}
-            </Typography>
+            </div>
             <span className="font-mono text-xs text-[var(--text-secondary)]">{row.code || 'NO-CODE'}</span>
           </div>
-        </Box>
+        </div>
       )
     },
     {
@@ -116,11 +115,11 @@ export default function PartnerPortalsPage() {
       header: 'Actions',
       align: 'right',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
           <Link href={`/dashboard/partner-portals/${row.id}`} style={{ textDecoration: 'none' }}>
             <Button variant="outline" size="sm">Manage Workspace</Button>
           </Link>
-        </Box>
+        </div>
       ),
     },
   ], []);
@@ -177,7 +176,7 @@ export default function PartnerPortalsPage() {
         fullHeight
       >
         {loading ? (
-          <Box sx={{ color: 'var(--text-secondary)', py: 4, textAlign: 'center' }}>Loading partner portals...</Box>
+          <div className="text-[var(--text-secondary)] py-8 text-center">Loading partner portals...</div>
         ) : portals.length === 0 ? (
           <EmptyState
             icon={<Building2 className="w-10 h-10" />}

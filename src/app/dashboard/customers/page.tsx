@@ -4,9 +4,8 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import Link from 'next/link';
-import { User, UserPlus, Eye, EyeOff, Copy, Check, Download, Users, Package, Mail, Key } from 'lucide-react';
+import { User, UserPlus, Eye, EyeOff, Download, Users, Package, Mail, Key } from 'lucide-react';
 import ResetPasswordModal from '@/components/users/ResetPasswordModal';
-import { Box, Typography, IconButton } from '@mui/material';
 import { 
   PageHeader, 
   StatsCard, 
@@ -159,14 +158,14 @@ export default function CustomersPage() {
       header: 'Customer',
       sortable: true,
       render: (_, row) => (
-        <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-          <Typography sx={{ fontWeight: 700, fontSize: '0.875rem', color: 'var(--text-primary)' }} noWrap>
+        <div className="flex flex-col min-w-0">
+          <span className="font-bold text-sm text-[var(--text-primary)] truncate">
             {row.name || 'Unnamed Customer'}
-          </Typography>
-          <Typography variant="caption" color="text.secondary" noWrap>
+          </span>
+          <span className="text-xs text-[var(--text-secondary)] truncate">
             {formatRole(row.role)}
-          </Typography>
-        </Box>
+          </span>
+        </div>
       ),
     },
     {
@@ -174,19 +173,24 @@ export default function CustomersPage() {
       header: 'Email',
       sortable: true,
       render: (_, row) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Typography sx={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: '0.8rem' }} noWrap>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-xs text-[var(--text-primary)] truncate">
             {showEmailsFor.has(row.id) ? row.email : maskEmail(row.email)}
-          </Typography>
-          <IconButton size="small" onClick={(e) => { e.stopPropagation(); toggleEmailVisibility(row.id); }} title="Toggle email visibility">
-            {showEmailsFor.has(row.id) ? <EyeOff style={{ width: 15, height: 15 }} /> : <Eye style={{ width: 15, height: 15 }} />}
-          </IconButton>
+          </span>
+          <button 
+            type="button"
+            className="p-1 rounded hover:bg-[var(--panel-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+            onClick={(e) => { e.stopPropagation(); toggleEmailVisibility(row.id); }} 
+            title="Toggle email visibility"
+          >
+            {showEmailsFor.has(row.id) ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+          </button>
           {showEmailsFor.has(row.id) && (
             <span onClick={(e) => e.stopPropagation()}>
               <CopyButton value={row.email} label="Email" />
             </span>
           )}
-        </Box>
+        </div>
       ),
     },
     {
@@ -194,10 +198,10 @@ export default function CustomersPage() {
       header: 'Shipments',
       sortable: true,
       render: (_, row) => (
-        <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.75, px: 1.5, py: 0.5, borderRadius: '999px', bgcolor: 'rgba(var(--accent-gold-rgb), 0.1)', color: 'var(--accent-gold)', fontWeight: 700, fontSize: '0.75rem' }}>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[rgba(var(--accent-gold-rgb),0.1)] text-[var(--accent-gold)] font-bold text-xs">
           <Package className="w-3.5 h-3.5" />
           <span>{row._count?.shipments ?? 0}</span>
-        </Box>
+        </div>
       ),
     },
     {
@@ -205,9 +209,9 @@ export default function CustomersPage() {
       header: 'Created',
       sortable: true,
       render: (_, row) => (
-        <Typography variant="caption" color="text.secondary">
+        <span className="text-xs text-[var(--text-secondary)]">
           {row.createdAt ? new Date(row.createdAt).toLocaleDateString() : '-'}
-        </Typography>
+        </span>
       ),
     },
     {
@@ -215,8 +219,8 @@ export default function CustomersPage() {
       header: 'Actions',
       align: 'right',
       render: (_, row) => (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1, flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/dashboard/users/${row.id}`} style={{ textDecoration: 'none' }}>
+        <div className="flex items-center justify-end gap-1.5 flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/dashboard/users/${row.id}`} className="no-underline">
             <Button variant="outline" size="sm">
               View Profile
             </Button>
@@ -232,7 +236,7 @@ export default function CustomersPage() {
               >
                 Password
               </Button>
-              <Link href={`/dashboard/users/${row.id}/edit`} style={{ textDecoration: 'none' }}>
+              <Link href={`/dashboard/users/${row.id}/edit`} className="no-underline">
                 <Button variant="ghost" size="sm">
                   Edit
                 </Button>
@@ -247,7 +251,7 @@ export default function CustomersPage() {
               </Button>
             </>
           )}
-        </Box>
+        </div>
       ),
     },
   ], [showEmailsFor, canManageCustomers]);
@@ -348,7 +352,7 @@ export default function CustomersPage() {
         title="Customers"
         description="All registered client accounts and shipping portfolios"
         actions={
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+          <div className="flex items-center gap-2 flex-wrap">
             <Button 
               variant="outline" 
               size="sm" 
@@ -358,13 +362,13 @@ export default function CustomersPage() {
               Export VINs
             </Button>
             {canManageCustomers && (
-              <Link href="/dashboard/customers/new" style={{ textDecoration: 'none' }}>
+              <Link href="/dashboard/customers/new" className="no-underline">
                 <Button variant="primary" size="sm" icon={<UserPlus className="w-4 h-4" />}>
                   Create Customer
                 </Button>
               </Link>
             )}
-          </Box>
+          </div>
         }
       />
 
@@ -412,9 +416,9 @@ export default function CustomersPage() {
       {/* Customers Data Panel */}
       <DashboardPanel title={`Customer Directory (${totalCustomers})`} fullHeight>
         {loading ? (
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' }, gap: 2 }}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
-          </Box>
+          </div>
         ) : customers.length === 0 ? (
           <EmptyState
             icon={<User className="w-10 h-10" />}
@@ -422,7 +426,7 @@ export default function CustomersPage() {
             description="No customer accounts match your current search. Try a different search or create a new customer."
             action={
               canManageCustomers ? (
-                <Link href="/dashboard/customers/new" style={{ textDecoration: 'none' }}>
+                <Link href="/dashboard/customers/new" className="no-underline">
                   <Button variant="primary" size="sm" icon={<UserPlus className="w-4 h-4" />}>
                     Create Customer
                   </Button>
@@ -440,7 +444,7 @@ export default function CustomersPage() {
                 onRowClick={(row) => router.push(`/dashboard/users/${row.id}`)}
               />
             </div>
-            <Box sx={{ display: { xs: 'grid', lg: 'none' }, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 2 }}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:hidden">
               {customers.map((user, index) => (
                 <UserCard
                   key={user.id}
@@ -455,10 +459,10 @@ export default function CustomersPage() {
                   onResetPassword={canManageCustomers ? (targetUser) => setResetPasswordTarget(targetUser) : undefined}
                 />
               ))}
-            </Box>
+            </div>
 
             {totalPages > 1 && (
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 3, pt: 2, borderTop: '1px solid var(--border)' }}>
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-[var(--border)]">
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -467,9 +471,9 @@ export default function CustomersPage() {
                 >
                   Previous
                 </Button>
-                <Typography sx={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                <span className="text-sm text-[var(--text-secondary)]">
                   Page {currentPage} of {totalPages}
-                </Typography>
+                </span>
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -478,7 +482,7 @@ export default function CustomersPage() {
                 >
                   Next
                 </Button>
-              </Box>
+              </div>
             )}
           </>
         )}

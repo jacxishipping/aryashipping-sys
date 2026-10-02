@@ -1,18 +1,229 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import {
-  Autocomplete,
-  Box,
-  CircularProgress,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-} from '@mui/material';
+
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'ml') style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mr') style.marginRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: any) {
+  const variantClass = variant === 'caption' ? 'text-xs text-[var(--text-secondary)]' : variant === 'subtitle2' ? 'text-sm font-semibold' : variant === 'body2' ? 'text-sm' : '';
+  return (
+    <Component className={`${variantClass} ${noWrap ? 'truncate' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function CircularProgress({ size = 20, className = '' }: any) {
+  return <div className={`inline-block animate-spin rounded-full border-2 border-[var(--accent-gold)] border-t-transparent ${className}`} style={{ width: size, height: size }} />;
+}
+
+function TextField({ label, value, onChange, disabled, type = 'text', size, placeholder, helperText, multiline, rows = 3, className = '', InputProps, ...props }: any) {
+  return (
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      {label && <label className="text-xs font-semibold text-[var(--text-secondary)]">{label}</label>}
+      {multiline ? (
+        <textarea
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          rows={rows}
+          className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50"
+          {...props}
+        />
+      ) : (
+        <div className="relative flex items-center">
+          <input
+            type={type}
+            value={value ?? ''}
+            onChange={onChange}
+            disabled={disabled}
+            placeholder={placeholder}
+            className={`w-full ${size === 'small' ? 'px-2.5 py-1.5 text-xs' : 'px-3 py-2 text-sm'} rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50`}
+            {...props}
+          />
+          {InputProps?.endAdornment && (
+            <div className="absolute right-3">{InputProps.endAdornment}</div>
+          )}
+        </div>
+      )}
+      {helperText && <span className="text-[0.75rem] text-[var(--text-secondary)]">{helperText}</span>}
+    </div>
+  );
+}
+
+function Tabs({ value, onChange, children, className = '' }: any) {
+  return (
+    <div className={`flex items-center gap-1 border-b border-[var(--border)] overflow-x-auto ${className}`}>
+      {React.Children.map(children, (child, index) => {
+        if (!React.isValidElement(child)) return child;
+        return React.cloneElement(child as any, {
+          selected: value === index,
+          onClick: () => onChange && onChange(null, index),
+        });
+      })}
+    </div>
+  );
+}
+
+function Tab({ label, icon, selected, onClick, className = '' }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all duration-150 ${
+        selected
+          ? 'border-[var(--accent-gold)] text-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.06)]'
+          : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border)]'
+      } ${className}`}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+}
+
+function Autocomplete({
+  options = [],
+  value,
+  onChange,
+  onInputChange,
+  getOptionLabel = (opt: any) => opt?.label || String(opt || ''),
+  renderInput,
+  loading = false,
+  multiple = false,
+}: any) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+
+  const selectedOptions = multiple ? (Array.isArray(value) ? value : []) : value;
+
+  const filteredOptions = useMemo(() => {
+    if (!inputValue.trim()) return options;
+    return options.filter((opt: any) =>
+      getOptionLabel(opt).toLowerCase().includes(inputValue.toLowerCase())
+    );
+  }, [options, inputValue, getOptionLabel]);
+
+  const handleSelect = (option: any) => {
+    if (multiple) {
+      const arr = Array.isArray(selectedOptions) ? selectedOptions : [];
+      const exists = arr.some((item: any) => item.id === option.id || item === option);
+      const next = exists
+        ? arr.filter((item: any) => (item.id || item) !== (option.id || option))
+        : [...arr, option];
+      onChange(null, next);
+    } else {
+      onChange(null, option);
+      setIsOpen(false);
+    }
+  };
+
+  const inputParams = {
+    value: multiple ? inputValue : (value ? getOptionLabel(value) : inputValue),
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputValue(e.target.value);
+      if (onInputChange) onInputChange(e, e.target.value);
+      if (!isOpen) setIsOpen(true);
+    },
+    onFocus: () => setIsOpen(true),
+    InputProps: {
+      endAdornment: null,
+    },
+  };
+
+  return (
+    <div className="relative w-full">
+      {multiple && Array.isArray(selectedOptions) && selectedOptions.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-2">
+          {selectedOptions.map((opt: any, i: number) => (
+            <span
+              key={opt.id || i}
+              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full bg-[rgba(var(--accent-gold-rgb),0.15)] text-[var(--text-primary)]"
+            >
+              <span>{getOptionLabel(opt)}</span>
+              <button
+                type="button"
+                className="hover:text-[var(--error)] text-xs font-bold ml-1"
+                onClick={() => handleSelect(opt)}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      {renderInput(inputParams)}
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-xl p-1 text-sm">
+          {loading ? (
+            <div className="p-3 text-center text-xs text-[var(--text-secondary)]">Loading...</div>
+          ) : filteredOptions.length === 0 ? (
+            <div className="p-3 text-center text-xs text-[var(--text-secondary)]">No options</div>
+          ) : (
+            filteredOptions.map((option: any, idx: number) => {
+              const isSelected = multiple
+                ? Array.isArray(selectedOptions) && selectedOptions.some((item: any) => (item.id || item) === (option.id || option))
+                : (selectedOptions?.id || selectedOptions) === (option.id || option);
+              return (
+                <div
+                  key={option.id || idx}
+                  className={`p-2 rounded-lg cursor-pointer transition-colors ${
+                    isSelected ? 'bg-[rgba(var(--accent-gold-rgb),0.15)] text-[var(--accent-gold)] font-medium' : 'hover:bg-[var(--panel-hover)] text-[var(--text-primary)]'
+                  }`}
+                  onClick={() => handleSelect(option)}
+                >
+                  {getOptionLabel(option)}
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 import { ArrowLeft, DollarSign, History, Package, Pencil, Plus, Trash2, Truck, User } from 'lucide-react';
 import PermissionRoute from '@/components/auth/PermissionRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';

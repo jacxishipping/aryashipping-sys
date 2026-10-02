@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AdminRoute } from '@/components/auth/AdminRoute';
 import { ArrowLeft, Download, Loader2, Ship, Anchor, Calendar, MapPin, AlertCircle, ChevronRight, ChevronLeft } from 'lucide-react';
-import { Stepper, Step, StepLabel, Box } from '@mui/material';
 import { PageHeader, Button, toast, EmptyState, SkeletonCard, SkeletonTable, Tooltip, StatusBadge, FormField, Select } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 
@@ -207,46 +206,30 @@ export default function NewContainerPage() {
         />
 
         {/* Stepper */}
-        <Box sx={{ width: '100%', mb: 2 }}>
-          <Stepper 
-            activeStep={activeStep} 
-            alternativeLabel
-            sx={{
-              '& .MuiStepLabel-root .Mui-completed': {
-                color: 'var(--accent-gold)',
-              },
-              '& .MuiStepLabel-root .Mui-active': {
-                color: 'var(--accent-gold)',
-              },
-              '& .MuiStepLabel-label': {
-                color: 'var(--text-secondary)',
-                fontSize: { xs: '0.75rem', sm: '0.875rem' },
-              },
-              '& .MuiStepLabel-label.Mui-active': {
-                color: 'var(--accent-gold)',
-                fontWeight: 600,
-              },
-              '& .MuiStepLabel-label.Mui-completed': {
-                color: 'var(--text-primary)',
-              },
-              '& .MuiStepIcon-root': {
-                color: 'var(--border)',
-              },
-              '& .MuiStepIcon-root.Mui-active': {
-                color: 'var(--accent-gold)',
-              },
-              '& .MuiStepIcon-root.Mui-completed': {
-                color: 'var(--accent-gold)',
-              },
-            }}
-          >
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Box>
+        <div className="w-full mb-6">
+          <div className="flex items-center justify-between relative max-w-2xl mx-auto px-4">
+            {steps.map((label, idx) => {
+              const isCompleted = activeStep > idx;
+              const isActive = activeStep === idx;
+              return (
+                <div key={label} className="flex flex-col items-center relative z-10">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
+                    isActive 
+                      ? 'bg-[var(--accent-gold)] text-black shadow-md ring-2 ring-[var(--accent-gold)] ring-offset-2 ring-offset-[var(--background)]' 
+                      : isCompleted 
+                      ? 'bg-[var(--accent-gold)] text-black' 
+                      : 'bg-[var(--background)] border border-[var(--border)] text-[var(--text-secondary)]'
+                  }`}>
+                    {idx + 1}
+                  </div>
+                  <span className={`text-xs mt-1.5 font-medium ${isActive ? 'text-[var(--accent-gold)] font-bold' : isCompleted ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}>
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Fetch Data Success/Error Messages */}

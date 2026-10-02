@@ -33,7 +33,6 @@ import {
   Radio,
   Smartphone,
 } from 'lucide-react';
-import { Box, Switch, Tab, Tabs, TextField, Typography } from '@mui/material';
 import { useTheme, type ThemeMode, type DensityMode } from '@/hooks/useTheme';
 
 import { 
@@ -63,6 +62,114 @@ import {
   type DashboardSectionVisibility,
 } from '@/lib/dashboard-sections';
 
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'ml') style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mr') style.marginRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: any) {
+  const variantClass = variant === 'caption' ? 'text-xs text-[var(--text-secondary)]' : variant === 'subtitle2' ? 'text-sm font-semibold' : variant === 'body2' ? 'text-sm' : '';
+  return (
+    <Component className={`${variantClass} ${noWrap ? 'truncate' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Switch({ checked, onChange, disabled, className = '' }: { checked?: boolean; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void; disabled?: boolean; className?: string }) {
+  return (
+    <label className={`relative inline-flex items-center cursor-pointer ${disabled ? 'opacity-50 pointer-events-none' : ''} ${className}`}>
+      <input 
+        type="checkbox" 
+        checked={Boolean(checked)} 
+        onChange={onChange} 
+        disabled={disabled} 
+        className="sr-only peer" 
+      />
+      <div className="w-10 h-5 bg-[var(--border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--accent-gold)]"></div>
+    </label>
+  );
+}
+
+function TextField({
+  label,
+  value,
+  onChange,
+  disabled,
+  type = 'text',
+  placeholder,
+  helperText,
+  multiline,
+  rows = 3,
+  size,
+  className = '',
+  InputProps,
+  ...props
+}: any) {
+  return (
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      {label && <label className="text-xs font-semibold text-[var(--text-secondary)]">{label}</label>}
+      {multiline ? (
+        <textarea
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          rows={rows}
+          className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50"
+          {...props}
+        />
+      ) : (
+        <input
+          type={type}
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          className={`w-full ${size === 'small' ? 'px-2.5 py-1.5 text-xs' : 'px-3 py-2 text-sm'} rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50`}
+          {...props}
+        />
+      )}
+      {helperText && <span className="text-[0.75rem] text-[var(--text-secondary)]">{helperText}</span>}
+    </div>
+  );
+}
+
 const DEFAULT_SETTINGS = {
   theme: 'light',
   accentColor: 'var(--accent-gold)',
@@ -84,7 +191,7 @@ const adminSettingsTabSlugs = ['ai', 'communications', 'call-agent', 'price-calc
 function TabPanel({ children, value, index }: { children: ReactNode; value: number; index: number }) {
   return (
     <div role="tabpanel" hidden={value !== index} id={`settings-tabpanel-${index}`} aria-labelledby={`settings-tab-${index}`}>
-      {value === index && <Box sx={{ pt: 2 }}>{children}</Box>}
+      {value === index && <div className="pt-4">{children}</div>}
     </div>
   );
 }
@@ -1015,71 +1122,34 @@ export default function SettingsPage() {
         description={isAdmin ? 'Manage your profile, preferences, and system configuration' : 'Manage your profile, preferences, and account settings'}
       />
 
-      <Box
-        sx={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 15,
-          border: '1px solid var(--border)',
-          borderRadius: '12px',
-          backgroundColor: 'var(--panel)',
-          boxShadow: '0 12px 28px rgba(var(--text-primary-rgb),0.08)',
-          overflow: 'hidden',
-        }}
-      >
-        <Tabs
-          value={activeTab}
-          onChange={(_, newValue) => {
-            setActiveTab(newValue);
-            const slugs = isAdmin ? [...baseSettingsTabSlugs, ...adminSettingsTabSlugs] : baseSettingsTabSlugs;
-            const nextParams = new URLSearchParams(searchParams.toString());
-            nextParams.set('tab', slugs[newValue] || slugs[0]);
-            router.replace(`?${nextParams.toString()}`, { scroll: false });
-          }}
-          variant="scrollable"
-          scrollButtons="auto"
-          sx={{
-            minHeight: 52,
-            '& .MuiTabs-flexContainer': {
-              gap: 0.25,
-              px: 1,
-            },
-            '& .MuiTab-root': {
-              textTransform: 'none',
-              fontSize: '0.875rem',
-              fontWeight: 650,
-              color: 'var(--text-secondary)',
-              minHeight: 52,
-              borderRadius: '10px',
-              my: 0.75,
-              px: 1.5,
-              '&:hover': {
-                color: 'var(--accent-gold)',
-                backgroundColor: 'rgba(var(--accent-gold-rgb), 0.08)',
-              },
-            },
-            '& .Mui-selected': {
-              color: 'var(--accent-gold) !important',
-              backgroundColor: 'rgba(var(--accent-gold-rgb), 0.1)',
-            },
-            '& .MuiTabs-indicator': {
-              backgroundColor: 'var(--accent-gold)',
-              height: 3,
-            },
-          }}
-        >
-          {settingsTabs.map((tab, index) => (
-            <Tab
+      <div className="sticky top-0 z-15 border border-[var(--border)] rounded-xl bg-[var(--panel)] shadow-sm overflow-x-auto p-1.5 flex gap-1">
+        {settingsTabs.map((tab, index) => {
+          const isSelected = activeTab === index;
+          return (
+            <button
               key={tab.label}
+              type="button"
               id={`settings-tab-${index}`}
               aria-controls={`settings-tabpanel-${index}`}
-              icon={tab.icon}
-              iconPosition="start"
-              label={tab.label}
-            />
-          ))}
-        </Tabs>
-      </Box>
+              onClick={() => {
+                setActiveTab(index);
+                const slugs = isAdmin ? [...baseSettingsTabSlugs, ...adminSettingsTabSlugs] : baseSettingsTabSlugs;
+                const nextParams = new URLSearchParams(searchParams.toString());
+                nextParams.set('tab', slugs[index] || slugs[0]);
+                router.replace(`?${nextParams.toString()}`, { scroll: false });
+              }}
+              className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-150 ${
+                isSelected
+                  ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] shadow-sm'
+                  : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--panel-hover)]'
+              }`}
+            >
+              {tab.icon}
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* Tab 0: Profile */}
       <TabPanel value={activeTab} index={0}>

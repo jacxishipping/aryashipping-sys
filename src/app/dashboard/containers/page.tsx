@@ -4,8 +4,116 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { Box, Typography, Menu, MenuItem, IconButton, Divider } from '@mui/material';
 import { Package, Ship, MapPin, TrendingUp, Calendar, FileText, DollarSign, Receipt, MoreVertical, Eye, Copy, Trash2, Download, PanelRightOpen, QrCode, Layers, Compass } from 'lucide-react';
+
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'ml') style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mr') style.marginRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: any) {
+  const variantClass = variant === 'caption' ? 'text-xs text-[var(--text-secondary)]' : variant === 'subtitle2' ? 'text-sm font-semibold' : variant === 'body2' ? 'text-sm' : '';
+  return (
+    <Component className={`${variantClass} ${noWrap ? 'truncate' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function IconButton({ children, onClick, size, className = '', sx, ...props }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`p-1.5 rounded-lg hover:bg-[var(--panel-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center justify-center ${className}`}
+      style={sxToStyle(sx)}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Divider({ sx, className = '' }: any) {
+  return <hr className={`border-[var(--border)] my-1 ${className}`} style={sxToStyle(sx)} />;
+}
+
+function Menu({ anchorEl, open, onClose, children }: { anchorEl: HTMLElement | null; open: boolean; onClose: () => void; children: React.ReactNode; [key: string]: any }) {
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (open && anchorEl && !anchorEl.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    if (open) {
+      document.addEventListener('click', handleOutsideClick);
+    }
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [open, anchorEl, onClose]);
+
+  if (!open || !anchorEl) return null;
+  const rect = anchorEl.getBoundingClientRect();
+
+  return (
+    <div className="fixed inset-0 z-50" onClick={onClose}>
+      <div 
+        className="absolute z-50 min-w-[190px] rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-xl py-1 text-sm text-[var(--text-primary)] animate-fade-in overflow-hidden"
+        style={{ top: `${rect.bottom + window.scrollY + 4}px`, right: `${Math.max(12, window.innerWidth - rect.right)}px` }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function MenuItem({ children, onClick, sx, className = '' }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full flex items-center px-4 py-2.5 text-left text-sm hover:bg-[rgba(var(--accent-gold-rgb),0.1)] transition-colors text-[var(--text-primary)] ${className}`}
+      style={sxToStyle(sx)}
+    >
+      {children}
+    </button>
+  );
+}
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import { PageHeader, StatsCard, Button, EmptyState, FormField, Select, toast, SkeletonCard, DashboardPageSkeleton, CompactSkeleton, StatusBadge, CopyButton, StatusFilterPills } from '@/components/design-system';

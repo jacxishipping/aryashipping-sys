@@ -22,7 +22,102 @@ import { ArrowLeft,
   Shield,
   Check,
 } from 'lucide-react';
-import { Box, Typography, Divider, TextField, InputAdornment, IconButton } from '@mui/material';
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'ml') style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mr') style.marginRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: any) {
+  const variantClass = variant === 'caption' ? 'text-xs text-[var(--text-secondary)]' : variant === 'subtitle2' ? 'text-sm font-semibold' : variant === 'body2' ? 'text-sm' : '';
+  return (
+    <Component className={`${variantClass} ${noWrap ? 'truncate' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Divider({ sx, className = '' }: any) {
+  return <hr className={`border-[var(--border)] my-1 ${className}`} style={sxToStyle(sx)} />;
+}
+
+function IconButton({ children, onClick, size, className = '', sx, ...props }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`p-1.5 rounded-lg hover:bg-[var(--panel-hover)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors inline-flex items-center justify-center ${className}`}
+      style={sxToStyle(sx)}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TextField({ label, value, onChange, disabled, type = 'text', size, placeholder, helperText, multiline, rows = 3, className = '', InputProps, ...props }: any) {
+  return (
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      {label && <label className="text-xs font-semibold text-[var(--text-secondary)]">{label}</label>}
+      <div className="relative flex items-center">
+        {InputProps?.startAdornment && (
+          <div className="absolute left-3 text-[var(--text-secondary)]">{InputProps.startAdornment}</div>
+        )}
+        <input
+          type={type}
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          className={`w-full ${InputProps?.startAdornment ? 'pl-9' : 'pl-3'} ${InputProps?.endAdornment ? 'pr-9' : 'pr-3'} ${size === 'small' ? 'py-1.5 text-xs' : 'py-2 text-sm'} rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50`}
+          {...props}
+        />
+        {InputProps?.endAdornment && (
+          <div className="absolute right-3 text-[var(--text-secondary)]">{InputProps.endAdornment}</div>
+        )}
+      </div>
+      {helperText && <span className="text-[0.75rem] text-[var(--text-secondary)]">{helperText}</span>}
+    </div>
+  );
+}
+
+function InputAdornment({ children, position }: any) {
+  return <>{children}</>;
+}
 import { DashboardSurface, 
   DashboardPanel 
 } from '@/components/dashboard/DashboardSurface';

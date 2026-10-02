@@ -3,7 +3,6 @@
 import { useSession } from 'next-auth/react';
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Box } from '@mui/material';
 import { SearchFilters } from '@/components/dashboard/SmartSearch';
 import { DashboardSurface } from '@/components/dashboard/DashboardSurface';
 import { toast, StatusBadge, ConfirmDialog, StatusFilterPills, PageHeader, Button } from '@/components/design-system';

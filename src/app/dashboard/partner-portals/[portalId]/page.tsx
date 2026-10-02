@@ -3,20 +3,24 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import {
-  Autocomplete,
-  Box,
-  MenuItem,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-} from '@mui/material';
+  Package,
+  Users,
+  User,
+  ExternalLink,
+  Plus,
+  Trash2,
+  RefreshCw,
+  Search,
+  Check,
+  Building2,
+  Palette,
+  Activity,
+  AlertTriangle,
+  ArrowLeft
+} from 'lucide-react';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Select, toast } from '@/components/design-system';
+import { Button, ConfirmDialog, EmptyState, Modal, PageHeader, Select, FormField, toast } from '@/components/design-system';
 import { PortalActivityList } from '@/components/partner-portals/PortalActivityList';
 import PortalBrandingSettingsPanel from '@/components/partner-portals/PortalBrandingSettingsPanel';
 import { DataTable, type Column } from '@/components/ui/DataTable';
@@ -153,32 +157,6 @@ export default function PartnerPortalDetailPage() {
     return `/portal-site/${portalId}`;
   }, [portal?.customDomain, portal?.customDomainVerifiedAt, portalId]);
 
-  const renderAccessResult = (
-    result: { loginCode: string; simpleLoginUrl: string; portalUrl: string; email: string; name: string | null },
-    title: string,
-  ) => (
-    <Box sx={{ border: '1px solid rgba(var(--accent-gold-rgb), 0.28)', bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)', borderRadius: 2, p: 2, display: 'grid', gap: 0.75 }}>
-      <Typography sx={{ fontWeight: 700 }}>{title}</Typography>
-      <Typography sx={{ color: 'var(--text-secondary)' }}>
-        Share the sign-in page and code with this user. The workspace route is where they land after sign-in.
-      </Typography>
-      <Typography><strong>Name:</strong> {result.name || result.email}</Typography>
-      <Typography><strong>Email:</strong> {result.email}</Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-        <Typography><strong>Login Code:</strong> {result.loginCode}</Typography>
-        <Button variant="outline" size="sm" onClick={() => void handleCopyValue(result.loginCode, 'Login code')}>Copy</Button>
-      </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-        <Typography><strong>Sign-In Page:</strong> {result.simpleLoginUrl}</Typography>
-        <Button variant="outline" size="sm" onClick={() => void handleCopyValue(result.simpleLoginUrl, 'Sign-in page')}>Copy</Button>
-      </Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-        <Typography><strong>Workspace Route:</strong> {result.portalUrl}</Typography>
-        <Button variant="outline" size="sm" onClick={() => void handleCopyValue(result.portalUrl, 'Workspace route')}>Copy</Button>
-      </Box>
-    </Box>
-  );
-
   const handleCopyValue = async (value: string, label: string) => {
     try {
       await navigator.clipboard.writeText(value);
@@ -188,6 +166,32 @@ export default function PartnerPortalDetailPage() {
       toast.error(`Failed to copy ${label.toLowerCase()}`);
     }
   };
+
+  const renderAccessResult = (
+    result: { loginCode: string; simpleLoginUrl: string; portalUrl: string; email: string; name: string | null },
+    title: string,
+  ) => (
+    <div className="border border-[rgba(var(--accent-gold-rgb),0.28)] bg-[rgba(var(--accent-gold-rgb),0.08)] rounded-xl p-4 space-y-2">
+      <div className="font-bold text-sm text-[var(--text-primary)]">{title}</div>
+      <div className="text-xs text-[var(--text-secondary)]">
+        Share the sign-in page and code with this user. The workspace route is where they land after sign-in.
+      </div>
+      <div className="text-sm"><strong>Name:</strong> {result.name || result.email}</div>
+      <div className="text-sm"><strong>Email:</strong> {result.email}</div>
+      <div className="flex items-center gap-2 flex-wrap text-sm">
+        <span><strong>Login Code:</strong> <code className="bg-[var(--background)] px-2 py-0.5 rounded border border-[var(--border)] font-mono">{result.loginCode}</code></span>
+        <Button variant="outline" size="sm" onClick={() => void handleCopyValue(result.loginCode, 'Login code')}>Copy</Button>
+      </div>
+      <div className="flex items-center gap-2 flex-wrap text-sm">
+        <span className="truncate max-w-md"><strong>Sign-In Page:</strong> {result.simpleLoginUrl}</span>
+        <Button variant="outline" size="sm" onClick={() => void handleCopyValue(result.simpleLoginUrl, 'Sign-in page')}>Copy</Button>
+      </div>
+      <div className="flex items-center gap-2 flex-wrap text-sm">
+        <span className="truncate max-w-md"><strong>Workspace Route:</strong> {result.portalUrl}</span>
+        <Button variant="outline" size="sm" onClick={() => void handleCopyValue(result.portalUrl, 'Workspace route')}>Copy</Button>
+      </div>
+    </div>
+  );
 
   const canAccess = hasPermission(session?.user?.role, 'customers:manage') || hasPermission(session?.user?.role, 'users:manage');
 
@@ -298,156 +302,6 @@ export default function PartnerPortalDetailPage() {
     void fetchShipments();
     return () => controller.abort();
   }, [shipmentSearch, canAccess, assignments]);
-
-  const membershipColumns = useMemo<Column<PortalMembership>[]>(() => [
-    {
-      key: 'user',
-      header: 'Member',
-      render: (_, row) => row.user.name || row.user.email,
-    },
-    {
-      key: 'email',
-      header: 'Email',
-      render: (_, row) => row.user.email,
-    },
-    {
-      key: 'role',
-      header: 'Portal Role',
-      render: (_, row) => (
-        <TextField
-          select
-          size="small"
-          value={memberRoleDrafts[row.id] || row.role}
-          onChange={(event) => setMemberRoleDrafts((prev) => ({ ...prev, [row.id]: event.target.value }))}
-          sx={{ minWidth: 140 }}
-        >
-          <MenuItem value="ADMIN">ADMIN</MenuItem>
-          <MenuItem value="STAFF">STAFF</MenuItem>
-        </TextField>
-      ),
-    },
-    {
-      key: 'appRole',
-      header: 'App Role',
-      render: (_, row) => row.user.role,
-    },
-    {
-      key: 'actions',
-      header: 'Actions',
-      align: 'right',
-      render: (_, row) => (
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => void handleUpdateMembershipRole(row)}
-            disabled={savingMembershipRoleId === row.id || (memberRoleDrafts[row.id] || row.role) === row.role}
-          >
-            {savingMembershipRoleId === row.id ? 'Saving...' : 'Save Role'}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => void handleRegenerateLoginCode(row)}
-            disabled={regeneratingLoginCodeMembershipId === row.id || (row.user.role !== 'user' && row.role !== 'ADMIN')}
-          >
-            {regeneratingLoginCodeMembershipId === row.id ? 'Generating...' : 'Generate Code'}
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setPendingRemoveMembership(row)} disabled={removingMembershipId === row.id}>
-            {removingMembershipId === row.id ? 'Removing...' : 'Remove'}
-          </Button>
-        </Box>
-      ),
-    },
-  ], [memberRoleDrafts, regeneratingLoginCodeMembershipId, removingMembershipId, savingMembershipRoleId]);
-
-  const assignmentColumns = useMemo<Column<ShipmentAssignment>[]>(() => [
-    {
-      key: 'vehicle',
-      header: 'Shipment',
-      render: (_, row) => [row.shipment.vehicleYear, row.shipment.vehicleMake, row.shipment.vehicleModel].filter(Boolean).join(' ') || row.shipment.vehicleType,
-    },
-    {
-      key: 'vin',
-      header: 'VIN',
-      render: (_, row) => row.shipment.vehicleVIN || '—',
-    },
-    {
-      key: 'status',
-      header: 'Status',
-      render: (_, row) => row.shipment.status,
-    },
-    {
-      key: 'customer',
-      header: 'Portal Customer',
-      render: (_, row) => row.partnerCustomer?.name || 'Unassigned',
-    },
-    {
-      key: 'actions',
-      header: 'Actions',
-      align: 'right',
-      render: (_, row) => (
-        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', flexWrap: 'nowrap', whiteSpace: 'nowrap' }} onClick={(e) => e.stopPropagation()}>
-          <Link href={`/portal/${portalId}/shipments/${row.shipment.id}`} style={{ textDecoration: 'none' }}>
-            <Button variant="outline" size="sm">View</Button>
-          </Link>
-          <Button variant="outline" size="sm" onClick={() => setPendingUnassignShipment(row)} disabled={savingShipmentId === row.shipment.id}>
-            {savingShipmentId === row.shipment.id ? 'Removing...' : 'Unassign'}
-          </Button>
-        </Box>
-      ),
-    },
-  ], [portalId, savingShipmentId]);
-
-  const customerColumns = useMemo<Column<PortalCustomer>[]>(() => [
-    { key: 'name', header: 'Customer', sortable: true },
-    {
-      key: 'email',
-      header: 'Email',
-      render: (_, row) => row.email || '—',
-    },
-    {
-      key: 'phone',
-      header: 'Phone',
-      render: (_, row) => row.phone || '—',
-    },
-    {
-      key: 'count',
-      header: 'Assigned Shipments',
-      render: (_, row) => row._count?.shipmentAssignments || 0,
-    },
-  ], []);
-
-  const handleAddMember = async () => {
-    if (!selectedUser) {
-      toast.error('Select a user first');
-      return;
-    }
-
-    try {
-      setSavingMember(true);
-      const response = await fetch(`/api/partner-portals/${portalId}/memberships`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: selectedUser.id, role: memberRole }),
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to save portal member');
-      }
-
-      toast.success('Portal member saved');
-      setSelectedUser(null);
-      setMemberSearch('');
-      setOpenAddMemberDialog(false);
-      await fetchPortalData();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to save portal member');
-    } finally {
-      setSavingMember(false);
-    }
-  };
 
   const handleUpdateMembershipRole = async (membership: PortalMembership) => {
     const nextRole = memberRoleDrafts[membership.id] || membership.role;
@@ -639,9 +493,166 @@ export default function PartnerPortalDetailPage() {
     }
   };
 
+  const handleAddMember = async () => {
+    if (!selectedUser) {
+      toast.error('Select a user first');
+      return;
+    }
+
+    try {
+      setSavingMember(true);
+      const response = await fetch(`/api/partner-portals/${portalId}/memberships`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: selectedUser.id, role: memberRole }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to save portal member');
+      }
+
+      toast.success('Portal member saved');
+      setSelectedUser(null);
+      setMemberSearch('');
+      setOpenAddMemberDialog(false);
+      await fetchPortalData();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Failed to save portal member');
+    } finally {
+      setSavingMember(false);
+    }
+  };
+
+  const membershipColumns = useMemo<Column<PortalMembership>[]>(() => [
+    {
+      key: 'user',
+      header: 'Member',
+      render: (_, row) => row.user.name || row.user.email,
+    },
+    {
+      key: 'email',
+      header: 'Email',
+      render: (_, row) => row.user.email,
+    },
+    {
+      key: 'role',
+      header: 'Portal Role',
+      render: (_, row) => (
+        <select
+          value={memberRoleDrafts[row.id] || row.role}
+          onChange={(event) => setMemberRoleDrafts((prev) => ({ ...prev, [row.id]: event.target.value }))}
+          className="px-2.5 py-1 text-xs rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--accent-gold)]"
+        >
+          <option value="ADMIN">ADMIN</option>
+          <option value="STAFF">STAFF</option>
+        </select>
+      ),
+    },
+    {
+      key: 'appRole',
+      header: 'App Role',
+      render: (_, row) => row.user.role,
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      align: 'right',
+      render: (_, row) => (
+        <div className="flex gap-1.5 justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void handleUpdateMembershipRole(row)}
+            disabled={savingMembershipRoleId === row.id || (memberRoleDrafts[row.id] || row.role) === row.role}
+          >
+            {savingMembershipRoleId === row.id ? 'Saving...' : 'Save Role'}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => void handleRegenerateLoginCode(row)}
+            disabled={regeneratingLoginCodeMembershipId === row.id || (row.user.role !== 'user' && row.role !== 'ADMIN')}
+          >
+            {regeneratingLoginCodeMembershipId === row.id ? 'Generating...' : 'Generate Code'}
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => setPendingRemoveMembership(row)} disabled={removingMembershipId === row.id}>
+            {removingMembershipId === row.id ? 'Removing...' : 'Remove'}
+          </Button>
+        </div>
+      ),
+    },
+  ], [memberRoleDrafts, regeneratingLoginCodeMembershipId, removingMembershipId, savingMembershipRoleId]);
+
+  const assignmentColumns = useMemo<Column<ShipmentAssignment>[]>(() => [
+    {
+      key: 'vehicle',
+      header: 'Shipment',
+      render: (_, row) => [row.shipment.vehicleYear, row.shipment.vehicleMake, row.shipment.vehicleModel].filter(Boolean).join(' ') || row.shipment.vehicleType,
+    },
+    {
+      key: 'vin',
+      header: 'VIN',
+      render: (_, row) => row.shipment.vehicleVIN || '—',
+    },
+    {
+      key: 'status',
+      header: 'Status',
+      render: (_, row) => row.shipment.status,
+    },
+    {
+      key: 'customer',
+      header: 'Portal Customer',
+      render: (_, row) => row.partnerCustomer?.name || 'Unassigned',
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      align: 'right',
+      render: (_, row) => (
+        <div className="flex gap-1.5 justify-end flex-nowrap whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+          <Link href={`/portal/${portalId}/shipments/${row.shipment.id}`} style={{ textDecoration: 'none' }}>
+            <Button variant="outline" size="sm">View</Button>
+          </Link>
+          <Button variant="outline" size="sm" onClick={() => setPendingUnassignShipment(row)} disabled={savingShipmentId === row.shipment.id}>
+            {savingShipmentId === row.shipment.id ? 'Removing...' : 'Unassign'}
+          </Button>
+        </div>
+      ),
+    },
+  ], [portalId, savingShipmentId]);
+
+  const customerColumns = useMemo<Column<PortalCustomer>[]>(() => [
+    { key: 'name', header: 'Customer', sortable: true },
+    {
+      key: 'email',
+      header: 'Email',
+      render: (_, row) => row.email || '—',
+    },
+    {
+      key: 'phone',
+      header: 'Phone',
+      render: (_, row) => row.phone || '—',
+    },
+    {
+      key: 'count',
+      header: 'Assigned Shipments',
+      render: (_, row) => row._count?.shipmentAssignments || 0,
+    },
+  ], []);
+
   if (status === 'loading' || !session || !canAccess) {
     return null;
   }
+
+  const tabs: { key: PortalManageTab; label: string; icon: any; count?: number }[] = [
+    { key: 'shipments', label: 'Shipments', icon: Package, count: assignments.length },
+    { key: 'members', label: 'Members', icon: Users, count: memberships.length },
+    { key: 'activity', label: 'Activity', icon: Activity, count: activities.length },
+    { key: 'branding', label: 'Branding', icon: Palette },
+    { key: 'customers', label: 'Customers', icon: User, count: customers.length },
+    { key: 'danger', label: 'Danger Zone', icon: AlertTriangle },
+  ];
 
   return (
     <DashboardSurface>
@@ -655,103 +666,110 @@ export default function PartnerPortalDetailPage() {
           { label: 'Customers', value: customers.length, helper: 'Downstream accounts' },
         ]}
         actions={
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          <div className="flex items-center gap-2 flex-wrap">
             <a
               href={publicSiteHref}
               target="_blank"
               rel="noreferrer"
               style={{ textDecoration: 'none' }}
             >
-              <Button variant="outline" size="sm">Open Portal Website</Button>
+              <Button variant="outline" size="sm" icon={<ExternalLink className="w-4 h-4" />}>Open Portal Website</Button>
             </a>
             <Link href="/dashboard/partner-portals" style={{ textDecoration: 'none' }}>
-              <Button variant="outline" size="sm">Back to Portals</Button>
+              <Button variant="outline" size="sm" icon={<ArrowLeft className="w-4 h-4" />}>Back to Portals</Button>
             </Link>
-          </Box>
+          </div>
         }
       />
 
       <DashboardPanel noHeaderBorder>
         {loading ? (
-          <Box sx={{ color: 'var(--text-secondary)' }}>Loading portal details...</Box>
+          <div className="text-[var(--text-secondary)] py-8 text-center">Loading portal details...</div>
         ) : (
-          <Box sx={{ display: 'grid', gap: 3 }}>
-            <Box sx={{ borderBottom: 1, borderColor: 'var(--border)' }}>
-              <Tabs
-                value={activeTab}
-                onChange={(_, value) => setActiveTab(value)}
-                variant="scrollable"
-                scrollButtons="auto"
-                sx={{
-                  '& .MuiTab-root': {
-                    textTransform: 'none',
-                    fontSize: '0.875rem',
-                    fontWeight: 500,
-                    color: 'var(--text-secondary)',
-                    minHeight: 48,
-                    '&:hover': {
-                      color: 'var(--accent-gold)',
-                    },
-                  },
-                  '& .Mui-selected': {
-                    color: 'var(--accent-gold) !important',
-                  },
-                  '& .MuiTabs-indicator': {
-                    backgroundColor: 'var(--accent-gold)',
-                  },
-                }}
-              >
-                <Tab value="shipments" label={`Shipments (${assignments.length})`} />
-                <Tab value="members" label={`Members (${memberships.length})`} />
-                <Tab value="activity" label={`Activity (${activities.length})`} />
-                <Tab value="branding" label="Branding" />
-                <Tab value="customers" label={`Customers (${customers.length})`} />
-                <Tab value="danger" label="Danger Zone" />
-              </Tabs>
-            </Box>
+          <div className="space-y-6">
+            {/* Custom Nav Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto border-b border-[var(--border)] pb-2">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.key;
+                return (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => setActiveTab(tab.key)}
+                    className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                      isActive
+                        ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] border border-[rgba(var(--accent-gold-rgb),0.25)]'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--panel-secondary,rgba(255,255,255,0.03))]'
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    <span>{tab.label}</span>
+                    {tab.count !== undefined && (
+                      <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                        isActive ? 'bg-[var(--accent-gold)] text-black' : 'bg-[var(--border)] text-[var(--text-secondary)]'
+                      }`}>
+                        {tab.count}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
 
-            {activeTab === 'shipments' ? (
+            {/* Shipments Tab */}
+            {activeTab === 'shipments' && (
               <DashboardPanel title="Assigned Shipments" description="Shipments visible to this partner workspace">
                 {assignments.length === 0 ? (
-                  <EmptyState icon={<Inventory2OutlinedIcon />} title="No assigned shipments" description="Search below and assign the first shipment into this portal." />
+                  <EmptyState icon={<Package className="w-10 h-10" />} title="No assigned shipments" description="Search below and assign the first shipment into this portal." />
                 ) : (
                   <DataTable data={assignments} columns={assignmentColumns} keyField="id" />
                 )}
 
-                <Box sx={{ mt: 3, display: 'grid', gap: 2 }}>
-                  <Typography sx={{ fontWeight: 700 }}>Assign Shipment</Typography>
-                  <TextField label="Search shipments by vehicle or VIN" value={shipmentSearch} onChange={(event) => setShipmentSearch(event.target.value)} />
+                <div className="mt-6 pt-6 border-t border-[var(--border)] space-y-3">
+                  <div className="font-bold text-sm text-[var(--text-primary)]">Assign Shipment</div>
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+                    <input
+                      type="text"
+                      placeholder="Search shipments by vehicle or VIN..."
+                      value={shipmentSearch}
+                      onChange={(e) => setShipmentSearch(e.target.value)}
+                      className="w-full pl-9 pr-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                    />
+                  </div>
                   {shipmentResults.length > 0 ? (
-                    <Box sx={{ display: 'grid', gap: 1 }}>
+                    <div className="space-y-2 max-h-60 overflow-y-auto">
                       {shipmentResults.map((shipment) => (
-                        <Box key={shipment.id} sx={{ border: '1px solid var(--border)', borderRadius: 2, px: 2, py: 1.5, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
-                          <Box>
-                            <Typography sx={{ fontWeight: 600 }}>
+                        <div key={shipment.id} className="border border-[var(--border)] rounded-xl px-4 py-3 flex items-center justify-between gap-3 bg-[var(--background)]">
+                          <div>
+                            <div className="font-semibold text-sm text-[var(--text-primary)]">
                               {[shipment.vehicleYear, shipment.vehicleMake, shipment.vehicleModel].filter(Boolean).join(' ') || shipment.vehicleType}
-                            </Typography>
-                            <Typography sx={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                              {shipment.vehicleVIN || 'No VIN'} • {shipment.status} • {shipment.user?.name || shipment.user?.email || 'No owner'}
-                            </Typography>
-                          </Box>
+                            </div>
+                            <div className="text-xs text-[var(--text-secondary)]">
+                              {shipment.vehicleVIN || 'No VIN'} &bull; {shipment.status} &bull; {shipment.user?.name || shipment.user?.email || 'No owner'}
+                            </div>
+                          </div>
                           <Button variant="outline" size="sm" onClick={() => void handleAssignShipment(shipment.id)} disabled={savingShipmentId === shipment.id}>
                             {savingShipmentId === shipment.id ? 'Assigning...' : 'Assign'}
                           </Button>
-                        </Box>
+                        </div>
                       ))}
-                    </Box>
+                    </div>
                   ) : shipmentSearch.trim().length >= 2 ? (
-                    <Box sx={{ color: 'var(--text-secondary)' }}>No unassigned search results found.</Box>
+                    <div className="text-xs text-[var(--text-secondary)]">No unassigned search results found.</div>
                   ) : null}
-                </Box>
+                </div>
               </DashboardPanel>
-            ) : null}
+            )}
 
-            {activeTab === 'members' ? (
+            {/* Members Tab */}
+            {activeTab === 'members' && (
               <DashboardPanel
                 title="Portal Members"
                 description="Users who can enter this workspace"
                 actions={
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  <div className="flex gap-2 flex-wrap">
                     <Button
                       variant="outline"
                       size="sm"
@@ -773,22 +791,22 @@ export default function PartnerPortalDetailPage() {
                     >
                       Create Portal User
                     </Button>
-                  </Box>
+                  </div>
                 }
               >
                 {memberships.length === 0 ? (
-                  <EmptyState icon={<PeopleOutlineIcon />} title="No members" description="Use the member actions to add the first portal user." />
+                  <EmptyState icon={<Users className="w-10 h-10" />} title="No members" description="Use the member actions to add the first portal user." />
                 ) : (
                   <DataTable data={memberships} columns={membershipColumns} keyField="id" />
                 )}
 
-                <Box sx={{ mt: 3, display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', lg: 'repeat(2, minmax(0, 1fr))' } }}>
-                  <Box sx={{ border: '1px solid var(--border)', borderRadius: 2.5, p: 2.25, display: 'grid', gap: 1.25, bgcolor: 'rgba(var(--panel-rgb), 0.7)' }}>
-                    <Typography sx={{ fontSize: '1rem', fontWeight: 700 }}>Add Existing User</Typography>
-                    <Typography sx={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+                <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="border border-[var(--border)] rounded-xl p-4 space-y-2 bg-[var(--panel-secondary,rgba(255,255,255,0.02))]">
+                    <div className="text-sm font-bold text-[var(--text-primary)]">Add Existing User</div>
+                    <p className="text-xs text-[var(--text-secondary)]">
                       Link an existing account to this portal and assign the correct workspace role.
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    </p>
+                    <div className="pt-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -800,15 +818,15 @@ export default function PartnerPortalDetailPage() {
                       >
                         Add Member
                       </Button>
-                    </Box>
-                  </Box>
+                    </div>
+                  </div>
 
-                  <Box sx={{ border: '1px solid rgba(var(--accent-gold-rgb), 0.24)', borderRadius: 2.5, p: 2.25, display: 'grid', gap: 1.25, bgcolor: 'rgba(var(--accent-gold-rgb), 0.08)' }}>
-                    <Typography sx={{ fontSize: '1rem', fontWeight: 700 }}>Create New Portal User</Typography>
-                    <Typography sx={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+                  <div className="border border-[rgba(var(--accent-gold-rgb),0.24)] rounded-xl p-4 space-y-2 bg-[rgba(var(--accent-gold-rgb),0.06)]">
+                    <div className="text-sm font-bold text-[var(--text-primary)]">Create New Portal User</div>
+                    <p className="text-xs text-[var(--text-secondary)]">
                       Create a new portal-ready user, then issue an access code and sign-in link immediately.
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    </p>
+                    <div className="pt-2">
                       <Button
                         variant="primary"
                         size="sm"
@@ -819,33 +837,35 @@ export default function PartnerPortalDetailPage() {
                       >
                         Create User
                       </Button>
-                    </Box>
-                  </Box>
-                </Box>
+                    </div>
+                  </div>
+                </div>
 
-                <Box sx={{ mt: 3, display: 'grid', gap: 2 }}>
-                  {inviteResult ? renderAccessResult(inviteResult, 'Portal user created') : null}
-                  {loginCodeResult ? renderAccessResult(loginCodeResult, 'Portal login code refreshed') : null}
-                </Box>
+                <div className="mt-4 space-y-3">
+                  {inviteResult && renderAccessResult(inviteResult, 'Portal user created')}
+                  {loginCodeResult && renderAccessResult(loginCodeResult, 'Portal login code refreshed')}
+                </div>
               </DashboardPanel>
-            ) : null}
+            )}
 
-            {activeTab === 'activity' ? (
+            {/* Activity Tab */}
+            {activeTab === 'activity' && (
               <DashboardPanel title="Portal Activity" description="Recent membership and access-code changes for this portal">
                 <PortalActivityList
                   activities={activities}
                   emptyTitle="No portal activity yet"
                   emptyDescription="Role changes, member invites, removals, and login-code refreshes will appear here."
                 />
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                <div className="flex justify-end mt-4">
                   <Link href={`/dashboard/partner-portals/${portalId}/activity`} style={{ textDecoration: 'none' }}>
                     <Button variant="outline" size="sm">View All Activity</Button>
                   </Link>
-                </Box>
+                </div>
               </DashboardPanel>
-            ) : null}
+            )}
 
-            {activeTab === 'branding' ? (
+            {/* Branding Tab */}
+            {activeTab === 'branding' && (
               <PortalBrandingSettingsPanel
                 portalId={portalId}
                 portal={portal}
@@ -861,58 +881,51 @@ export default function PartnerPortalDetailPage() {
                   notes: nextPortal.notes || null,
                 }))}
               />
-            ) : null}
+            )}
 
-            {activeTab === 'customers' ? (
+            {/* Customers Tab */}
+            {activeTab === 'customers' && (
               <DashboardPanel title="Portal Customers" description="Customers created inside this partner workspace">
                 {customers.length === 0 ? (
-                  <EmptyState icon={<PersonOutlineIcon />} title="No portal customers" description="The partner can create their own customers from the portal workspace." />
+                  <EmptyState icon={<User className="w-10 h-10" />} title="No portal customers" description="The partner can create their own customers from the portal workspace." />
                 ) : (
                   <DataTable data={customers} columns={customerColumns} keyField="id" />
                 )}
               </DashboardPanel>
-            ) : null}
+            )}
 
-            {activeTab === 'danger' ? (
+            {/* Danger Zone Tab */}
+            {activeTab === 'danger' && (
               <DashboardPanel title="Danger Zone" description="Irreversible actions for this partner portal">
-                <Box sx={{ display: 'grid', gap: 2 }}>
-                  <Box
-                    sx={{
-                      border: '1px solid rgba(var(--error-rgb, var(--error-rgb)), 0.35)',
-                      borderRadius: 2.5,
-                      p: 2,
-                      display: 'grid',
-                      gap: 1.25,
-                      bgcolor: 'rgba(var(--error-rgb), 0.05)',
-                    }}
-                  >
-                    <Typography sx={{ fontWeight: 700, color: 'var(--error)' }}>
-                      Delete this portal permanently
-                    </Typography>
-                    <Typography sx={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-                      Deleting <strong>{portal?.name || 'this portal'}</strong> permanently removes the workspace along with
-                      {' '}{memberships.length} member{memberships.length === 1 ? '' : 's'},
-                      {' '}{customers.length} customer{customers.length === 1 ? '' : 's'}, and
-                      {' '}{assignments.length} shipment link{assignments.length === 1 ? '' : 's'}.
-                      The shipments themselves stay in the main system — only the portal assignments, portal customers, member access, and portal finance records are deleted. This cannot be undone.
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          setDeleteConfirmText('');
-                          setOpenDeleteDialog(true);
-                        }}
-                      >
-                        Delete Portal
-                      </Button>
-                    </Box>
-                  </Box>
-                </Box>
+                <div className="border border-[rgba(var(--error-rgb),0.35)] rounded-xl p-4 bg-[rgba(var(--error-rgb),0.05)] space-y-3">
+                  <div className="font-bold text-sm text-[var(--error)]">
+                    Delete this portal permanently
+                  </div>
+                  <p className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                    Deleting <strong>{portal?.name || 'this portal'}</strong> permanently removes the workspace along with
+                    {' '}{memberships.length} member{memberships.length === 1 ? '' : 's'},
+                    {' '}{customers.length} customer{customers.length === 1 ? '' : 's'}, and
+                    {' '}{assignments.length} shipment link{assignments.length === 1 ? '' : 's'}.
+                    The shipments themselves stay in the main system — only the portal assignments, portal customers, member access, and portal finance records are deleted. This cannot be undone.
+                  </p>
+                  <div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setDeleteConfirmText('');
+                        setOpenDeleteDialog(true);
+                      }}
+                      className="border-[var(--error)] text-[var(--error)] hover:bg-[rgba(var(--error-rgb),0.1)]"
+                    >
+                      Delete Portal
+                    </Button>
+                  </div>
+                </div>
               </DashboardPanel>
-            ) : null}
+            )}
 
+            {/* Add Member Dialog */}
             <Modal
               open={openAddMemberDialog}
               onClose={() => {
@@ -925,7 +938,6 @@ export default function PartnerPortalDetailPage() {
               title="Add Existing User To Portal"
               description="Search for an existing application user, then assign their portal role before saving access."
               size="sm"
-              contentSx={{ display: 'grid', gap: 2 }}
               actions={
                 <>
                   <Button
@@ -939,25 +951,58 @@ export default function PartnerPortalDetailPage() {
                   >
                     Cancel
                   </Button>
-                  <Button variant="primary" onClick={() => void handleAddMember()} disabled={savingMember}>
+                  <Button variant="primary" onClick={() => void handleAddMember()} disabled={savingMember || !selectedUser}>
                     {savingMember ? 'Saving...' : 'Add Member'}
                   </Button>
                 </>
               }
             >
-              <Autocomplete
-                disablePortal
-                options={users}
-                value={selectedUser}
-                onChange={(_, value) => setSelectedUser(value)}
-                onInputChange={(_, value) => setMemberSearch(value)}
-                isOptionEqualToValue={(option, value) => option.id === value.id}
-                getOptionLabel={(option) => option.name ? `${option.name} (${option.email})` : option.email}
-                renderInput={(params) => <TextField {...params} label="Search users" placeholder="Search users by name or email" />}
-              />
-              <Select label="Portal Role" value={memberRole} onChange={(value) => setMemberRole(String(value))} options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]} />
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">Search User</label>
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+                    <input
+                      type="text"
+                      placeholder="Type name or email..."
+                      value={memberSearch}
+                      onChange={(e) => setMemberSearch(e.target.value)}
+                      className="w-full pl-9 pr-3.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+                    />
+                  </div>
+                  <div className="mt-2 max-h-48 overflow-y-auto border border-[var(--border)] rounded-lg divide-y divide-[var(--border)] bg-[var(--background)]">
+                    {users.length === 0 ? (
+                      <div className="p-3 text-center text-xs text-[var(--text-secondary)]">No users found</div>
+                    ) : (
+                      users.map((u) => (
+                        <button
+                          key={u.id}
+                          type="button"
+                          onClick={() => setSelectedUser(u)}
+                          className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-[rgba(var(--accent-gold-rgb),0.06)] ${
+                            selectedUser?.id === u.id ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] font-semibold' : ''
+                          }`}
+                        >
+                          <div>
+                            <span className="text-[var(--text-primary)]">{u.name || 'Unnamed'}</span>
+                            <span className="text-[var(--text-secondary)] font-mono ml-1.5">({u.email})</span>
+                          </div>
+                          {selectedUser?.id === u.id && <Check className="w-3.5 h-3.5 text-[var(--accent-gold)] shrink-0" />}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+                <Select
+                  label="Portal Role"
+                  value={memberRole}
+                  onChange={(val) => setMemberRole(String(val))}
+                  options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]}
+                />
+              </div>
             </Modal>
 
+            {/* Create Portal User Dialog */}
             <Modal
               open={openCreatePortalUserDialog}
               onClose={() => {
@@ -987,16 +1032,22 @@ export default function PartnerPortalDetailPage() {
                 </>
               }
             >
-              <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-                <TextField label="Name" value={inviteForm.name} onChange={(event) => setInviteForm((prev) => ({ ...prev, name: event.target.value }))} />
-                <TextField label="Email" value={inviteForm.email} onChange={(event) => setInviteForm((prev) => ({ ...prev, email: event.target.value }))} />
-                <TextField label="Phone" value={inviteForm.phone} onChange={(event) => setInviteForm((prev) => ({ ...prev, phone: event.target.value }))} />
-                <TextField label="City" value={inviteForm.city} onChange={(event) => setInviteForm((prev) => ({ ...prev, city: event.target.value }))} />
-                <TextField label="Country" value={inviteForm.country} onChange={(event) => setInviteForm((prev) => ({ ...prev, country: event.target.value }))} />
-                <Select label="Portal Role" value={inviteForm.membershipRole} onChange={(value) => setInviteForm((prev) => ({ ...prev, membershipRole: String(value) }))} options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]} />
-              </Box>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField label="Name *" value={inviteForm.name} onChange={(e) => setInviteForm((prev) => ({ ...prev, name: e.target.value }))} required />
+                <FormField label="Email *" type="email" value={inviteForm.email} onChange={(e) => setInviteForm((prev) => ({ ...prev, email: e.target.value }))} required />
+                <FormField label="Phone" value={inviteForm.phone} onChange={(e) => setInviteForm((prev) => ({ ...prev, phone: e.target.value }))} />
+                <FormField label="City" value={inviteForm.city} onChange={(e) => setInviteForm((prev) => ({ ...prev, city: e.target.value }))} />
+                <FormField label="Country" value={inviteForm.country} onChange={(e) => setInviteForm((prev) => ({ ...prev, country: e.target.value }))} />
+                <Select
+                  label="Portal Role"
+                  value={inviteForm.membershipRole}
+                  onChange={(val) => setInviteForm((prev) => ({ ...prev, membershipRole: String(val) }))}
+                  options={[{ value: 'ADMIN', label: 'ADMIN' }, { value: 'STAFF', label: 'STAFF' }]}
+                />
+              </div>
             </Modal>
 
+            {/* Delete Portal Dialog */}
             <Modal
               open={openDeleteDialog}
               onClose={() => {
@@ -1028,18 +1079,19 @@ export default function PartnerPortalDetailPage() {
                     variant="primary"
                     onClick={() => void handleDeletePortal()}
                     disabled={deletingPortal || deleteConfirmText !== portal?.name}
+                    className="bg-[var(--error)] hover:bg-[var(--error-dark,red)] text-white"
                   >
                     {deletingPortal ? 'Deleting...' : 'Delete Portal Forever'}
                   </Button>
                 </>
               }
             >
-              <TextField
+              <FormField
                 label={`Type "${portal?.name || ''}" to confirm`}
                 value={deleteConfirmText}
-                onChange={(event) => setDeleteConfirmText(event.target.value)}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
                 disabled={deletingPortal}
-                fullWidth
+                placeholder={portal?.name || ''}
               />
             </Modal>
 
@@ -1074,7 +1126,7 @@ export default function PartnerPortalDetailPage() {
               severity="warning"
               loading={savingShipmentId !== null}
             />
-          </Box>
+          </div>
         )}
       </DashboardPanel>
     </DashboardSurface>

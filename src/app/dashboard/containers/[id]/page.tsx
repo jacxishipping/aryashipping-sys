@@ -1,26 +1,170 @@
 'use client';
-
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { 
-	Box, 
-	Tabs, 
-	Tab, 
-	Table, 
-	TableBody, 
-	TableCell, 
-	TableContainer, 
-	TableHead, 
-	TableRow,
-	LinearProgress,
-	Divider,
-	Typography,
-	TextField,
-	Checkbox,
-	CircularProgress,
-} from '@mui/material';
+
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'ml') style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mr') style.marginRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: any) {
+  const variantClass = variant === 'caption' ? 'text-xs text-[var(--text-secondary)]' : variant === 'subtitle2' ? 'text-sm font-semibold' : variant === 'body2' ? 'text-sm' : '';
+  return (
+    <Component className={`${variantClass} ${noWrap ? 'truncate' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Divider({ sx, className = '' }: any) {
+  return <hr className={`border-[var(--border)] my-1 ${className}`} style={sxToStyle(sx)} />;
+}
+
+function TableContainer({ children, className = '', sx, ...props }: any) {
+  return <div className={`overflow-x-auto w-full rounded-xl border border-[var(--border)] ${className}`} style={sxToStyle(sx)} {...props}>{children}</div>;
+}
+
+function Table({ children, className = '', sx, ...props }: any) {
+  return <table className={`w-full text-sm text-left ${className}`} style={sxToStyle(sx)} {...props}>{children}</table>;
+}
+
+function TableHead({ children, className = '', sx, ...props }: any) {
+  return <thead className={`bg-[var(--background)] border-b border-[var(--border)] text-xs font-semibold text-[var(--text-secondary)] uppercase ${className}`} style={sxToStyle(sx)} {...props}>{children}</thead>;
+}
+
+function TableBody({ children, className = '', sx, ...props }: any) {
+  return <tbody className={`divide-y divide-[var(--border)] ${className}`} style={sxToStyle(sx)} {...props}>{children}</tbody>;
+}
+
+function TableRow({ children, className = '', sx, ...props }: any) {
+  return <tr className={`hover:bg-[rgba(var(--accent-gold-rgb),0.04)] transition-colors ${className}`} style={sxToStyle(sx)} {...props}>{children}</tr>;
+}
+
+function TableCell({ children, className = '', sx, align, ...props }: any) {
+  const alignClass = align === 'right' ? 'text-right' : align === 'center' ? 'text-center' : 'text-left';
+  return <td className={`px-4 py-3 text-[var(--text-primary)] ${alignClass} ${className}`} style={sxToStyle(sx)} {...props}>{children}</td>;
+}
+
+function LinearProgress({ value = 0, sx, className = '' }: any) {
+  return (
+    <div className={`w-full bg-[var(--border)] rounded-full h-2 overflow-hidden ${className}`} style={sxToStyle(sx)}>
+      <div className="bg-[var(--accent-gold)] h-full transition-all duration-300" style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
+    </div>
+  );
+}
+
+function CircularProgress({ size = 20, className = '' }: any) {
+  return <div className={`inline-block animate-spin rounded-full border-2 border-[var(--accent-gold)] border-t-transparent ${className}`} style={{ width: size, height: size }} />;
+}
+
+function Checkbox({ checked, onChange, disabled, className = '' }: any) {
+  return (
+    <input 
+      type="checkbox" 
+      checked={Boolean(checked)} 
+      onChange={onChange} 
+      disabled={disabled}
+      className={`rounded border-[var(--border)] text-[var(--accent-gold)] focus:ring-[var(--accent-gold)] w-4 h-4 cursor-pointer ${className}`}
+    />
+  );
+}
+
+function TextField({ label, value, onChange, disabled, type = 'text', size, placeholder, multiline, rows = 3, className = '', ...props }: any) {
+  return (
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      {label && <label className="text-xs font-semibold text-[var(--text-secondary)]">{label}</label>}
+      {multiline ? (
+        <textarea
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          rows={rows}
+          className="w-full px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] text-sm focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50"
+          {...props}
+        />
+      ) : (
+        <input
+          type={type}
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          className={`w-full ${size === 'small' ? 'px-2.5 py-1.5 text-xs' : 'px-3 py-2 text-sm'} rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50`}
+          {...props}
+        />
+      )}
+    </div>
+  );
+}
+
+function Tabs({ value, onChange, children, className = '' }: any) {
+  return (
+    <div className={`flex items-center gap-1 border-b border-[var(--border)] overflow-x-auto ${className}`}>
+      {React.Children.map(children, (child, index) => {
+        if (!React.isValidElement(child)) return child;
+        return React.cloneElement(child as any, {
+          selected: value === index,
+          onClick: () => onChange && onChange(null, index),
+        });
+      })}
+    </div>
+  );
+}
+
+function Tab({ label, icon, selected, onClick, className = '' }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all duration-150 ${
+        selected
+          ? 'border-[var(--accent-gold)] text-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.06)]'
+          : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border)]'
+      } ${className}`}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+}
 import {
 	ArrowLeft,
 	Package,

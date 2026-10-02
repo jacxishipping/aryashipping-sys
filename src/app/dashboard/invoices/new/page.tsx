@@ -1,5 +1,4 @@
 'use client';
-import { Box } from '@mui/material';
 
 import { useSession } from 'next-auth/react';
 import { hasPermission } from '@/lib/rbac';

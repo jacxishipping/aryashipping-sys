@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { AlertTriangle, Brain, CheckCircle2, FileText, Folder, Search as SearchIcon, ShieldCheck, Upload } from 'lucide-react';
-import { Box, Typography } from '@mui/material';
 import { DashboardSurface, DashboardPanel, DashboardGrid } from '@/components/dashboard/DashboardSurface';
 import { 
     PageHeader, 
@@ -12,7 +11,6 @@ import {
     Button, 
     EmptyState, 
     FormField, 
-    Breadcrumbs, 
     toast, 
     DashboardPageSkeleton, 
     Modal,
@@ -124,7 +122,7 @@ export default function DocumentsPage() {
 			fetchDocuments();
 		}
         // eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [status, page, search]); // Debounce search in real app
+	}, [status, page, search]);
 
     const handleFileUpload = async (file: File) => {
         try {
@@ -211,7 +209,7 @@ export default function DocumentsPage() {
 	const categories = useMemo<DocumentCategory[]>(
 		() => {
 			const complianceTypes = ['CUSTOMS', 'INSURANCE', 'TITLE', 'INSPECTION_REPORT', 'CONTRACT'];
-            const templateTypes = ['TEMPLATE', 'INVOICE', 'BILL_OF_LADING']; // Mapping some types to "Templates" concept if needed
+            const templateTypes = ['TEMPLATE', 'INVOICE', 'BILL_OF_LADING'];
 
 			return [
 				{
@@ -349,82 +347,41 @@ export default function DocumentsPage() {
 							title={category.title}
 							description={category.description}
 							actions={
-								<Box
-									sx={{
-										width: 40,
-										height: 40,
-										borderRadius: 2,
-										display: 'flex',
-										alignItems: 'center',
-										justifyContent: 'center',
-										bgcolor: category.iconBg,
-										color: category.iconColor,
-									}}
+								<div
+									className="w-10 h-10 rounded-xl flex items-center justify-center"
+									style={{ backgroundColor: category.iconBg, color: category.iconColor }}
 								>
 									<Icon style={{ fontSize: 20 }} />
-								</Box>
+								</div>
 							}
 						>
 							<DashboardGrid className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
 								{category.documents.map((document) => (
-									<Box
+									<div
 										key={document.id}
-										sx={{
-											borderRadius: 2,
-											border: '1px solid var(--border)',
-											background: 'var(--panel)',
-											boxShadow: '0 8px 20px rgba(var(--text-primary-rgb), 0.06)',
-											p: 2,
-											cursor: 'pointer',
-											transition: 'all 0.2s ease',
-											'&:hover': {
-												transform: 'translateY(-2px)',
-												boxShadow: '0 16px 32px rgba(var(--text-primary-rgb), 0.1)',
-												borderColor: category.iconColor,
-											},
-										}}
+										className="rounded-xl border border-[var(--border)] bg-[var(--panel)] p-4 cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent-gold)] shadow-sm"
                                         onClick={() => window.open(document.fileUrl, '_blank')}
 									>
-										<Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', mb: 2 }}>
-											<Typography sx={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', flex: 1, wordBreak: 'break-all' }}>
+										<div className="flex justify-between items-start mb-3 gap-2">
+											<div className="text-sm font-semibold text-[var(--text-primary)] flex-1 break-all">
 												{document.name}
-											</Typography>
-                                            <Box
-                                                sx={{
-                                                    px: 1,
-                                                    py: 0.5,
-                                                    borderRadius: 1,
-                                                    fontSize: '0.65rem',
-                                                    fontWeight: 600,
-                                                    textTransform: 'uppercase',
-                                                    bgcolor: 'var(--background)',
-                                                    border: '1px solid var(--border)',
-                                                    color: 'var(--text-secondary)'
-                                                }}
-                                            >
+											</div>
+                                            <div className="px-2 py-0.5 rounded text-[0.65rem] font-semibold uppercase bg-[var(--background)] border border-[var(--border)] text-[var(--text-secondary)] shrink-0">
                                                 {document.fileType.split('/')[1] || 'FILE'}
-                                            </Box>
-										</Box>
+                                            </div>
+										</div>
 
-										<Box sx={{ display: 'flex', gap: 2, mb: 2, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-											<Box
-												sx={{
-													px: 1.5,
-													py: 0.5,
-													borderRadius: 1,
-													bgcolor: 'var(--background)',
-													textTransform: 'capitalize',
-												}}
-											>
+										<div className="flex gap-2 mb-3 text-xs text-[var(--text-secondary)] items-center">
+											<div className="px-2 py-0.5 rounded bg-[var(--background)] capitalize text-[0.7rem]">
 												{document.category.replace('_', ' ').toLowerCase()}
-											</Box>
+											</div>
 											<span>{formatSize(document.fileSize)}</span>
-										</Box>
+										</div>
                                         
-                                        <Box sx={{ fontSize: '0.75rem', color: 'var(--text-tertiary)' }}>
+                                        <div className="text-[0.75rem] text-[var(--text-secondary)] opacity-80">
                                             Uploaded by {document.uploadedBy} on {new Date(document.createdAt).toLocaleDateString()}
-                                        </Box>
-									</Box>
+                                        </div>
+									</div>
 								))}
 							</DashboardGrid>
 						</DashboardPanel>
@@ -434,7 +391,7 @@ export default function DocumentsPage() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 4, mb: 4 }}>
+                <div className="flex justify-center items-center gap-3 my-4">
                     <Button 
                         variant="outline" 
                         disabled={page === 1}
@@ -442,9 +399,9 @@ export default function DocumentsPage() {
                     >
                         Previous
                     </Button>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                    <span className="text-sm text-[var(--text-secondary)]">
                         Page {page} of {totalPages}
-                    </Box>
+                    </span>
                     <Button 
                         variant="outline" 
                         disabled={page === totalPages}
@@ -452,7 +409,7 @@ export default function DocumentsPage() {
                     >
                         Next
                     </Button>
-                </Box>
+                </div>
             )}
 
             {/* Upload Modal */}
@@ -464,14 +421,8 @@ export default function DocumentsPage() {
                 disableBackdropClick={true}
                 showCloseButton={!isProcessing}
             >
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-                            gap: 1.5,
-                        }}
-                    >
+                <div className="flex flex-col gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                         {[
                             {
                                 icon: <Brain className="w-4 h-4" />,
@@ -489,27 +440,22 @@ export default function DocumentsPage() {
                                 text: 'If AI falls back or extraction is partial, the exact reason is saved with the document.',
                             },
                         ].map((item) => (
-                            <Box
+                            <div
                                 key={item.title}
-                                sx={{
-                                    p: 1.5,
-                                    border: '1px solid var(--border)',
-                                    borderRadius: 2,
-                                    bgcolor: 'var(--background)',
-                                }}
+                                className="p-3 border border-[var(--border)] rounded-xl bg-[var(--background)]"
                             >
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: 'var(--accent-gold)', mb: 0.75 }}>
+                                <div className="flex items-center gap-1.5 text-[var(--accent-gold)] mb-1">
                                     {item.icon}
-                                    <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                                    <div className="text-xs font-bold text-[var(--text-primary)]">
                                         {item.title}
-                                    </Typography>
-                                </Box>
-                                <Typography sx={{ fontSize: '0.74rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                                    </div>
+                                </div>
+                                <p className="text-[0.74rem] text-[var(--text-secondary)] leading-relaxed">
                                     {item.text}
-                                </Typography>
-                            </Box>
+                                </p>
+                            </div>
                         ))}
-                    </Box>
+                    </div>
 
                     <FormField label="Category">
                         <Select
@@ -530,7 +476,7 @@ export default function DocumentsPage() {
                         accept=".pdf,.jpg,.jpeg,.png,.csv,.doc,.docx,.xls,.xlsx"
                     />
 
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 2 }}>
+                    <div className="flex justify-end gap-2 mt-2">
                         <Button 
                             variant="primary" 
                             onClick={() => setIsUploadOpen(false)}
@@ -538,8 +484,8 @@ export default function DocumentsPage() {
                         >
                             {isProcessing ? 'Uploading...' : 'Done'}
                         </Button>
-                    </Box>
-                </Box>
+                    </div>
+                </div>
             </Modal>
 
             <AiDocumentOcrModal

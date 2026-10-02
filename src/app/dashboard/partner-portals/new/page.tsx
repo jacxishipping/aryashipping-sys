@@ -4,13 +4,9 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CheckIcon from '@mui/icons-material/Check';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Autocomplete, Box, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material';
+import { ArrowLeft, Check, ChevronLeft, ChevronRight, Building2, Palette, User, FileText, Search } from 'lucide-react';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
-import { PageHeader, Breadcrumbs, Button, toast } from '@/components/design-system';
+import { PageHeader, Button, FormField, toast } from '@/components/design-system';
 import { hasPermission } from '@/lib/rbac';
 
 type UserOption = {
@@ -30,7 +26,12 @@ type PortalForm = {
   notes: string;
 };
 
-const steps = ['Portal Details', 'Branding', 'Owner', 'Review'];
+const steps = [
+  { label: 'Portal Details', icon: Building2 },
+  { label: 'Branding', icon: Palette },
+  { label: 'Owner', icon: User },
+  { label: 'Review', icon: FileText }
+];
 
 const initialForm: PortalForm = {
   name: '',
@@ -172,92 +173,147 @@ export default function NewPartnerPortalPage() {
   const renderStep = () => {
     if (activeStep === 0) {
       return (
-        <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-          <TextField
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
             label="Portal Name *"
             value={form.name}
-            onChange={(event) => updateForm('name', event.target.value)}
+            onChange={(e) => updateForm('name', e.target.value)}
             placeholder="e.g. Gulf Partner Workspace"
             required
-            fullWidth
           />
-          <TextField
+          <FormField
             label="Portal Code"
             value={form.code}
-            onChange={(event) => updateForm('code', event.target.value)}
+            onChange={(e) => updateForm('code', e.target.value)}
             placeholder="e.g. gulf-partner"
-            helperText="Optional unique short code for internal reference"
-            fullWidth
+            hint="Optional unique short code for internal reference"
           />
-          <TextField
+          <FormField
             label="Company Label"
             value={form.companyLabel}
-            onChange={(event) => updateForm('companyLabel', event.target.value)}
+            onChange={(e) => updateForm('companyLabel', e.target.value)}
             placeholder="Name shown in the partner workspace"
-            fullWidth
           />
-          <TextField
-            label="Notes"
-            value={form.notes}
-            onChange={(event) => updateForm('notes', event.target.value)}
-            multiline
-            minRows={3}
-            fullWidth
-          />
-        </Box>
+          <div className="md:col-span-2">
+            <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+              Notes
+            </label>
+            <textarea
+              value={form.notes}
+              onChange={(e) => updateForm('notes', e.target.value)}
+              placeholder="Internal notes about this partner portal..."
+              rows={3}
+              className="w-full px-3.5 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] focus:border-transparent transition-all"
+            />
+          </div>
+        </div>
       );
     }
 
     if (activeStep === 1) {
       return (
-        <Box sx={{ display: 'grid', gap: 2, gridTemplateColumns: { xs: '1fr', md: 'repeat(2, minmax(0, 1fr))' } }}>
-          <TextField
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <FormField
             label="Custom Domain"
             value={form.customDomain}
-            onChange={(event) => updateForm('customDomain', event.target.value)}
+            onChange={(e) => updateForm('customDomain', e.target.value)}
             placeholder="portal.partner.com"
-            helperText="Optional hostname without http:// or paths"
-            fullWidth
+            hint="Optional hostname without http:// or paths"
           />
-          <TextField
+          <FormField
             label="Logo URL"
             value={form.logoUrl}
-            onChange={(event) => updateForm('logoUrl', event.target.value)}
+            onChange={(e) => updateForm('logoUrl', e.target.value)}
             placeholder="https://example.com/logo.png"
-            fullWidth
           />
-          <TextField
-            label="Accent Color"
-            type="color"
-            value={form.accentColor}
-            onChange={(event) => updateForm('accentColor', event.target.value)}
-            helperText="Used for the partner workspace theme"
-            fullWidth
-          />
-          <Box sx={{ border: '1px solid var(--border)', borderRadius: 2, p: 2, display: 'grid', gap: 1 }}>
-            <Typography sx={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Preview</Typography>
-            <Box sx={{ height: 48, borderRadius: 1, bgcolor: form.accentColor || '#D4AF37' }} />
-            <Typography sx={{ fontWeight: 700 }}>{form.companyLabel || form.name || 'Partner Portal'}</Typography>
-          </Box>
-        </Box>
+          <div>
+            <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-1.5">
+              Accent Color
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={form.accentColor}
+                onChange={(e) => updateForm('accentColor', e.target.value)}
+                className="w-12 h-10 rounded border border-[var(--border)] bg-transparent cursor-pointer"
+              />
+              <input
+                type="text"
+                value={form.accentColor}
+                onChange={(e) => updateForm('accentColor', e.target.value)}
+                placeholder="#D4AF37"
+                className="flex-1 px-3.5 py-2 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)] font-mono"
+              />
+            </div>
+            <span className="text-xs text-[var(--text-secondary)] mt-1 block">Used for the partner workspace theme</span>
+          </div>
+          <div className="border border-[var(--border)] rounded-xl p-4 bg-[var(--panel-secondary,var(--panel))] flex flex-col justify-between">
+            <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase">Preview</span>
+            <div
+              className="h-10 rounded-lg my-2 shadow-inner transition-colors duration-300"
+              style={{ backgroundColor: form.accentColor || '#D4AF37' }}
+            />
+            <div className="font-bold text-sm text-[var(--text-primary)]">
+              {form.companyLabel || form.name || 'Partner Portal Preview'}
+            </div>
+          </div>
+        </div>
       );
     }
 
     if (activeStep === 2) {
       return (
-        <Autocomplete
-          options={users}
-          value={selectedOwner}
-          onChange={(_, value) => setSelectedOwner(value)}
-          onInputChange={(_, value) => setUserSearch(value)}
-          getOptionLabel={(option) => option.name ? `${option.name} (${option.email})` : option.email}
-          renderInput={(params) => <TextField {...params} label="Portal Owner *" placeholder="Search users by name or email" required />}
-        />
+        <div className="space-y-4">
+          <label className="block text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">
+            Portal Owner *
+          </label>
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]" />
+            <input
+              type="text"
+              value={userSearch}
+              onChange={(e) => setUserSearch(e.target.value)}
+              placeholder="Search users by name or email..."
+              className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-[var(--border)] bg-[var(--background)] text-sm text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-gold)]"
+            />
+          </div>
+
+          <div className="border border-[var(--border)] rounded-xl max-h-60 overflow-y-auto divide-y divide-[var(--border)] bg-[var(--background)]">
+            {users.length === 0 ? (
+              <div className="p-4 text-center text-sm text-[var(--text-secondary)]">No users found</div>
+            ) : (
+              users.map((user) => {
+                const isSelected = selectedOwner?.id === user.id;
+                return (
+                  <button
+                    key={user.id}
+                    type="button"
+                    onClick={() => setSelectedOwner(user)}
+                    className={`w-full text-left px-4 py-3 flex items-center justify-between hover:bg-[rgba(var(--accent-gold-rgb),0.06)] transition-colors ${
+                      isSelected ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] font-semibold' : ''
+                    }`}
+                  >
+                    <div>
+                      <div className="text-sm text-[var(--text-primary)]">{user.name || 'Unnamed User'}</div>
+                      <div className="text-xs text-[var(--text-secondary)] font-mono">{user.email} &bull; {user.role}</div>
+                    </div>
+                    {isSelected && <Check className="w-4 h-4 text-[var(--accent-gold)] shrink-0" />}
+                  </button>
+                );
+              })
+            )}
+          </div>
+          {selectedOwner && (
+            <div className="p-3 bg-[rgba(var(--accent-gold-rgb),0.08)] border border-[rgba(var(--accent-gold-rgb),0.2)] rounded-lg text-xs text-[var(--text-primary)]">
+              Selected Owner: <span className="font-bold text-[var(--accent-gold)]">{selectedOwnerLabel}</span>
+            </div>
+          )}
+        </div>
       );
     }
 
     return (
-      <Box sx={{ display: 'grid', gap: 2 }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
           ['Portal Name', form.name || 'Not provided'],
           ['Portal Code', form.code || 'Not provided'],
@@ -268,12 +324,12 @@ export default function NewPartnerPortalPage() {
           ['Owner', selectedOwnerLabel],
           ['Notes', form.notes || 'Not provided'],
         ].map(([label, value]) => (
-          <Box key={label} sx={{ display: 'grid', gap: 0.5, borderBottom: '1px solid var(--border)', pb: 1 }}>
-            <Typography sx={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>{label}</Typography>
-            <Typography sx={{ fontWeight: 600, overflowWrap: 'anywhere' }}>{value}</Typography>
-          </Box>
+          <div key={label} className="border-b border-[var(--border)] pb-2">
+            <span className="text-[11px] font-bold text-[var(--text-secondary)] uppercase tracking-wider">{label}</span>
+            <div className="font-medium text-sm text-[var(--text-primary)] mt-0.5 break-words">{value}</div>
+          </div>
         ))}
-      </Box>
+      </div>
     );
   };
 
@@ -289,38 +345,77 @@ export default function NewPartnerPortalPage() {
         showBreadcrumbs
         actions={
           <Link href="/dashboard/partner-portals" style={{ textDecoration: 'none' }}>
-            <Button variant="outline" icon={<ArrowBackIcon />}>Back</Button>
+            <Button variant="outline" icon={<ArrowLeft className="w-4 h-4" />}>Back</Button>
           </Link>
         }
       />
 
       <DashboardPanel>
-        <Box sx={{ display: 'grid', gap: 4 }}>
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
+        <div className="space-y-6">
+          {/* Custom Stepper */}
+          <div className="grid grid-cols-4 gap-2 border-b border-[var(--border)] pb-4">
+            {steps.map((step, idx) => {
+              const Icon = step.icon;
+              const isActive = activeStep === idx;
+              const isPast = activeStep > idx;
+              return (
+                <button
+                  key={step.label}
+                  type="button"
+                  onClick={() => {
+                    if (idx < activeStep) setActiveStep(idx);
+                  }}
+                  className={`flex flex-col sm:flex-row items-center justify-center gap-2 p-2 rounded-lg text-xs font-semibold transition-all ${
+                    isActive
+                      ? 'bg-[rgba(var(--accent-gold-rgb),0.12)] text-[var(--accent-gold)] border border-[rgba(var(--accent-gold-rgb),0.3)]'
+                      : isPast
+                      ? 'text-[var(--text-primary)] hover:bg-[var(--panel-secondary,rgba(255,255,255,0.03))]'
+                      : 'text-[var(--text-secondary)] opacity-50 cursor-not-allowed'
+                  }`}
+                >
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs shrink-0 ${
+                    isPast ? 'bg-[var(--success)] text-white' : isActive ? 'bg-[var(--accent-gold)] text-black' : 'bg-[var(--border)] text-[var(--text-secondary)]'
+                  }`}>
+                    {isPast ? <Check className="w-3.5 h-3.5" /> : idx + 1}
+                  </div>
+                  <span className="truncate hidden md:inline">{step.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-          <Box>{renderStep()}</Box>
+          <div className="min-h-[220px]">{renderStep()}</div>
 
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, flexWrap: 'wrap' }}>
-            <Button variant="outline" onClick={handleBack} disabled={activeStep === 0 || saving} icon={<ChevronLeftIcon />}>
+          <div className="flex items-center justify-between gap-3 pt-4 border-t border-[var(--border)]">
+            <Button
+              variant="outline"
+              onClick={handleBack}
+              disabled={activeStep === 0 || saving}
+              icon={<ChevronLeft className="w-4 h-4" />}
+            >
               Back
             </Button>
             {activeStep === steps.length - 1 ? (
-              <Button variant="primary" onClick={() => void handleSubmit()} disabled={saving} icon={<CheckIcon />}>
+              <Button
+                variant="primary"
+                onClick={() => void handleSubmit()}
+                disabled={saving}
+                icon={<Check className="w-4 h-4" />}
+              >
                 {saving ? 'Creating...' : 'Create Portal'}
               </Button>
             ) : (
-              <Button variant="primary" onClick={handleNext} disabled={saving} icon={<ChevronRightIcon />}>
+              <Button
+                variant="primary"
+                onClick={handleNext}
+                disabled={saving}
+                icon={<ChevronRight className="w-4 h-4" />}
+              >
                 Continue
               </Button>
             )}
-          </Box>
-        </Box>
+          </div>
+        </div>
       </DashboardPanel>
     </DashboardSurface>
   );

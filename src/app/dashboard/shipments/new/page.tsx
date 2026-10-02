@@ -8,7 +8,199 @@ import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Upload, X, Loader2, Package, User, FileText, CheckCircle, ArrowRight, Camera } from 'lucide-react';
-import { Box, Stepper, Step, StepLabel, Typography, LinearProgress, Autocomplete, TextField } from '@mui/material';
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'ml') style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mr') style.marginRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Typography({ children, className = '', component: Component = 'div', variant, color, noWrap, sx, style, ...props }: any) {
+  const variantClass = variant === 'caption' ? 'text-xs text-[var(--text-secondary)]' : variant === 'subtitle2' ? 'text-sm font-semibold' : variant === 'body2' ? 'text-sm' : '';
+  return (
+    <Component className={`${variantClass} ${noWrap ? 'truncate' : ''} ${className}`} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function LinearProgress({ value = 0, sx, className = '' }: any) {
+  return (
+    <div className={`w-full bg-[var(--border)] rounded-full h-2 overflow-hidden ${className}`} style={sxToStyle(sx)}>
+      <div className="bg-[var(--accent-gold)] h-full transition-all duration-300" style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
+    </div>
+  );
+}
+
+function Stepper({ activeStep = 0, children, className = '' }: any) {
+  return (
+    <div className={`w-full mb-6 flex items-center justify-between relative max-w-3xl mx-auto px-4 ${className}`}>
+      {React.Children.map(children, (child, idx) => {
+        if (!React.isValidElement(child)) return child;
+        return React.cloneElement(child as any, {
+          active: activeStep === idx,
+          completed: activeStep > idx,
+          stepIndex: idx + 1,
+        });
+      })}
+    </div>
+  );
+}
+
+function Step({ children, active, completed, stepIndex }: any) {
+  return (
+    <div className="flex flex-col items-center relative z-10">
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-colors ${
+        active 
+          ? 'bg-[var(--accent-gold)] text-black shadow-md ring-2 ring-[var(--accent-gold)] ring-offset-2 ring-offset-[var(--background)]' 
+          : completed 
+          ? 'bg-[var(--accent-gold)] text-black' 
+          : 'bg-[var(--background)] border border-[var(--border)] text-[var(--text-secondary)]'
+      }`}>
+        {stepIndex}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function StepLabel({ children, className = '' }: any) {
+  return (
+    <span className={`text-xs mt-1.5 font-medium text-[var(--text-secondary)] ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+function TextField({ label, value, onChange, disabled, type = 'text', size, placeholder, helperText, multiline, rows = 3, className = '', InputProps, ...props }: any) {
+  return (
+    <div className={`flex flex-col gap-1.5 ${className}`}>
+      {label && <label className="text-xs font-semibold text-[var(--text-secondary)]">{label}</label>}
+      <div className="relative flex items-center">
+        {InputProps?.startAdornment && (
+          <div className="absolute left-3 text-[var(--text-secondary)]">{InputProps.startAdornment}</div>
+        )}
+        <input
+          type={type}
+          value={value ?? ''}
+          onChange={onChange}
+          disabled={disabled}
+          placeholder={placeholder}
+          className={`w-full ${InputProps?.startAdornment ? 'pl-9' : 'pl-3'} ${InputProps?.endAdornment ? 'pr-9' : 'pr-3'} ${size === 'small' ? 'py-1.5 text-xs' : 'py-2 text-sm'} rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent-gold)] transition-colors disabled:opacity-50`}
+          {...props}
+        />
+        {InputProps?.endAdornment && (
+          <div className="absolute right-3 text-[var(--text-secondary)]">{InputProps.endAdornment}</div>
+        )}
+      </div>
+      {helperText && <span className="text-[0.75rem] text-[var(--text-secondary)]">{helperText}</span>}
+    </div>
+  );
+}
+
+function Autocomplete({
+  options = [],
+  value,
+  onChange,
+  onInputChange,
+  getOptionLabel = (opt: any) => opt?.name || opt?.label || String(opt || ''),
+  renderInput,
+  loading = false,
+  multiple = false,
+}: any) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+
+  const selectedOption = value;
+
+  const filteredOptions = useMemo(() => {
+    if (!inputValue.trim()) return options;
+    return options.filter((opt: any) =>
+      getOptionLabel(opt).toLowerCase().includes(inputValue.toLowerCase())
+    );
+  }, [options, inputValue, getOptionLabel]);
+
+  const handleSelect = (option: any) => {
+    onChange(null, option);
+    setIsOpen(false);
+  };
+
+  const inputParams = {
+    value: value ? getOptionLabel(value) : inputValue,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInputValue(e.target.value);
+      if (onInputChange) onInputChange(e, e.target.value);
+      if (!isOpen) setIsOpen(true);
+    },
+    onFocus: () => setIsOpen(true),
+    InputProps: {
+      endAdornment: null,
+    },
+  };
+
+  return (
+    <div className="relative w-full">
+      {renderInput(inputParams)}
+      {isOpen && (
+        <div className="absolute z-50 w-full mt-1 max-h-60 overflow-y-auto rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-xl p-1 text-sm">
+          {loading ? (
+            <div className="p-3 text-center text-xs text-[var(--text-secondary)]">Loading...</div>
+          ) : filteredOptions.length === 0 ? (
+            <div className="p-3 text-center text-xs text-[var(--text-secondary)]">No options</div>
+          ) : (
+            filteredOptions.map((option: any, idx: number) => {
+              const isSelected = (selectedOption?.id || selectedOption) === (option.id || option);
+              return (
+                <div
+                  key={option.id || idx}
+                  className={`p-2 rounded-lg cursor-pointer transition-colors ${
+                    isSelected ? 'bg-[rgba(var(--accent-gold-rgb),0.15)] text-[var(--accent-gold)] font-medium' : 'hover:bg-[var(--panel-hover)] text-[var(--text-primary)]'
+                  }`}
+                  onClick={() => handleSelect(option)}
+                >
+                  {getOptionLabel(option)}
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 import { PageHeader, Button, FormField, Breadcrumbs, Select, toast } from '@/components/design-system';
 import { shipmentSchema, type ShipmentFormData } from '@/lib/validations/shipment';

@@ -29,8 +29,118 @@ import {
   Ship,
   AlertTriangle,
   Radio,
-} from 'lucide-react';
-import { Tabs, Tab, Box, Menu, MenuItem } from '@mui/material';
+function sxToStyle(sx?: any): React.CSSProperties {
+  if (!sx) return {};
+  const style: any = {};
+  for (const [key, val] of Object.entries(sx)) {
+    if (key.startsWith('&') || key.startsWith('@')) continue;
+    if (typeof val === 'object' && val !== null) {
+      const resolved = (val as any).xs ?? (val as any).md ?? (val as any).lg;
+      if (resolved !== undefined) style[key] = resolved;
+      continue;
+    }
+    if (key === 'bgcolor') style.backgroundColor = val;
+    else if (key === 'p') style.padding = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'px') { style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val; style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'py') { style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val; style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'pt') style.paddingTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pb') style.paddingBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pl') style.paddingLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'pr') style.paddingRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'm') style.margin = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mx') { style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val; style.marginRight = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'my') { style.marginTop = typeof val === 'number' ? `${val * 8}px` : val; style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val; }
+    else if (key === 'mt') style.marginTop = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mb') style.marginBottom = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'ml') style.marginLeft = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'mr') style.marginRight = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'gap') style.gap = typeof val === 'number' ? `${val * 8}px` : val;
+    else if (key === 'borderRadius') style.borderRadius = typeof val === 'number' ? `${val * 8}px` : val;
+    else style[key] = val;
+  }
+  return style;
+}
+
+function Box({ children, className = '', component: Component = 'div', sx, style, ...props }: any) {
+  return (
+    <Component className={className} style={{ ...sxToStyle(sx), ...style }} {...props}>
+      {children}
+    </Component>
+  );
+}
+
+function Menu({ anchorEl, open, onClose, children }: { anchorEl: HTMLElement | null; open: boolean; onClose: () => void; children: React.ReactNode; [key: string]: any }) {
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      if (open && anchorEl && !anchorEl.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    if (open) {
+      document.addEventListener('click', handleOutsideClick);
+    }
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [open, anchorEl, onClose]);
+
+  if (!open || !anchorEl) return null;
+  const rect = anchorEl.getBoundingClientRect();
+
+  return (
+    <div className="fixed inset-0 z-50" onClick={onClose}>
+      <div 
+        className="absolute z-50 min-w-[190px] rounded-xl border border-[var(--border)] bg-[var(--panel)] shadow-xl py-1 text-sm text-[var(--text-primary)] animate-fade-in overflow-hidden"
+        style={{ top: `${rect.bottom + window.scrollY + 4}px`, right: `${Math.max(12, window.innerWidth - rect.right)}px` }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function MenuItem({ children, onClick, sx, className = '' }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full flex items-center px-4 py-2.5 text-left text-sm hover:bg-[rgba(var(--accent-gold-rgb),0.1)] transition-colors text-[var(--text-primary)] ${className}`}
+      style={sxToStyle(sx)}
+    >
+      {children}
+    </button>
+  );
+}
+
+function Tabs({ value, onChange, children, className = '', variant, scrollButtons, allowScrollButtonsMobile, sx }: any) {
+  return (
+    <div className={`flex items-center gap-1 border-b border-[var(--border)] overflow-x-auto ${className}`}>
+      {React.Children.map(children, (child, index) => {
+        if (!React.isValidElement(child)) return child;
+        return React.cloneElement(child as any, {
+          selected: value === index,
+          onClick: () => onChange && onChange(null, index),
+        });
+      })}
+    </div>
+  );
+}
+
+function Tab({ label, icon, selected, onClick, className = '' }: any) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-all duration-150 ${
+        selected
+          ? 'border-[var(--accent-gold)] text-[var(--accent-gold)] bg-[rgba(var(--accent-gold-rgb),0.06)]'
+          : 'border-transparent text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border)]'
+      } ${className}`}
+    >
+      {icon}
+      <span>{label}</span>
+    </button>
+  );
+}
 import { MoreVertical } from 'lucide-react';
 import { Breadcrumbs, ConfirmDialog, CopyButton, PageHeader, toast, Tooltip } from '@/components/design-system';
 import ShipmentMilestoneStepper from '@/components/shipments/ShipmentMilestoneStepper';

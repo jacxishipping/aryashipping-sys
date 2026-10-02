@@ -6,7 +6,6 @@ import { useMemo, useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { ArrowLeft, Package, DollarSign } from 'lucide-react';
-import { Box } from '@mui/material';
 import { Button, PageHeader } from '@/components/design-system';
 import { DashboardSurface, DashboardPanel } from '@/components/dashboard/DashboardSurface';
 
